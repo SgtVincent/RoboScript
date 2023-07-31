@@ -1,0 +1,51 @@
+<launch>
+
+  <arg name="camera"                default="camera"/>
+
+  <!-- <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" /> -->
+  <!-- realsense bringup-->
+  <group ns="$(arg camera)">
+    <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
+      <arg name="depth_width"       value="640"/>
+      <arg name="depth_height"      value="480"/>
+      <arg name="depth_fps"         value="30"/>
+      <arg name="color_width"       value="640"/>
+      <arg name="color_height"      value="480"/>
+      <arg name="color_fps"         value="30"/>
+      <arg name="enable_depth"      value="true"/>
+      <arg name="enable_color"      value="true"/>
+      <arg name="enable_infra1"     value="false"/>
+      <arg name="enable_infra2"     value="false"/>
+      <arg name="enable_fisheye"    value="false"/>
+      <arg name="enable_gyro"       value="false"/>
+      <arg name="enable_accel"      value="false"/>
+      <arg name="enable_pointcloud" value="true"/>
+      <arg name="enable_sync"       value="true"/>
+      <arg name="tf_prefix"         value="$(arg camera)"/>
+    </include>
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find realsense2_camera)/rviz/pointcloud.rviz" required="true" />
+  </group>
+
+
+  <node pkg="nodelet" type="nodelet" name="nodelet1"
+        args="load depth_image_proc/point_cloud_xyz realsense2_camera_manager">
+    <remap from="camera_info" to="/camera/depth/camera_info"/>
+    <remap from="image_rect" to="/camera/depth/image_rect_raw"/>
+</node>
+<node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="0.208, 0.397, 0.046, 0.611, -0.586, 0.368, 0.384 /camera_color_optical_frame /world 100" />
+
+    <node pkg="nodelet" type="nodelet" name="cropbox" args="load pcl/CropBox nodelet_manager" output="screen">
+      <remap from="~input" to="/points" />
+      <rosparam>
+        min_x: 0.0
+        max_x: 1
+        min_y: 0
+        max_y: 0.3
+        min_z: 0.01
+        max_z: 2.0
+        input_frame: world
+        output_frame: world
+      </rosparam>
+    </node>
+</launch>

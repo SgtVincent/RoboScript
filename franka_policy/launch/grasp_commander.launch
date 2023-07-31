@@ -1,0 +1,16 @@
+<launch>
+
+    <arg name="sim" default="false"/>
+
+    <group if = "$(arg sim)">
+        <include file="$(find panda_moveit_config)/launch/demo.launch" />
+    </group>
+
+    
+    <node pkg="franka_policy" name="grasp_commander" type="grasp_executor.py" output="screen"> 
+        <rosparam param="grasp_position">[0.3,0.3,0.4]</rosparam>
+        <rosparam param="grasp_orientation">[1.0,0.0,0.0,0.0]</rosparam>
+        <param name="sim" value="$(arg sim)"/>
+    </node>
+
+</launch>

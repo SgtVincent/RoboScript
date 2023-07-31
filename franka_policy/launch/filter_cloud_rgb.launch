@@ -1,0 +1,29 @@
+<launch>
+  <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" />
+
+  <!-- <node pkg="nodelet" type="nodelet" name="nodelet1"
+        args="load depth_image_proc/point_cloud_xyzrgb nodelet_manager">
+        <remap from="rgb/camera_info" to="/camera/aligned_depth_to_color/camera_info"/>
+        <remap from="rgb/image_rect_color" to="/camera/color/image_raw"/>
+        <remap from="depth_registered/image_rect" to="/camera/aligned_depth_to_color/image_raw"/> -->
+  <!-- </node> -->
+
+
+<node pkg="tf2_ros" type="static_transform_publisher" name="workspace"
+   args="0.363 -0.007 -0.035  0 0 0 world workspace" />
+
+    <node pkg="nodelet" type="nodelet" name="cropbox" args="load pcl/CropBox nodelet_manager" output="screen">
+      <remap from="~input" to="/camera/depth_registered/points" />
+      <rosparam>
+        min_x: 0
+        max_x: 0.3 
+        min_y: 0
+        max_y: 0.3
+        min_z: 0.055   <!-- # Filter rout table -->
+        max_z: 0.3
+        input_frame: workspace
+        output_frame: workspace
+      </rosparam>
+
+    </node>
+</launch>

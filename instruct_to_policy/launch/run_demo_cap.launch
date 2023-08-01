@@ -1,0 +1,6 @@
+<!-- an example roslaunch file to run the code as policy demo -->
+<launch>
+    <!-- Launch the demo node -->
+    <node name="demo" pkg="instruct_to_policy" type="demo_code_as_policies_pybullet.py" output="screen"/>
+
+</launch>

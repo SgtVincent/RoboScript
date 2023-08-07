@@ -33,7 +33,7 @@ def exec_safe(code_str, gvars=None, lvars=None):
         gvars,
         {'exec': empty_fn, 'eval': empty_fn}
     ])
-    print(code_str)
+    # print(code_str)
     exec(code_str, custom_gvars, lvars)
 
 

@@ -14,7 +14,7 @@ from time import sleep
 from shapely.geometry import *
 from shapely.affinity import *
 
-from src.message_definitions import *
+from src.prompt.message_definitions import *
 from src.constants import *
 
 # Gripper (Robotiq 2F85) code

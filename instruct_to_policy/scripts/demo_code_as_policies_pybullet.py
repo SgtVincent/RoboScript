@@ -18,7 +18,7 @@ import cv2
 
 # from google.colab.patches import cv2_imshow
 from moviepy.editor import ImageSequenceClip
-from src.message_definitions import *
+from src.prompt.message_definitions import *
 from src.lmp import *
 from src.env import PickPlaceEnv
 from src.config import cfg_tabletop

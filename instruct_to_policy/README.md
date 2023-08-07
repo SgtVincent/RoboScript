@@ -98,6 +98,12 @@ AttributeError: 'Thread' object has no attribute 'isAlive'
 
 Solution: https://transang.me/add-apt-repository-does-not-work-after-updating-to-python-3-9/
 
+Numpy >= 1.24 removed `np.float` property, which is used in `ros_numpy`:
+```
+AttributeError: module 'numpy' has no attribute 'float'.
+```
+Solution: `numpy` downgrade to `<1.24`
+
 
 If you had some link failures during catkin make, please add the corresponding libraries to `target_link_libraries()` in the cmake file of moveit_tutorials (depending on the OS). 
 

@@ -1,0 +1,36 @@
+<!-- copied & modified from panda_moveit_config package in moveit tutorial 
+https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/demo_gazebo.launch -->
+
+<launch>
+  <!-- specify the planning pipeline -->
+  <arg name="pipeline" default="ompl" />
+
+  <!-- Panda specific options -->
+  <arg name="load_gripper" default="true" />
+  <arg name="transmission" default="effort" />
+
+  <!-- Gazebo specific options -->
+  <arg name="gazebo_gui" default="true" />
+  <arg name="paused" default="false" />
+
+  <!-- Gazebo world choice -->
+  <!-- stone, copied from franka_gazebo package in franka_ros -->
+  <arg name="world" default="$(find instruct_to_policy)/world/stone.world" /> 
+  <arg name="x" default="-0.5" />
+
+  <!-- Launch the gazebo simulator and spawn the robot -->
+  <include file="$(find instruct_to_policy)/launch/panda_gazebo.launch" pass_all_args="true">
+    <arg name="headless" value="$(eval not arg('gazebo_gui'))" />
+    <arg name="use_gripper" default="$(arg load_gripper)" />
+    <arg name="controller" default="$(arg transmission)_joint_trajectory_controller" />
+  </include>
+
+  <!-- Launch the MoveIt configuration for Franka Emika Panda -->
+  <include file="$(find panda_moveit_config)/launch/demo.launch" pass_all_args="true">
+    <!-- robot description is loaded by gazebo.launch, to enable Gazebo features -->
+    <arg name="load_robot_description" value="false" />
+    <!-- MoveItSimpleControllerManager provides ros_control's JointTrajectory controllers
+         as well as GripperCommand actions -->
+    <arg name="moveit_controller_manager" value="simple" />
+  </include>
+</launch>

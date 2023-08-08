@@ -1,475 +1,242 @@
-#### LMP Prompts ######
+'''
+TODO: improve the message prompt in the following ways:
+'''
 
-messages_system_default = [{
+message_tabletop_ui = [
+{
 "role":"system",
 "content": '''
 You are a strict assistant, translating natural language to a python script to control a robotic arm.
 Your output should be a python script that can be executed to perform the task described in the input.
 '''
-}]
+},
+{
+"role":"assistant",
+"content":
+'''
+import moveit_commander
+import actionlib
+import rospy
 
-message_tabletop_ui = [
-{
-"role":"assistant",
-"content": '''
-import numpy as np
-from env_utils import put_first_on_second, get_obj_pos, get_obj_names, say, get_corner_name, get_side_name, is_obj_visible, stack_objects_in_order
-from plan_utils import parse_obj_name, parse_position, parse_question, transform_shape_pts  
-'''
-}, 
-{
-"role":"user",
-"content": "objects = ['yellow block', 'green block', 'yellow bowl', 'blue block', 'blue bowl', 'green bowl'] \n # put the yellow block on the yellow bowl"
-},
-{
-"role":"assistant",
-"content": '''
-say('Ok - putting the yellow block on the yellow bowl')
-put_first_on_second('yellow block', 'yellow bowl')
+from franka_gripper.msg import GraspAction, MoveAction
+import geometry_msgs, std_msgs
+
+from utils import get_obj_pos, get_obj_names, parse_obj_name, bbox_contains_pt, is_obj_visible
+from plan_utils import parse_obj_name, parse_position, parse_pose, parse_question, transform_shape_pts  
+
+rospy.init_node('pandas_moveit', anonymous=True)
+robot = moveit_commander.RobotCommander()
+scene = moveit_commander.PlanningSceneInterface()
+manipulator = moveit_commander.MoveGroupCommander("panda_manipulator", wait_for_servers = 15)
+gripper = moveit_commander.MoveGroupCommander("panda_hand", wait_for_servers = 15)
+grasp_client = actionlib.SimpleActionClient('/franka_gripper/grasp', GraspAction)
+move_client = actionlib.SimpleActionClient('/franka_gripper/move', MoveAction)
 '''
 },
-{
+{# Open a Drawer
 "role":"user",
-"content": "objects = ['yellow block', 'green block', 'yellow bowl', 'blue block', 'blue bowl', 'green bowl'] \n # which block did you move",
+"content": "objects = ['drawer', 'handle', 'table'] \n # open the drawer"
 },
 {
 "role":"assistant",
-"content": '''
-say('I moved the yellow block')
+"content":
+'''
+grab_handle_pose = get_pose('handle')
+open_gripper(gripper_command_group)
+move_group.set_pose_target(grab_handle_pose)
+move_group.go(wait=True)
+pull_drawer_pose = get_pose('d)
+move_group.set_pose_target(pull_drawer_pose)
+move_group.go(wait=True)
+open_gripper(gripper_command_group)
 '''
 },
-{
+{# Turn a Faucet Clockwise
 "role":"user",
-"content": "objects = ['yellow block', 'green block', 'yellow bowl', 'blue block', 'blue bowl', 'green bowl'] \n # move the green block to the top right corner",
+"content": "objects = ['faucet', 'handle', 'sink'] \n # turn the faucet clockwise"
 },
 {
 "role":"assistant",
-"content": '''
-say('Got it - putting the green block on the top right corner')
-corner_pos = parse_position('top right corner')
-put_first_on_second('green block', corner_pos)
+"content":
+'''
+grab_faucet_pose = parse_pose(object='faucet', action='grab')
+open_gripper(gripper_command_group)
+move_group.set_pose_target(grab_faucet_pose)
+move_group.go(wait=True)
+close_gripper(gripper_command_group)
+waypoints = [move_group.get_current_pose().pose]
+for angle in range(0, 91, 10):
+    target_pose = set_pose(math.cos(math.radians(angle/2)), 0, 0, math.sin(math.radians(angle/2)))
+    target_pose.position = current_pose.position
+    waypoints.append(target_pose)
+(plan, fraction) = move_group.compute_cartesian_path(waypoints, 0.01, 0.0)
+move_group.execute(plan, wait=True)
+open_gripper(gripper_command_group)
 '''
 },
-{
+{# Press a Button
 "role":"user",
-"content": "objects = ['yellow block', 'green block', 'yellow bowl', 'blue block', 'blue bowl', 'green bowl'] \n # stack the blue bowl on the yellow bowl on the green block",
+"content": "objects = ['elevator button', 'elevator', 'plants'] \n # press the elevator button"
 },
 {
 "role":"assistant",
-"content": '''
-order_bottom_to_top = ['green block', 'yellow block', 'blue bowl']
-say(f'Sure - stacking from top to bottom: {", ".join(order_bottom_to_top)}')
-stack_objects_in_order(object_names=order_bottom_to_top)
+"content":
+'''
+press_button_pose = parse_pose(object='elevator button', action='press')
+move_group.set_pose_target(button_pose)
+move_group.go(wait=True)
+close_gripper(gripper_command_group)
+release_button_pose = parse_pose(object='elevator button', action='release')
+move_group.set_pose_target(button_pose)
+move_group.go(wait=True)
+open_gripper(gripper_command_group)
 '''
 },
-{
+{# Pouring Liquid
 "role":"user",
-"content": "objects = ['cyan block', 'white block', 'cyan bowl', 'blue block', 'blue bowl', 'white bowl'] \n # move the cyan block into its corresponding bowl",
+"content": "objects = ['bottle', 'glass', 'table'] \n # grasp a bottle and pour the liquid into the glass"
 },
 {
 "role":"assistant",
-"content": '''
-matches = {'cyan block': 'cyan bowl'}
-say('Got it - placing the cyan block on the cyan bowl')
-for first, second in matches.items():
-  put_first_on_second(first, get_obj_pos(second))
+"content":
+'''
+grab_bottle_pose = parse_pose(object='bottle', action='grab')
+open_gripper(gripper_command_group)
+move_group.set_pose_target(grab_bottle_pose)
+move_group.go(wait=True)
+close_gripper(gripper_command_group)
+pour_water_pose = parse_pose(object='glass', action='pour')
+move_group.set_pose_target(pour_water_pose)
+move_group.go(wait=True)
+move_group.set_pose_target(grab_bottle_pose)
+move_group.go(wait=True)
+open_gripper(gripper_command_group)
 '''
 },
-{
+{# Scanning an Object
 "role":"user",
-"content": "objects = ['cyan block', 'white block', 'cyan bowl', 'blue block', 'blue bowl', 'white bowl'] \n # make a line of blocks on the right side",
+"content": "objects = ['bottle', 'glass', 'table'] \n # scan the bottle to get a 3D model"
 },
 {
 "role":"assistant",
-"content": '''
-say('No problem! Making a line of blocks on the right side')
-block_names = parse_obj_name('the blocks', f'objects = {get_obj_names()}')
-line_pts = parse_position(f'a 30cm vertical line on the right with {len(block_names)} points')
-for block_name, pt in zip(block_names, line_pts):
-  put_first_on_second(block_name, pt)
+"content":
+'''
+bottle_position = get_obj_pos('bottle')
+scan_path_points = generate_orbit_path(bottle_position, radius=0.1, n=10)
+follow_path(move_group, scan_path_points)
 '''
 },
-{
+{#Waving Hello
 "role":"user",
-"content": "objects = ['yellow block', 'red block', 'yellow bowl', 'gray block', 'gray bowl', 'red bowl'] \n # put the small banana colored thing in between the blue bowl and green block",
+"content": "objects = [] \n # wave hello for 3 times with the robot arm"
 },
 {
 "role":"assistant",
-"content": '''
-say('Sure thing - putting the yellow block between the blue bowl and the green block')
-target_pos = parse_position('a point in the middle betweeen the blue bowl and the green block')
-put_first_on_second('yellow block', target_pos)
+"content":
+'''
+wave_start_pose = parse_pose(object='', action='wave start')
+wave_end_pose = parse_pose(object='', action='wave end')
+for _ in range(3):
+    move_group.set_pose_target(wave_start_pose)
+    move_group.go(wait=True)
+    move_group.set_pose_target(wave_end_pose)
+    move_group.go(wait=True)
 '''
 },
-{
+{# Folding clothing
 "role":"user",
-"content": "objects = ['yellow block', 'red block', 'yellow bowl', 'gray block', 'gray bowl', 'red bowl'] \n # can you cut the bowls in half",
+"content": "objects = ['clothing', 'table'] \n # fold the clothing"
 },
 {
 "role":"assistant",
-"content": '''
-say('no, I can only move objects around')
+"content":
+'''
+grab_clothing_pose = parse_pose(object='clothing', action='grab')
+open_gripper(gripper_command_group)
+move_group.set_pose_target(grab_clothing_pose)
+move_group.go(wait=True)
+close_gripper(gripper_command_group)
+fold_pose = parse_pose(object='clothing', action='fold')
+move_group.set_pose_target(fold_pose)
+move_group.go(wait=True)
+open_gripper(gripper_command_group)
 '''
 },
-{
+{# Mixing Ingredients
 "role":"user",
-"content": "objects = ['yellow block', 'green block', 'yellow bowl', 'gray block', 'gray bowl', 'green bowl'] \n # stack the blocks on the right side with the gray one on the bottom"
+"content": "objects = ['spoon', 'bowl', 'table'] \n # use the spoon to mix the ingredients in the bowl"
 },
 {
 "role":"assistant",
-"content": '''
-say('Ok. stacking the blocks on the right side with the gray block on the bottom')
-right_side = parse_position('the right side')
-put_first_on_second('gray block', right_side)
-order_bottom_to_top = ['gray block', 'green block', 'yellow block']
-stack_objects_in_order(object_names=order_bottom_to_top)
+"content":
+'''
+grab_spoon_pose = parse_pose(object='spoon', action='grab')
+open_gripper(gripper_command_group)
+move_group.set_pose_target(grab_spoon_pose)
+move_group.go(wait=True)
+close_gripper(gripper_command_group)
+
+for _ in range(5):
+    stir_pose = parse_pose(object='bowl', action='stir')
+    move_group.set_pose_target(stir_pose)
+    move_group.go(wait=True)
+    move_group.set_pose_target(grab_spoon_pose)
+    move_group.go(wait=True)
+
+open_gripper(gripper_command_group)
 '''
 },
-{
+{# Watering plants
 "role":"user",
-"content": "objects = ['yellow block', 'green block', 'yellow bowl', 'blue block', 'blue bowl', 'green bowl'] \n # hide the blue bowl"
+"content": "objects = ['watering can', 'plant'] \n # water the plant with the watering can"
 },
 {
 "role":"assistant",
-"content": '''
-bowl_name = np.random.choice(['yellow bowl', 'green bowl'])
-say(f'Sounds good! Hiding the blue bowl under the {bowl_name}')
-put_first_on_second(bowl_name, 'blue bowl')
+"content":
+'''
+grab_can_pose = parse_pose(object='watering can', action='grab')
+watering_pose = parse_pose(object='plant', action='water')
+open_gripper(gripper_command_group)
+move_group.set_pose_target(grab_can_pose)
+move_group.go(wait=True)
+close_gripper(gripper_command_group)
+move_group.set_pose_target(watering_pose)
+move_group.go(wait=True)
+move_group.set_pose_target(grab_can_pose)
+move_group.go(wait=True)
+open_gripper(gripper_command_group)
 '''
 },
-{
+{# Retrieve an item from a high shelf
 "role":"user",
-"content": "objects = ['pink block', 'green block', 'pink bowl', 'blue block', 'blue bowl', 'green bowl'] \n # stack everything with the green block on top"
+"content": "objects = ['shelf', 'bowl'] \n # retrieve a bowl from the high shelf"
 },
 {
 "role":"assistant",
-"content": '''
-say('Ok! Stacking everything with the green block on the top')
-order_bottom_to_top = ['blue bowl', 'pink bowl', 'green bowl', 'pink block', 'blue block', 'green block']
-stack_objects_in_order(object_names=order_bottom_to_top)
+"content":
 '''
-},
-{
-"role":"user",
-"content": "objects = ['pink block', 'green block', 'pink bowl', 'blue block', 'blue bowl', 'green bowl'] \n # move the grass-colored bowl to the left"
-},
-{
-"role":"assistant",
-"content": '''
-say('Sure - moving the green bowl left by 10 centimeters')
-left_pos = parse_position('a point 10cm left of the green bowl')
-put_first_on_second('green bowl', left_pos)
-'''
-},
-{
-"role":"user",
-"content": "objects = ['pink block', 'green block', 'pink bowl', 'blue block', 'blue bowl', 'green bowl'] \n # why did you move the red bowl"
-},
-{
-"role":"assistant",
-"content": '''
-say(f'I did not move the red bowl')
-'''
-},
-{
-"role":"user",
-"content": "objects = ['pink block', 'green block', 'pink bowl', 'blue block', 'blue bowl', 'green bowl'] \n # undo that"
-},
-{
-"role":"assistant",
-"content": '''
-say('Sure - moving the green bowl right by 10 centimeters')
-left_pos = parse_position('a point 10cm right of the green bowl')
-put_first_on_second('green bowl', left_pos)
-'''
-},
-{
-"role":"user",
-"content": "objects = ['brown bowl', 'green block', 'brown block', 'green bowl', 'blue bowl', 'blue block'] \n # place the top most block to the corner closest to the bottom most block"
-},
-{
-"role":"assistant",
-"content": '''
-top_block_name = parse_obj_name('top most block', f'objects = {get_obj_names()}')
-bottom_block_name = parse_obj_name('bottom most block', f'objects = {get_obj_names()}')
-closest_corner_pos = parse_position(f'the corner closest to the {bottom_block_name}', f'objects = {get_obj_names()}')
-say(f'Putting the {top_block_name} on the {get_corner_name(closest_corner_pos)}')
-put_first_on_second(top_block_name, closest_corner_pos)
-'''
-},
-{
-"role":"user",
-"content": "objects = ['brown bowl', 'green block', 'brown block', 'green bowl', 'blue bowl', 'blue block'] \n # move the brown bowl to the side closest to the green block"
-},
-{
-"role":"assistant",
-"content": '''
-closest_side_position = parse_position('the side closest to the green block')
-say(f'Got it - putting the brown bowl on the {get_side_name(closest_side_position)}')
-put_first_on_second('brown bowl', closest_side_position)
-'''
-},
-{
-"role":"user",
-"content": "objects = ['brown bowl', 'green block', 'brown block', 'green bowl', 'blue bowl', 'blue block'] \n # move the brown bowl to the side closest to the green block"
-},
-{
-"role":"assistant",
-"content": '''
-closest_side_position = parse_position('the side closest to the green block')
-say(f'Got it - putting the brown bowl on the {get_side_name(closest_side_position)}')
-put_first_on_second('brown bowl', closest_side_position)
-'''
-},
-{
-"role":"user",
-"content": "objects = ['brown bowl', 'green block', 'brown block', 'green bowl', 'blue bowl', 'blue block'] \n # place the green block to the right of the bowl that has the blue block"
-},
-{
-"role":"assistant",
-"content": '''
-bowl_name = parse_obj_name('the bowl that has the blue block', f'objects = {get_obj_names()}')
-if bowl_name:
-  target_pos = parse_position(f'a point 10cm to the right of the {bowl_name}')
-  say(f'No problem - placing the green block to the right of the {bowl_name}')
-  put_first_on_second('green block', target_pos)
-else:
-  say('There are no bowls that has the blue block')
-'''
-},
-{
-"role":"user",
-"content": "objects = ['brown bowl', 'green block', 'brown block', 'green bowl', 'blue bowl', 'blue block'] \n # place the blue block in the empty bowl"
-},
-{
-"role":"assistant",
-"content": '''
-empty_bowl_name = parse_obj_name('the empty bowl', f'objects = {get_obj_names()}')
-if empty_bowl_name:
-  say(f'Ok! Putting the blue block on the {empty_bowl_name}')
-  put_first_on_second('blue block', empty_bowl_name)
-else:
-  say('There are no empty bowls')
-'''
-},
-{
-"role":"user",
-"content": "objects = ['brown bowl', 'green block', 'brown block', 'green bowl', 'blue bowl', 'blue block'] \n # move the other blocks to the bottom corners"
-},
-{
-"role":"assistant",
-"content": '''
-block_names = parse_obj_name('blocks other than the blue block', f'objects = {get_obj_names()}')
-corners = parse_position('the bottom corners')
-for block_name, pos in zip(block_names, corners):
-  put_first_on_second(block_name, pos)
-'''
-},
-{
-"role":"user",
-"content": "objects = ['brown bowl', 'green block', 'brown block', 'green bowl', 'blue bowl', 'blue block'] \n # move the red bowl a lot to the left of the blocks"
-},
-{
-"role":"assistant",
-"content": '''
-say('Sure! Moving the red bowl to a point left of the blocks')
-left_pos = parse_position('a point 20cm left of the blocks')
-put_first_on_second('red bowl', left_pos)
-'''
-},
-{
-"role":"user",
-"content": "objects = ['pink block', 'gray block', 'orange block'] \n # move the pinkish colored block on the bottom side"
-},
-{
-"role":"assistant",
-"content": '''
-say('Ok - putting the pink block on the bottom side')
-bottom_side_pos = parse_position('the bottom side')
-put_first_on_second('pink block', bottom_side_pos)
-'''
-},
-{
-"role":"user",
-"content": "objects = ['yellow bowl', 'blue block', 'yellow block', 'blue bowl'] \n # is the blue block to the right of the yellow bowl"
-},
-{
-"role":"assistant",
-"content": '''
-if parse_question('is the blue block to the right of the yellow bowl?', f'objects = {get_obj_names()}'):
-    say('yes, there is a blue block to the right of the yellow bow')
-else:
-    say('no, there is\'t a blue block to the right of the yellow bow')vv
-'''
-},
-{
-"role":"user",
-"content": "objects = ['yellow bowl', 'blue block', 'yellow block', 'blue bowl'] \n # how many yellow objects are there"
-},
-{
-"role":"assistant",
-"content": '''
-n_yellow_objs = parse_question('how many yellow objects are there', f'objects = {get_obj_names()}')
-say(f'there are {n_yellow_objs} yellow object')
-'''
-},
-{
-"role":"user",
-"content": "objects = ['yellow bowl', 'blue block', 'yellow block', 'blue bowl'] \n # move the left most block to the green bowl"
-},
-{    
-"role":"assistant",
-"content": '''
-left_block_name = parse_obj_name('left most block', f'objects = {get_obj_names()}')
-say(f'Moving the {left_block_name} on the green bowl') 
-put_first_on_second(left_block_name, 'green bowl')
-'''
-},
-{ 
-"role":"user",
-"content": "objects = ['pink block', 'green block', 'pink bowl', 'blue block', 'blue bowl', 'green bowl'] \n # move the other blocks to different corners"
-},
-{
-"role":"assistant",
-"content": '''
-block_names = parse_obj_name(f'blocks other than the {left_block_name}', f'objects = {get_obj_names()}')
-corners = parse_position('the corners') 
-say(f'Ok - moving the other {len(block_names)} blocks to different corners')
-for block_name, pos in zip(block_names, corners):
-  put_first_on_second(block_name, pos)  
-'''
-},
-{
-"role":"user",
-"content": "objects = ['pink block', 'green block', 'pink bowl', 'blue block', 'blue bowl', 'green bowl'] \n # is the pink block on the green bowl"
-},
-{
-"role":"assistant",
-"content": '''
-if parse_question('is the pink block on the green bowl', f'objects = {get_obj_names()}'):
-  say('Yes - the pink block is on the green bowl.')
-else:
-  say('No - the pink block is not on the green bowl.')  
-'''
-},
-{ 
-"role":"user",
-"content": "objects = ['pink block', 'green block', 'pink bowl', 'blue block', 'blue bowl', 'green bowl'] \n # what are the blocks left of the green bowl"
-},
-{
-"role":"assistant",   
-"content": '''
-left_block_names =  parse_question('what are the blocks left of the green bowl', f'objects = {get_obj_names()}')
-if len(left_block_names) > 0:
-  say(f'These blocks are left of the green bowl: {", ".join(left_block_names)}')
-else:
-  say('There are no blocks left of the green bowl')
-'''
-},
-{
-"role":"user",
-"content": "objects = ['pink block', 'green block', 'pink bowl', 'blue block', 'blue bowl', 'green bowl'] \n # if you see a purple bowl put it on the blue bowl"
-},
-{
-"role":"assistant",
-"content": '''
-if is_obj_visible('purple bowl'):
-  say('Putting the purple bowl on the pink bowl')
-  put_first_on_second('purple bowl', 'pink bowl')
-else:
-  say('I don\'t see a purple bowl')
-'''
-},
-{
-"role":"user",
-"content": "objects = ['pink block', 'gray block', 'orange block'] \n # imagine that the bowls are different biomes on earth and imagine that the blocks are parts of a building"
-},
-{
-"role":"assistant",
-"content": '''
-say('ok')
-'''
-},
-{
-"role":"user",
-"content": "objects = ['yellow block', 'green block', 'yellow bowl', 'blue block', 'blue bowl', 'green bowl'] \n # now build a tower in the grasslands"
-},
-{
-"role":"assistant",
-"content": '''
-order_bottom_to_top = ['green bowl', 'blue block', 'green block', 'yellow block']
-say('stacking the blocks on the green bowl')
-stack_objects_in_order(object_names=order_bottom_to_top)
-'''
-},
-{
-"role":"user",
-"content": "objects = ['yellow block', 'green block', 'yellow bowl', 'gray block', 'gray bowl', 'green bowl'] \n # show me what happens when the desert gets flooded by the ocean"
-},
-{ 
-"role":"assistant",
-"content": '''
-say('putting the yellow bowl on the blue bowl')
-put_first_on_second('yellow bowl', 'blue bowl')
-'''
-},
-{
-"role":"user",
-"content": "objects = ['pink block', 'gray block', 'orange block'] \n # move all blocks 5cm toward the top"
-},
-{
-"role":"assistant",
-"content": '''
-say('Ok - moving all blocks 5cm toward the top')
-block_names = parse_obj_name('the blocks', f'objects = {get_obj_names()}')
-for block_name in block_names:
-  target_pos = parse_position(f'a point 5cm above the {block_name}')
-  put_first_on_second(block_name, target_pos)
-'''
-},
-{
-"role":"user",
-"content": "objects = ['cyan block', 'white block', 'purple bowl', 'blue block', 'blue bowl', 'white bowl'] \n # make a triangle of blocks in the middle"
-},
-{
-"role":"assistant",
-"content": '''
-block_names = parse_obj_name('the blocks', f'objects = {get_obj_names()}')
-triangle_pts = parse_position(f'a triangle with size 10cm around the middle with {len(block_names)} points')
-say('Making a triangle of blocks around the middle of the workspace')
-for block_name, pt in zip(block_names, triangle_pts):
-  put_first_on_second(block_name, pt)
-'''
-},
-{
-"role":"user",
-"content": "objects = ['cyan block', 'white block', 'purple bowl', 'blue block', 'blue bowl', 'white bowl'] \n # make the triangle smaller"
-},
-{
-"role":"assistant",
-"content": '''
-triangle_pts = transform_shape_pts('scale it by 0.5x', shape_pts=triangle_pts)
-say('Making the triangle smaller')
-block_names = parse_obj_name('the blocks', f'objects = {get_obj_names()}')
-for block_name, pt in zip(block_names, triangle_pts):
-  put_first_on_second(block_name, pt)
-'''
-},
-{
-"role":"user",
-"content": "objects = ['brown bowl', 'red block', 'brown block', 'red bowl', 'pink bowl', 'pink block'] \n # put the red block on the farthest bowl"
-},
-{
-"role":"assistant",
-"content": '''
-farthest_bowl_name = parse_obj_name('the bowl farthest from the red block', f'objects = {get_obj_names()}')
-say(f'Putting the red block on the {farthest_bowl_name}')
-put_first_on_second('red block', farthest_bowl_name)
+shelf_pose = set_pose(1.0, 0.6, 0.4, 0.1)
+open_gripper(gripper_command_group)
+move_group.set_pose_target(shelf_pose)
+move_group.go(wait=True)
+close_gripper(gripper_command_group)
+lower_pose = set_pose(1.0, 0.4, -0.2, 0.1)
+move_group.set_pose_target(lower_pose)
+move_group.go(wait=True)
+open_gripper(gripper_command_group)
 '''
 }
 ]
 
+
 message_parse_obj_name = [
+{
+"role":"system",
+"content": '''
+You are a strict assistant, translating natural language to a python script to parse the objects indicated by instructions.
+Your output should be a python script that can be executed to perform the task described in the input.
+'''
+},
 {
 "role": "assistant",
 "content": '''
@@ -612,6 +379,13 @@ ret_val = bowl_name
 
 message_parse_position = [
 {
+"role":"system",
+"content": '''
+You are a strict assistant, translating natural language to a python script to parse the positions indicated by instructions.
+Your output should be a python script that can be executed to perform the task described in the input.
+'''
+},
+{
 "role": "assistant",
 "content": '''
 import numpy as np
@@ -753,6 +527,13 @@ ret_val = [top_left_pos, top_right_pos]
 
 message_parse_question = [
 {
+"role":"system",
+"content": '''
+You are a strict assistant, translating natural language to a python script to return the answer to a question.
+Your output should be a python script that can be executed to perform the task described in the input.
+'''
+},
+{
 "role": "assistant",
 "content": '''
 from utils import get_obj_pos, get_obj_names, parse_obj_name, bbox_contains_pt, is_obj_visible
@@ -832,6 +613,13 @@ ret_val = get_obj_pos('green block')[1] < get_obj_pos('blue bowl')[1]
 
 message_transform_shape_pts = [
 {
+"role":"system",
+"content": '''
+You are a strict assistant, translating natural language to a python script to control a robotic arm.
+Your output should be a python script that can be executed to transform the shape of points indicated by instructions.
+'''
+},
+{
 "role": "assistant",
 "content": '''
 import numpy as np
@@ -896,129 +684,67 @@ new_shape_pts = translate_pts_np(shape_pts, mean_delta)
 }
 ]
 
-message_fgen = [
-{ 
-"role":"assistant",
-"content": '''
-import numpy as np
-from shapely.geometry import *
-from shapely.affinity import *
+# TODO: adapt to real API
 
-from env_utils import get_obj_pos, get_obj_names
-from ctrl_utils import put_first_on_second
+message_fgen= [
+{
+"role":"system",
+"content": '''
+You are a strict assistant, translating natural language to a python script to define python functions.
+Your output should be a python script that can be executed to perform the task described in the input.
 '''
 },
 {
 "role":"user",
-"content": "# define function: total = get_total(xs=numbers)"
+"content": "# define function: open_gripper(gripper_command_group)"
 },
 {
 "role":"assistant",
 "content": '''
-def get_total(xs):
-    return np.sum(xs)
+def open_gripper(gripper_command_group):
+    gripper_command_group.set_named_target("open")
+    gripper_command_group.go(wait=True)
 '''
 },
 {
 "role":"user",
-"content": "# define function: y = eval_line(x, slope, y_intercept=0)"
+"content": "# define function: close_gripper(gripper_command_group)"
 },
 {
 "role":"assistant",
-"content":'''
-def eval_line(x, slope, y_intercept=0):
-    return x * slope + y_intercept
+"content": '''
+def close_gripper(gripper_command_group):
+    gripper_command_group.set_named_target("closed")
+    gripper_command_group.go(wait=True)
 '''
 },
 {
 "role":"user",
-"content": "# define function: pt = get_pt_to_the_left(pt, dist)"
+"content": "# define function: pick_and_place(move_group, pick_pose, place_pose)"
 },
 {
 "role":"assistant",
-"content":'''
-def get_pt_to_the_left(pt, dist):
-    return pt + [-dist, 0]
+"content": 
+'''
+def pick_and_place(move_group, pick_pose, place_pose):
+    waypoints = [move_group.get_current_pose().pose, pick_pose, place_pose]
+    (plan, fraction) = move_group.compute_cartesian_path(waypoints, 0.01, 0.0)
+    move_group.execute(plan, wait=True)
 '''
 },
 {
 "role":"user",
-"content": "# define function: pt = get_pt_to_the_top(pt, dist)"
+"content": "# define function: follow_path(move_group, pose)"
 },
 {
 "role":"assistant",
-"content":'''
-def get_pt_to_the_top(pt, dist):
-    return pt + [0, dist]
+"content":
 '''
-},
-{
-"role":"user",
-"content": "# define function line = make_line_by_length(length=x)"
-},
-{
-"role":"assistant",
-"content":'''
-def make_line_by_length(length):
-    line = LineString([[0, 0], [length, 0]])
-    return line 
-'''
-},
-{
-"role":"user",
-"content": "# define function: line = make_vertical_line_by_length(length=x)"
-},
-{
-"role":"assistant",
-"content":'''
-def make_vertical_line_by_length(length):
-    line = make_line_by_length(length)
-    vertical_line = rotate(line, 90)
-    return vertical_line
-'''
-},
-{
-"role":"user",
-"content": "# define function: pt = interpolate_line(line, t=0.5)"
-},
-{
-"role":"assistant",
-"content":'''
-def interpolate_line(line, t):
-    pt = line.interpolate(t, normalized=True)
-    return np.array(pt.coords[0])
-'''
-},
-{
-"role":"user",
-"content": "# example: scale a line by 2"
-},
-{
-"role":"assistant",
-"content":'''
-line = make_line_by_length(1)
-new_shape = scale(line, xfact=2, yfact=2)
-'''
-},
-{
-"role":"user",
-"content": "# example: put object1 on top of object0"
-},
-{
-"role":"assistant",
-"content":'''
-put_first_on_second('object1', 'object0')
-'''
-},
-{
-"role":"user",
-"content": "# example: get the position of the first object"
-},
-{
-"role":"assistant",
-"content":'''
-obj_names = get_obj_names()
-pos_2d = get_obj_pos(obj_names[0])
+def follow_path(move_group, path_points):
+    waypoints = [set_pose(1.0, point[0], point[1], point[2]) for point in path_points]
+    (plan, fraction) = move_group.compute_cartesian_path(waypoints, 0.01, 0.0)
+    move_group.execute(plan, wait=True)
 '''
 }
 ]
+

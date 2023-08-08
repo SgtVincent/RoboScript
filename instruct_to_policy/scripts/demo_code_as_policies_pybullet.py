@@ -18,7 +18,7 @@ import cv2
 
 # from google.colab.patches import cv2_imshow
 from moviepy.editor import ImageSequenceClip
-from src.prompt.message_definitions import *
+# from src.prompt.message_definitions import *
 from src.lmp import *
 from src.env import PickPlaceEnv
 from src.config import cfg_tabletop
@@ -71,6 +71,7 @@ block_list = np.random.choice(ALL_BLOCKS, size=num_blocks, replace=False).tolist
 bowl_list = np.random.choice(ALL_BOWLS, size=num_bowls, replace=False).tolist()
 obj_list = block_list + bowl_list
 _ = env.reset(obj_list)
+
 lmp_tabletop_ui = setup_LMP(env, cfg_tabletop)
 
 # display env
@@ -84,12 +85,22 @@ print(obj_list)
 # %%
 #@title Interactive Demo { vertical-output: true }
 
-user_input = 'put the blue block on the yellow bowl' #@param {allow-input: true, type:"string"}
+# user_input = 'put the blue block on the yellow bowl' #@param {allow-input: true, type:"string"}
+
+# env.cache_video = []
+
+# print('Running policy and recording video...')
+# lmp_tabletop_ui(user_input, f'objects = {env.object_list}')
+
+# user_input = 'open the drawer and check the number of bottles' #@param {allow-input: true, type:"string"}
+# object_list = ['drawer', 'table']
+user_input = 'put all the objects on the table into the box'
+object_list = ['box', 'table', 'orange', 'apple', 'stone']
 
 env.cache_video = []
-
 print('Running policy and recording video...')
-lmp_tabletop_ui(user_input, f'objects = {env.object_list}')
+
+lmp_tabletop_ui(user_input, f'objects = {object_list}')
 
 # render video
 if env.cache_video:

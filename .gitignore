@@ -160,3 +160,6 @@ cython_debug/
 #.idea/
  
 log/
+instruct_to_policy/scripts/ur5e/
+instruct_to_policy/scripts/bowl/
+instruct_to_policy/scripts/robotiq_2f_85/

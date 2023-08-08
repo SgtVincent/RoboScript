@@ -26,7 +26,7 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   </include>
 
   <!-- Launch the MoveIt configuration for Franka Emika Panda -->
-  <include file="$(find panda_moveit_config)/launch/demo.launch" pass_all_args="true">
+  <include file="$(find instruct_to_policy)/launch/demo_moveit.launch" pass_all_args="true">
     <!-- robot description is loaded by gazebo.launch, to enable Gazebo features -->
     <arg name="load_robot_description" value="false" />
     <!-- MoveItSimpleControllerManager provides ros_control's JointTrajectory controllers

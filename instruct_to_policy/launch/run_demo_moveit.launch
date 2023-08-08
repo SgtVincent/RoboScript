@@ -1,6 +1,0 @@
-<!-- launch moveit python interface tutorial -->
-
-<launch>
-    <!-- Launch the demo node -->
-    <node name="demo" pkg="moveit_tutorials" type="move_group_python_interface_tutorial.py" output="screen"/>
-</launch>

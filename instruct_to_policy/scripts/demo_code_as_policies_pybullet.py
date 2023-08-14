@@ -20,7 +20,7 @@ import cv2
 from moviepy.editor import ImageSequenceClip
 # from src.prompt.message_definitions import *
 from src.lmp import *
-from src.env import PickPlaceEnv
+from src.env.pybullet_env import PickPlaceEnv
 from src.config import cfg_tabletop
 from src.openai_api_key import OPENAI_API_KEY
 

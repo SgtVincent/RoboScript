@@ -42,18 +42,22 @@ Install common tools and moveit dependencies:
 mamba deactivate
 mamba activate ros_env
 
-# Install common tools
-mamba install compilers cxx-compiler cmake pkg-config make ninja colcon-common-extensions catkin_tools
+# Install ros-noetic common dev tools
+mamba install compilers cxx-compiler cmake pkg-config make ninja colcon-common-extensions catkin_tools boost-cpp 
 
 # Install moveit dependencies
-pip install catkin-tools wstool
+pip install catkin-tools wstool 
 ```
 
 ### Install MoveIt ROS Packages
 
 Install MoveIt from Robostack Prebuilt Binaries
 ```bash
-mamba install ros-noetic-moveit
+mamba install ros-noetic-moveit 
+
+# You might also need other dependecies for moveit_tutorials package
+# please install the dependencies with: 
+rosdep install -y --from-paths . --ignore-src --rosdistro noetic
 ```
 
 To test the installation, follow the official instructions in official tutorials [Build your Catkin Workspace](https://ros-planning.github.io/moveit_tutorials/doc/getting_started/getting_started.html#create-a-catkin-workspace) to run the tutorial packages. 
@@ -115,3 +119,11 @@ pip install numpy scipy shapely astunparse pygments openai imageio==2.4.1 imagei
 
 ## Run (Under Development)
 Currently, this module only runs a demo inside pybullet with Code as Policies prompot.
+
+
+### Gazebo plugins
+Our locally-built plugins are in `/path/to/catkin_ws/devel/lib`. To load it in gazebo, you should specify the LD_LIBRARY_PATH to the directory of the plugin. 
+
+```bash
+e.g. export LD_LIBRARY_PATH=/path/to/catkin_ws/devel/lib
+```

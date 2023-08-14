@@ -13,9 +13,13 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <arg name="gazebo_gui" default="true" />
   <arg name="paused" default="false" />
 
+  <!-- Environment variables for loading local artifacts -->
+  <!-- <env name="GAZEBO_MODEL_PATH" value="$(find instruct_to_policy)/models:$(optenv GAZEBO_MODEL_PATH)"/>
+  <env name="GAZEBO_RESOURCE_PATH" value="$(find instruct_to_policy)/worlds:$(optenv GAZEBO_RESOURCE_PATH)"/> -->
+  
   <!-- Gazebo world choice -->
   <!-- stone, copied from franka_gazebo package in franka_ros -->
-  <arg name="world" default="$(find instruct_to_policy)/world/stone.world" /> 
+  <arg name="world" default="$(find instruct_to_policy)/worlds/stone.world" /> 
   <arg name="x" default="-0.5" />
 
   <!-- Launch the gazebo simulator and spawn the robot -->

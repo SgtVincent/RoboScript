@@ -16,10 +16,8 @@
 */
 /*
  * Desc: A plugin which publishes the gazebo world state as a MoveIt! planning scene
- * Author: Junting Chen
- * Date: Aug 2023
- * Credit: Upgraded from https://github.com/jhu-lcsr-forks/gazebo_ros_pkgs/blob/hydro-devel/gazebo_plugins/src/gazebo_ros_moveit_planning_scene.cpp
- * Upgraded from gazebo 7 to gazebo 11
+ * Author: Jonathan Bohren
+ * Date: 15 May 2014
  */
 
 #include <algorithm>
@@ -29,8 +27,8 @@
 #include <boost/thread/mutex.hpp>
 
 #include <gazebo/common/common.hh>
+
 #include <gazebo_plugins/gazebo_ros_moveit_planning_scene.h>
-#include <ignition/math/Vector3.hh>
 
 namespace gazebo
 {
@@ -51,16 +49,16 @@ GazeboRosMoveItPlanningScene::GazeboRosMoveItPlanningScene()
 // Destructor
 GazeboRosMoveItPlanningScene::~GazeboRosMoveItPlanningScene()
 {
-  // removed from gazebo 11
-  // event::Events::DisconnectWorldUpdateBegin(this->update_connection_);
+#if GAZEBO_MAJOR_VERSION >= 8
+#else
+  event::Events::DisconnectWorldUpdateBegin(this->update_connection_);
+#endif
 
-  this->update_connection_.reset();
   // Custom Callback Queue
   this->queue_.clear();
   this->queue_.disable();
   this->rosnode_->shutdown();
   this->callback_queue_thread_.join();
-  delete this->rosnode_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -69,6 +67,7 @@ void GazeboRosMoveItPlanningScene::Load(physics::ModelPtr _model, sdf::ElementPt
 {
   // Get the world name.
   this->world_ = _model->GetWorld();
+
   this->model_name_ = _model->GetName();
 
   // load parameters
@@ -111,8 +110,8 @@ void GazeboRosMoveItPlanningScene::Load(physics::ModelPtr _model, sdf::ElementPt
     return;
   }
 
-  this->rosnode_ = new ros::NodeHandle(this->robot_namespace_);
-  
+  this->rosnode_.reset(new ros::NodeHandle(this->robot_namespace_));
+
   last_publish_time_ = ros::Time(0,0);
 
   planning_scene_pub_ = this->rosnode_->advertise<moveit_msgs::PlanningScene>(
@@ -203,7 +202,11 @@ void GazeboRosMoveItPlanningScene::UpdateCB()
   }
 
   // Iterate over all the models currently in the world
+#if GAZEBO_MAJOR_VERSION >= 8
   std::vector<ModelPtr> models = this->world_->Models();
+#else
+  std::vector<ModelPtr> models = this->world_->GetModels();
+#endif
   for(std::vector<ModelPtr>::const_iterator model_it = models.begin();
       model_it != models.end();
       ++model_it)
@@ -255,9 +258,12 @@ void GazeboRosMoveItPlanningScene::UpdateCB()
 
       // Get a reference to the object from the map
       moveit_msgs::CollisionObject &object = collision_object_map_[id];
-      // gazebo::math and GetWorldPose() have been removed in gazebo 9
-      // gazebo::math::Pose link_pose = link->GetWorldPose();
+
+#if GAZEBO_MAJOR_VERSION >= 8
       ignition::math::Pose3d link_pose = link->WorldPose();
+#else
+      ignition::math::Pose3d link_pose = link->GetWorldPose().Ign();
+#endif
       geometry_msgs::Pose link_pose_msg;
       link_pose_msg.position.x = link_pose.Pos().X();
       link_pose_msg.position.y = link_pose.Pos().Y();
@@ -278,9 +284,11 @@ void GazeboRosMoveItPlanningScene::UpdateCB()
         const ShapePtr shape = collision->GetShape();
 
         // NOTE: In gazebo 2.2.2 Collision::GetWorldPose() does not work
-        //gazebo::math::Pose collision_pose = collision->GetRelativePose()*link_pose;
-        // gazebo::math::Pose collision_pose = collision->GetInitialRelativePose() + link_pose;
+#if GAZEBO_MAJOR_VERSION >= 8
         ignition::math::Pose3d collision_pose = collision->InitialRelativePose() + link_pose;
+#else 
+        ignition::math::Pose3d collision_pose = collision->GetInitialRelativePose().Ign() + link_pose;
+#endif
         geometry_msgs::Pose collision_pose_msg;
         collision_pose_msg.position.x = collision_pose.Pos().X();
         collision_pose_msg.position.y = collision_pose.Pos().Y();
@@ -351,8 +359,11 @@ void GazeboRosMoveItPlanningScene::UpdateCB()
             boost::shared_ptr<MeshShape> mesh_shape = boost::dynamic_pointer_cast<MeshShape>(shape);
             std::string name = mesh_shape->GetName();
             std::string uri = mesh_shape->GetMeshURI();
-            // gazebo::math::Vector3 scale = mesh_shape->GetScale();
+#if GAZEBO_MAJOR_VERSION >= 8
             ignition::math::Vector3d scale = mesh_shape->Scale();
+#else
+            ignition::math::Vector3d scale = mesh_shape->GetScale().Ign();
+#endif
             const Mesh *mesh = MeshManager::Instance()->GetMesh(uri);
 
             gzwarn << " mesh scale: " <<scale<< std::endl;
@@ -395,8 +406,8 @@ void GazeboRosMoveItPlanningScene::UpdateCB()
                     for(size_t v=0; v < n_vertices; v++) {
 
                       const int index = submesh->GetIndex(v);
-                      // const gazebo::math::Vector3 vertex = submesh->GetVertex(v);
                       const ignition::math::Vector3d vertex = submesh->Vertex(v);
+
                       mesh_msg.vertices[index].x = vertex.X() * scale.X();
                       mesh_msg.vertices[index].y = vertex.Y() * scale.Y();
                       mesh_msg.vertices[index].z = vertex.Z() * scale.Z();
@@ -417,9 +428,7 @@ void GazeboRosMoveItPlanningScene::UpdateCB()
 
                     for(size_t v=0; v < n_vertices; v++) {
                       const int index = submesh->GetIndex(v);
-                      // const gazebo::math::Vector3 vertex = submesh->GetVertex(v);
                       const ignition::math::Vector3d vertex = submesh->Vertex(v);
-
 
                       mesh_msg.vertices[index].x = vertex.X() * scale.X();
                       mesh_msg.vertices[index].y = vertex.Y() * scale.Y();
@@ -447,12 +456,15 @@ void GazeboRosMoveItPlanningScene::UpdateCB()
             boost::shared_ptr<PlaneShape> plane_shape = boost::dynamic_pointer_cast<PlaneShape>(shape);
             shape_msgs::Plane plane_msg;
 
-            // plane_msg.coef[0] = plane_shape->GetNormal().x;
-            // plane_msg.coef[1] = plane_shape->GetNormal().y;
-            // plane_msg.coef[2] = plane_shape->GetNormal().z;
+#if GAZEBO_MAJOR_VERSION >= 8
             plane_msg.coef[0] = plane_shape->Normal().X();
             plane_msg.coef[1] = plane_shape->Normal().Y();
             plane_msg.coef[2] = plane_shape->Normal().Z();
+#else
+            plane_msg.coef[0] = plane_shape->GetNormal().Ign().X();
+            plane_msg.coef[1] = plane_shape->GetNormal().Ign().Y();
+            plane_msg.coef[2] = plane_shape->GetNormal().Ign().Z();
+#endif
             plane_msg.coef[3] = 0; // This should be handled by the position of the collision object
 
             object.planes.push_back(plane_msg);
@@ -468,13 +480,15 @@ void GazeboRosMoveItPlanningScene::UpdateCB()
 
               primitive_msg.type = primitive_msg.BOX;
               primitive_msg.dimensions.resize(3);
-              // primitive_msg.dimensions[0] = box_shape->GetSize().x;
-              // primitive_msg.dimensions[1] = box_shape->GetSize().y;
-              // primitive_msg.dimensions[2] = box_shape->GetSize().z;
+#if GAZEBO_MAJOR_VERSION >= 8
               primitive_msg.dimensions[0] = box_shape->Size().X();
               primitive_msg.dimensions[1] = box_shape->Size().Y();
               primitive_msg.dimensions[2] = box_shape->Size().Z();
-
+#else
+              primitive_msg.dimensions[0] = box_shape->GetSize().Ign().X();
+              primitive_msg.dimensions[1] = box_shape->GetSize().Ign().Y();
+              primitive_msg.dimensions[2] = box_shape->GetSize().Ign().Z();
+#endif
             } else if(shape->HasType(Base::CYLINDER_SHAPE)) {
 
               boost::shared_ptr<CylinderShape> cylinder_shape = boost::dynamic_pointer_cast<CylinderShape>(shape);

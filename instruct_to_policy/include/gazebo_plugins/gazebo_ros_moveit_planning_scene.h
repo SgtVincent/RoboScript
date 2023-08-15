@@ -16,9 +16,8 @@
 */
 /*
  * Desc: A plugin which publishes the gazebo world state as a MoveIt! planning scene
- * Author: Junting Chen
- * Date: Aug 2023
- * Modified from: https://github.com/jhu-lcsr-forks/gazebo_ros_pkgs/blob/hydro-devel/gazebo_plugins/include/gazebo_plugins/gazebo_ros_moveit_planning_scene.h#L50-L82
+ * Author: Jonathan Bohren
+ * Date: 15 May 2014
  */
 #ifndef GAZEBO_ROS_MOVEIT_PLANNING_SCENE_H
 #define GAZEBO_ROS_MOVEIT_PLANNING_SCENE_H
@@ -119,11 +118,8 @@ class GazeboRosMoveItPlanningScene : public ModelPlugin
   /// \brief A pointer to the Model of the robot doing the planning
   private: physics::ModelPtr model_;
 
-  /// \brief The body of the frame to display pose, twist
-  private: physics::LinkPtr reference_link_;
-
   /// \brief A pointer to the ROS node.  A node will be instantiated if it does not exist.
-  private: ros::NodeHandle* rosnode_;
+  private: boost::scoped_ptr<ros::NodeHandle> rosnode_;
   private: ros::Publisher planning_scene_pub_;
            ros::ServiceServer publish_planning_scene_service_;
 

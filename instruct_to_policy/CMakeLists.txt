@@ -147,8 +147,8 @@ include_directories(
 # Declare a C++ library
 
 add_library( gazebo_ros_example_plugin src/gazebo_plugins/gazebo_ros_example_plugin.cpp)
-add_library( gazebo_ros_moveit_planning_scene src/gazebo_plugins/gazebo_ros_moveit_planning_scene.cpp
-)
+add_library( gazebo_ros_moveit_planning_scene src/gazebo_plugins/gazebo_ros_moveit_planning_scene.cpp)
+add_library( gazebo_ros_p3d src/gazebo_plugins/gazebo_ros_p3d.cpp)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -183,6 +183,11 @@ target_link_libraries( gazebo_ros_moveit_planning_scene
   ${catkin_LIBRARIES}
 )
 
+target_link_libraries( gazebo_ros_p3d
+  ${GAZEBO_LIBRARIES}
+  ${Boost_LIBRARIES}
+  ${catkin_LIBRARIES}
+)
 #############
 ## Install ##
 #############

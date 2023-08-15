@@ -14,9 +14,9 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <arg name="paused" default="false" />
 
   <!-- Environment variables for loading local artifacts -->
-  <!-- <env name="GAZEBO_MODEL_PATH" value="$(find instruct_to_policy)/models:$(optenv GAZEBO_MODEL_PATH)"/>
-  <env name="GAZEBO_RESOURCE_PATH" value="$(find instruct_to_policy)/worlds:$(optenv GAZEBO_RESOURCE_PATH)"/> -->
-  
+  <env name="GAZEBO_MODEL_PATH" value="$(find instruct_to_policy)/models:$(optenv GAZEBO_MODEL_PATH)"/>
+  <env name="GAZEBO_RESOURCE_PATH" value="$(find instruct_to_policy)/worlds:$(optenv GAZEBO_RESOURCE_PATH)"/>
+  <env name="LD_LIBRARY_PATH" value="$(find instruct_to_policy)/../../../devel/lib:$(optenv LD_LIBRARY_PATH)"/>
   <!-- Gazebo world choice -->
   <!-- stone, copied from franka_gazebo package in franka_ros -->
   <arg name="world" default="$(find instruct_to_policy)/worlds/stone.world" /> 

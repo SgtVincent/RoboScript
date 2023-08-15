@@ -1,0 +1,26 @@
+<launch>
+  
+    <!-- Gazebo specific options -->
+    <arg name="gazebo_gui" default="true" />
+    <arg name="paused" default="false" />
+    <arg name="verbose" default="true" />
+  
+    <!-- Environment variables for loading local artifacts -->
+    <env name="GAZEBO_MODEL_PATH" value="$(find instruct_to_policy)/models:$(optenv GAZEBO_MODEL_PATH)"/>
+    <env name="GAZEBO_RESOURCE_PATH" value="$(find instruct_to_policy)/worlds:$(optenv GAZEBO_RESOURCE_PATH)"/>
+    <env name="LD_LIBRARY_PATH" value="$(find instruct_to_policy)/../../../devel/lib:$(optenv LD_LIBRARY_PATH)"/>
+    <!-- Gazebo world choice -->
+    <!-- stone, copied from franka_gazebo package in franka_ros -->
+    <arg name="world" default="$(find instruct_to_policy)/worlds/stone.world" /> 
+    <arg name="x" default="-0.5" />
+  
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(arg world)"/>
+        <!-- Always start in paused mode, and only unpause when spawning the model -->
+        <arg name="paused" value="false"/>
+        <arg name="gui" value="$(arg gazebo_gui)"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="verbose" value="$(arg verbose)"/>
+      </include>
+  
+  </launch>

@@ -69,11 +69,11 @@ sudo apt install mesa-common-dev libglu1-mesa-dev freeglut3 freeglut3-dev
 
 ### Install Franka ROS
 
-If you **ONLY** need to run the pipeline on the real panda robot, you can install Franka ROS Packages from Robostack prebuilt binaries:
+<!-- If you **ONLY** need to run the pipeline on the real panda robot, you can install Franka ROS Packages from Robostack prebuilt binaries: -->
 ```bash 
 mamba install ros-noetic-franka-ros
 ```
-**However**, if you want to test the pipeline of the franka robot in gazebo simulation, you need to build the franka ros packages from source, following the tutorials on [Gazebo Simulation Integration](https://ros-planning.github.io/moveit_tutorials/doc/gazebo_simulation/gazebo_simulation.html?highlight=gazebo#gazebo-simulation-integration).
+<!-- **However**, if you want to test the pipeline of the franka robot in gazebo simulation, you need to build the franka ros packages from source, following the tutorials on [Gazebo Simulation Integration](https://ros-planning.github.io/moveit_tutorials/doc/gazebo_simulation/gazebo_simulation.html?highlight=gazebo#gazebo-simulation-integration). -->
 
 
 

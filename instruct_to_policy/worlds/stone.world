@@ -13,7 +13,7 @@
     <!--A Table-->
     <include>
       <uri>model://table</uri>
-      <pose>0.016428 0.000584 0.0 0 -0 0</pose>
+      <pose>0.016428 0.000584 0.2099115 0 -0 0</pose>
       <static>1</static>
     </include>
     <!--A pick tray-->

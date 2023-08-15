@@ -2,7 +2,7 @@
 <sdf version='1.6'>
   <model name='pick_tray'>
     <link name='link'>
-      <pose>0.0 0.0 0.011674 0 -0 0</pose>
+      <pose>0.0 0.0 0.0 0 -0 0</pose>
       <inertial>
         <!--NOTE: Uses hard wood density (i.e 960 kg/m^3) to calculate the mass
         see https://qtimber.daf.qld.gov.au/guides/wood-density-and-hardness

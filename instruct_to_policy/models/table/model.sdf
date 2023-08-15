@@ -2,7 +2,7 @@
 <sdf version='1.6'>
   <model name='table'>
     <link name='link'>
-      <pose>0 0 0.2099115 0 -0 0</pose>
+      <pose>0 0 0 0 -0 0</pose>
       <inertial>
         <pose>0 0 0 0 -0 0</pose>
         <mass>10</mass>

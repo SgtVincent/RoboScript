@@ -20,7 +20,7 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <!-- Gazebo world choice -->
   <!-- stone, copied from franka_gazebo package in franka_ros -->
   <arg name="world" default="$(find instruct_to_policy)/worlds/stone.world" /> 
-  <arg name="x" default="-0.5" />
+  <arg name="x" default="-0.3" />
 
   <!-- Launch the gazebo simulator and spawn the robot -->
   <include file="$(find instruct_to_policy)/launch/panda_gazebo.launch" pass_all_args="true">

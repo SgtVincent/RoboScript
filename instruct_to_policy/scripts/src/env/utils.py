@@ -1,11 +1,22 @@
-from typing import List
-from geometry_msgs.msg import Pose, PoseStamped
-import xml 
+from typing import List, Optional, Union, Tuple
+import os
 import xml.etree.ElementTree as ElementTree
 from moveit_commander import PlanningSceneInterface
-import rospy 
+import moveit_commander
+
+import rospy
+import rospkg
+from geometry_msgs.msg import Pose, PoseStamped
+from gazebo_msgs.srv import (
+    GetModelState,
+    GetWorldProperties,
+    GetModelProperties,
+)
+
+from src.env.gazebo_env import GazeboInterface
 
 ################## ROS utils ###################
+
 
 def get_pose_msg(position: List, orientation: List) -> Pose:
     pose_msg = Pose()
@@ -19,41 +30,66 @@ def get_pose_msg(position: List, orientation: List) -> Pose:
     return pose_msg
 
 
-def get_stamped_pose(position: List, orientation: List, frame_id="world") -> PoseStamped:
+def get_stamped_pose(
+    position: List, orientation: List, frame_id="world"
+) -> PoseStamped:
     pose_stamped = PoseStamped()
     pose_stamped.header.frame_id = frame_id
     pose_stamped.pose = get_pose_msg(position, orientation)
     return pose_stamped
 
+
+def pose_to_list(pose: Union[Pose, PoseStamped]) -> Tuple[List, List]:
+    if isinstance(pose, PoseStamped):
+        pose = pose.pose
+    return [pose.position.x, pose.position.y, pose.position.z], [
+        pose.orientation.x,
+        pose.orientation.y,
+        pose.orientation.z,
+        pose.orientation.w,
+    ]
+
+
 #################### Gazebo and MoveIt utils ####################
 
-def load_model_into_moveit(sdf_path, pose: Pose, scene: PlanningSceneInterface, model_name="model", link_name="link", ref_frame="world"):
-    # try:    
+
+def load_model_into_moveit(
+    sdf_path,
+    pose: Pose,
+    scene: PlanningSceneInterface,
+    model_name="model",
+    link_name="link",
+    ref_frame="world",
+):
+    # try:
     shape_idx = 0
     # convert pose to pose stamped
     pose_stamped = get_stamped_pose(
-        [pose.position.x, pose.position.y, pose.position.z], 
-        [pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w], 
-        ref_frame
+        [pose.position.x, pose.position.y, pose.position.z],
+        [
+            pose.orientation.x,
+            pose.orientation.y,
+            pose.orientation.z,
+            pose.orientation.w,
+        ],
+        ref_frame,
     )
-    # 
+    #
     if model_name == "ground_plane":
         scene.add_plane(f"{model_name}_{shape_idx}_plane", pose_stamped)
-        return 
-    
-    # parse model from sdf file 
-    # TODO: create class to maintain all loaded models in memory 
-    # with open(sdf_path, 'r') as f:
-    #     sdf_xml = f.read()
+        return
+
+    # parse model from sdf file
+    # TODO: create class to maintain all loaded models in memory
     tree = ElementTree.parse(sdf_path)
     root = tree.getroot()
 
-    # NOTE: Assume there is only one link for the object 
+    # NOTE: Assume there is only one link for the object
     # Iterate over models and collision geometries
     link = root.find(f".//link[@name='{link_name}']")
     for collision in link.findall(".//collision"):
         collision_geometry = collision.find(".//geometry")
-        
+
         # Iterate over all shapes in the collision geometry
         for shape in collision_geometry:
             # Add collision object to moveit planning scene by shape type
@@ -66,21 +102,27 @@ def load_model_into_moveit(sdf_path, pose: Pose, scene: PlanningSceneInterface, 
 
             elif shape.tag in "sphere":
                 radius = float(shape.find("radius").text)
-                scene.add_sphere(f"{model_name}_{shape_idx}_sphere", pose_stamped, radius)
+                scene.add_sphere(
+                    f"{model_name}_{shape_idx}_sphere", pose_stamped, radius
+                )
                 shape_idx += 1
 
             elif shape.tag == "cylinder":
                 radius = float(shape.find("radius").text)
                 length = float(shape.find("length").text)
-                scene.add_cylinder(f"{model_name}_{shape_idx}_cylinder", pose_stamped, length, radius)
+                scene.add_cylinder(
+                    f"{model_name}_{shape_idx}_cylinder", pose_stamped, length, radius
+                )
                 shape_idx += 1
 
             elif shape.tag == "cone":
                 radius = float(shape.find("radius").text)
                 length = float(shape.find("length").text)
-                scene.add_cone(f"{model_name}_{shape_idx}_cone", pose_stamped, length, radius)
+                scene.add_cone(
+                    f"{model_name}_{shape_idx}_cone", pose_stamped, length, radius
+                )
                 shape_idx += 1
-    
+
             elif shape.tag == "plane":
                 normal = [float(value) for value in shape.find("normal").text.split()]
                 # size not meaningful for moveit
@@ -94,4 +136,36 @@ def load_model_into_moveit(sdf_path, pose: Pose, scene: PlanningSceneInterface, 
                 rospy.logwarn(f"SolidPrimitive {shape.tag} type not supported")
 
     # except Exception as e:
-    #     return e 
+    #     return e
+
+
+def load_world_into_moveit(
+    scene: PlanningSceneInterface,
+    gazebo: GazeboInterface,
+    gazebo_models_dir="",
+    gazebo_models_filter=["panda", "fr3"],
+    load_dynamic=False,
+):
+    """
+    Load all models in the gazebo world into moveit planning scene
+    """
+
+    # get all models in the gazebo simulation
+    response = gazebo.get_world_properties()
+    model_names = response.model_names
+
+    # change the models path accordingly
+    if gazebo_models_dir == "":
+        gazebo_models_dir = os.path.join(
+            rospkg.RosPack().get_path("instruct_to_policy"), "models"
+        )
+
+    for model in model_names:
+        if model not in gazebo_models_filter:
+            sdf_path = os.path.join(gazebo_models_dir, model, "model.sdf")
+            pose = gazebo.get_model_state(model, "world").pose
+            properties = gazebo.get_model_properties(model)
+            if properties.is_static or load_dynamic:
+                load_model_into_moveit(sdf_path, pose, scene, model, link_name="link")
+
+    return [model for model in model_names if model not in gazebo_models_filter]

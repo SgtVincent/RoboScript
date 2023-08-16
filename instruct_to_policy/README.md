@@ -117,6 +117,20 @@ If you had some link failures during catkin make, please add the corresponding l
 pip install numpy scipy shapely astunparse pygments openai imageio==2.4.1 imageio-ffmpeg pybullet moviepy
 ```
 
+### Install Optional Development Tools
+
+#### Jupyter-ROS
+[Jupyter-ROS](https://github.com/RoboStack/jupyter-ros) is a set of ROS tools to run in jupyter notebook
+with interactive command & visualization. It is not required for the pipeline, but it is useful for debugging and visualization with jupyter. 
+
+```bash
+# install dependencies inside the mamba environment
+mamba install jupyter bqplot pyyaml ipywidgets ipycanvas
+# install jupyter-ros
+mamba install jupyter-ros -c robostack
+```
+
+
 ## Run (Under Development)
 Currently, this module only runs a demo inside pybullet with Code as Policies prompot.
 

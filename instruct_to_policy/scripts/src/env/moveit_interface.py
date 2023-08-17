@@ -46,14 +46,13 @@ class GraspExecutor:
     """Class to execute grasps on the Franka Emika panda robot."""
 
     def __init__(
-        self, frame, reset_pose=None, drop_off_pose=None, use_sim=True, sim_interface=None
+        self, frame, reset_pose=None, use_sim=True, sim_interface=None
     ) -> None:
         """Initialize the GraspExecutor class.
 
         Args:
             frame: The frame in which the poses are given.
             reset_pose: The pose to which the robot should move to reset the scene.
-            drop_off_pose: The pose to which the robot should move to drop off the object.
         """
 
         self.frame = frame
@@ -65,6 +64,8 @@ class GraspExecutor:
 
         self.ignore_coll_check = False
         self.wait_at_grasp_pose = False
+        self.wait_at_place_pose = False
+        
         # Service to compute IK
         self.compute_ik = rospy.ServiceProxy("/compute_ik", GetPositionIK)
 
@@ -101,19 +102,6 @@ class GraspExecutor:
         self.group.set_max_velocity_scaling_factor(0.15)
         self.group.set_max_acceleration_scaling_factor(0.15)
 
-        self.drop_off_pose = (
-            drop_off_pose
-            if drop_off_pose is not None
-            else [
-                -0.6861938888210998,
-                -1.0922074558700297,
-                -0.596633734874051,
-                -2.397880921082069,
-                -0.5792871115412288,
-                1.3971697680950166,
-                -1.9250296761749517,
-            ]
-        )
         self.reset_pose = (
             reset_pose
             if reset_pose is not None
@@ -129,6 +117,37 @@ class GraspExecutor:
         )
 
         print("Set up Franka API. Ready to go!")
+
+    def _block(fn):
+        """Decorator to block the execution of a function if the robot is moving.
+
+        Sets the self.moving variable to True before executing the function and to False after.
+        """
+
+        def lock_state(self, *args, **kwargs):
+            is_moving = self.moving
+            self.moving = True
+            ret = fn(self, *args, **kwargs)
+            self.moving = False if not is_moving else True
+            return ret
+
+        return lock_state
+
+
+    def _go(self, move_group):
+        if not move_group.go(wait=True):
+            print("Execution failed! Going to retry with error recovery")
+            self.error_recovery_client.send_goal_and_wait(ErrorRecoveryActionGoal())
+            return move_group.go(wait=True)
+        return True
+
+    def _execute(self, move_group, plan, reset_err=True):
+        if not move_group.execute(plan, wait=True):
+            if reset_err:
+                print("Execution failed!. Going to retry with error recovery")
+                self.error_recovery_client.send_goal_and_wait(ErrorRecoveryActionGoal())
+                move_group.execute(plan, wait=True)
+
 
     def computeIK(
         self,
@@ -185,27 +204,6 @@ class GraspExecutor:
         # self.scene.add_box("cam", cam_pose, size = (0.04, 0.14, 0.02))
         # self.scene.attach_mesh("panda_hand", f"cam", touch_links=[*self.robot.get_link_names(group= "panda_hand"), "panda_joint7"])
 
-    def _block(fn):
-        """Decorator to block the execution of a function if the robot is moving.
-
-        Sets the self.moving variable to True before executing the function and to False after.
-        """
-
-        def lock_state(self, *args, **kwargs):
-            is_moving = self.moving
-            self.moving = True
-            ret = fn(self, *args, **kwargs)
-            self.moving = False if not is_moving else True
-            return ret
-
-        return lock_state
-
-    @_block
-    def open_gripper(self):
-        """Open the gripper."""
-        goal = franka_gripper.msg.MoveGoal(width=0.039 * 2, speed=1.0)
-        self.move_client.send_goal(goal)
-        self.move_client.wait_for_result(timeout=rospy.Duration(2.0))
 
     @_block
     def reset(self):
@@ -218,6 +216,23 @@ class GraspExecutor:
         self.reset_scene()
 
     @_block
+    def open_gripper(self):
+        """Open the gripper."""
+        goal = franka_gripper.msg.MoveGoal(width=0.039 * 2, speed=1.0)
+        self.move_client.send_goal(goal)
+        self.move_client.wait_for_result(timeout=rospy.Duration(2.0))
+
+    @_block
+    def close_gripper(self, width=0.025, speed=0.25, force=20):
+        """Close the gripper."""
+        goal = franka_gripper.msg.GraspGoal(width=width, speed=speed, force=force)
+        goal.epsilon.inner = 0.03
+        goal.epsilon.outer = 0.03
+        self.grasp_client.send_goal(goal)
+        self.grasp_client.wait_for_result()
+
+
+    @_block
     def move_to_pose(self, position: List[float], orientation: List[float] = None):
         """Move the robot to a given pose with given orientation."""
         orientation = orientation if orientation is not None else [0, 0, 0, 1]
@@ -227,20 +242,6 @@ class GraspExecutor:
         self.group.stop()
         self.group.clear_pose_targets()
         return plan
-
-    def _go(self, move_group):
-        if not move_group.go(wait=True):
-            print("Execution failed! Going to retry with error recovery")
-            self.error_recovery_client.send_goal_and_wait(ErrorRecoveryActionGoal())
-            return move_group.go(wait=True)
-        return True
-
-    def _execute(self, move_group, plan, reset_err=True):
-        if not move_group.execute(plan, wait=True):
-            if reset_err:
-                print("Execution failed!. Going to retry with error recovery")
-                self.error_recovery_client.send_goal_and_wait(ErrorRecoveryActionGoal())
-                move_group.execute(plan, wait=True)
 
     def register_object(
         self, mesh: trimesh.Trimesh, object_id: int, position: List[float] = [0, 0, 0]
@@ -267,80 +268,6 @@ class GraspExecutor:
             f,
             size=(1, 1, 1),
         )
-
-    @_block
-    def pick_and_drop(self, grasps: List[Grasp], cb=lambda x: x):
-        scores = np.array([g.score for g in grasps])
-        score_ids = np.argsort(-scores)
-        grasps = [grasps[i] for i in score_ids]
-        scores = scores[score_ids]
-        # drop invalid
-        retry_count = 10
-
-        for grasp in grasps:
-            if retry_count < 0:
-                return False
-
-            orientation = grasp.orientation
-            # gripper conventions differ
-            position = grasp.position + Rotation.from_quat(
-                orientation
-            ).as_matrix() @ np.array(
-                [0, 0, 0.045]
-            )  #
-            pre_grasp_position = position + Rotation.from_quat(
-                orientation
-            ).as_matrix() @ (0.03 * np.array([0, 0, -1]))
-            if self.computeIK(orientation, pre_grasp_position):
-                cb(
-                    Grasp(
-                        orientation,
-                        position
-                        - Rotation.from_quat(orientation).as_matrix()
-                        @ np.array([0, 0, 0.045]),
-                        grasp.score,
-                        max(0.01, grasp.width - 2),
-                        grasp.instance_id,
-                    )
-                )
-                if self.grasp(
-                    position,
-                    orientation,
-                    width=max(0.01, grasp.width - 2),
-                    object_id=grasp.instance_id,
-                    verbose=True,
-                ):
-                    return True
-                else:
-                    retry_count -= 1
-
-            # Rotate by 180
-            ori = np.array(orientation)
-            ori = ori[[1, 0, 3, 2]]
-            ori[1] *= -1
-            ori[3] *= -1
-            if self.computeIK(ori, pre_grasp_position):
-                cb(
-                    Grasp(
-                        ori,
-                        position
-                        - Rotation.from_quat(orientation).as_matrix()
-                        @ np.array([0, 0, 0.045]),
-                        grasp.score,
-                        max(0.01, grasp.width - 2),
-                        grasp.instance_id,
-                    )
-                )
-                if self.grasp(
-                    position,
-                    ori,
-                    width=max(0.01, grasp.width - 2),
-                    object_id=grasp.instance_id,
-                    verbose=True,
-                ):
-                    return True
-                else:
-                    retry_count -= 1
 
     @_block
     def grasp(
@@ -434,15 +361,7 @@ class GraspExecutor:
         if not dryrun:
             if verbose:
                 print("Closing gripper")
-
-            goal = franka_gripper.msg.GraspGoal()
-            goal.width = width
-            goal.epsilon.inner = 0.03
-            goal.epsilon.outer = 0.03
-            goal.speed = 0.25
-            goal.force = 20
-            self.grasp_client.send_goal(goal)
-            self.grasp_client.wait_for_result()
+                self.close_gripper(width=width)
 
         if object_id is not None and object_id in self.objects:
             touch_links = self.robot.get_link_names(group="panda_hand")
@@ -460,25 +379,126 @@ class GraspExecutor:
             if verbose:
                 print("attached mesh to ", touch_links)
 
-        # if verbose:
-        #     print("Moving to drop off pose")
+        return True
+    
+    @_block 
+    def place(self, position, orientation, width=0.025, lift_height=0.1, dryrun=False, verbose=True):
+        """Executes place action at a given pose with given orientation.
 
-        # self.group.set_joint_value_target(self.drop_off_pose)
-        # self.error_recovery_client.send_goal_and_wait(ErrorRecoveryActionGoal())
-        # # self.group.go(wait=True)
-        # self._go(self.group)
-        # self.moving = False
-        # self.group.stop()
-        # self.group.clear_pose_targets()
+        Args:
+            position: The position of the place.
+            orientation: The orientation of the place (scipy format, xyzw).
+            width: The width of the gripper.
+            dryrun: If true, the robot will not call the action to open the gripper (not available in simulation).
+            verbose: If true, the robot will print information about the place.
+        """
 
-        # if object_id is not None and object_id in self.objects:
-        #     self.scene.remove_attached_object("panda_hand", name=f"inst_{object_id}")
-        #     self.scene.remove_world_object(f"inst_{object_id}")
-        #     self.objects[object_id]["active"] = False
+        self.group.set_max_velocity_scaling_factor(0.2)
+        self.group.set_max_acceleration_scaling_factor(0.2)
+        self.group.set_goal_position_tolerance(0.001)
+        self.group.set_goal_orientation_tolerance(0.02)
+        self.group.set_pose_reference_frame(self.frame)
 
-        # if verbose:
-        #     print("dropping object")
-        # self.open_gripper()
-        # self.reset()
+        waypoints = [get_pose_msg(position, orientation)]
+
+        self.group.set_pose_target(waypoints[0])
+
+        if verbose:
+            print("Moving to place pose")
+
+        # self._execute(self.group, plan)
+        plan = self._go(self.group)
+        self.group.stop()
+        self.group.clear_pose_targets()
+        if not plan:
+            print("Failed")
+            return False
+
+        if verbose:
+            print("Moved to place. Remmoving object")
+
+        if self.wait_at_place_pose:
+            import time
+
+            time.sleep(5)
+
+        if not dryrun:
+            if verbose:
+                print("Opening gripper")
+            self.open_gripper()
 
         return True
+    
+    @_block
+    def pick_and_drop(self, grasps: List[Grasp], cb=lambda x: x):
+        scores = np.array([g.score for g in grasps])
+        score_ids = np.argsort(-scores)
+        grasps = [grasps[i] for i in score_ids]
+        scores = scores[score_ids]
+        # drop invalid
+        retry_count = 10
+
+        for grasp in grasps:
+            if retry_count < 0:
+                return False
+
+            orientation = grasp.orientation
+            # gripper conventions differ
+            position = grasp.position + Rotation.from_quat(
+                orientation
+            ).as_matrix() @ np.array(
+                [0, 0, 0.045]
+            )  #
+            pre_grasp_position = position + Rotation.from_quat(
+                orientation
+            ).as_matrix() @ (0.03 * np.array([0, 0, -1]))
+            if self.computeIK(orientation, pre_grasp_position):
+                cb(
+                    Grasp(
+                        orientation,
+                        position
+                        - Rotation.from_quat(orientation).as_matrix()
+                        @ np.array([0, 0, 0.045]),
+                        grasp.score,
+                        max(0.01, grasp.width - 2),
+                        grasp.instance_id,
+                    )
+                )
+                if self.grasp(
+                    position,
+                    orientation,
+                    width=max(0.01, grasp.width - 2),
+                    object_id=grasp.instance_id,
+                    verbose=True,
+                ):
+                    return True
+                else:
+                    retry_count -= 1
+
+            # Rotate by 180
+            ori = np.array(orientation)
+            ori = ori[[1, 0, 3, 2]]
+            ori[1] *= -1
+            ori[3] *= -1
+            if self.computeIK(ori, pre_grasp_position):
+                cb(
+                    Grasp(
+                        ori,
+                        position
+                        - Rotation.from_quat(orientation).as_matrix()
+                        @ np.array([0, 0, 0.045]),
+                        grasp.score,
+                        max(0.01, grasp.width - 2),
+                        grasp.instance_id,
+                    )
+                )
+                if self.grasp(
+                    position,
+                    ori,
+                    width=max(0.01, grasp.width - 2),
+                    object_id=grasp.instance_id,
+                    verbose=True,
+                ):
+                    return True
+                else:
+                    retry_count -= 1

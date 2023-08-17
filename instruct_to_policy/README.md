@@ -117,7 +117,7 @@ If you had some link failures during catkin make, please add the corresponding l
 pip install numpy scipy shapely astunparse pygments openai imageio==2.4.1 imageio-ffmpeg pybullet moviepy
 ```
 
-### Install Optional Development Tools
+### (Optional) Install Development Tools
 
 #### Jupyter-ROS
 [Jupyter-ROS](https://github.com/RoboStack/jupyter-ros) is a set of ROS tools to run in jupyter notebook
@@ -129,13 +129,46 @@ mamba install jupyter bqplot pyyaml ipywidgets ipycanvas
 # install jupyter-ros
 mamba install jupyter-ros -c robostack
 ```
+Then you need to create a ros kernel, which has loaded catkin_ws environments, from the official [instructions](https://jupyter-ros.readthedocs.io/en/latest/user_troubleshooting.html).
 
 
 ## Run (Under Development)
-Currently, this module only runs a demo inside pybullet with Code as Policies prompot.
+
+Make sure you have activated the ROS environment and catkin workspace:
+```bash
+mamba activate <your_ros_env>
+cd /path/to/catkin_ws
+source devel/setup.bash
+```
+
+### Demo of Object Manipulation with Gazebo simulation 
+
+First, you need to launch the gazebo simulation and moveit nodes with the following command:
+```bash
+roslaunch instruct_to_policy run_panda_moveit_gazebo.launch 
+```
+
+Then, you can run the demo script to test the grasp pipeline:
+
+Option 1. Run `scripts/grasp_executor_playground.py`. 
+```bash
+rosrun instruct_to_policy grasp_executor_playground.py
+```
+
+Option 2. Run `scripts/grasp_executor_playground.ipynb` with the following command:
+Note that you have to install **Jupyter-ROS** as explained above.
+
+```bash
+# run jupyter
+jupyter-lab
+```
+Then open `scripts/grasp_executor_playground.ipynb` in the jupyter browser.
 
 
-### Gazebo plugins
+### Gazebo plugins (deprecated)
+
+**No longer used.**
+
 Our locally-built plugins are in `/path/to/catkin_ws/devel/lib`. To load it in gazebo, you should specify the LD_LIBRARY_PATH to the directory of the plugin. 
 
 ```bash

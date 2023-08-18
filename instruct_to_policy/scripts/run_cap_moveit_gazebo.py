@@ -1,16 +1,4 @@
-# %% [markdown]
-# Copyright 2022 Google LLC. SPDX-License-Identifier: Apache-2.0
-# 
-# Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
-# 
-# https://www.apache.org/licenses/LICENSE-2.0
-# 
-# Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-
-
-# %% [markdown]
-# # Setup
-
+#!/usr/bin/env python3
 import os 
 import numpy as np
 import openai
@@ -20,7 +8,8 @@ import cv2
 from moviepy.editor import ImageSequenceClip
 # from src.prompt.message_definitions import *
 from src.lmp import *
-from src.env.pybullet_env import PickPlaceEnv
+# from src.env.pybullet_env import PickPlaceEnv
+from src.env.moveit_env import MoveitGazeboEnv
 from src.config import cfg_tabletop
 from src.openai_api_key import OPENAI_API_KEY
 
@@ -66,21 +55,17 @@ high_resolution = False #@param {type:"boolean"}
 high_frame_rate = False #@param {type:"boolean"}
 
 # setup env and LMP
-env = PickPlaceEnv(render=True, high_res=high_resolution, high_frame_rate=high_frame_rate)
-block_list = np.random.choice(ALL_BLOCKS, size=num_blocks, replace=False).tolist()
-bowl_list = np.random.choice(ALL_BOWLS, size=num_bowls, replace=False).tolist()
-obj_list = block_list + bowl_list
-_ = env.reset(obj_list)
+env = MoveitGazeboEnv(cfg_tabletop)
+env.reset()
 
-lmp_tabletop_ui = setup_LMP(env, cfg_tabletop)
+lmp_tabletop_ui:LMP = setup_LMP(env, cfg_tabletop)
 
 # display env
 # cv2_imshow(cv2.cvtColor(env.get_camera_image(), cv2.COLOR_BGR2RGB)) # for Google Colab
-import matplotlib.pyplot as plt # for local
-plt.imshow(cv2.cvtColor(env.get_camera_image(), cv2.COLOR_BGR2RGB))
-
+# import matplotlib.pyplot as plt # for local
+# plt.imshow(cv2.cvtColor(env.get_camera_image(), cv2.COLOR_BGR2RGB))
 print('available objects:')
-print(obj_list)
+print(env.object_names)
 
 # %%
 #@title Interactive Demo { vertical-output: true }
@@ -92,14 +77,16 @@ print(obj_list)
 # print('Running policy and recording video...')
 # lmp_tabletop_ui(user_input, f'objects = {env.object_list}')
 
+user_input = "grasp the stone and put it to the red tray"
+
 # user_input = 'open the drawer and check the number of bottles' #@param {allow-input: true, type:"string"}
 # object_list = ['drawer', 'table']
-user_input = 'put all the objects on the table into the box'
-object_list = ['box', 'table', 'orange', 'apple', 'stone']
+# user_input = 'put all the objects on the table into the box'
+# object_list = ['box', 'table', 'orange', 'apple', 'stone']
 
 env.cache_video = []
 print('Running policy and recording video...')
-
+object_list = env.object_names
 lmp_tabletop_ui(user_input, f'objects = {object_list}')
 
 # render video

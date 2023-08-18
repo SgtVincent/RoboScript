@@ -13,7 +13,7 @@ from gazebo_msgs.srv import (
     GetModelProperties,
 )
 
-from src.env.gazebo_env import GazeboInterface
+from src.env.gazebo_env import GazeboEnv
 
 ################## ROS utils ###################
 
@@ -138,34 +138,3 @@ def load_model_into_moveit(
     # except Exception as e:
     #     return e
 
-
-def load_world_into_moveit(
-    scene: PlanningSceneInterface,
-    gazebo: GazeboInterface,
-    gazebo_models_dir="",
-    gazebo_models_filter=["panda", "fr3"],
-    load_dynamic=False,
-):
-    """
-    Load all models in the gazebo world into moveit planning scene
-    """
-
-    # get all models in the gazebo simulation
-    response = gazebo.get_world_properties()
-    model_names = response.model_names
-
-    # change the models path accordingly
-    if gazebo_models_dir == "":
-        gazebo_models_dir = os.path.join(
-            rospkg.RosPack().get_path("instruct_to_policy"), "models"
-        )
-
-    for model in model_names:
-        if model not in gazebo_models_filter:
-            sdf_path = os.path.join(gazebo_models_dir, model, "model.sdf")
-            pose = gazebo.get_model_state(model, "world").pose
-            properties = gazebo.get_model_properties(model)
-            if properties.is_static or load_dynamic:
-                load_model_into_moveit(sdf_path, pose, scene, model, link_name="link")
-
-    return [model for model in model_names if model not in gazebo_models_filter]

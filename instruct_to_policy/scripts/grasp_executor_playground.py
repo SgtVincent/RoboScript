@@ -24,8 +24,8 @@ rospy.init_node("grasp_executor")
 
 # %%
 import importlib
-import src.env.moveit_interface as moveit_interface
-importlib.reload(moveit_interface)
+import franka_fisher.instruct_to_policy.scripts.src.env.moveit_env as moveit_env
+importlib.reload(moveit_env)
 import src.env.utils
 importlib.reload(src.env.utils)
 from src.env.utils import pose_to_list
@@ -47,7 +47,7 @@ init_pose = [
 1.5717418653690114,
 0.7853832208311591
 ]
-grasp_controller = moveit_interface.GraspExecutor("world", reset_pose=init_pose)
+grasp_controller = moveit_env.GraspExecutor("world", reset_pose=init_pose)
 print("Resetted")
 grasp_controller.reset() 
 

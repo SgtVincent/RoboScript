@@ -6,6 +6,8 @@ It uses MoveIt! to plan and execute the grasps.
 """
 from typing import List, NamedTuple
 import numpy as np
+import os 
+import rospkg
 
 from visualization_msgs.msg import Marker, MarkerArray
 from visualization_msgs.msg import Marker
@@ -13,7 +15,7 @@ from visualization_msgs.msg import Marker
 
 import moveit_commander
 import moveit_msgs.msg
-import geometry_msgs.msg
+from geometry_msgs.msg import Pose, PoseStamped
 from visualization_msgs.msg import Marker
 
 import trimesh
@@ -32,8 +34,9 @@ from moveit_msgs.srv import GetPositionIK
 
 
 from src.env.utils import get_pose_msg, get_stamped_pose
-from src.env.utils import load_world_into_moveit
-from src.env.gazebo_env import GazeboInterface
+from src.env.utils import load_model_into_moveit
+from src.env.gazebo_env import GazeboEnv
+
 
 class Grasp(NamedTuple):
     orientation: np.ndarray
@@ -42,49 +45,42 @@ class Grasp(NamedTuple):
     width: float
     instance_id: int
 
-class GraspExecutor:
+
+class MoveitGazeboEnv(GazeboEnv):
     """Class to execute grasps on the Franka Emika panda robot."""
 
-    def __init__(
-        self, frame, reset_pose=None, use_sim=True, sim_interface=None
-    ) -> None:
+    def __init__(self, cfg) -> None:
         """Initialize the GraspExecutor class.
 
         Args:
             frame: The frame in which the poses are given.
             reset_pose: The pose to which the robot should move to reset the scene.
         """
+        super().__init__(cfg)
 
-        self.frame = frame
+        rospy.init_node("moveit_gazebo_env")
+
+        # self.frame = frame
         self.moving = False
         self.objects = {}
-        self.use_sim = use_sim
-        if use_sim and sim_interface is None:
-            self.sim_interface = GazeboInterface()
+        self.sim = cfg['env']['sim']
+        self.use_sim = len(self.sim) > 0
 
         self.ignore_coll_check = False
         self.wait_at_grasp_pose = False
         self.wait_at_place_pose = False
-        
+
         # Service to compute IK
         self.compute_ik = rospy.ServiceProxy("/compute_ik", GetPositionIK)
 
         # Joint limits for Franka panda Emika. Used to check if IK is at limits.
-        self.upper_limit = np.array(
-            [2.8973, 1.7628, 2.8973, -0.0698, 2.8973, 3.7525, 2.8973]
-        )
-        self.lower_limit = np.array(
-            [-2.8973, -1.7628, -2.8973, -3.0718, -2.8973, -0.0175, -2.8973]
-        )
+        self.upper_limit = np.array([2.8973, 1.7628, 2.8973, -0.0698, 2.8973, 3.7525, 2.8973])
+        self.lower_limit = np.array([-2.8973, -1.7628, -2.8973, -3.0718, -2.8973, -0.0175, -2.8973])
         # MoveIt! interface
         self.robot = moveit_commander.RobotCommander()
         self.scene = moveit_commander.PlanningSceneInterface()
-        self.group = moveit_commander.MoveGroupCommander(
-            "panda_manipulator", wait_for_servers=15
-        )
-        self.gripper = moveit_commander.MoveGroupCommander(
-            "panda_hand", wait_for_servers=15
-        )
+        self.group = moveit_commander.MoveGroupCommander("panda_manipulator", wait_for_servers=15)
+        self.gripper = moveit_commander.MoveGroupCommander("panda_hand", wait_for_servers=15)
         self.grasp_client = actionlib.SimpleActionClient(
             "/franka_gripper/grasp", franka_gripper.msg.GraspAction
         )
@@ -97,24 +93,16 @@ class GraspExecutor:
         )
 
         print("Loading static scene information")
+        self.object_names = self.get_obj_names()
         self.load_scene()
         self.group.set_planning_time(15)
         self.group.set_max_velocity_scaling_factor(0.15)
         self.group.set_max_acceleration_scaling_factor(0.15)
 
-        self.reset_pose = (
-            reset_pose
-            if reset_pose is not None
-            else [
-                -0.41784432355234147,
-                0.49401059360515726,
-                -0.6039398761251251,
-                -1.1411382317488874,
-                0.7870978311647195,
-                1.1255037510962724,
-                -1.456606710367404,
-            ]
-        )
+        if 'reset_pose' in cfg:
+            self.reset_pose = cfg['reset_pose']
+        else:
+            self.reset_pose = self.group.get_current_pose().pose
 
         print("Set up Franka API. Ready to go!")
 
@@ -133,7 +121,6 @@ class GraspExecutor:
 
         return lock_state
 
-
     def _go(self, move_group):
         if not move_group.go(wait=True):
             print("Execution failed! Going to retry with error recovery")
@@ -147,7 +134,6 @@ class GraspExecutor:
                 print("Execution failed!. Going to retry with error recovery")
                 self.error_recovery_client.send_goal_and_wait(ErrorRecoveryActionGoal())
                 move_group.execute(plan, wait=True)
-
 
     def computeIK(
         self,
@@ -182,67 +168,6 @@ class GraspExecutor:
         else:
             return False
 
-    def reset_scene(self):
-        """Reset the scene to the initial state."""
-        self.scene.clear()
-        self.objects = {}
-        if self.use_sim:
-            self.sim_interface.reset_world()
-        self.load_scene()
-
-    def load_scene(self):
-        """Load the scene in the MoveIt! planning scene."""
-        if self.use_sim:
-            object_names = load_world_into_moveit(self.scene, self.sim_interface)
-            for name in object_names:
-                self.objects[name] = {}
-        else:
-            raise NotImplementedError("Only simulation is supported for now.")
-
-        # camera not considered for now
-        # cam_pose = get_stamped_pose([0.03, 0, 0.01], [0, 0, 0, 1], "world")
-        # self.scene.add_box("cam", cam_pose, size = (0.04, 0.14, 0.02))
-        # self.scene.attach_mesh("panda_hand", f"cam", touch_links=[*self.robot.get_link_names(group= "panda_hand"), "panda_joint7"])
-
-
-    @_block
-    def reset(self):
-        """Reset the robot to the initial state and opens the gripper."""
-        self.open_gripper()
-        self.group.set_joint_value_target(self.reset_pose)
-        self._go(self.group)
-        self.group.stop()
-        self.group.clear_pose_targets()
-        self.reset_scene()
-
-    @_block
-    def open_gripper(self):
-        """Open the gripper."""
-        goal = franka_gripper.msg.MoveGoal(width=0.039 * 2, speed=1.0)
-        self.move_client.send_goal(goal)
-        self.move_client.wait_for_result(timeout=rospy.Duration(2.0))
-
-    @_block
-    def close_gripper(self, width=0.025, speed=0.25, force=20):
-        """Close the gripper."""
-        goal = franka_gripper.msg.GraspGoal(width=width, speed=speed, force=force)
-        goal.epsilon.inner = 0.03
-        goal.epsilon.outer = 0.03
-        self.grasp_client.send_goal(goal)
-        self.grasp_client.wait_for_result()
-
-
-    @_block
-    def move_to_pose(self, position: List[float], orientation: List[float] = None):
-        """Move the robot to a given pose with given orientation."""
-        orientation = orientation if orientation is not None else [0, 0, 0, 1]
-        pose = get_stamped_pose(position, orientation, self.frame)
-        self.group.set_pose_target(pose)
-        plan = self.group.go(wait=True)
-        self.group.stop()
-        self.group.clear_pose_targets()
-        return plan
-
     def register_object(
         self, mesh: trimesh.Trimesh, object_id: int, position: List[float] = [0, 0, 0]
     ):
@@ -269,11 +194,99 @@ class GraspExecutor:
             size=(1, 1, 1),
         )
 
+    def reset_scene(self):
+        """Reset the scene to the initial state."""
+        self.scene.clear()
+        self.objects = {}
+        if self.use_sim:
+            self.reset_world()
+        self.load_scene()
+
+    def load_gazebo_world_into_moveit(self, 
+                                    gazebo_models_dir="",
+                                    gazebo_models_filter=["panda", "fr3"],
+                                    load_dynamic=False):
+
+        # change the models path accordingly
+        if gazebo_models_dir == "":
+            gazebo_models_dir = os.path.join(
+                rospkg.RosPack().get_path("instruct_to_policy"), "models"
+            )
+
+        for model in self.object_names:
+            if model not in gazebo_models_filter:
+                sdf_path = os.path.join(gazebo_models_dir, model, "model.sdf")
+                pose = self.get_model_state(model, "world").pose
+                properties = self.get_model_properties(model)
+                if properties.is_static or load_dynamic:
+                    load_model_into_moveit(sdf_path, pose, self.scene, model, link_name="link")
+
+    def load_scene(self):
+        """Load the scene in the MoveIt! planning scene."""
+        if self.use_sim:
+            self.load_gazebo_world_into_moveit()
+            for name in self.object_names:
+                self.objects[name] = {}
+        else:
+            raise NotImplementedError("Only simulation is supported for now.")
+
+        # camera not considered for now
+        # cam_pose = get_stamped_pose([0.03, 0, 0.01], [0, 0, 0, 1], "world")
+        # self.scene.add_box("cam", cam_pose, size = (0.04, 0.14, 0.02))
+        # self.scene.attach_mesh("panda_hand", f"cam", touch_links=[*self.robot.get_link_names(group= "panda_hand"), "panda_joint7"])
+
+    @_block
+    def reset(self):
+        """Reset the robot to the initial state and opens the gripper."""
+        self.open_gripper()
+        self.group.set_joint_value_target(self.reset_pose)
+        self._go(self.group)
+        self.group.stop()
+        self.group.clear_pose_targets()
+        self.reset_scene()
+
+    def get_ee_pose(self):
+        """Get the current pose of the end effector."""
+        return self.group.get_current_pose().pose
+
+    @_block
+    def open_gripper(self):
+        """Open the gripper."""
+        goal = franka_gripper.msg.MoveGoal(width=0.039 * 2, speed=1.0)
+        self.move_client.send_goal(goal)
+        self.move_client.wait_for_result(timeout=rospy.Duration(2.0))
+
+    @_block
+    def close_gripper(self, width=0.025, speed=0.25, force=20):
+        """Close the gripper."""
+        goal = franka_gripper.msg.GraspGoal(width=width, speed=speed, force=force)
+        goal.epsilon.inner = 0.03
+        goal.epsilon.outer = 0.03
+        self.grasp_client.send_goal(goal)
+        self.grasp_client.wait_for_result()
+
+    @_block
+    def move_to_pose(self, pose: Pose):
+        """Move the robot to a given pose with given orientation."""
+        self.group.set_pose_target(pose)
+        plan = self.group.go(wait=True)
+        self.group.stop()
+        self.group.clear_pose_targets()
+        return plan
+
+    @_block
+    def move_joints_to(self, joint_values):
+        """Move the robot to a given joint configuration."""
+        self.group.set_joint_value_target(joint_values)
+        plan = self.group.go(wait=True)
+        self.group.stop()
+        self.group.clear_pose_targets()
+        return plan
+
     @_block
     def grasp(
         self,
-        position,
-        orientation,
+        pose: Pose,
         width=0.025,
         pre_grasp_approach=0.05,
         dryrun=False,
@@ -296,6 +309,11 @@ class GraspExecutor:
         self.group.set_goal_position_tolerance(0.001)
         self.group.set_goal_orientation_tolerance(0.02)
         self.group.set_pose_reference_frame(self.frame)
+
+        position = np.array([pose.position.x, pose.position.y, pose.position.z])
+        orientation = np.array(
+            [pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w]
+        )
 
         pre_grasp_pose = get_pose_msg(
             position
@@ -367,22 +385,18 @@ class GraspExecutor:
             touch_links = self.robot.get_link_names(group="panda_hand")
             self.scene.add_mesh(
                 f"inst_{object_id}",
-                get_stamped_pose(
-                    self.objects[object_id]["position"], [0, 0, 0, 1], self.frame
-                ),
+                get_stamped_pose(self.objects[object_id]["position"], [0, 0, 0, 1], self.frame),
                 self.objects[object_id]["file"],
                 size=(1, 1, 1),
             )
-            self.scene.attach_mesh(
-                "panda_hand", f"inst_{object_id}", touch_links=touch_links
-            )
+            self.scene.attach_mesh("panda_hand", f"inst_{object_id}", touch_links=touch_links)
             if verbose:
                 print("attached mesh to ", touch_links)
 
         return True
-    
-    @_block 
-    def place(self, position, orientation, width=0.025, lift_height=0.1, dryrun=False, verbose=True):
+
+    @_block
+    def place(self, pose: Pose, width=0.025, lift_height=0.1, dryrun=False, verbose=True):
         """Executes place action at a given pose with given orientation.
 
         Args:
@@ -398,10 +412,7 @@ class GraspExecutor:
         self.group.set_goal_position_tolerance(0.001)
         self.group.set_goal_orientation_tolerance(0.02)
         self.group.set_pose_reference_frame(self.frame)
-
-        waypoints = [get_pose_msg(position, orientation)]
-
-        self.group.set_pose_target(waypoints[0])
+        self.group.set_pose_target(pose)
 
         if verbose:
             print("Moving to place pose")
@@ -428,77 +439,3 @@ class GraspExecutor:
             self.open_gripper()
 
         return True
-    
-    @_block
-    def pick_and_drop(self, grasps: List[Grasp], cb=lambda x: x):
-        scores = np.array([g.score for g in grasps])
-        score_ids = np.argsort(-scores)
-        grasps = [grasps[i] for i in score_ids]
-        scores = scores[score_ids]
-        # drop invalid
-        retry_count = 10
-
-        for grasp in grasps:
-            if retry_count < 0:
-                return False
-
-            orientation = grasp.orientation
-            # gripper conventions differ
-            position = grasp.position + Rotation.from_quat(
-                orientation
-            ).as_matrix() @ np.array(
-                [0, 0, 0.045]
-            )  #
-            pre_grasp_position = position + Rotation.from_quat(
-                orientation
-            ).as_matrix() @ (0.03 * np.array([0, 0, -1]))
-            if self.computeIK(orientation, pre_grasp_position):
-                cb(
-                    Grasp(
-                        orientation,
-                        position
-                        - Rotation.from_quat(orientation).as_matrix()
-                        @ np.array([0, 0, 0.045]),
-                        grasp.score,
-                        max(0.01, grasp.width - 2),
-                        grasp.instance_id,
-                    )
-                )
-                if self.grasp(
-                    position,
-                    orientation,
-                    width=max(0.01, grasp.width - 2),
-                    object_id=grasp.instance_id,
-                    verbose=True,
-                ):
-                    return True
-                else:
-                    retry_count -= 1
-
-            # Rotate by 180
-            ori = np.array(orientation)
-            ori = ori[[1, 0, 3, 2]]
-            ori[1] *= -1
-            ori[3] *= -1
-            if self.computeIK(ori, pre_grasp_position):
-                cb(
-                    Grasp(
-                        ori,
-                        position
-                        - Rotation.from_quat(orientation).as_matrix()
-                        @ np.array([0, 0, 0.045]),
-                        grasp.score,
-                        max(0.01, grasp.width - 2),
-                        grasp.instance_id,
-                    )
-                )
-                if self.grasp(
-                    position,
-                    ori,
-                    width=max(0.01, grasp.width - 2),
-                    object_id=grasp.instance_id,
-                    verbose=True,
-                ):
-                    return True
-                else:
-                    retry_count -= 1

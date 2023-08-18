@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 <sdf version='1.6'>
-  <model name='place_tray'>
+  <model name='blue_tray'>
     <link name='link'>
       <pose>0.0 0.0 0.0 0 -0 0</pose>
       <inertial>
@@ -30,7 +30,7 @@
         </geometry>
         <material>
           <script>
-            <name>Gazebo/Red</name>
+            <name>Gazebo/Blue</name>
             <uri>file://media/materials/scripts/gazebo.material</uri>
           </script>
           <shader type='pixel'/>

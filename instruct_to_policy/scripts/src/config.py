@@ -1,11 +1,18 @@
 
 # from src.prompt.message_definitions import *
 from src.prompt.moveit_message_definitions import *
+from src.constants import *
 
 # model_name = 'code-davinci-002' # 'text-davinci-002' # deprecated in 2023
 model_name = 'gpt-3.5-turbo-16k' # recommened replacement for 'code-davinci-002'
 
 cfg_tabletop = {
+  'env': {
+      'coords': lmp_tabletop_coords, 
+      'frame': 'world',
+      'sim': 'gazebo',
+      'interface': 'moveit',
+  },
   'lmps': {
     'tabletop_ui': {
       'messages': message_tabletop_ui,

@@ -1,6 +1,7 @@
 
 # from src.prompt.message_definitions import *
-from src.prompt.moveit_message_definitions import *
+# from src.prompt.moveit_message_definitions import *
+from src.prompt.moveit_cap_msgs import *
 from src.constants import *
 
 # model_name = 'code-davinci-002' # 'text-davinci-002' # deprecated in 2023
@@ -12,6 +13,8 @@ cfg_tabletop = {
       'frame': 'world',
       'sim': 'gazebo',
       'interface': 'moveit',
+      'verbose': False,
+      'initial_joint_values': [0.0, -0.7854, 0.0, -2.3562, 0.0, 1.5708, 0.7854],
   },
   'lmps': {
     'tabletop_ui': {
@@ -42,20 +45,20 @@ cfg_tabletop = {
       'has_return': True,
       'return_val_name': 'ret_val',
     },
-    'parse_position': {
-      'messages': message_parse_position,
-      'model': model_name,
-      'max_tokens': 512,
-      'temperature': 0,
-      'query_prefix': '# ',
-      'query_suffix': '.',
-      'stop': ['#'],
-      'maintain_session': False,
-      'debug_mode': False,
-      'include_context': True,
-      'has_return': True,
-      'return_val_name': 'ret_val',
-    },
+    # 'parse_position': {
+    #   'messages': message_parse_position,
+    #   'model': model_name,
+    #   'max_tokens': 512,
+    #   'temperature': 0,
+    #   'query_prefix': '# ',
+    #   'query_suffix': '.',
+    #   'stop': ['#'],
+    #   'maintain_session': False,
+    #   'debug_mode': False,
+    #   'include_context': True,
+    #   'has_return': True,
+    #   'return_val_name': 'ret_val',
+    # },
     'parse_question': {
       'messages': message_parse_question,
       'model': model_name,

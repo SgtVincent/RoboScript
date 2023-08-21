@@ -19,7 +19,7 @@ from shapely.affinity import *
 from src.utils import *
 from src.constants import *
 from src.config import *
-from src.env import Env
+from src.env.env import Env
 
 
 class LMP:
@@ -242,11 +242,26 @@ def setup_LMP(env, cfg_tabletop):
             "close_gripper",
             "move_to_pose",
             "move_joints_to",
-            "grasp",
-            "place"
+            "add_object_to_scene",
+            "attach_object",
+            "detach_object"
+            # DO NOT use mid-level skills
+            # "grasp",
+            # "place"
         ]
     }
     variable_vars["say"] = lambda msg: print(f"robot says: {msg}")
+
+    # add moveit interfaces to variables
+    variable_vars.update(
+        {
+            k: getattr(LMP_env, k)
+            for k in [
+                "move_group",
+                "gripper_group",
+            ]
+        }
+    )
 
     # creating the function-generating LMP
     lmp_fgen = LMPFGen(cfg_tabletop["lmps"]["fgen"], fixed_vars, variable_vars)
@@ -255,7 +270,7 @@ def setup_LMP(env, cfg_tabletop):
     variable_vars.update(
         {
             k: LMP(k, cfg_tabletop["lmps"][k], lmp_fgen, fixed_vars, variable_vars)
-            for k in ["parse_obj_name", "parse_position", "parse_question", "transform_shape_pts"]
+            for k in ["parse_obj_name", "parse_question", "transform_shape_pts"]
         }
     )
 

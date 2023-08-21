@@ -12,7 +12,7 @@ from src.lmp import *
 from src.env.moveit_env import MoveitGazeboEnv
 from src.config import cfg_tabletop
 from src.openai_api_key import OPENAI_API_KEY
-
+import rospy 
 openai.api_key = OPENAI_API_KEY
 
 
@@ -55,6 +55,7 @@ high_resolution = False #@param {type:"boolean"}
 high_frame_rate = False #@param {type:"boolean"}
 
 # setup env and LMP
+rospy.init_node('demo_moveit_cap', anonymous=True, log_level=rospy.WARN)
 env = MoveitGazeboEnv(cfg_tabletop)
 env.reset()
 

@@ -48,9 +48,22 @@ class Env:
         raise NotImplementedError("get_obj_pos() not implemented")
 
     def get_bbox(self, obj_name):
-        # return the axis-aligned object bounding box in robot base frame (not in pixels)
-        # the format is (min_x, min_y, max_x, max_y)
+        """
+        Get the bounding box of the object.
+        """
         raise NotImplementedError("get_bbox() not implemented")
+
+    def get_mesh(self, obj_name):
+        """
+        Get the colllision mesh of the object.
+        """
+        raise NotImplementedError("get_mesh() not implemented")
+
+    def get_object_collision(self, obj_name):
+        """
+        Get the collision mesh/ bounding box of the object.
+        """
+        raise NotImplementedError("get_object_collision() not implemented")
 
     def get_color(self, obj_name):
         raise NotImplementedError("get_color() not implemented")

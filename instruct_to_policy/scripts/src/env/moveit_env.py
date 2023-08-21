@@ -45,6 +45,30 @@ class Grasp(NamedTuple):
     width: float
     instance_id: int
 
+# Workaround to use the gripper action client with unified gripper interface
+class GripperCommanderGroup:
+
+    def __init__(self) -> None:    
+        self.gripper_grasp_client = actionlib.SimpleActionClient(
+            "/franka_gripper/grasp", franka_gripper.msg.GraspAction
+        )
+        self.gripper_move_client = actionlib.SimpleActionClient(
+            "/franka_gripper/move", franka_gripper.msg.MoveAction
+        )
+
+    def open_gripper(self, width=0.08):
+        goal = franka_gripper.msg.MoveGoal(width=width, speed=0.04)
+        self.gripper_move_client.send_goal(goal)
+        self.gripper_move_client.wait_for_result()
+
+    def close_gripper(self, width=0.025, speed=0.25, force=20):
+        """Close the gripper."""
+        goal = franka_gripper.msg.GraspGoal(width=width, speed=speed, force=force)
+        goal.epsilon.inner = 0.03
+        goal.epsilon.outer = 0.03
+        self.gripper_grasp_client.send_goal(goal)
+        self.gripper_grasp_client.wait_for_result()
+
 
 class MoveitGazeboEnv(GazeboEnv):
     """Class to execute grasps on the Franka Emika panda robot."""
@@ -53,18 +77,20 @@ class MoveitGazeboEnv(GazeboEnv):
         """Initialize the GraspExecutor class.
 
         Args:
-            frame: The frame in which the poses are given.
-            reset_pose: The pose to which the robot should move to reset the scene.
+            cfg (dict): Configuration dictionary.
         """
         super().__init__(cfg)
 
-        rospy.init_node("moveit_gazebo_env")
+        # rospy.init_node("moveit_gazebo_env")
 
         # self.frame = frame
         self.moving = False
+        self.debug = True
         self.objects = {}
-        self.sim = cfg['env']['sim']
+        # use real robot by default 
+        self.sim = cfg['env'].get('sim', '') 
         self.use_sim = len(self.sim) > 0
+        self.verbose = cfg['env'].get('verbose', False)
 
         self.ignore_coll_check = False
         self.wait_at_grasp_pose = False
@@ -79,14 +105,9 @@ class MoveitGazeboEnv(GazeboEnv):
         # MoveIt! interface
         self.robot = moveit_commander.RobotCommander()
         self.scene = moveit_commander.PlanningSceneInterface()
-        self.group = moveit_commander.MoveGroupCommander("panda_manipulator", wait_for_servers=15)
-        self.gripper = moveit_commander.MoveGroupCommander("panda_hand", wait_for_servers=15)
-        self.grasp_client = actionlib.SimpleActionClient(
-            "/franka_gripper/grasp", franka_gripper.msg.GraspAction
-        )
-        self.move_client = actionlib.SimpleActionClient(
-            "/franka_gripper/move", franka_gripper.msg.MoveAction
-        )
+        self.move_group = moveit_commander.MoveGroupCommander("panda_manipulator", wait_for_servers=15)
+        # self.gripper = moveit_commander.MoveGroupCommander("panda_hand", wait_for_servers=15)
+        self.gripper_group = GripperCommanderGroup()
 
         self.error_recovery_client = actionlib.SimpleActionClient(
             "/franka_control/error_recovery", ErrorRecoveryAction
@@ -95,14 +116,21 @@ class MoveitGazeboEnv(GazeboEnv):
         print("Loading static scene information")
         self.object_names = self.get_obj_names()
         self.load_scene()
-        self.group.set_planning_time(15)
-        self.group.set_max_velocity_scaling_factor(0.15)
-        self.group.set_max_acceleration_scaling_factor(0.15)
+        # TODO: moveit configurations should be set inside the config file 
+        self.move_group.set_planning_time(15)
+        self.move_group.set_max_velocity_scaling_factor(0.2)
+        self.move_group.set_max_acceleration_scaling_factor(0.2)
+        self.move_group.set_goal_position_tolerance(0.001)
+        self.move_group.set_goal_orientation_tolerance(0.02)
+        self.move_group.set_pose_reference_frame(self.frame)
 
-        if 'reset_pose' in cfg:
-            self.reset_pose = cfg['reset_pose']
+
+        if 'initial_joint_values' in cfg['env']:
+            self.reset_joint_values = cfg['env']['initial_joint_values']
         else:
-            self.reset_pose = self.group.get_current_pose().pose
+            self.reset_joint_values = self.move_group.get_current_joint_values()
+
+        self.reset_pose = self.move_group.get_current_pose().pose
 
         print("Set up Franka API. Ready to go!")
 
@@ -200,12 +228,13 @@ class MoveitGazeboEnv(GazeboEnv):
         self.objects = {}
         if self.use_sim:
             self.reset_world()
+            # self.reset_simulation()
         self.load_scene()
 
     def load_gazebo_world_into_moveit(self, 
                                     gazebo_models_dir="",
                                     gazebo_models_filter=["panda", "fr3"],
-                                    load_dynamic=False):
+                                    load_dynamic=True):
 
         # change the models path accordingly
         if gazebo_models_dir == "":
@@ -236,52 +265,102 @@ class MoveitGazeboEnv(GazeboEnv):
         # self.scene.attach_mesh("panda_hand", f"cam", touch_links=[*self.robot.get_link_names(group= "panda_hand"), "panda_joint7"])
 
     @_block
-    def reset(self):
+    def reset(self, group=None, gripper_group=None):
         """Reset the robot to the initial state and opens the gripper."""
-        self.open_gripper()
-        self.group.set_joint_value_target(self.reset_pose)
-        self._go(self.group)
-        self.group.stop()
-        self.group.clear_pose_targets()
+        if group is None:
+            group = self.move_group
+        self.open_gripper(gripper_group)
+        group.set_joint_value_target(self.reset_joint_values)
+        self._go(group)
+        group.stop()
+        group.clear_pose_targets()
         self.reset_scene()
 
-    def get_ee_pose(self):
+    def get_ee_pose(self, group=None):
         """Get the current pose of the end effector."""
-        return self.group.get_current_pose().pose
+        if group is None:
+            group = self.move_group
+        return group.get_current_pose().pose
 
     @_block
-    def open_gripper(self):
+    def open_gripper(self, gripper_group=None):
         """Open the gripper."""
-        goal = franka_gripper.msg.MoveGoal(width=0.039 * 2, speed=1.0)
-        self.move_client.send_goal(goal)
-        self.move_client.wait_for_result(timeout=rospy.Duration(2.0))
+        if gripper_group is None:
+            gripper_group = self.gripper_group
+        gripper_group.open_gripper()
+
 
     @_block
-    def close_gripper(self, width=0.025, speed=0.25, force=20):
+    def close_gripper(self, gripper_group=None):
         """Close the gripper."""
-        goal = franka_gripper.msg.GraspGoal(width=width, speed=speed, force=force)
-        goal.epsilon.inner = 0.03
-        goal.epsilon.outer = 0.03
-        self.grasp_client.send_goal(goal)
-        self.grasp_client.wait_for_result()
+        if gripper_group is None:
+            gripper_group = self.gripper_group
+        gripper_group.close_gripper()
+
 
     @_block
-    def move_to_pose(self, pose: Pose):
+    def move_to_pose(self, pose: Pose, group=None):
         """Move the robot to a given pose with given orientation."""
-        self.group.set_pose_target(pose)
-        plan = self.group.go(wait=True)
-        self.group.stop()
-        self.group.clear_pose_targets()
+        self.move_group.set_pose_target(pose)
+        if group is None:
+            group = self.move_group
+        plan = self._go(group)
+        group.stop()
+        group.clear_pose_targets()
         return plan
 
     @_block
-    def move_joints_to(self, joint_values):
+    def move_joints_to(self, joint_values, group=None):
         """Move the robot to a given joint configuration."""
-        self.group.set_joint_value_target(joint_values)
-        plan = self.group.go(wait=True)
-        self.group.stop()
-        self.group.clear_pose_targets()
+        if group is None:
+            group = self.move_group
+        group.set_joint_value_target(joint_values)
+        plan = self._go(group)
+        group.stop()
+        group.clear_pose_targets()
         return plan
+
+    @_block
+    def add_object_to_scene(self, object_id):
+        """Add an object to the moveit planning scene."""
+        # TODO: 
+        if object_id is not None and object_id in self.objects:
+
+            # currently do noting 
+            collision_dict = self.get_object_collision(object_id)
+            return 
+            # TODO: finish this part after the collision detection is done
+
+            touch_links = self.robot.get_link_names(group="panda_hand")
+            self.scene.add_mesh(
+                object_id,
+                get_stamped_pose(self.objects[object_id]["position"], [0, 0, 0, 1], self.frame),
+                self.objects[object_id]["file"],
+                size=(1, 1, 1),
+            )
+        else:
+            if self.verbose:
+                print(f"Moveit: object {object_id} not found in environment.")
+
+    @_block
+    def attach_object(self, object_id, link="panda_hand"):
+        """Attach an object to the robot."""
+    
+        # TODO: finish this part after the collision detection is done
+        # TODO: add a dictionary to store the attached object
+        if object_id is not None and object_id in self.objects:
+            
+            self.move_group.attach_object(f"{object_id}", link)
+            if self.verbose:
+                print(f"Moveit: attached object object {object_id} to gripper link")
+
+    @_block
+    def detach_object(self, object_id):
+        """Detach an object from the robot."""
+        self.move_group.detach_object(object_id)
+        
+        if self.verbose:
+            print(f"Moveit: detached object {object_id} from gripper link")
 
     @_block
     def grasp(
@@ -291,7 +370,6 @@ class MoveitGazeboEnv(GazeboEnv):
         pre_grasp_approach=0.05,
         dryrun=False,
         object_id=None,
-        verbose=True,
     ):
         """Executes a grasp at a given pose with given orientation.
 
@@ -300,15 +378,7 @@ class MoveitGazeboEnv(GazeboEnv):
             orientation: The orientation of the grasp (scipy format, xyzw).
             width: The width of the gripper.
             pre_grasp_approach: The distance to move towards the object before grasping.
-            dryrun: If true, the robot will not call the action to close the gripper (not available in simulation).
-            verbose: If true, the robot will print information about the grasp.
-        """
-
-        self.group.set_max_velocity_scaling_factor(0.2)
-        self.group.set_max_acceleration_scaling_factor(0.2)
-        self.group.set_goal_position_tolerance(0.001)
-        self.group.set_goal_orientation_tolerance(0.02)
-        self.group.set_pose_reference_frame(self.frame)
+            dryrun: If true, the robot will not call the action to close the gripper (not available in simulation).        """
 
         position = np.array([pose.position.x, pose.position.y, pose.position.z])
         orientation = np.array(
@@ -327,25 +397,25 @@ class MoveitGazeboEnv(GazeboEnv):
         if not dryrun:
             self.open_gripper()
 
-        self.group.set_pose_target(waypoints[0])
+        self.move_group.set_pose_target(waypoints[0])
 
-        # (plan, fraction) = self.group.compute_cartesian_path(waypoints, 0.02, 0.0)
+        # (plan, fraction) = self.move_group.compute_cartesian_path(waypoints, 0.02, 0.0)
         # if fraction < 1:
         #     print("Could not plan to pre-grasp pose. Plan accuracy", fraction)
         #     return False
 
-        if verbose:
+        if self.verbose:
             print("Moving to pre-grasp pose")
 
-        # self._execute(self.group, plan)
-        plan = self._go(self.group)
-        self.group.stop()
-        self.group.clear_pose_targets()
+        # self._execute(self.move_group, plan)
+        plan = self._go(self.move_group)
+        self.move_group.stop()
+        self.move_group.clear_pose_targets()
         if not plan:
             print("Failed")
             return False
 
-        if verbose:
+        if self.verbose:
             print("Moved to pre grasp. Remmoving object")
 
         if object_id is not None and object_id in self.objects:
@@ -353,20 +423,20 @@ class MoveitGazeboEnv(GazeboEnv):
             self.objects[object_id]["active"] = False
 
         waypoints = [get_pose_msg(position, orientation)]
-        # (plan, fraction) = self.group.compute_cartesian_path(waypoints, 0.003, 0.001, True)
+        # (plan, fraction) = self.move_group.compute_cartesian_path(waypoints, 0.003, 0.001, True)
         # if fraction < 0.7:
         #     print("Could not plan to pre-grasp pose. Plan Accuracy", fraction)
         #     return False
 
-        if verbose:
+        if self.verbose:
             print("Moving to grasp pose")
 
-        self.group.set_pose_target(waypoints[0])
+        self.move_group.set_pose_target(waypoints[0])
         self.error_recovery_client.send_goal_and_wait(ErrorRecoveryActionGoal())
-        self._go(self.group)
-        # plan = self.group.g/o(wait=True)
-        self.group.stop()
-        self.group.clear_pose_targets()
+        self._go(self.move_group)
+        # plan = self.move_group.g/o(wait=True)
+        self.move_group.stop()
+        self.move_group.clear_pose_targets()
         if not plan:
             print("Failed!")
             return False
@@ -377,26 +447,14 @@ class MoveitGazeboEnv(GazeboEnv):
             time.sleep(5)
 
         if not dryrun:
-            if verbose:
+            if self.verbose:
                 print("Closing gripper")
                 self.close_gripper(width=width)
-
-        if object_id is not None and object_id in self.objects:
-            touch_links = self.robot.get_link_names(group="panda_hand")
-            self.scene.add_mesh(
-                f"inst_{object_id}",
-                get_stamped_pose(self.objects[object_id]["position"], [0, 0, 0, 1], self.frame),
-                self.objects[object_id]["file"],
-                size=(1, 1, 1),
-            )
-            self.scene.attach_mesh("panda_hand", f"inst_{object_id}", touch_links=touch_links)
-            if verbose:
-                print("attached mesh to ", touch_links)
 
         return True
 
     @_block
-    def place(self, pose: Pose, width=0.025, lift_height=0.1, dryrun=False, verbose=True):
+    def place(self, pose: Pose, width=0.025, lift_height=0.1, dryrun=False):
         """Executes place action at a given pose with given orientation.
 
         Args:
@@ -407,25 +465,20 @@ class MoveitGazeboEnv(GazeboEnv):
             verbose: If true, the robot will print information about the place.
         """
 
-        self.group.set_max_velocity_scaling_factor(0.2)
-        self.group.set_max_acceleration_scaling_factor(0.2)
-        self.group.set_goal_position_tolerance(0.001)
-        self.group.set_goal_orientation_tolerance(0.02)
-        self.group.set_pose_reference_frame(self.frame)
-        self.group.set_pose_target(pose)
+        self.move_group.set_pose_target(pose)
 
-        if verbose:
+        if self.verbose:
             print("Moving to place pose")
 
-        # self._execute(self.group, plan)
-        plan = self._go(self.group)
-        self.group.stop()
-        self.group.clear_pose_targets()
+        # self._execute(self.move_group, plan)
+        plan = self._go(self.move_group)
+        self.move_group.stop()
+        self.move_group.clear_pose_targets()
         if not plan:
             print("Failed")
             return False
 
-        if verbose:
+        if self.verbose:
             print("Moved to place. Remmoving object")
 
         if self.wait_at_place_pose:
@@ -434,7 +487,7 @@ class MoveitGazeboEnv(GazeboEnv):
             time.sleep(5)
 
         if not dryrun:
-            if verbose:
+            if self.verbose:
                 print("Opening gripper")
             self.open_gripper()
 

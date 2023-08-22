@@ -132,7 +132,7 @@ mamba install jupyter-ros -c robostack
 Then you need to create a ros kernel, which has loaded catkin_ws environments, from the official [instructions](https://jupyter-ros.readthedocs.io/en/latest/user_troubleshooting.html).
 
 
-## Run (Under Development)
+## Run
 
 Make sure you have activated the ROS environment and catkin workspace:
 ```bash
@@ -141,29 +141,17 @@ cd /path/to/catkin_ws
 source devel/setup.bash
 ```
 
-### Demo of Object Manipulation with Gazebo simulation 
+### Demo of code generation for Pick and Place with MoveIt
 
 First, you need to launch the gazebo simulation and moveit nodes with the following command:
 ```bash
 roslaunch instruct_to_policy run_panda_moveit_gazebo.launch 
 ```
 
-Then, you can run the demo script to test the grasp pipeline:
-
-Option 1. Run `scripts/grasp_executor_playground.py`. 
+Then, you can run the code generation demo script by roslauch:
 ```bash
-rosrun instruct_to_policy grasp_executor_playground.py
+roslaunch instruct_to_policy run_cap.launch 
 ```
-
-Option 2. Run `scripts/grasp_executor_playground.ipynb` with the following command:
-Note that you have to install **Jupyter-ROS** as explained above.
-
-```bash
-# run jupyter
-jupyter-lab
-```
-Then open `scripts/grasp_executor_playground.ipynb` in the jupyter browser.
-
 
 ### Gazebo plugins (deprecated)
 

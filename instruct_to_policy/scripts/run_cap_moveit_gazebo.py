@@ -90,14 +90,3 @@ print('Running policy and recording video...')
 object_list = env.object_names
 lmp_tabletop_ui(user_input, f'objects = {object_list}')
 
-# render video
-if env.cache_video:
-  rendered_clip = ImageSequenceClip(env.cache_video, fps=35 if high_frame_rate else 25)
-  rendered_clip.write_videofile('demo.mp4', fps=35 if high_frame_rate else 25)
-  try:
-    from IPython.display import display
-    display(rendered_clip.ipython_display(autoplay=1, loop=1))
-  except:
-    pass
-  # display(rendered_clip.ipython_display(autoplay=1, loop=1))
-  

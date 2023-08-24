@@ -1,6 +1,6 @@
 <sdf version='1.7'>
   <model name='cabinet_0'>
-    <link name='link_2'>
+    <link name='link'>
       <inertial>
         <pose>0 0 0 0 -0 0</pose>
         <mass>10</mass>
@@ -14,7 +14,7 @@
         </inertia>
       </inertial>
       <collision name='link_2_collision'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -23,7 +23,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_1'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -32,7 +32,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_2'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -41,7 +41,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_3'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -50,7 +50,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_4'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -59,7 +59,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_5'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -68,7 +68,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_6'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -77,7 +77,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_7'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -86,7 +86,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_8'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -95,7 +95,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_9'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -104,7 +104,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_10'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -113,7 +113,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_11'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -122,7 +122,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_12'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -131,7 +131,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_13'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -140,7 +140,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_14'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -149,7 +149,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_15'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -158,7 +158,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_16'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -167,7 +167,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_17'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -176,7 +176,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_18'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -185,7 +185,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_19'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -194,7 +194,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_20'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -203,7 +203,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_21'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -212,7 +212,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_22'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -221,7 +221,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_23'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -230,7 +230,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_24'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -239,7 +239,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_25'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -248,7 +248,7 @@
         </geometry>
       </collision>
       <collision name='link_2_collision_26'>
-        <pose>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -256,8 +256,8 @@
           </mesh>
         </geometry>
       </collision>
-      <visual name='link_2_fixed_joint_lump__vertical_side_panel-18_visual'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__vertical_side_panel-18_visual'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -265,8 +265,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__vertical_side_panel-18_visual_1'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__vertical_side_panel-18_visual_1'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -274,8 +274,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__vertical_side_panel-19_visual_2'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__vertical_side_panel-19_visual_2'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -283,8 +283,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__vertical_side_panel-19_visual_3'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__vertical_side_panel-19_visual_3'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -292,8 +292,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__back_panel-20_visual_4'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__back_panel-20_visual_4'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -301,8 +301,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__bottom_panel-21_visual_5'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__bottom_panel-21_visual_5'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -310,8 +310,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__frame_vertical_bar-22_visual_6'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__frame_vertical_bar-22_visual_6'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -319,8 +319,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__frame_vertical_bar-23_visual_7'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__frame_vertical_bar-23_visual_7'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -328,8 +328,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__frame_vertical_bar-24_visual_8'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__frame_vertical_bar-24_visual_8'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -337,8 +337,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__frame_vertical_bar-24_visual_9'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__frame_vertical_bar-24_visual_9'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -346,8 +346,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__frame_horizontal_bar-25_visual_10'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__frame_horizontal_bar-25_visual_10'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -355,8 +355,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__frame_horizontal_bar-26_visual_11'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__frame_horizontal_bar-26_visual_11'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -364,8 +364,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__frame_horizontal_bar-27_visual_12'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__frame_horizontal_bar-27_visual_12'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -373,8 +373,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__frame_horizontal_bar-28_visual_13'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__frame_horizontal_bar-28_visual_13'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -382,8 +382,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__frame_horizontal_bar-29_visual_14'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__frame_horizontal_bar-29_visual_14'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -391,8 +391,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__other_leaf-31_visual_15'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__other_leaf-31_visual_15'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -400,8 +400,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__frame_horizontal_bar-32_visual_16'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__frame_horizontal_bar-32_visual_16'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -409,8 +409,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__vertical_front_panel-33_visual_17'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__vertical_front_panel-33_visual_17'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -418,8 +418,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__vertical_front_panel-33_visual_18'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__vertical_front_panel-33_visual_18'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -427,8 +427,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__vertical_front_panel-33_visual_19'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__vertical_front_panel-33_visual_19'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -436,8 +436,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__vertical_front_panel-33_visual_20'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__vertical_front_panel-33_visual_20'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -445,8 +445,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__vertical_front_panel-33_visual_21'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__vertical_front_panel-33_visual_21'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -454,8 +454,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__vertical_front_panel-33_visual_22'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__vertical_front_panel-33_visual_22'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -463,8 +463,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__base_side_panel-14_visual_23'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__base_side_panel-14_visual_23'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -472,8 +472,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__base_side_panel-15_visual_24'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__base_side_panel-15_visual_24'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -481,8 +481,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__base_side_panel-16_visual_25'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__base_side_panel-16_visual_25'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -490,8 +490,8 @@
           </mesh>
         </geometry>
       </visual>
-      <visual name='link_2_fixed_joint_lump__base_side_panel-17_visual_26'>
-        <pose>0 0 0 0 -0 0</pose>
+      <visual name='link_fixed_joint_lump__base_side_panel-17_visual_26'>
+        <pose>0 0 0 1.5708 -0 -1.5708</pose>
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
@@ -501,8 +501,8 @@
       </visual>
     </link>
     <joint name='joint_0' type='revolute'>
-      <pose relative_to='link_2'>0.762887 0.628714 0.330815 0 -0 0</pose>
-      <parent>link_2</parent>
+      <pose relative_to='link'>-0.330815 -0.762887 0.628714 1.5708 -0 -1.5708</pose>
+      <parent>link</parent>
       <child>link_0</child>
       <axis>
         <xyz>0 1 0</xyz>
@@ -696,8 +696,8 @@
       </visual>
     </link>
     <joint name='joint_1' type='revolute'>
-      <pose relative_to='link_2'>-0.719878 0.650261 0.33207 0 -0 0</pose>
-      <parent>link_2</parent>
+      <pose relative_to='link'>-0.33207 0.719878 0.650261 1.5708 -0 -1.5708</pose>
+      <parent>link</parent>
       <child>link_1</child>
       <axis>
         <xyz>0 -1 0</xyz>

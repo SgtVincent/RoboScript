@@ -253,7 +253,7 @@ class MoveitGazeboEnv(GazeboEnv):
     def load_scene(self):
         """Load the scene in the MoveIt! planning scene."""
         if self.use_sim:
-            self.load_gazebo_world_into_moveit()
+            # self.load_gazebo_world_into_moveit()
             for name in self.object_names:
                 self.objects[name] = {}
         else:

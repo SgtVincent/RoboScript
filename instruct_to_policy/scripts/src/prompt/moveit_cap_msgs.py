@@ -20,7 +20,7 @@ from plan_utils import add_object_to_scene, attach_object, detach_object, open_g
 },
 {# Open a Drawer
 "role":"user",
-"content": "objects = ['drawer', 'handle', 'table'] \n # open the drawer"
+"content": "objects = ['drawer', 'table', 'plants'] \n # open the drawer"
 },
 {
 "role":"assistant",
@@ -28,7 +28,7 @@ from plan_utils import add_object_to_scene, attach_object, detach_object, open_g
 '''
 grasp_pose = parse_pose('drawer', action="grasp")
 open_gripper(gripper_group)
-move_to_pose(grab_handle_pose, move_group)
+move_to_pose(grasp_pose, move_group)
 close_gripper(gripper_group)
 attach_object('drawer')
 pull_pose = parse_pose('drawer', action="pull")
@@ -37,6 +37,25 @@ open_gripper(gripper_group)
 detach_object('drawer')
 '''
 },
+{# Open a Door
+"role":"user",
+"content": "objects = ['door', 'handle'] \n # open the door"
+},
+{
+"role":"assistant",
+"content":
+'''
+grasp_pose = parse_pose('door', action="grasp")
+open_gripper(gripper_group)
+move_to_pose(grasp_pose, move_group)
+close_gripper(gripper_group)
+attach_object('door')
+pull_pose = parse_pose('door', action="pull")
+move_to_pose(pull_pose, move_group)
+open_gripper(gripper_group)
+detach_object('door')
+'''
+}
 {# Turn a Faucet Clockwise
 "role":"user",
 "content": "objects = ['faucet', 'handle', 'sink'] \n # turn the faucet clockwise"

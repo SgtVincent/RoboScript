@@ -4,6 +4,7 @@
 <!-- |    EDITING THIS FILE BY HAND IS NOT RECOMMENDED                                 | -->
 <!-- =================================================================================== -->
 <robot name="cabinet_0">
+  <link name="link"/>
   <link name="link_0">
     <visual name="cabinet_door_surface-11">
       <origin xyz="-0.7628867416512489 -0.6287140250205994 -0.33081486779329544"/>
@@ -576,10 +577,10 @@
       <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
     </inertial>
   </link>
-  <!-- <joint name="joint_2" type="fixed">
-		<origin rpy="1.570796326794897 0 -1.570796326794897" xyz="0 0 0"/>
-		<child link="link_2"/>
-		<parent link="link"/>
-	</joint> -->
+  <joint name="joint_2" type="fixed">
+    <origin rpy="1.570796326794897 0 -1.570796326794897" xyz="0 0 0"/>
+    <child link="link_2"/>
+    <parent link="link"/>
+  </joint>
 </robot>
 

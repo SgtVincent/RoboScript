@@ -7,8 +7,11 @@
     <include>
       <uri>model://ground_plane</uri>
     </include>
+    <!-- set cabinet base to fixed in gazebo -->
     <include>
       <uri>model://cabinet_0</uri>
+      <pose>0 0 0.664118 0 0 0 </pose>
+      <static>0</static>
     </include>
   </world>
 </sdf>

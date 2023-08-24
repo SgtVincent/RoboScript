@@ -132,6 +132,20 @@ mamba install jupyter-ros -c robostack
 Then you need to create a ros kernel, which has loaded catkin_ws environments, from the official [instructions](https://jupyter-ros.readthedocs.io/en/latest/user_troubleshooting.html).
 
 
+## Data process
+
+### Convert urdf.xacro to sdf
+
+```bash
+# urdf.xacro -> urdf
+rosrun xacro xacro <model_name>.urdf.xacro > <model_name>.cabinet_0.urdf
+# urdf -> sdf
+gz sdf -p <model_name>.urdf > <model_name>.sdf
+```
+
+
+
+
 ## Run
 
 Make sure you have activated the ROS environment and catkin workspace:

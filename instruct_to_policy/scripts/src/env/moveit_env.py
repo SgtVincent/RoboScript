@@ -51,7 +51,7 @@ class GripperCommanderGroup:
     def __init__(self) -> None:    
         self.gripper_grasp_client = actionlib.SimpleActionClient(
             "/franka_gripper/grasp", franka_gripper.msg.GraspAction
-        )
+        )       
         self.gripper_move_client = actionlib.SimpleActionClient(
             "/franka_gripper/move", franka_gripper.msg.MoveAction
         )

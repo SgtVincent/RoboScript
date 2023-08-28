@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+<!--
+This SDF file was automatically generated using a template modified 
+and authored by Adwait Naik. The moment of interia is not supposed to be changed.
+-->
+    <model name="strawberry">
+      <pose>1.0 2.0 3.0 -2.0 0 0</pose> 
+      <link name="link">
+        <inertial>
+          <inertia>
+           <ixx>1.1142887364251795e-08</ixx>
+           <ixy>-9.251929496783896e-25</ixy>
+           <ixz>-2.0522770518953985e-24</ixz>
+           <iyy>1.0106109240846608e-08</iyy>
+           <iyz>4.2342023492700045e-25</iyz>
+           <izz>9.086808374326581e-09</izz>
+          </inertia>
+          <mass>4.832344833863233e-05</mass>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+          	<mesh>
+             <uri>textured.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+
+        <visual name="visual">
+          <geometry>
+          	<mesh>
+            <uri>textured.dae</uri>
+	        </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+</sdf>

@@ -87,7 +87,7 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    <model name='robot'>
+    <model name='cabinet_1076'>
       <link name='base_link'>
         <inertial>
           <pose>0 0 0 0 -0 0</pose>
@@ -106,7 +106,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-3.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-3.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -128,7 +128,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-7.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-7.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -150,7 +150,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-21.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-21.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -172,7 +172,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-20.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-20.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -194,7 +194,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-6.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-6.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -216,7 +216,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-22.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-22.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -238,7 +238,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-17.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-17.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -260,7 +260,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-11.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-11.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -282,7 +282,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-10.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-10.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -304,7 +304,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-15.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-15.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -326,7 +326,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-14.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-14.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -348,7 +348,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-5.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-5.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -370,7 +370,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-2.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-2.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -392,7 +392,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-8.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-8.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -414,7 +414,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-23.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-23.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -436,7 +436,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-4.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-4.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -458,7 +458,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-88.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-88.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -480,7 +480,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-16.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-16.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -502,7 +502,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-18.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-18.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -524,7 +524,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-12.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-12.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -546,7 +546,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-19.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-19.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -568,7 +568,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-3.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-3.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -577,7 +577,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-7.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-7.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -586,7 +586,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-21.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-21.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -595,7 +595,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-20.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-20.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -604,7 +604,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-6.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-6.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -613,7 +613,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-22.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-22.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -622,7 +622,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-17.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-17.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -631,7 +631,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-11.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-11.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -640,7 +640,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-10.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-10.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -649,7 +649,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-15.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-15.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -658,7 +658,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-14.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-14.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -667,7 +667,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-5.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-5.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -676,7 +676,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-2.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-2.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -685,7 +685,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-8.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-8.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -694,7 +694,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-23.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-23.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -703,7 +703,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-4.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-4.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -712,7 +712,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-88.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-88.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -721,7 +721,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-16.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-16.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -730,7 +730,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-18.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-18.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -739,7 +739,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-12.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-12.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -748,7 +748,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-19.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-19.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -793,7 +793,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-55.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-55.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -815,7 +815,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-43.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-43.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -837,7 +837,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-42.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-42.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -859,7 +859,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-47.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-47.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -881,7 +881,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-48.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-48.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -903,7 +903,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-46.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-46.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -925,7 +925,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-45.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-45.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -947,7 +947,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-49.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-49.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -969,7 +969,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-54.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-54.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -991,7 +991,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-53.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-53.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1013,7 +1013,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-52.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-52.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1035,7 +1035,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-55.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-55.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1044,7 +1044,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-43.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-43.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1053,7 +1053,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-42.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-42.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1062,7 +1062,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-47.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-47.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1071,7 +1071,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-48.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-48.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1080,7 +1080,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-46.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-46.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1089,7 +1089,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-45.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-45.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1098,7 +1098,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-49.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-49.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1107,7 +1107,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-54.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-54.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1116,7 +1116,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-53.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-53.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1125,10 +1125,33 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-52.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-52.obj</uri>
             </mesh>
           </geometry>
         </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='joint_handle_0' type='fixed'>
+        <pose relative_to='link_0'>0.020536 0.409510 0.489266 0 -0 0</pose>
+        <parent>link_0</parent>
+        <child>link_handle_0</child>
+      </joint>
+      <link name="link_handle_0">
+        <pose relative_to="joint_handle_0">0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.1</iyy>
+            <iyz>0</iyz>
+            <izz>0.1</izz>
+          </inertia>
+        </inertial>
         <self_collide>0</self_collide>
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
@@ -1170,7 +1193,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-87.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-87.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1192,7 +1215,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-75.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-75.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1214,7 +1237,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-74.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-74.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1236,7 +1259,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-79.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-79.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1258,7 +1281,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-80.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-80.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1280,7 +1303,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-78.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-78.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1302,7 +1325,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-77.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-77.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1324,7 +1347,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-81.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-81.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1346,7 +1369,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-86.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-86.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1368,7 +1391,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-84.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-84.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1390,7 +1413,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-85.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-85.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1412,7 +1435,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-87.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-87.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1421,7 +1444,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-75.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-75.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1430,7 +1453,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-74.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-74.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1439,7 +1462,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-79.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-79.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1448,7 +1471,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-80.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-80.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1457,7 +1480,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-78.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-78.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1466,7 +1489,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-77.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-77.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1475,7 +1498,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-81.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-81.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1484,7 +1507,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-86.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-86.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1493,7 +1516,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-84.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-84.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1502,7 +1525,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-85.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-85.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1547,7 +1570,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-59.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-59.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1569,7 +1592,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-71.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-71.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1591,7 +1614,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-58.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-58.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1613,7 +1636,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-63.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-63.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1635,7 +1658,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-64.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-64.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1657,7 +1680,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-62.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-62.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1679,7 +1702,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-61.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-61.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1701,7 +1724,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-65.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-65.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1723,7 +1746,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-70.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-70.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1745,7 +1768,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-68.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-68.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1767,7 +1790,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-69.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-69.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1789,7 +1812,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-59.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-59.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1798,7 +1821,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-71.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-71.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1807,7 +1830,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-58.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-58.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1816,7 +1839,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-63.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-63.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1825,7 +1848,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-64.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-64.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1834,7 +1857,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-62.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-62.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1843,7 +1866,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-61.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-61.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1852,7 +1875,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-65.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-65.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1861,7 +1884,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-70.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-70.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1870,7 +1893,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-68.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-68.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1879,7 +1902,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-69.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-69.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -1924,7 +1947,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-33.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-33.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1946,7 +1969,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-27.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-27.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1968,7 +1991,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-39.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-39.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -1990,7 +2013,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-31.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-31.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -2012,7 +2035,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-26.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-26.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -2034,7 +2057,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-32.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-32.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -2056,7 +2079,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-30.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-30.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -2078,7 +2101,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-29.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-29.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -2100,7 +2123,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-38.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-38.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -2122,7 +2145,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-36.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-36.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -2144,7 +2167,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-37.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-37.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -2166,7 +2189,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-33.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-33.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -2175,7 +2198,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-27.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-27.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -2184,7 +2207,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-39.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-39.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -2193,7 +2216,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-31.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-31.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -2202,7 +2225,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-26.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-26.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -2211,7 +2234,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-32.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-32.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -2220,7 +2243,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-30.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-30.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -2229,7 +2252,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-29.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-29.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -2238,7 +2261,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-38.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-38.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -2247,7 +2270,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-36.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-36.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -2256,7 +2279,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>file://$(find urdf_sim_tutorial)/models/1076/textured_objs/original-37.obj</uri>
+              <uri>file://models/cabinet_1076/textured_objs/original-37.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -2408,10 +2431,44 @@
       </link>
     </model>
     <state world_name='default'>
-      <sim_time>273 858000000</sim_time>
-      <real_time>281 639484837</real_time>
-      <wall_time>1693216616 688710705</wall_time>
-      <iterations>273858</iterations>
+      <sim_time>298 292000000</sim_time>
+      <real_time>34 342081627</real_time>
+      <wall_time>1693229900 25195323</wall_time>
+      <iterations>24434</iterations>
+      <model name='cabinet_1076'>
+        <pose>-0.025887 0.000956 0.866008 -3e-06 4e-06 0.055989</pose>
+        <scale>1 1 1</scale>
+        <link name='base_link'>
+          <pose>-0.025887 0.000956 0.866008 -3e-06 4e-06 0.055989</pose>
+          <velocity>0.000442 0.003987 -0.002468 -0.004496 0.000794 0.000442</velocity>
+          <acceleration>0.903114 1.94743 -5.59293 -2.03772 1.17792 0.21044</acceleration>
+          <wrench>9.03114 19.4743 -55.9293 0 -0 0</wrench>
+        </link>
+        <link name='link_0'>
+          <pose>-0.035404 0.000423 0.866008 1.57079 -2e-06 -1.51481</pose>
+          <velocity>-0.00012 0.003938 -0.00246 -0.004565 0.000697 0.000298</velocity>
+          <acceleration>-0.107463 1.91748 -5.58444 -1.82592 0.959056 -0.296574</acceleration>
+          <wrench>-0.107463 1.91748 -5.58444 0 -0 0</wrench>
+        </link>
+        <link name='link_1'>
+          <pose>-0.026406 0.000927 0.866008 1.57079 -2e-06 -1.51481</pose>
+          <velocity>-0.000581 0.003916 -0.002469 -0.004566 0.000685 0.000311</velocity>
+          <acceleration>-0.107321 1.91497 -5.594 -1.82696 0.946286 -0.294414</acceleration>
+          <wrench>-0.107321 1.91497 -5.594 0 -0 0</wrench>
+        </link>
+        <link name='link_2'>
+          <pose>-0.028039 0.000835 0.866008 1.57079 -2e-06 -1.51481</pose>
+          <velocity>-2.6e-05 0.003947 -0.002467 -0.004567 0.000677 0.000322</velocity>
+          <acceleration>-0.107332 1.91516 -5.59215 -1.82818 0.933805 -0.290895</acceleration>
+          <wrench>-0.107332 1.91516 -5.59215 0 -0 0</wrench>
+        </link>
+        <link name='link_3'>
+          <pose>-0.029277 0.000766 0.866008 1.57079 -2e-06 -1.51481</pose>
+          <velocity>-0.000645 0.003912 -0.002466 -0.004567 0.000674 0.000331</velocity>
+          <acceleration>-0.107336 1.91524 -5.59073 -1.82968 0.921368 -0.286107</acceleration>
+          <wrench>-0.107336 1.91524 -5.59073 0 -0 0</wrench>
+        </link>
+      </model>
       <model name='ground_plane'>
         <pose>0 0 0 0 -0 0</pose>
         <scale>1 1 1</scale>
@@ -2423,67 +2480,33 @@
         </link>
       </model>
       <model name='orange'>
-        <pose>-1.39362 -0.603969 -0.001494 -0.395556 0.169815 -2.96156</pose>
+        <pose>-1.3923 -0.609243 -0.001493 -0.398839 0.164867 -2.99565</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose>-1.39362 -0.603969 -0.001494 -0.395556 0.169815 -2.96156</pose>
-          <velocity>0.00055 0.000169 0.00025 0.113602 -0.367564 -0.000688</velocity>
-          <acceleration>-0.01072 -0.025988 -0.019206 1.42251 0.857471 0.091427</acceleration>
-          <wrench>-2e-06 -5e-06 -4e-06 0 -0 0</wrench>
+          <pose>-1.3923 -0.609243 -0.001493 -0.398839 0.164867 -2.99565</pose>
+          <velocity>-0.000111 7.8e-05 9.6e-05 0.049885 0.073429 -0.002063</velocity>
+          <acceleration>0.046481 0.015499 -0.058781 -2.01802 0.254643 0.119978</acceleration>
+          <wrench>9e-06 3e-06 -1.2e-05 0 -0 0</wrench>
         </link>
       </model>
       <model name='peach'>
-        <pose>-0.870677 -0.63666 -0.004016 0.280132 0.4331 -1.75083</pose>
+        <pose>-0.870789 -0.655472 -0.004016 0.279833 0.432829 -1.73631</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose>-0.870677 -0.63666 -0.004016 0.280132 0.4331 -1.75083</pose>
-          <velocity>-0.000137 -9.4e-05 -7e-06 -0.023451 0.034083 -1e-06</velocity>
-          <acceleration>-0.014592 -0.010044 -0.000787 0.555418 -0.425289 3.07396</acceleration>
+          <pose>-0.870789 -0.655472 -0.004016 0.279833 0.432829 -1.73631</pose>
+          <velocity>-0.000214 -0.000152 -1.2e-05 -0.037847 0.053318 -1e-06</velocity>
+          <acceleration>-0.014335 -0.010176 -0.000766 0.523485 -0.360079 3.07754</acceleration>
           <wrench>-2e-06 -1e-06 -0 0 -0 0</wrench>
         </link>
       </model>
-      <model name='robot'>
-        <pose>-0.023514 0.000886 0.866011 2e-06 3e-06 0.051992</pose>
-        <scale>1 1 1</scale>
-        <link name='base_link'>
-          <pose>-0.023514 0.000886 0.866011 2e-06 3e-06 0.051992</pose>
-          <velocity>-0.000455 0.002042 0.003125 -0.002461 -0.000375 0.000234</velocity>
-          <acceleration>-0.361219 6.36147 5.4203 -1.17014 -0.28097 0.25409</acceleration>
-          <wrench>-3.61219 63.6147 54.203 0 -0 0</wrench>
-        </link>
-        <link name='link_0'>
-          <pose>-0.036133 0.00023 0.866011 1.5708 2e-06 -1.51881</pose>
-          <velocity>-0.000145 0.002012 0.003124 -0.002742 -0.000251 0.000605</velocity>
-          <acceleration>-0.329597 6.33416 5.42286 -1.34058 -0.147098 0.8954</acceleration>
-          <wrench>-0.329597 6.33416 5.42286 0 -0 0</wrench>
-        </link>
-        <link name='link_1'>
-          <pose>-0.028587 0.000622 0.866011 1.5708 2e-06 -1.51881</pose>
-          <velocity>-4.8e-05 0.002022 0.003125 -0.002743 -0.000251 0.000615</velocity>
-          <acceleration>-0.329944 6.34087 5.42111 -1.33713 -0.136211 0.88243</acceleration>
-          <wrench>-0.329944 6.34087 5.42111 0 -0 0</wrench>
-        </link>
-        <link name='link_2'>
-          <pose>-0.030767 0.000509 0.866011 1.5708 2e-06 -1.51881</pose>
-          <velocity>-7.5e-05 0.00202 0.003125 -0.002742 -0.000246 0.000622</velocity>
-          <acceleration>-0.329855 6.33917 5.42181 -1.33395 -0.127264 0.869414</acceleration>
-          <wrench>-0.329855 6.33917 5.42181 0 -0 0</wrench>
-        </link>
-        <link name='link_3'>
-          <pose>-0.02757 0.000675 0.866011 1.5708 2e-06 -1.51881</pose>
-          <velocity>1.7e-05 0.002027 0.003125 -0.00274 -0.000236 0.000626</velocity>
-          <acceleration>-0.330002 6.34201 5.42106 -1.33121 -0.120368 0.856483</acceleration>
-          <wrench>-0.330002 6.34201 5.42106 0 -0 0</wrench>
-        </link>
-      </model>
       <model name='strawberry'>
-        <pose>-1.15111 -0.651235 -0.002707 0.666623 0.157218 0.910165</pose>
+        <pose>-1.15104 -0.674254 -0.002706 0.6621 0.155375 0.845013</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose>-1.15111 -0.651235 -0.002707 0.666623 0.157218 0.910165</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 -9.8 -2e-06 -1.6e-05 -1.9e-05</acceleration>
-          <wrench>0 0 -0.000474 0 -0 0</wrench>
+          <pose>-1.15104 -0.674254 -0.002706 0.6621 0.155375 0.845013</pose>
+          <velocity>8.5e-05 0.000158 -5.3e-05 0.058445 -0.030885 0.001124</velocity>
+          <acceleration>0.020582 0.103639 -0.033355 1.73383 -0.034675 1.50482</acceleration>
+          <wrench>1e-06 5e-06 -2e-06 0 -0 0</wrench>
         </link>
       </model>
       <light name='sun'>
@@ -2492,7 +2515,7 @@
     </state>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose>-4.71154 -0.78551 2.31121 0 0.379643 -0.1798</pose>
+        <pose>-4.77992 -2.26153 1.79673 0 0.393796 0.462006</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>

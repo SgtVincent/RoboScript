@@ -1,0 +1,6 @@
+# for urdf/sdf parsing and processing
+xacro
+numpy-stl
+pycollada
+urdf-parser-py
+trimesh 

@@ -1,23 +1,42 @@
 #!/usr/bin/env python
 # Credit: Modified from https://github.com/gstavrinos/calc-inertia/blob/master/calc_inertia_for_urdf.py to support .obj mesh files
+# Update: support .obj mesh fiels and multiple meshes in a single link
 
 import os
+import numpy as np
 import sys
 import xacro
 import collada
 import trimesh
 # open obj mesh file 
+import rospy 
+import rosparam
 
-from urdf_parser_py.urdf import URDF, Mesh, Box, Sphere, Cylinder
-
+from urdf_parser_py.urdf import URDF, Link, Mesh, Box, Sphere, Cylinder, Collision
+import pysdf 
+from pysdf.parse import Link as SDFLink, Collision as SDFCollision
 # For dependencies:
 # pip install -r requirements.txt
 
-# Command line params:
-# 1: URDF file
 
 # def getSTLDimensions(model):
 #     return model.x.max() - model.x.min(), model.y.max() - model.y.min(), model.z.max() - model.z.min()
+
+def getMeshBounds(mesh, center=np.array([0,0,0])):
+    return mesh.bounds[1, :] + center, mesh.bounds[0, :] + center
+
+def getColladaBounds(model, center=np.array([0,0,0])):
+    minx = miny = minz = float("inf")
+    maxx = maxy = maxz = float("-inf")
+    for tr_vertex in model.geometries[0].primitives[0].vertex[model.geometries[0].primitives[0].vertex_index]:
+        for v in tr_vertex:
+            maxx = maxx if v[0] <= maxx else v[0]
+            maxy = maxy if v[1] <= maxy else v[1]
+            maxz = maxz if v[2] <= maxz else v[2]
+            minx = minx if v[0] >= minx else v[0]
+            miny = miny if v[1] >= miny else v[1]
+            minz = minz if v[2] >= minz else v[2]
+    return np.array([maxx, maxy, maxz]) + center, np.array([minx, miny, minz]) + center
 
 def getMeshDimensions(mesh):
     return mesh.bounds[1, :] - mesh.bounds[0, :]
@@ -36,60 +55,217 @@ def getColladaDimensions(model):
     return maxx - minx, maxy - miny, maxz - minz
 
 # Based on https://en.wikipedia.org/wiki/List_of_moments_of_inertia#List_of_3D_inertia_tensors
-def getInertia(geometry, m, s):
-    print("\033[97m Link name: \033[0m" + link_name)
-    print("\033[93m Mass: \033[0m" + str(m))
-    print("\033[95m Scale: \033[0m" + str(s))
-    xx = yy = zz = 0.0
-    if type(geometry) == Mesh:
-        print("\033[94m Mesh: \033[0m" + geometry.filename)
-        print("---\nCalculating inertia...\n---")
-        ROS_VERSION = os.getenv("ROS_VERSION")
-        get_pkg_fn = None
-        if not ROS_VERSION:
-            print("Could not find the ROS_VERSION environment variable, thus, can't determine your ros version. Assuming ROS2!")
-            ROS_VERSION = "2"
-        if ROS_VERSION == "1":
-            import rospkg
-            get_pkg_fn = rospkg.RosPack().get_path
-        else:
-            import ament_index_python
-            get_pkg_fn = ament_index_python.get_package_share_path
-        pkg_tag = "package://"
-        file_tag = "file://"
-        mesh_file = ""
-        if geometry.filename.startswith(pkg_tag):
-            package, mesh_file = geometry.filename.split(pkg_tag)[1].split(os.sep, 1)
-            print(get_pkg_fn(package))
-            mesh_file = str(get_pkg_fn(package))+os.sep+mesh_file
-        elif geometry.filename.startswith(file_tag):
-            mesh_file = geometry.filename.replace(file_tag, "")
-        x = y = z = 0
-        if mesh_file.endswith((".stl", ".obj")):
-            model = trimesh.load_mesh(mesh_file)
-            x,y,z = getMeshDimensions(model)
-        # Assuming .dae
-        else:
-            model = collada.Collada(mesh_file)
-            x,y,z = getColladaDimensions(model)
-        xx,yy,zz = getBoxInertia(x, y, z, m, s)
-    elif type(geometry) == Box:
-        print("\033[94m Box: \033[0m" + str(geometry.size))
-        print("---\nCalculating inertia...\n---")
-        x,y,z = geometry.size
-        xx,yy,zz = getBoxInertia(x, y, z, m, s)
-    elif type(geometry) == Sphere:
-        print("\033[94m Sphere Radius: \033[0m" + str(geometry.radius))
-        print("---\nCalculating inertia...\n---")
-        xx,yy,zz = getSphereInertia(geometry.radius, m)
-    elif type(geometry) == Cylinder:
-        print("\033[94m Cylinder Radius and Length: \033[0m" + str(geometry.radius) + "," + str(geometry.length))
-        print("---\nCalculating inertia...\n---")
-        xx,yy,zz = getCylinderInertia(geometry.radius, geometry.length, m)
+def getLInkInertia_urdf(link: Link):
+    print("  Link name:  " + link.name)
+    print("  Mass:  " + str(link.inertial.mass))
+    mass = link.inertial.mass
+    xx = yy = zz = 1.0
+    # parse ros package path function based on ROS version
+    get_pkg_fn = None
+    ROS_VERSION = os.getenv("ROS_VERSION")
+    if not ROS_VERSION:
+        print("Could not find the ROS_VERSION environment variable, thus, can't determine your ros version. Assuming ROS2!")
+        ROS_VERSION = "2"
+    if ROS_VERSION == "1":
+        import rospkg
+        get_pkg_fn = rospkg.RosPack().get_path
+    else:
+        import ament_index_python
+        get_pkg_fn = ament_index_python.get_package_share_path
+    
+    if len(link.collisions) == 0:
+        print("  No collision in this link!  ")
+        return
 
-    print("\033[92m")
+    if len(link.collisions) > 1:
+        print("  Calculating inertia for multiple collisions in a single link!  ")
+        max_bound_list = []
+        min_bound_list = []
+
+        # simple strategy: sum up the bounding box of all the meshes
+        for collision in link.collisions:
+            collision: Collision
+            pkg_tag = "package://"
+            file_tag = "file://"
+            mesh_file = ""
+            if collision.geometry.filename.startswith(pkg_tag):
+                package, mesh_file = collision.filename.split(pkg_tag)[1].split(os.sep, 1)
+                print(get_pkg_fn(package))
+                mesh_file = str(get_pkg_fn(package))+os.sep+mesh_file
+            elif collision.geometry.filename.startswith(file_tag):
+                mesh_file = collision.filename.replace(file_tag, "")
+
+            # collision center relative to link center
+            collision_center = collision.pose.xyz
+
+            if mesh_file.endswith((".stl", ".obj")):
+                model = trimesh.load_mesh(mesh_file)
+                max_bound, min_bound = getMeshBounds(model, collision_center)
+            # Assuming .dae
+            else:
+                model = collada.Collada(mesh_file)
+                max_bound, min_bound = getColladaBounds(model, collision_center)
+
+            # update the max and min bound list
+            max_bound_list.append(max_bound)
+            min_bound_list.append(min_bound)
+        
+        # calculate the overall bounding box
+        max_bound = np.max(np.array(max_bound_list), axis=0)
+        min_bound = np.min(np.array(min_bound_list), axis=0)
+        x,y,z = max_bound - min_bound
+        # scale does not work for complex mesh models 
+        xx,yy,zz = getBoxInertia(x, y, z, mass, [1,1,1])
+
+    else:     
+        geometry = link.collision.geometry
+        scale = geometry.scale
+        if type(geometry) == Mesh:
+            geometry: Mesh
+            print("  Mesh:  " + geometry.filename)
+            print("---\nCalculating inertia...\n---")
+            pkg_tag = "package://"
+            file_tag = "file://"
+            mesh_file = ""
+            if geometry.filename.startswith(pkg_tag):
+                package, mesh_file = geometry.filename.split(pkg_tag)[1].split(os.sep, 1)
+                print(get_pkg_fn(package))
+                mesh_file = str(get_pkg_fn(package))+os.sep+mesh_file
+            elif geometry.filename.startswith(file_tag):
+                mesh_file = geometry.filename.replace(file_tag, "")
+            x = y = z = 0
+            if mesh_file.endswith((".stl", ".obj")):
+                model = trimesh.load_mesh(mesh_file)
+                x,y,z = getMeshDimensions(model)
+            # Assuming .dae
+            else:
+                model = collada.Collada(mesh_file)
+                x,y,z = getColladaDimensions(model)
+            xx,yy,zz = getBoxInertia(x, y, z, mass, scale)
+        elif type(geometry) == Box:
+            print("  Box:  " + str(geometry.size))
+            print("---\nCalculating inertia...\n---")
+            x,y,z = geometry.size
+            xx,yy,zz = getBoxInertia(x, y, z, mass, scale)
+        elif type(geometry) == Sphere:
+            print("  Sphere Radius:  " + str(geometry.radius))
+            print("---\nCalculating inertia...\n---")
+            xx,yy,zz = getSphereInertia(geometry.radius, mass)
+        elif type(geometry) == Cylinder:
+            print("  Cylinder Radius and Length:  " + str(geometry.radius) + "," + str(geometry.length))
+            print("---\nCalculating inertia...\n---")
+            xx,yy,zz = getCylinderInertia(geometry.radius, geometry.length, mass)
+
+    print(" ")
     print("<inertia  ixx=\"%s\" ixy=\"0\" ixz=\"0\" iyy=\"%s\" iyz=\"0\" izz=\"%s\" />" % (xx,yy,zz))
-    print("\033[0m")
+    print(" ")
+
+def getLInkInertia_sdf(link: SDFLink):
+    print("  Link name:  " + link.name)
+    print("  Mass:  " + str(link.inertial.mass))
+    mass = float(link.inertial.mass)
+    xx = yy = zz = 1.0
+    # parse ros package path function based on ROS version
+    get_pkg_fn = None
+    ROS_VERSION = os.getenv("ROS_VERSION")
+    if not ROS_VERSION:
+        print("Could not find the ROS_VERSION environment variable, thus, can't determine your ros version. Assuming ROS2!")
+        ROS_VERSION = "2"
+    if ROS_VERSION == "1":
+        import rospkg
+        get_pkg_fn = rospkg.RosPack().get_path
+    else:
+        import ament_index_python
+        get_pkg_fn = ament_index_python.get_package_share_path
+    
+    if len(link.collisions) == 0:
+        print("  No collision in this link!  ")
+        return
+    
+    elif len(link.collisions) > 1:
+        print("  Calculating inertia for multiple collisions in a single link!  ")
+        max_bound_list = []
+        min_bound_list = []
+
+        # simple strategy: sum up the bounding box of all the meshes
+        for collision in link.collisions:
+            collision: SDFCollision
+            pkg_tag = "package://"
+            file_tag = "file://"
+            uri = collision.geometry_data['uri']
+            mesh_file = uri
+            if uri.startswith(pkg_tag):
+                package, mesh_file = uri.split(pkg_tag)[1].split(os.sep, 1)
+                print(get_pkg_fn(package))
+                mesh_file = str(get_pkg_fn(package))+os.sep+mesh_file
+            elif uri.startswith(file_tag):
+                mesh_file = uri.replace(file_tag, "")
+
+            # collision center relative to link center
+            collision_center = collision.pose[:3, 3]
+
+            if mesh_file.endswith((".stl", ".obj")):
+                model = trimesh.load_mesh(mesh_file)
+                max_bound, min_bound = getMeshBounds(model, collision_center)
+            # Assuming .dae
+            else:
+                model = collada.Collada(mesh_file)
+                max_bound, min_bound = getColladaBounds(model, collision_center)
+
+            # update the max and min bound list
+            max_bound_list.append(max_bound)
+            min_bound_list.append(min_bound)
+        
+        # calculate the overall bounding box
+        max_bound = np.max(np.array(max_bound_list), axis=0)
+        min_bound = np.min(np.array(min_bound_list), axis=0)
+        x,y,z = max_bound - min_bound
+        # scale does not work for complex mesh models 
+        xx,yy,zz = getBoxInertia(x, y, z, mass, [1,1,1])
+
+    else:     
+        geometry_data = link.collisions[0].geometry_data
+        geometry_type = link.collisions[0].geometry_type
+        uri = geometry_data['uri']
+        scale = geometry_data['scale']
+        if geometry_type == 'mesh':
+            print("  Mesh:  " + uri)
+            print("---\nCalculating inertia...\n---")
+            pkg_tag = "package://"
+            file_tag = "file://"
+            mesh_file = ""
+            if uri.startswith(pkg_tag):
+                package, mesh_file = uri.split(pkg_tag)[1].split(os.sep, 1)
+                print(get_pkg_fn(package))
+                mesh_file = str(get_pkg_fn(package))+os.sep+mesh_file
+            elif uri.startswith(file_tag):
+                mesh_file = uri.replace(file_tag, "")
+            x = y = z = 0
+            if mesh_file.endswith((".stl", ".obj")):
+                model = trimesh.load_mesh(mesh_file)
+                x,y,z = getMeshDimensions(model)
+            # Assuming .dae
+            else:
+                model = collada.Collada(mesh_file)
+                x,y,z = getColladaDimensions(model)
+            xx,yy,zz = getBoxInertia(x, y, z, mass, scale)
+        elif geometry_type == 'box':
+            print("  Box:  " + str(geometry_data['size']))
+            print("---\nCalculating inertia...\n---")
+            x,y,z = geometry_data['size']
+            xx,yy,zz = getBoxInertia(x, y, z, mass, scale)
+        elif geometry_type == 'sphere':
+            print("  Sphere Radius:  " + str(geometry_data['radius']))
+            print("---\nCalculating inertia...\n---")
+            xx,yy,zz = getSphereInertia(geometry_data['radius'], mass)
+        elif geometry_type == 'cylinder':
+            print("  Cylinder Radius and Length:  " + str(geometry_data['radius']) + "," + str(geometry_data['length']))
+            print("---\nCalculating inertia...\n---")
+            xx,yy,zz = getCylinderInertia(geometry_data['radius'], geometry_data['length'], mass)
+
+    print(" ")
+    print("<inertia  ixx=\"%s\" ixy=\"0\" ixz=\"0\" iyy=\"%s\" iyz=\"0\" izz=\"%s\" />" % (xx,yy,zz))
+    print(" ")
 
 def getBoxInertia(x, y, z, m, s):
     x *= s[0]
@@ -110,29 +286,27 @@ def getCylinderInertia(r, h, m):
     return xx, yy, zz
 
 if __name__ == '__main__':
-    robot = URDF.from_xml_string(xacro.process_file(sys.argv[1]).toprettyxml())
-    for link in robot.links:
-        link_name = mass = geometry = None
-        x = y = z = 0.0
-        scale = [1.0, 1.0, 1.0]
-        link_name = link.name
-        inertial = link.inertial
-        if inertial:
-            mass = inertial.mass
-            if mass:
-                visual = link.visual
-                if visual:
-                    geometry = visual.geometry
-                # If we don't find a visual geometry, look for a collision one
-                else:
-                    collision = link.collision
-                    if collision:
-                        geometry = collision.geometry
+    # path = sys.argv[1]
+    # robot = URDF.from_xml_string(xacro.process_file(sys.argv[1]).toprettyxml())
+    # robot = URDF.from_xml_file(sys.argv[1])
+    # path = "/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/model.sdf"
+    rospy.init_node("calc_inertia")
+    path = rosparam.get_param("/calc_inertia/file_path")
 
-        if mass != None and geometry != None:
-            try:
-                if geometry.scale:
-                    scale = geometry.scale
-            except:
-                scale = [1.0,1.0,1.0]
-            getInertia(geometry, mass, scale)
+    if path.endswith("xacro"):
+        model = URDF.from_xml_string(xacro.process_file(path).toprettyxml())
+        for link in model.links:
+            getLInkInertia_urdf(link)
+    elif path.endswith("urdf"):
+        model = URDF.from_xml_file(path)
+        for link in model.links:
+            getLInkInertia_urdf(link)
+    elif path.endswith("sdf"):
+        sdf = pysdf.SDF(file=path)
+        # assume only one model in the sdf file
+        model = sdf.world.models[0]
+        for link in model.links:
+            getLInkInertia_sdf(link)
+        
+
+

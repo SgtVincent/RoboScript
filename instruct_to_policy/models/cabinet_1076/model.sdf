@@ -354,7 +354,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-15.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-15.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -410,7 +410,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-18.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-18.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -466,7 +466,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-16.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-16.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -522,7 +522,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-3.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-3.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -578,7 +578,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-7.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-7.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -634,7 +634,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-22.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-22.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -690,7 +690,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-8.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-8.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -746,7 +746,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-10.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-10.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -802,7 +802,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-21.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-21.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -858,7 +858,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-5.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-5.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -914,7 +914,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-23.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-23.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -970,7 +970,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-11.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-11.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -1026,7 +1026,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-12.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-12.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -1082,7 +1082,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-4.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-4.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -1138,7 +1138,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-2.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-2.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -1194,7 +1194,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-20.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-20.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -1250,7 +1250,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-19.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-19.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -1306,7 +1306,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-14.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-14.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -1362,7 +1362,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-88.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-88.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -1418,7 +1418,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-6.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-6.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -1474,7 +1474,7 @@
         <pose>0 0 0 1.5708 0 -1.5708</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-17.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-17.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -1706,7 +1706,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-52.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-52.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -1762,7 +1762,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-43.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-43.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -1818,7 +1818,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-42.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-42.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -1874,7 +1874,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-48.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-48.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -1930,7 +1930,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-46.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-46.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -1986,7 +1986,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-49.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-49.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -2042,7 +2042,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-47.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-47.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -2098,7 +2098,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-45.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-45.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -2154,7 +2154,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-55.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-55.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -2210,7 +2210,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-54.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-54.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -2266,7 +2266,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-53.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-53.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -2505,7 +2505,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-81.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-81.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -2561,7 +2561,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-80.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-80.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -2617,7 +2617,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-78.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-78.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -2673,7 +2673,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-75.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-75.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -2729,7 +2729,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-79.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-79.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -2785,7 +2785,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-77.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-77.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -2841,7 +2841,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-74.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-74.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -2897,7 +2897,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-84.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-84.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -2953,7 +2953,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-87.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-87.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -3009,7 +3009,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-85.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-85.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -3065,7 +3065,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-86.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-86.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -3297,7 +3297,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-59.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-59.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -3353,7 +3353,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-62.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-62.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -3409,7 +3409,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-64.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-64.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -3465,7 +3465,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-65.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-65.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -3521,7 +3521,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-63.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-63.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -3577,7 +3577,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-70.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-70.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -3633,7 +3633,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-61.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-61.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -3689,7 +3689,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-71.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-71.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -3745,7 +3745,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-58.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-58.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -3801,7 +3801,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-69.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-69.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -3857,7 +3857,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-68.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-68.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -4101,7 +4101,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-33.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-33.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -4157,7 +4157,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-39.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-39.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -4213,7 +4213,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-27.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-27.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -4269,7 +4269,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-31.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-31.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -4325,7 +4325,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-26.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-26.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -4381,7 +4381,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-32.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-32.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -4437,7 +4437,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-30.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-30.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -4493,7 +4493,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-29.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-29.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -4549,7 +4549,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-38.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-38.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -4605,7 +4605,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-36.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-36.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>
@@ -4661,7 +4661,7 @@
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
-            <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/models/cabinet_1076/textured_objs/original-37.obj</uri>
+            <uri>model://cabinet_1076/textured_objs/original-37.obj</uri>
             <scale>1 1 1</scale>
           </mesh>
         </geometry>

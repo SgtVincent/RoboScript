@@ -87,14 +87,18 @@ def getLInkInertia_urdf(link: Link):
             collision: Collision
             pkg_tag = "package://"
             file_tag = "file://"
-            mesh_file = ""
+            model_tag = "model://"
+            mesh_file = collision.filename
+
             if collision.geometry.filename.startswith(pkg_tag):
                 package, mesh_file = collision.filename.split(pkg_tag)[1].split(os.sep, 1)
                 print(get_pkg_fn(package))
                 mesh_file = str(get_pkg_fn(package))+os.sep+mesh_file
             elif collision.geometry.filename.startswith(file_tag):
                 mesh_file = collision.filename.replace(file_tag, "")
-
+            elif collision.geometry.filename.startswith(model_tag):
+                model_dir = os.getenv("GAZEBO_MODEL_PATH")
+                mesh_file = collision.filename.replace(model_tag, model_dir+os.sep)
             # collision center relative to link center
             collision_center = collision.pose.xyz
 
@@ -126,13 +130,18 @@ def getLInkInertia_urdf(link: Link):
             print("---\nCalculating inertia...\n---")
             pkg_tag = "package://"
             file_tag = "file://"
-            mesh_file = ""
+            model_tag = "model://"
+            mesh_file = geometry.filename
             if geometry.filename.startswith(pkg_tag):
                 package, mesh_file = geometry.filename.split(pkg_tag)[1].split(os.sep, 1)
                 print(get_pkg_fn(package))
                 mesh_file = str(get_pkg_fn(package))+os.sep+mesh_file
             elif geometry.filename.startswith(file_tag):
                 mesh_file = geometry.filename.replace(file_tag, "")
+            elif geometry.filename.startswith(model_tag):
+                model_dir = os.getenv("GAZEBO_MODEL_PATH")
+                mesh_file = geometry.filename.replace(model_tag, model_dir+os.sep)
+
             x = y = z = 0
             if mesh_file.endswith((".stl", ".obj")):
                 model = trimesh.load_mesh(mesh_file)
@@ -192,6 +201,7 @@ def getLInkInertia_sdf(link: SDFLink):
             collision: SDFCollision
             pkg_tag = "package://"
             file_tag = "file://"
+            model_tag = "model://"
             uri = collision.geometry_data['uri']
             mesh_file = uri
             if uri.startswith(pkg_tag):
@@ -200,6 +210,9 @@ def getLInkInertia_sdf(link: SDFLink):
                 mesh_file = str(get_pkg_fn(package))+os.sep+mesh_file
             elif uri.startswith(file_tag):
                 mesh_file = uri.replace(file_tag, "")
+            elif uri.startswith(model_tag):
+                model_dir = os.getenv("GAZEBO_MODEL_PATH")
+                mesh_file = uri.replace(model_tag, model_dir+os.sep)
 
             # collision center relative to link center
             collision_center = collision.pose[:3, 3]
@@ -227,19 +240,25 @@ def getLInkInertia_sdf(link: SDFLink):
         geometry_data = link.collisions[0].geometry_data
         geometry_type = link.collisions[0].geometry_type
         uri = geometry_data['uri']
-        scale = geometry_data['scale']
+        # string to list of numbers
+        scale = [float(i) for i in geometry_data['scale'].split()]
         if geometry_type == 'mesh':
             print("  Mesh:  " + uri)
             print("---\nCalculating inertia...\n---")
             pkg_tag = "package://"
             file_tag = "file://"
-            mesh_file = ""
+            model_tag = "model://"
+            mesh_file = uri
             if uri.startswith(pkg_tag):
                 package, mesh_file = uri.split(pkg_tag)[1].split(os.sep, 1)
                 print(get_pkg_fn(package))
                 mesh_file = str(get_pkg_fn(package))+os.sep+mesh_file
             elif uri.startswith(file_tag):
                 mesh_file = uri.replace(file_tag, "")
+            elif uri.startswith(model_tag):
+                model_dir = os.getenv("GAZEBO_MODEL_PATH")
+                mesh_file = uri.replace(model_tag, model_dir+os.sep)
+
             x = y = z = 0
             if mesh_file.endswith((".stl", ".obj")):
                 model = trimesh.load_mesh(mesh_file)

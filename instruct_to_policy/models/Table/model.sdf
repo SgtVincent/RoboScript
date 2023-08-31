@@ -2,6 +2,10 @@
   <model name="Table">
     <static>true</static>
     <link name="link">
+      <gravity>1</gravity>
+      <inertial>
+        <mass>10.0</mass> 
+      </inertial>
       <collision name="surface">
         <pose>0 0 1.0 0 0 0</pose>
         <geometry>

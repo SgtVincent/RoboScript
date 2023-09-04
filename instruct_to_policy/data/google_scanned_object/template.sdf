@@ -1,0 +1,48 @@
+<?xml version='1.0'?>
+<sdf version="1.4">
+  <model name="$MODEL">
+    <!--<friction>
+      <ode>
+        <mu>0.8</mu>
+        <mu2>0.6</mu2>
+      </ode>
+    </friction>-->
+    <link name="link">
+      <inertial>       
+        <pose>$COM_POSE</pose> 
+        <mass>$MASS</mass>
+        <inertia>
+          <ixx>$IXX</ixx>
+          <ixy>$IXY</ixy>
+          <ixz>$IXZ</ixz>
+          <iyy>$IYY</iyy>
+          <iyz>$IYZ</iyz>
+          <izz>$IZZ</izz>
+        </inertia>
+      </inertial>
+      <collision name="collision">
+        <geometry>
+          <mesh>
+            <!-- Use a downsampled mesh for collisions -->
+            <uri>model://$MODEL/meshes/model.obj</uri>
+	        </mesh>
+        </geometry>
+      <surface>
+      </surface>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://$MODEL/meshes/model.obj</uri>
+	        </mesh>
+        </geometry>
+        <!-- <material>
+          <script>
+            <uri>model://$MODEL/$MODEL.material</uri>
+            <name>$MODEL</name>
+          </script>
+        </material> -->
+      </visual>
+    </link>
+  </model>
+</sdf>

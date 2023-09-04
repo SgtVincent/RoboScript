@@ -5,7 +5,14 @@
       <inertial>
         <pose>0 0 0 0 -0 0</pose>
         <mass>100</mass>
-        <inertia  ixx="27.945378620841662" ixy="0" ixz="0" iyy="16.609441110241665" iyz="0" izz="32.59602664941666" />
+        <inertia>
+          <ixx>27.945378620841662</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>16.609441110241665</iyy>
+          <iyz>0</iyz>
+          <izz>32.59602664941666</izz>
+        </inertia>
       </inertial>
       <self_collide>0</self_collide>
       <enable_wind>0</enable_wind>
@@ -1530,7 +1537,14 @@
       <inertial>
         <pose>0 0 0 0 -0 0</pose>
         <mass>1</mass>
-        <inertia  ixx="0.06598219020833333" ixy="0" ixz="0" iyy="0.1509901320330833" iyz="0" izz="0.12100081564874995" />
+        <inertia> 
+          <ixx> 0.06598219020833333 </ixx>
+          <ixy> 0 </ixy>
+          <ixz> 0 </ixz>
+          <iyy> 0.1509901320330833 </iyy>
+          <iyz> 0 </iyz>
+          <izz> 0.12100081564874995 </izz>
+        </inertia>
       </inertial>
       <self_collide>0</self_collide>
       <enable_wind>0</enable_wind>
@@ -3121,7 +3135,14 @@
       <inertial>
         <pose>0 0 0 0 -0 0</pose>
         <mass>1</mass>
-        <inertia  ixx="0.05435549562616668" ixy="0" ixz="0" iyy="0.1509900055608333" iyz="0" izz="0.10937424753883329" />
+        <inertia> 
+          <ixx>0.05435549562616668</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.1509900055608333</iyy>
+          <iyz>0</iyz>
+          <izz>0.10937424753883329</izz>
+        </inertia>
       </inertial>
       <self_collide>0</self_collide>
       <enable_wind>0</enable_wind>
@@ -3913,7 +3934,14 @@
       <inertial>
         <pose>0 0 0 0 -0 0</pose>
         <mass>1</mass>
-        <inertia  ixx="0.05670848092041667" ixy="0" ixz="0" iyy="0.1509900055608333" iyz="0" izz="0.11172723283308329" />
+        <inertia>
+          <ixx>0.05670848092041667</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.1509900055608333</iyy>
+          <iyz>0</iyz>
+          <izz>0.11172723283308329</izz>
+        </inertia>
       </inertial>
       <self_collide>0</self_collide>
       <enable_wind>0</enable_wind>

@@ -1,5 +1,7 @@
 import ast
 import astunparse
+import numpy as np 
+
 
 def var_exists(name, all_vars):
     try:
@@ -60,3 +62,43 @@ class FunctionParser(ast.NodeTransformer):
             f_name = astunparse.unparse(node.value.func).strip()
             self._f_assigns[f_name] = assign_str
         return node
+
+#################################################################
+# mesh utils 
+#################################################################
+def getMeshBounds(mesh, center=np.array([0,0,0])):
+    """Returns the bounds of .obj/.mlt mesh"""
+    return mesh.bounds[1, :] + center, mesh.bounds[0, :] + center
+
+def getColladaBounds(model, center=np.array([0,0,0])):
+    """Returns the bounds of .dae mesh"""
+    minx = miny = minz = float("inf")
+    maxx = maxy = maxz = float("-inf")
+    for tr_vertex in model.geometries[0].primitives[0].vertex[model.geometries[0].primitives[0].vertex_index]:
+        for v in tr_vertex:
+            maxx = maxx if v[0] <= maxx else v[0]
+            maxy = maxy if v[1] <= maxy else v[1]
+            maxz = maxz if v[2] <= maxz else v[2]
+            minx = minx if v[0] >= minx else v[0]
+            miny = miny if v[1] >= miny else v[1]
+            minz = minz if v[2] >= minz else v[2]
+    return np.array([maxx, maxy, maxz]) + center, np.array([minx, miny, minz]) + center
+
+def getMeshDimensions(mesh):
+    """Returns the dimensions of .obj/.mlt mesh"""
+    return mesh.bounds[1, :] - mesh.bounds[0, :]
+
+def getColladaDimensions(model):
+    """Returns the dimensions of .dae mesh"""
+    minx = miny = minz = float("inf")
+    maxx = maxy = maxz = float("-inf")
+    for tr_vertex in model.geometries[0].primitives[0].vertex[model.geometries[0].primitives[0].vertex_index]:
+        for v in tr_vertex:
+            maxx = maxx if v[0] <= maxx else v[0]
+            maxy = maxy if v[1] <= maxy else v[1]
+            maxz = maxz if v[2] <= maxz else v[2]
+            minx = minx if v[0] >= minx else v[0]
+            miny = miny if v[1] >= miny else v[1]
+            minz = minz if v[2] >= minz else v[2]
+    return maxx - minx, maxy - miny, maxz - minz
+

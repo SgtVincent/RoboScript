@@ -9,6 +9,7 @@
   <arg name="paused"      default="false" doc="Should the simulation directly be stopped at 0s?" />
   <arg name="world"       default="worlds/empty.world" doc="Filename to a SDF World for gazebo to use" />
   <arg name="rviz"        default="false" doc="Should RVIz be launched?" />
+  <arg name="verbose"     default="false" doc="Should gazebo be started in verbose mode?" />
 
   <!-- Robot Customization -->
   <arg name="arm_id"      default="panda" doc="Name of the panda robot to spawn" />
@@ -41,6 +42,7 @@
     <arg name="paused" value="true"/>
     <arg name="gui" value="$(eval not arg('headless'))"/>
     <arg name="use_sim_time" value="true"/>
+    <arg name="verbose" value="$(arg verbose)"/>
   </include>
 
   <param name="robot_description"

@@ -162,3 +162,8 @@ log/
 instruct_to_policy/scripts/ur5e/
 instruct_to_policy/scripts/bowl/
 instruct_to_policy/scripts/robotiq_2f_85/
+
+# generated data
+instruct_to_policy/data/google_scanned_object/models
+instruct_to_policy/data/google_scanned_object/thumbnails
+instruct_to_policy/data/ycb/models

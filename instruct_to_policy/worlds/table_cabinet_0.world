@@ -1,10 +1,10 @@
-<sdf version='1.7'>
-  <world name='default'>
-    <!-- gazebo global world/physics parameters -->
+<sdf version="1.7">
+  <world name="default">
+    
     <gravity>0 0 -9.8</gravity>
     <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
-    <atmosphere type='adiabatic'/>
-    <physics type='ode'>
+    <atmosphere type="adiabatic" />
+    <physics type="ode">
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1</real_time_factor>
       <real_time_update_rate>1000</real_time_update_rate>
@@ -22,20 +22,20 @@
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
 
-    <!-- basic environments -->
+    
     <include>
       <uri>model://ground_plane</uri>
     </include>
     <include>
       <uri>model://sun</uri>
     </include>
-    <!-- add gazebo default table  -->
+    
     <include>
       <uri>model://Table</uri>
       <name>table</name>
       <pose>0 0 0 0 0 0</pose>
     </include>
-    <!-- add cabinet 1076 -->
+    
     <include>
       <uri>model://cabinet_1076</uri>
       <pose>-1.70273 0.000686 0.866007 0 0 -3.14</pose>
@@ -43,11 +43,8 @@
     </include>
 
     
-    <!-- Panda arm configuration:  
-      - panda arm base at (-0.6, 0.0, 1.02)
-      - panda hand reachable range: 1.3 on table, z=1.02
-    -->
-    <!-- Add containers and objects HERE -->
+    
+    
 
-  </world>
+  <include><uri>model://Ecoforms_Plant_Container_SB9Turquoise</uri><name>Ecoforms_Plant_Container_SB9Turquoise</name><pose>-0.008110120973935597 -0.2741179254317202 1.261247 0.0 0.0 0.0</pose></include><include><uri>model://Ecoforms_Plant_Bowl_Atlas_Low</uri><name>Ecoforms_Plant_Bowl_Atlas_Low</name><pose>-0.4378715880658342 0.2818375079172889 1.154373 0.0 0.0 0.0</pose></include><include><uri>model://037_scissors</uri><name>scissors</name><pose>-0.10747783648697895 0.1692266795574805 1.3975415 0.0 0.0 0.0</pose></include><include><uri>model://053_mini_soccer_ball</uri><name>mini_soccer_ball</name><pose>0.33224231620841227 0.0779751068175461 1.5074575000000001 0.0 0.0 0.0</pose></include><include><uri>model://004_sugar_box</uri><name>sugar_box</name><pose>0.15369571080441724 -0.08343605877559873 1.5578855 0.0 0.0 0.0</pose></include></world>
 </sdf>

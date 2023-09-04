@@ -1,10 +1,10 @@
-<sdf version='1.7'>
-  <world name='default'>
-    <!-- gazebo global world/physics parameters -->
+<sdf version="1.7">
+  <world name="default">
+    
     <gravity>0 0 -9.8</gravity>
     <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
-    <atmosphere type='adiabatic'/>
-    <physics type='ode'>
+    <atmosphere type="adiabatic" />
+    <physics type="ode">
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1</real_time_factor>
       <real_time_update_rate>1000</real_time_update_rate>
@@ -22,20 +22,20 @@
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
 
-    <!-- basic environments -->
+    
     <include>
       <uri>model://ground_plane</uri>
     </include>
     <include>
       <uri>model://sun</uri>
     </include>
-    <!-- add gazebo default table  -->
+    
     <include>
       <uri>model://Table</uri>
       <name>table</name>
       <pose>0 0 0 0 0 0</pose>
     </include>
-    <!-- add cabinet 1076 -->
+    
     <include>
       <uri>model://cabinet_1076</uri>
       <pose>-1.70273 0.000686 0.866007 0 0 -3.14</pose>
@@ -43,11 +43,8 @@
     </include>
 
     
-    <!-- Panda arm configuration:  
-      - panda arm base at (-0.6, 0.0, 1.02)
-      - panda hand reachable range: 1.3 on table, z=1.02
-    -->
-    <!-- Add containers and objects HERE -->
+    
+    
 
-  </world>
+  <include><uri>model://Ecoforms_Plant_Pot_GP9AAvocado</uri><name>Ecoforms_Plant_Pot_GP9AAvocado</name><pose>-0.14649830379771522 0.28801502926673417 1.106802 0.0 0.0 0.0</pose></include><include><uri>model://Ecoforms_Plant_Container_SB9Turquoise</uri><name>Ecoforms_Plant_Container_SB9Turquoise</name><pose>0.236688840525908 -0.26961553203673083 1.261247 0.0 0.0 0.0</pose></include><include><uri>model://022_windex_bottle</uri><name>windex_bottle</name><pose>-0.3042267383050292 0.03713977140703645 1.6516715 0.0 0.0 0.0</pose></include><include><uri>model://028_skillet_lid</uri><name>skillet_lid</name><pose>-0.26553289315567846 -0.31660030838870246 1.4579255 0.0 0.0 0.0</pose></include><include><uri>model://041_small_marker</uri><name>small_marker</name><pose>-0.08661236528881866 0.1866923949237066 1.49145868 0.0 0.0 0.0</pose></include></world>
 </sdf>

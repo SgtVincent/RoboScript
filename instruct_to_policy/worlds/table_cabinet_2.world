@@ -1,10 +1,10 @@
-<sdf version='1.7'>
-  <world name='default'>
-    <!-- gazebo global world/physics parameters -->
+<sdf version="1.7">
+  <world name="default">
+    
     <gravity>0 0 -9.8</gravity>
     <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
-    <atmosphere type='adiabatic'/>
-    <physics type='ode'>
+    <atmosphere type="adiabatic" />
+    <physics type="ode">
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1</real_time_factor>
       <real_time_update_rate>1000</real_time_update_rate>
@@ -22,20 +22,20 @@
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
 
-    <!-- basic environments -->
+    
     <include>
       <uri>model://ground_plane</uri>
     </include>
     <include>
       <uri>model://sun</uri>
     </include>
-    <!-- add gazebo default table  -->
+    
     <include>
       <uri>model://Table</uri>
       <name>table</name>
       <pose>0 0 0 0 0 0</pose>
     </include>
-    <!-- add cabinet 1076 -->
+    
     <include>
       <uri>model://cabinet_1076</uri>
       <pose>-1.70273 0.000686 0.866007 0 0 -3.14</pose>
@@ -43,11 +43,8 @@
     </include>
 
     
-    <!-- Panda arm configuration:  
-      - panda arm base at (-0.6, 0.0, 1.02)
-      - panda hand reachable range: 1.3 on table, z=1.02
-    -->
-    <!-- Add containers and objects HERE -->
+    
+    
 
-  </world>
+  <include><uri>model://Footed_Bowl_Sand</uri><name>Footed_Bowl_Sand</name><pose>0.05102730448695558 -0.07706396425074769 1.128839 0.0 0.0 0.0</pose></include><include><uri>model://Pennington_Electric_Pot_Cabana_4</uri><name>Pennington_Electric_Pot_Cabana_4</name><pose>0.15859569363157433 -0.32265940014184785 1.117826 0.0 0.0 0.0</pose></include><include><uri>model://012_strawberry</uri><name>strawberry</name><pose>-0.23791013741840095 -0.10714630491414506 1.2289335 0.0 0.0 0.0</pose></include><include><uri>model://058_golf_ball</uri><name>golf_ball</name><pose>0.202103869814106 0.2435525664522128 1.2256335 0.0 0.0 0.0</pose></include><include><uri>model://038_padlock</uri><name>padlock</name><pose>-0.5796321902180634 -0.1737889886651508 1.2123995 0.0 0.0 0.0</pose></include></world>
 </sdf>

@@ -15,7 +15,7 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <arg name="verbose" default="false" />
 
   <!-- Environment variables for loading local artifacts -->
-  <env name="GAZEBO_MODEL_PATH" value="$(find instruct_to_policy)/data/ycb/models:$(find instruct_to_policy)/data/google_scanned_object/models:$(find instruct_to_policy)/models$(optenv GAZEBO_MODEL_PATH)"/>
+  <env name="GAZEBO_MODEL_PATH" value="$(find instruct_to_policy)/data/ycb/models:$(find instruct_to_policy)/data/google_scanned_object/models:$(find instruct_to_policy)/models:$(optenv GAZEBO_MODEL_PATH)"/>
   <env name="GAZEBO_RESOURCE_PATH" value="$(find instruct_to_policy)/worlds:$(optenv GAZEBO_RESOURCE_PATH)"/>
   <env name="LD_LIBRARY_PATH" value="$(find instruct_to_policy)/../../../devel/lib:$(optenv LD_LIBRARY_PATH)"/>
 
@@ -37,8 +37,8 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <arg name="x" default="-0.6" />
   <arg name="z" default="1.02" />
   <!-- <arg name="world" default="$(find instruct_to_policy)/worlds/table_cabinet.world" /> -->
-  <arg name="world" default="$(find instruct_to_policy)/worlds/table_cabinet_base.world" />
-
+  <!-- <arg name="world" default="$(find instruct_to_policy)/worlds/table_cabinet_base.world" /> -->
+  <arg name="world" default="$(find instruct_to_policy)/worlds/table_cabinet_0.world" />
 
 
 

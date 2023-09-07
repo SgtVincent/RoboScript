@@ -39,7 +39,8 @@ def parse_args():
     parser.add_argument("--num_worlds", type=int, default=10, help="Number of worlds to generate")
     parser.add_argument("--base_world_file", type=str, default="worlds/table_cabinet_base.world", help="World file to use as base")
     parser.add_argument("--output_folder", type=str, default="worlds", help="Output folder")
-    parser.add_argument("--model_margin", type=int, default=0.05, help="Margin to add to the model bounding box")
+    parser.add_argument("--model_margin", type=int, default=0.01, help="Margin to add to the model bounding box")
+    parser.add_argument("--container_margin", type=int, default= 0.05, help="Margin when placing objects in containers")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     
     # base world parameters, since the base world uses <include> tag to load the models, positions need to be manually specified here
@@ -121,6 +122,7 @@ def sample_container_position(container_id, container_models, models_in_world, a
     panda_base_xy = args.panda_base_xy
     panda_max_range = args.panda_max_range
     margin = args.model_margin
+    c_margin = args.container_margin
 
     # get the container dimension
     container_dimension = np.array(container_models[container_id]["bbox_size"])
@@ -128,8 +130,9 @@ def sample_container_position(container_id, container_models, models_in_world, a
     for _ in range(num_trial):
             
         # If the container collides with other containers or the panda arm, sample a new position
-        x = np.random.uniform(table_xy_bbox[0], table_xy_bbox[1])
-        y = np.random.uniform(table_xy_bbox[2], table_xy_bbox[3])
+        # table also seen as a container, apply the container_margin constraint
+        x = np.random.uniform(table_xy_bbox[0] + c_margin, table_xy_bbox[1] - c_margin)
+        y = np.random.uniform(table_xy_bbox[2] + c_margin, table_xy_bbox[3] - c_margin)
         # bounding box bottom should be on surface
         z = table_surface_z + container_models[container_id]["bbox_size"][2] / 2.0 + margin
         container_position = np.array([x, y, z])
@@ -156,7 +159,7 @@ def sample_container_position(container_id, container_models, models_in_world, a
     return None
 
 def sample_object_position(object_id, object_models, container_models, models_in_world, args, 
-                           ratio_in_container=0.6, max_objects_in_container=2, num_trial=20):
+                           ratio_in_container=0.6, max_objects_in_container=2, num_trial=40):
     """
     Randomly generate pickable object positions on the table with contraints:
     - object should not collide with other models
@@ -169,6 +172,7 @@ def sample_object_position(object_id, object_models, container_models, models_in
     panda_base_xy = args.panda_base_xy
     panda_max_range = args.panda_max_range
     margin = args.model_margin
+    c_margin = args.container_margin
 
     # get the object dimension
     object_dimension = np.array(object_models[object_id]["bbox_size"])
@@ -181,8 +185,8 @@ def sample_object_position(object_id, object_models, container_models, models_in
     # - xy-bounding box should be larger than the object
     valid_containers = [container for container in all_containers 
                             if len(models_in_world[container]["objects_in"]) < max_objects_in_container and
-                               container_models[container]["bbox_size"][0] > object_models[object_id]["bbox_size"][0] and
-                                 container_models[container]["bbox_size"][1] > object_models[object_id]["bbox_size"][1]]
+                               container_models[container]["bbox_size"][0] > object_models[object_id]["bbox_size"][0] + c_margin and
+                                 container_models[container]["bbox_size"][1] > object_models[object_id]["bbox_size"][1] + c_margin] 
     
 
     for _ in range(num_trial):
@@ -195,14 +199,17 @@ def sample_object_position(object_id, object_models, container_models, models_in
             # randomly select a position on the container
             container_bbox_bottom = models_in_world[container_id]["bbox"][0]
             container_bbox_top = models_in_world[container_id]["bbox"][1]
-            x = np.random.uniform(container_bbox_bottom[0], container_bbox_top[0])
-            y = np.random.uniform(container_bbox_bottom[1], container_bbox_top[1])
+            x = np.random.uniform(container_bbox_bottom[0] + object_models[object_id]["bbox_size"][0], 
+                                  container_bbox_top[0] - object_models[object_id]["bbox_size"][0])
+            y = np.random.uniform(container_bbox_bottom[1] + object_models[object_id]["bbox_size"][1], 
+                                  container_bbox_top[1] - object_models[object_id]["bbox_size"][1])
             z = container_bbox_top[2] + object_models[object_id]["bbox_size"][2] / 2.0 + margin
         else:
             # sample a position on the table
             container_id = None
-            x = np.random.uniform(table_xy_bbox[0], table_xy_bbox[1])
-            y = np.random.uniform(table_xy_bbox[2], table_xy_bbox[3])
+            # table also seen as a container, apply the container_margin constraint
+            x = np.random.uniform(table_xy_bbox[0] + c_margin, table_xy_bbox[1] - c_margin)
+            y = np.random.uniform(table_xy_bbox[2] + c_margin, table_xy_bbox[3] - c_margin)
             z = table_surface_z + object_models[object_id]["bbox_size"][2] / 2.0 + margin
 
         object_position = np.array([x, y, z])

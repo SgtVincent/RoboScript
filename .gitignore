@@ -167,3 +167,4 @@ instruct_to_policy/scripts/robotiq_2f_85/
 instruct_to_policy/data/google_scanned_object/models/
 instruct_to_policy/data/google_scanned_object/*_thumbnails/
 instruct_to_policy/data/ycb/models/
+instruct_to_policy/data/ycb/*_thumbnails/

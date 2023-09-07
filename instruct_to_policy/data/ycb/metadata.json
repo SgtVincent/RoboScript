@@ -36,15 +36,6 @@
                 0.213437
             ]
         },
-        "004_sugar_box": {
-            "model_id": "004_sugar_box",
-            "model_name": "sugar_box",
-            "bbox_size": [
-                0.049496,
-                0.094162,
-                0.176015
-            ]
-        },
         "005_tomato_soup_can": {
             "model_id": "005_tomato_soup_can",
             "model_name": "tomato_soup_can",
@@ -63,33 +54,6 @@
                 0.191301
             ]
         },
-        "007_tuna_fish_can": {
-            "model_id": "007_tuna_fish_can",
-            "model_name": "tuna_fish_can",
-            "bbox_size": [
-                0.085559,
-                0.08554,
-                0.033538
-            ]
-        },
-        "008_pudding_box": {
-            "model_id": "008_pudding_box",
-            "model_name": "pudding_box",
-            "bbox_size": [
-                0.137938,
-                0.128756,
-                0.038889
-            ]
-        },
-        "009_gelatin_box": {
-            "model_id": "009_gelatin_box",
-            "model_name": "gelatin_box",
-            "bbox_size": [
-                0.089404,
-                0.101108,
-                0.030074
-            ]
-        },
         "010_potted_meat_can": {
             "model_id": "010_potted_meat_can",
             "model_name": "potted_meat_can",
@@ -97,24 +61,6 @@
                 0.102085,
                 0.060103000000000004,
                 0.08354299999999999
-            ]
-        },
-        "011_banana": {
-            "model_id": "011_banana",
-            "model_name": "banana",
-            "bbox_size": [
-                0.10894200000000001,
-                0.178447,
-                0.036739999999999995
-            ]
-        },
-        "012_strawberry": {
-            "model_id": "012_strawberry",
-            "model_name": "strawberry",
-            "bbox_size": [
-                0.045224,
-                0.045286,
-                0.045675
             ]
         },
         "013_apple": {
@@ -216,15 +162,6 @@
                 0.081303
             ]
         },
-        "026_sponge": {
-            "model_id": "026_sponge",
-            "model_name": "sponge",
-            "bbox_size": [
-                0.079147,
-                0.112113,
-                0.019007
-            ]
-        },
         "028_skillet_lid": {
             "model_id": "028_skillet_lid",
             "model_name": "skillet_lid",
@@ -232,51 +169,6 @@
                 0.268264,
                 0.269153,
                 0.076055
-            ]
-        },
-        "029_plate": {
-            "model_id": "029_plate",
-            "model_name": "plate",
-            "bbox_size": [
-                0.26015,
-                0.261102,
-                0.026723
-            ]
-        },
-        "030_fork": {
-            "model_id": "030_fork",
-            "model_name": "fork",
-            "bbox_size": [
-                0.197556,
-                0.027110000000000002,
-                0.015884000000000002
-            ]
-        },
-        "031_spoon": {
-            "model_id": "031_spoon",
-            "model_name": "spoon",
-            "bbox_size": [
-                0.18596000000000001,
-                0.082929,
-                0.020891999999999997
-            ]
-        },
-        "032_knife": {
-            "model_id": "032_knife",
-            "model_name": "knife",
-            "bbox_size": [
-                0.21483000000000002,
-                0.020605000000000002,
-                0.022614000000000002
-            ]
-        },
-        "033_spatula": {
-            "model_id": "033_spatula",
-            "model_name": "spatula",
-            "bbox_size": [
-                0.30552199999999996,
-                0.12459399999999998,
-                0.032933000000000004
             ]
         },
         "035_power_drill": {
@@ -295,114 +187,6 @@
                 0.103917,
                 0.103464,
                 0.206003
-            ]
-        },
-        "037_scissors": {
-            "model_id": "037_scissors",
-            "model_name": "scissors",
-            "bbox_size": [
-                0.09608,
-                0.20152399999999998,
-                0.015671
-            ]
-        },
-        "038_padlock": {
-            "model_id": "038_padlock",
-            "model_name": "padlock",
-            "bbox_size": [
-                0.066973,
-                0.068055,
-                0.029140999999999997
-            ]
-        },
-        "040_large_marker": {
-            "model_id": "040_large_marker",
-            "model_name": "large_marker",
-            "bbox_size": [
-                0.021022,
-                0.120969,
-                0.018895
-            ]
-        },
-        "041_small_marker": {
-            "model_id": "041_small_marker",
-            "model_name": "small_marker",
-            "bbox_size": [
-                0.02520811,
-                0.02112603,
-                0.10958818000000001
-            ]
-        },
-        "042_adjustable_wrench": {
-            "model_id": "042_adjustable_wrench",
-            "model_name": "adjustable_wrench",
-            "bbox_size": [
-                0.124799,
-                0.181093,
-                0.014654
-            ]
-        },
-        "043_phillips_screwdriver": {
-            "model_id": "043_phillips_screwdriver",
-            "model_name": "phillips_screwdriver",
-            "bbox_size": [
-                0.194858,
-                0.106967,
-                0.035515
-            ]
-        },
-        "044_flat_screwdriver": {
-            "model_id": "044_flat_screwdriver",
-            "model_name": "flat_screwdriver",
-            "bbox_size": [
-                0.161871,
-                0.156885,
-                0.035040999999999996
-            ]
-        },
-        "048_hammer": {
-            "model_id": "048_hammer",
-            "model_name": "hammer",
-            "bbox_size": [
-                0.1822,
-                0.33272199999999996,
-                0.032862
-            ]
-        },
-        "049_small_clamp": {
-            "model_id": "049_small_clamp",
-            "model_name": "small_clamp",
-            "bbox_size": [
-                0.14677076,
-                0.11545949999999999,
-                0.04696654
-            ]
-        },
-        "050_medium_clamp": {
-            "model_id": "050_medium_clamp",
-            "model_name": "medium_clamp",
-            "bbox_size": [
-                0.088926,
-                0.07678399999999999,
-                0.026056
-            ]
-        },
-        "051_large_clamp": {
-            "model_id": "051_large_clamp",
-            "model_name": "large_clamp",
-            "bbox_size": [
-                0.12004100000000001,
-                0.171074,
-                0.039172
-            ]
-        },
-        "052_extra_large_clamp": {
-            "model_id": "052_extra_large_clamp",
-            "model_name": "extra_large_clamp",
-            "bbox_size": [
-                0.209954,
-                0.164344,
-                0.036316999999999995
             ]
         },
         "053_mini_soccer_ball": {
@@ -450,24 +234,6 @@
                 0.055574
             ]
         },
-        "058_golf_ball": {
-            "model_id": "058_golf_ball",
-            "model_name": "golf_ball",
-            "bbox_size": [
-                0.042679,
-                0.042720999999999995,
-                0.042375
-            ]
-        },
-        "059_chain": {
-            "model_id": "059_chain",
-            "model_name": "chain",
-            "bbox_size": [
-                0.310311,
-                0.30718500000000004,
-                0.024756
-            ]
-        },
         "061_foam_brick": {
             "model_id": "061_foam_brick",
             "model_name": "foam_brick",
@@ -475,15 +241,6 @@
                 0.052559999999999996,
                 0.077874,
                 0.051193
-            ]
-        },
-        "062_dice": {
-            "model_id": "062_dice",
-            "model_name": "dice",
-            "bbox_size": [
-                0.017158,
-                0.017079,
-                0.017554
             ]
         }
     }

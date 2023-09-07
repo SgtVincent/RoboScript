@@ -34,17 +34,19 @@
       <uri>model://Table</uri>
       <name>table</name>
       <pose>0 0 0 0 0 0</pose>
+      <static>1</static>
     </include>
     
     <include>
       <uri>model://cabinet_1076</uri>
-      <pose>-1.70273 0.000686 0.866007 0 0 -3.14</pose>
+      <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
       <scale>1 1 1</scale>
+      <static>1</static>
     </include>
 
     
     
     
 
-  <include><uri>model://Ecoforms_Plant_Pot_GP9AAvocado</uri><name>Ecoforms_Plant_Pot_GP9AAvocado</name><pose>-0.14649830379771522 0.28801502926673417 1.106802 0.0 0.0 0.0</pose></include><include><uri>model://Ecoforms_Plant_Container_SB9Turquoise</uri><name>Ecoforms_Plant_Container_SB9Turquoise</name><pose>0.236688840525908 -0.26961553203673083 1.261247 0.0 0.0 0.0</pose></include><include><uri>model://022_windex_bottle</uri><name>windex_bottle</name><pose>-0.3042267383050292 0.03713977140703645 1.6516715 0.0 0.0 0.0</pose></include><include><uri>model://028_skillet_lid</uri><name>skillet_lid</name><pose>-0.26553289315567846 -0.31660030838870246 1.4579255 0.0 0.0 0.0</pose></include><include><uri>model://041_small_marker</uri><name>small_marker</name><pose>-0.08661236528881866 0.1866923949237066 1.49145868 0.0 0.0 0.0</pose></include></world>
+  <include><uri>model://Chef_Style_Round_Cake_Pan_9_inch_pan</uri><name>Chef_Style_Round_Cake_Pan_9_inch_pan</name><pose>-0.22594670869270683 0.024081625413372998 1.092586 0.0 0.0 0.0</pose></include><include><uri>model://Central_Garden_Flower_Pot_Goo_425</uri><name>Central_Garden_Flower_Pot_Goo_425</name><pose>0.05605233521193553 -0.3781746533693675 1.120339 0.0 0.0 0.0</pose></include><include><uri>model://021_bleach_cleanser</uri><name>bleach_cleanser</name><pose>0.33015938803333744 0.527398729877027 1.1952900000000002 0.0 0.0 0.0</pose></include><include><uri>model://013_apple</uri><name>apple</name><pose>0.11747997457330217 0.5062490820277402 1.1059445 0.0 0.0 0.0</pose></include><include><uri>model://022_windex_bottle</uri><name>windex_bottle</name><pose>0.020995815060349587 -0.4298986824378386 1.3555785 0.0 0.0 0.0</pose></include></world>
 </sdf>

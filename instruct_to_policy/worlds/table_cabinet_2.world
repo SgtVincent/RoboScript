@@ -34,17 +34,19 @@
       <uri>model://Table</uri>
       <name>table</name>
       <pose>0 0 0 0 0 0</pose>
+      <static>1</static>
     </include>
     
     <include>
       <uri>model://cabinet_1076</uri>
-      <pose>-1.70273 0.000686 0.866007 0 0 -3.14</pose>
+      <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
       <scale>1 1 1</scale>
+      <static>1</static>
     </include>
 
     
     
     
 
-  <include><uri>model://Footed_Bowl_Sand</uri><name>Footed_Bowl_Sand</name><pose>0.05102730448695558 -0.07706396425074769 1.128839 0.0 0.0 0.0</pose></include><include><uri>model://Pennington_Electric_Pot_Cabana_4</uri><name>Pennington_Electric_Pot_Cabana_4</name><pose>0.15859569363157433 -0.32265940014184785 1.117826 0.0 0.0 0.0</pose></include><include><uri>model://012_strawberry</uri><name>strawberry</name><pose>-0.23791013741840095 -0.10714630491414506 1.2289335 0.0 0.0 0.0</pose></include><include><uri>model://058_golf_ball</uri><name>golf_ball</name><pose>0.202103869814106 0.2435525664522128 1.2256335 0.0 0.0 0.0</pose></include><include><uri>model://038_padlock</uri><name>padlock</name><pose>-0.5796321902180634 -0.1737889886651508 1.2123995 0.0 0.0 0.0</pose></include></world>
+  <include><uri>model://Threshold_Dinner_Plate_Square_Rim_White_Porcelain</uri><name>Threshold_Dinner_Plate_Square_Rim_White_Porcelain</name><pose>-0.39537105157525015 -0.5219380884176645 1.0894540000000001 0.0 0.0 0.0</pose></include><include><uri>model://Ecoforms_Planter_Pot_QP6Ebony</uri><name>Ecoforms_Planter_Pot_QP6Ebony</name><pose>0.3700768177397533 -0.2344634769919552 1.1541205 0.0 0.0 0.0</pose></include><include><uri>model://010_potted_meat_can</uri><name>potted_meat_can</name><pose>-0.34545053377941004 -0.538308775280134 1.2006795000000003 0.0 0.0 0.0</pose></include><include><uri>model://013_apple</uri><name>apple</name><pose>-0.3966779353038599 -0.6493014523518078 1.1948525000000003 0.0 0.0 0.0</pose></include><include><uri>model://024_bowl</uri><name>bowl</name><pose>-0.2894640220799797 0.19502674122477837 1.0975045 0.0 0.0 0.0</pose></include></world>
 </sdf>

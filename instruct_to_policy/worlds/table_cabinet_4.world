@@ -34,17 +34,19 @@
       <uri>model://Table</uri>
       <name>table</name>
       <pose>0 0 0 0 0 0</pose>
+      <static>1</static>
     </include>
     
     <include>
       <uri>model://cabinet_1076</uri>
-      <pose>-1.70273 0.000686 0.866007 0 0 -3.14</pose>
+      <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
       <scale>1 1 1</scale>
+      <static>1</static>
     </include>
 
     
     
     
 
-  <include><uri>model://Threshold_Dinner_Plate_Square_Rim_White_Porcelain</uri><name>Threshold_Dinner_Plate_Square_Rim_White_Porcelain</name><pose>-0.5713619575082849 -0.3414614920287914 1.058908 0.0 0.0 0.0</pose></include><include><uri>model://Ecoforms_Plant_Bowl_Atlas_Low</uri><name>Ecoforms_Plant_Bowl_Atlas_Low</name><pose>0.13407342252157917 -0.10213577646249938 1.154373 0.0 0.0 0.0</pose></include><include><uri>model://051_large_clamp</uri><name>large_clamp</name><pose>0.09190352181311079 0.3478449669874011 1.2607315000000001 0.0 0.0 0.0</pose></include><include><uri>model://022_windex_bottle</uri><name>windex_bottle</name><pose>-0.31107720887189794 -0.3496662459832758 1.4913605 0.0 0.0 0.0</pose></include><include><uri>model://032_knife</uri><name>knife</name><pose>0.1704124416244328 0.19206893150193316 1.2441735 0.0 0.0 0.0</pose></include></world>
+  <include><uri>model://Sapota_Threshold_4_Ceramic_Round_Planter_Red</uri><name>Sapota_Threshold_4_Ceramic_Round_Planter_Red</name><pose>-0.20960360308408277 -0.1335872523726216 1.1185685 0.0 0.0 0.0</pose></include><include><uri>model://Bradshaw_International_11642_7_Qt_MP_Plastic_Bowl</uri><name>Bradshaw_International_11642_7_Qt_MP_Plastic_Bowl</name><pose>-0.2743811618713249 0.39448501098231514 1.1472520000000002 0.0 0.0 0.0</pose></include><include><uri>model://054_softball</uri><name>softball</name><pose>-0.33629213635053545 0.4066572373299002 1.3217995000000002 0.0 0.0 0.0</pose></include><include><uri>model://021_bleach_cleanser</uri><name>bleach_cleanser</name><pose>-0.17757344289698135 -0.18019693115492796 1.342427 0.0 0.0 0.0</pose></include><include><uri>model://016_pear</uri><name>pear</name><pose>0.3266937231559889 -0.3615411821589931 1.1028315 0.0 0.0 0.0</pose></include></world>
 </sdf>

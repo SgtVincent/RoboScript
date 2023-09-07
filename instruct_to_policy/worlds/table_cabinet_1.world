@@ -34,17 +34,19 @@
       <uri>model://Table</uri>
       <name>table</name>
       <pose>0 0 0 0 0 0</pose>
+      <static>1</static>
     </include>
     
     <include>
       <uri>model://cabinet_1076</uri>
-      <pose>-1.70273 0.000686 0.866007 0 0 -3.14</pose>
+      <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
       <scale>1 1 1</scale>
+      <static>1</static>
     </include>
 
     
     
     
 
-  <include><uri>model://Ecoforms_Plant_Container_URN_SAN</uri><name>Ecoforms_Plant_Container_URN_SAN</name><pose>-0.20642053604532995 0.02948617462131875 1.179359 0.0 0.0 0.0</pose></include><include><uri>model://Bradshaw_International_11642_7_Qt_MP_Plastic_Bowl</uri><name>Bradshaw_International_11642_7_Qt_MP_Plastic_Bowl</name><pose>-0.5353481258640413 -0.29057032341440064 1.174504 0.0 0.0 0.0</pose></include><include><uri>model://059_chain</uri><name>chain</name><pose>-0.011606393823621941 0.2047627559182561 1.2837945 0.0 0.0 0.0</pose></include><include><uri>model://028_skillet_lid</uri><name>skillet_lid</name><pose>-0.7164728659958395 -0.38362581215284036 1.3350935 0.0 0.0 0.0</pose></include><include><uri>model://036_wood_block</uri><name>wood_block</name><pose>-0.216547796577381 -0.3545429148834507 1.4650414999999999 0.0 0.0 0.0</pose></include></world>
+  <include><uri>model://Ecoforms_Plant_Saucer_SQ8COR</uri><name>Ecoforms_Plant_Saucer_SQ8COR</name><pose>-0.23490930844855473 0.02970771795868543 1.0865945000000001 0.0 0.0 0.0</pose></include><include><uri>model://Central_Garden_Flower_Pot_Goo_425</uri><name>Central_Garden_Flower_Pot_Goo_425</name><pose>-0.08166597762946104 -0.2505250317623497 1.120339 0.0 0.0 0.0</pose></include><include><uri>model://002_master_chef_can</uri><name>master_chef_can</name><pose>-0.4326073672175498 -0.24942642175773821 1.1400885 0.0 0.0 0.0</pose></include><include><uri>model://028_skillet_lid</uri><name>skillet_lid</name><pose>-0.05271601893955691 0.34221115367161625 1.1080275000000002 0.0 0.0 0.0</pose></include><include><uri>model://021_bleach_cleanser</uri><name>bleach_cleanser</name><pose>-0.23233512413696036 0.04638836280914638 1.2784790000000001 0.0 0.0 0.0</pose></include></world>
 </sdf>

@@ -34,12 +34,14 @@
       <uri>model://Table</uri>
       <name>table</name>
       <pose>0 0 0 0 0 0</pose>
+      <static>1</static>
     </include>
     <!-- add cabinet 1076 -->
     <include>
       <uri>model://cabinet_1076</uri>
-      <pose>-1.70273 0.000686 0.866007 0 0 -3.14</pose>
+      <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
       <scale>1 1 1</scale>
+      <static>1</static>
     </include>
 
     

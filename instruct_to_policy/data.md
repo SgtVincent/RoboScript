@@ -1,6 +1,6 @@
 # Data Preparation for Instruct2Policy
 
-## Download preprocessed data
+## Download preprocessed models
 
 You can download data from [here](.).
 
@@ -9,14 +9,17 @@ Unzip and place the processed gazebo sdf models under the `data` folder. The `da
 ```
 data
 ├── google_scanned_objects
-│   ├── 0000
-│   ├── 0001
-│   ├── 0002
+|   ├── models
+|   │   ├── 5_HTP
+|   │   ├── AllergenFree_JarroDophilus
+|   │   ├── Android_Figure_Panda
+|   │   ├── ...
 ├── ycb
-│   ├── 001_chips_can
-│   ├── 002_master_chef_can
-│   ├── ... 
-
+│   ├── models
+│   │   ├── 001_chips_can
+│   │   ├── 002_master_chef_can
+│   │   ├── ...
+```
 
 ## Data generation from scratch 
 
@@ -35,4 +38,12 @@ If you want to select your custom objects collection, you can refer to the jupyt
 
 ### [YCB Dataset](http://ycbbenchmarks.org/)
 
-Please follow the [repo](https://github.com/sea-bass/ycb-tools) to download and process the ycb datasets. 
+Please follow the [repo](https://github.com/sea-bass/ycb-tools) to download and process the ycb datasets. You can also refer to the jupyter notebook [process_ycb.ipynb](./scripts/jupyter/process_ycb.ipynb) for more details about model selection and metadata processing.
+
+## World generation
+
+You can run the script [generate_random_table_cabinet_world.py](./scripts/data/generate_random_table_cabinet_world.py) to generate random table cabinet world. The script will randomly select containers and pickable objects from the model dataset and place them on the table of a pre-defined world [table_cabinet_base.world](./worlds/table_cabinet_base.world). For more details, please refer to the script or run helper command:
+
+```bash
+python ./scripts/data/generate_random_table_cabinet_world.py --help
+```

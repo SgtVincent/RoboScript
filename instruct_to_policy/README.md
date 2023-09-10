@@ -45,9 +45,18 @@ mamba activate ros_env
 # Install ros-noetic common dev tools
 mamba install compilers cxx-compiler cmake pkg-config make ninja colcon-common-extensions catkin_tools boost-cpp 
 
-# Install moveit dependencies
+# Install ros gazebo packages
+mamba instsall ros-noetic-gazebo-ros
+
+# Install realsense ros packages integrated with gazebo (deprecated)
+# NOTE: currently broken for some unknown reason when integrating with gazebo realsense plugins 
+# Use third-party realsense-ros-gazebo repo instead
+# mamba install ros-noetic-realsense2-camera ros-noetic-realsense2-description ros-noetic-librealsense2
+
+# (Optional) Install moveit dependencies if missing error occurs 
 pip install catkin-tools wstool 
 ```
+
 
 ### Install MoveIt ROS Packages
 
@@ -76,6 +85,13 @@ mamba install ros-noetic-franka-ros
 <!-- **However**, if you want to test the pipeline of the franka robot in gazebo simulation, you need to build the franka ros packages from source, following the tutorials on [Gazebo Simulation Integration](https://ros-planning.github.io/moveit_tutorials/doc/gazebo_simulation/gazebo_simulation.html?highlight=gazebo#gazebo-simulation-integration). -->
 
 
+### Install Realsense ROS Packages Integrated with Gazebo
+
+Please refer to this [repo](https://github.com/rickstaa/realsense-ros-gazebo) for installation:
+```bash
+git clone https://github.com/rickstaa/realsense-ros-gazebo
+
+```
 
 
 ### Troubleshooting 

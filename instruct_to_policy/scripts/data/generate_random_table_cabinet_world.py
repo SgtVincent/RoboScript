@@ -41,6 +41,7 @@ def parse_args():
     parser.add_argument("--output_folder", type=str, default="worlds", help="Output folder")
     parser.add_argument("--model_margin", type=int, default=0.01, help="Margin to add to the model bounding box")
     parser.add_argument("--container_margin", type=int, default= 0.05, help="Margin when placing objects in containers")
+    parser.add_argument("--table_margin", type=int, default= 0.15, help="Margin when placing objects on the table")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     
     # base world parameters, since the base world uses <include> tag to load the models, positions need to be manually specified here
@@ -123,6 +124,7 @@ def sample_container_position(container_id, container_models, models_in_world, a
     panda_max_range = args.panda_max_range
     margin = args.model_margin
     c_margin = args.container_margin
+    t_margin = args.table_margin
 
     # get the container dimension
     container_dimension = np.array(container_models[container_id]["bbox_size"])
@@ -131,8 +133,8 @@ def sample_container_position(container_id, container_models, models_in_world, a
             
         # If the container collides with other containers or the panda arm, sample a new position
         # table also seen as a container, apply the container_margin constraint
-        x = np.random.uniform(table_xy_bbox[0] + c_margin, table_xy_bbox[1] - c_margin)
-        y = np.random.uniform(table_xy_bbox[2] + c_margin, table_xy_bbox[3] - c_margin)
+        x = np.random.uniform(table_xy_bbox[0] + t_margin, table_xy_bbox[1] - t_margin)
+        y = np.random.uniform(table_xy_bbox[2] + t_margin, table_xy_bbox[3] - t_margin)
         # bounding box bottom should be on surface
         z = table_surface_z + container_models[container_id]["bbox_size"][2] / 2.0 + margin
         container_position = np.array([x, y, z])
@@ -173,6 +175,7 @@ def sample_object_position(object_id, object_models, container_models, models_in
     panda_max_range = args.panda_max_range
     margin = args.model_margin
     c_margin = args.container_margin
+    t_margin = args.table_margin
 
     # get the object dimension
     object_dimension = np.array(object_models[object_id]["bbox_size"])
@@ -208,8 +211,8 @@ def sample_object_position(object_id, object_models, container_models, models_in
             # sample a position on the table
             container_id = None
             # table also seen as a container, apply the container_margin constraint
-            x = np.random.uniform(table_xy_bbox[0] + c_margin, table_xy_bbox[1] - c_margin)
-            y = np.random.uniform(table_xy_bbox[2] + c_margin, table_xy_bbox[3] - c_margin)
+            x = np.random.uniform(table_xy_bbox[0] + t_margin, table_xy_bbox[1] - t_margin)
+            y = np.random.uniform(table_xy_bbox[2] + t_margin, table_xy_bbox[3] - t_margin)
             z = table_surface_z + object_models[object_id]["bbox_size"][2] / 2.0 + margin
 
         object_position = np.array([x, y, z])

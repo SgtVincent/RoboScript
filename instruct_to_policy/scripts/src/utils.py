@@ -102,3 +102,38 @@ def getColladaDimensions(model):
             minz = minz if v[2] >= minz else v[2]
     return maxx - minx, maxy - miny, maxz - minz
 
+
+##################################################
+# Pose utils
+##################################################
+
+def get_mirrored_pose_to_plane(original_pose_matrix, mirror_normal, mirror_point):
+    """Returns the mirrored pose of the original pose across the mirror plane"""
+
+    # Display the original pose transformation matrix
+    print("Original Pose Transformation Matrix:")
+    print(original_pose_matrix)
+
+    # Function to create a reflection transformation matrix for a given mirror plane
+    def reflection_matrix(mirror_normal, mirror_point):
+        d = mirror_point
+        n = mirror_normal
+        # Reflected rotation can be computed by: 
+        # Subtract twice this matrix from the identity matrix (I) to obtain the reflection matrix (R):
+        # R = I - 2 * N * N^T
+        reflection = np.eye(4)
+        reflection[:3, :3] = np.eye(3) - 2 * np.outer(n, n)
+        reflection[:3, 3] = 2 * np.dot(d, n) * n
+        return reflection
+
+    # Create the reflection transformation matrix
+    reflection_transform = reflection_matrix(mirror_normal, mirror_point)
+
+    # Apply the reflection transformation to the original pose transformation matrix
+    mirrored_pose_matrix = np.dot(reflection_transform, original_pose_matrix)
+
+    print("\nMirrored Pose Transformation Matrix:")
+    print(mirrored_pose_matrix)
+
+
+

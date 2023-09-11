@@ -13,6 +13,9 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <arg name="gazebo_gui" default="true" />
   <arg name="paused" default="false" />
   <arg name="verbose" default="false" />
+  <arg name="camera_set" default="true"/>
+  <arg name="camera_model" default="$(find realsense_gazebo_plugin)/urdf/triple_d435_cameras.urdf.xacro"/>
+
 
   <!-- Environment variables for loading local artifacts -->
   <env name="GAZEBO_MODEL_PATH" value="$(find instruct_to_policy)/data/ycb/models:$(find instruct_to_policy)/data/google_scanned_object/models:$(find instruct_to_policy)/models:$(optenv GAZEBO_MODEL_PATH)"/>

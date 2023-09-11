@@ -10,6 +10,8 @@
   <arg name="world"       default="worlds/empty.world" doc="Filename to a SDF World for gazebo to use" />
   <arg name="rviz"        default="false" doc="Should RVIz be launched?" />
   <arg name="verbose"     default="false" doc="Should gazebo be started in verbose mode?" />
+  <arg name="camera_set"  default="false" doc="Should the camera set be launched in gazebo?" />
+  <arg name="camera_model" default="$(find realsense_gazebo_plugin)/urdf/triple_d435_cameras.urdf.xacro" doc="Filename to a urdf.xacro file for gazebo to use" />
 
   <!-- Robot Customization -->
   <arg name="arm_id"      default="panda" doc="Name of the panda robot to spawn" />
@@ -45,15 +47,21 @@
     <arg name="verbose" value="$(arg verbose)"/>
   </include>
 
-  <param name="robot_description"
-         command="xacro $(find instruct_to_policy)/robots/panda/panda.urdf.xacro
-                  gazebo:=true
-                  hand:=$(arg use_gripper)
-                  arm_id:=$(arg arm_id)
-                  xyz:='$(arg x) $(arg y) $(arg z)'
-                  rpy:='$(arg roll) $(arg pitch) $(arg yaw)'
-                  $(arg xacro_args)">
+  <param name="robot_description" 
+      command="xacro $(find instruct_to_policy)/robots/panda/panda.urdf.xacro 
+          gazebo:=true hand:=$(arg use_gripper) 
+          arm_id:=$(arg arm_id) 
+          xyz:='$(arg x) $(arg y) $(arg z)' 
+          rpy:='$(arg roll) $(arg pitch) $(arg yaw)'
+          $(arg xacro_args)">
   </param>
+
+  <!-- camera description to load in gazebo -->
+  <param name="camera_description" 
+      command="xacro $(arg camera_model) 
+          use_nominal_extrinsics:=true 
+          publish_pointcloud:=true
+          add_plug:=false" />
 
   <rosparam file="$(find franka_gazebo)/config/franka_hw_sim.yaml" subst_value="true" />
   <rosparam file="$(find franka_gazebo)/config/sim_controllers.yaml" subst_value="true" />
@@ -67,6 +75,10 @@
         args="-param robot_description -urdf -model $(arg arm_id) $(arg unpause)
               $(arg initial_joint_positions)
               "/>
+
+  <!-- push camera to factory and spawn robot in gazebo -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
+        args="-urdf -model triple_camera_set -param camera_description" output="screen" />
 
   <!-- Spawn required ROS controllers -->
   <node pkg="controller_manager"

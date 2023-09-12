@@ -55,7 +55,7 @@ move_to_pose(pull_pose, move_group)
 open_gripper(gripper_group)
 detach_object('door')
 '''
-}
+},
 {# Turn a Faucet Clockwise
 "role":"user",
 "content": "objects = ['faucet', 'handle', 'sink'] \n # turn the faucet clockwise"

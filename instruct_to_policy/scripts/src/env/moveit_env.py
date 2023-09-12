@@ -55,19 +55,25 @@ class GripperCommanderGroup:
         self.gripper_move_client = actionlib.SimpleActionClient(
             "/franka_gripper/move", franka_gripper.msg.MoveAction
         )
+        self.gripper_move_client.wait_for_server()
+        self.gripper_grasp_client.wait_for_server()
+        print("Gripper action clients ready")
 
-    def open_gripper(self, width=0.08):
+
+    def open_gripper(self, width=0.12):
         goal = franka_gripper.msg.MoveGoal(width=width, speed=0.04)
+        # self.gripper_move_client.send_goal_and_wait(goal, rospy.Duration(3.0))
         self.gripper_move_client.send_goal(goal)
-        self.gripper_move_client.wait_for_result()
+        self.gripper_move_client.wait_for_result(rospy.Duration(3.0))
 
     def close_gripper(self, width=0.025, speed=0.25, force=20):
         """Close the gripper."""
         goal = franka_gripper.msg.GraspGoal(width=width, speed=speed, force=force)
         goal.epsilon.inner = 0.03
         goal.epsilon.outer = 0.03
+        # self.gripper_grasp_client.send_goal_and_wait(goal, rospy.Duration(3.0))
         self.gripper_grasp_client.send_goal(goal)
-        self.gripper_grasp_client.wait_for_result()
+        self.gripper_grasp_client.wait_for_result(rospy.Duration(3.0))
 
 
 class MoveitGazeboEnv(GazeboEnv):
@@ -105,7 +111,7 @@ class MoveitGazeboEnv(GazeboEnv):
         # MoveIt! interface
         self.robot = moveit_commander.RobotCommander()
         self.scene = moveit_commander.PlanningSceneInterface()
-        self.move_group = moveit_commander.MoveGroupCommander("panda_manipulator", wait_for_servers=15)
+        self.move_group = moveit_commander.MoveGroupCommander("panda_arm", wait_for_servers=15)
         # self.gripper = moveit_commander.MoveGroupCommander("panda_hand", wait_for_servers=15)
         self.gripper_group = GripperCommanderGroup()
 
@@ -224,7 +230,7 @@ class MoveitGazeboEnv(GazeboEnv):
 
     def reset_scene(self):
         """Reset the scene to the initial state."""
-        self.scene.clear()
+        # self.scene.clear()
         self.objects = {}
         if self.use_sim:
             self.reset_world()
@@ -269,12 +275,14 @@ class MoveitGazeboEnv(GazeboEnv):
         """Reset the robot to the initial state and opens the gripper."""
         if group is None:
             group = self.move_group
+        if gripper_group is None:
+            gripper_group = self.gripper_group
+        self.reset_scene()
         self.open_gripper(gripper_group)
         group.set_joint_value_target(self.reset_joint_values)
         self._go(group)
         group.stop()
         group.clear_pose_targets()
-        self.reset_scene()
 
     def get_ee_pose(self, group=None):
         """Get the current pose of the end effector."""
@@ -283,11 +291,11 @@ class MoveitGazeboEnv(GazeboEnv):
         return group.get_current_pose().pose
 
     @_block
-    def open_gripper(self, gripper_group=None):
+    def open_gripper(self, gripper_group=None, width=0.12):
         """Open the gripper."""
         if gripper_group is None:
             gripper_group = self.gripper_group
-        gripper_group.open_gripper()
+        gripper_group.open_gripper(width=width)
 
 
     @_block

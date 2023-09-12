@@ -2,7 +2,12 @@ from typing import List, Tuple, Dict
 import os 
 import rospy 
 from std_srvs.srv import Empty
-from gazebo_msgs.srv import GetModelState, GetWorldProperties, GetModelProperties
+from gazebo_msgs.srv import (
+    GetModelState, 
+    GetLinkState,
+    GetWorldProperties, 
+    GetModelProperties
+)
 from moveit_commander import PlanningSceneInterface
 from geometry_msgs.msg import Quaternion, Point, Pose 
 from .env import Env
@@ -18,6 +23,7 @@ class GazeboEnv(Env):
         self.reset_world = rospy.ServiceProxy(f"/{self.node_name}/reset_world", Empty)
         self.reset_simulation = rospy.ServiceProxy(f"/{self.node_name}/reset_simulation", Empty)
         self.get_model_state = rospy.ServiceProxy(f"/{self.node_name}/get_model_state", GetModelState)
+        self.get_link_state = rospy.ServiceProxy(f"/{self.node_name}/get_link_state", GetLinkState)
         self.get_world_properties = rospy.ServiceProxy(f"/{self.node_name}/get_world_properties", GetWorldProperties)
         self.get_model_properties = rospy.ServiceProxy(f"/{self.node_name}/get_model_properties", GetModelProperties)
 
@@ -32,8 +38,24 @@ class GazeboEnv(Env):
 
     def get_obj_pos(self, obj_name):
         """ Get object position."""
+        # name matching: gazebo model name is different from the name in the world, 
+        # but obj_name should be a substring of the gazebo model name
+        gazebo_model_names = self.get_obj_names()
+        for gazebo_model_name in gazebo_model_names:
+            if obj_name in gazebo_model_name.lower():
+                obj_name = gazebo_model_name
+                break
+
         return self.get_model_state(obj_name, self.frame).pose.position
     
+    def get_link_pose(self, obj_name, link_name, ref_frame="world"):
+        """ Get link pose."""
+
+        full_link_name = f"{obj_name}::{link_name}"
+        resp = self.get_link_state(full_link_name, ref_frame)
+        return resp.link_state.pose
+
+
     def get_bbox(self, obj_name):
         """ Get object bounding box."""
         # TODO: install the get bounding box plugin in gazebo
@@ -74,6 +96,10 @@ class GazeboEnv(Env):
         NOTE: Grounding models/ perception models need to handle this function 
         Currently only use the position of the object and canonical orientation .
         """
+        # special case for drawer handle
+        if object in ["drawer", "cabinet"] or "drawer" in object.lower() or "cabinet" in object.lower():
+            return self.parse_drawer_handle_pose(object="cabinet_1076", action=action, description=description)
+
         if action in ['pick', 'grasp', 'grab', 'get', 'take', 'hold']:
             pose = Pose()
             pose.position = self.get_obj_pos(object)
@@ -97,4 +123,39 @@ class GazeboEnv(Env):
                 pose.orientation = self.reset_pose.orientation
             else:
                 pose.orientation = Quaternion(0,0,0,1)
+        return pose
+    
+    def parse_drawer_handle_pose(self, object, action="", description=""):
+        """ 
+        Parse pose of action for the drawer handle.
+        NOTE: Grounding models/ perception models need to handle this function 
+        Currently get the position of the handle by get the handle link position from gazebo. 
+        The orientation is canonical, perpendicular to the cabinet door.
+        """
+        # TODO: get the orientation of the handle from perception model or find another way to get the orientation
+        """
+        orientation: 
+        x: 0.6714430184317122
+        y: 0.26515792374322233
+        z: -0.6502306735376142
+        w: -0.2367606801525871
+        """
+        pre_defined_handle_orientation = Quaternion(0.6714430184317122, 0.26515792374322233, -0.6502306735376142, -0.2367606801525871)
+
+        # TODO: consider how to design pull and push actions 
+        if action in ['grasp', 'grab'] or 'grasp' in action or 'grab' in action:
+            pose = Pose()
+            pose.position = self.get_link_pose(object, "handle_3").position
+            pose.orientation = pre_defined_handle_orientation
+        elif action in ['pull', 'open'] or 'pull' in action or 'open' in action:
+            
+            pose = Pose() 
+            pose.position = self.get_link_pose(object, "handle_3").position
+            pose.position.x += 0.2
+            pose.orientation = pre_defined_handle_orientation
+        elif  action in ['push', 'close'] or 'push' in action or 'close' in action:
+            pose = Pose()
+            pose.position = self.get_link_pose(object, "handle_3").position
+            pose.position.x -= 0.2
+            pose.orientation = pre_defined_handle_orientation
         return pose

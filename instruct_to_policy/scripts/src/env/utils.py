@@ -9,6 +9,7 @@ import rospkg
 from geometry_msgs.msg import Pose, PoseStamped
 from gazebo_msgs.srv import (
     GetModelState,
+    GetLinkState,
     GetWorldProperties,
     GetModelProperties,
 )
@@ -137,4 +138,3 @@ def load_model_into_moveit(
 
     # except Exception as e:
     #     return e
-

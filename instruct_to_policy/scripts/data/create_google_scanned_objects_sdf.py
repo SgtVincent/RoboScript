@@ -34,14 +34,16 @@ if __name__=="__main__":
     parser.add_argument("--metadata-file", type=str, default=default_metadata_file,
                         help="Path to the metadata file (defaults to data/google_scanned_object/container_metadata.json)")
 
+    parser.add_argument("--use_voxel_volume", action="store_true", default=False)
+
     args = parser.parse_args()
+    args.use_voxel_volume = True
+    
     # wait for the user to press enter
     print("""
           Make sure you run this script from the root of the instruct_to_policy package! 
           `python scripts/data/create_google_scanned_objects_sdf.py`
-          Press enter to continue.
     """)
-    input() 
 
     # Get the list of models from the metadata file
     with open(args.metadata_file, "r") as f:
@@ -54,6 +56,7 @@ if __name__=="__main__":
     #     material_template_text = f.read()
 
     # Now loop through all the folders
+    failed_models = {}
     for model in models:
         try:
             print("Creating Gazebo files for {} ...".format(model))
@@ -63,6 +66,13 @@ if __name__=="__main__":
             mesh_file = os.path.join(model_folder, "meshes", "model.obj")
             mesh = trimesh.load(mesh_file)
 
+            # If mesh is not water tight, use its convex hull instead
+            if not mesh.is_watertight:
+                print("Mesh is not watertight. Use its convex hull...")
+                mesh = mesh.convex_hull
+                assert mesh.is_watertight
+            # change it later
+            mesh.density = 5.0
             # Mass and moments of inertia
             mass_text = str(mesh.mass)
             tf = mesh.principal_inertia_transform
@@ -91,18 +101,6 @@ if __name__=="__main__":
             with open(os.path.join(model_folder, model + ".sdf"), "w") as f:
                 f.write(model_text)
 
-            ## Copy and modify the material file template
-            # if mesh_type == "google_16k":
-            #     texture_file = "texture_map.png"
-            # elif mesh_type == "tsdf":
-            #     texture_file = "textured.png"
-            # material_text = material_template_text.replace("$MODEL", model)
-            # material_text = material_text.replace("$MODEL_LONG", model)
-            # material_text = material_text.replace("$MESH_TYPE", mesh_type)
-            # material_text = material_text.replace("$TEXTURE_FILE", texture_file)
-            # with open(os.path.join(model_folder, model + ".material"), "w") as f:
-            #     f.write(material_text)
-
             # change the default sdf file from model.sdf to $model.sdf
             config_file = os.path.join(args.models_folder, model, "model.config")
             with open(config_file,"r") as f:
@@ -114,7 +112,9 @@ if __name__=="__main__":
                 f.write(config_text)
 
         except Exception as e:
-            print("Error processing {}.".format(model))
-            print(e)
+            failed_models[model] = e
 
+    print("Failed to create Gazebo files for the following models:")
+    for model, e in failed_models.items():
+        print("|--{}: {}".format(model, e))
     print("Done.")

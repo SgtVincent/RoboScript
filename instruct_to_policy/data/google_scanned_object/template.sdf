@@ -1,12 +1,6 @@
 <?xml version='1.0'?>
 <sdf version="1.4">
   <model name="$MODEL">
-    <!--<friction>
-      <ode>
-        <mu>0.8</mu>
-        <mu2>0.6</mu2>
-      </ode>
-    </friction>-->
     <link name="link">
       <inertial>       
         <pose>$COM_POSE</pose> 
@@ -28,6 +22,18 @@
 	        </mesh>
         </geometry>
       <surface>
+        <friction>
+          <ode>
+            <mu>0.8</mu>
+            <mu2>0.6</mu2>
+          </ode>
+        </friction>
+        <contact>
+          <ode>
+            <max_vel>1</max_vel>
+            <min_depth>0.01</min_depth>
+          </ode>
+        </contact>
       </surface>
       </collision>
       <visual name="visual">

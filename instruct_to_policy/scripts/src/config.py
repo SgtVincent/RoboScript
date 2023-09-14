@@ -15,6 +15,7 @@ cfg_tabletop = {
       'interface': 'moveit',
       'verbose': False,
       'initial_joint_values': [0.0, -0.7854, 0.0, -2.3562, 0.0, 1.5708, 0.7854],
+      'extra_objects': ["cabinet_1076::drawer_0", "cabinet_1076::drawer_1", "cabinet_1076::drawer_2", "cabinet_1076::drawer_3"]
   },
   'lmps': {
     'tabletop_ui': {

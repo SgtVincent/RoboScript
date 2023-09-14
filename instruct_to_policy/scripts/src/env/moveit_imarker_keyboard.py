@@ -3,6 +3,7 @@
 # Credic: https://blog.csdn.net/shenyan0712/article/details/102818106
 
 import rospy
+import numpy as np
 import sys, select, termios, tty
 from scipy.spatial.transform import Rotation as R
 from geometry_msgs.msg import Pose, Point, Quaternion
@@ -95,37 +96,37 @@ class IMarkerKeyboard:
                 self.marker_pub.publish(goalPose)
             # Change the orientation of the marker
             elif key == 'u': # roll positive
-                roll = self.curRPY[0] + 0.01
+                roll = self.curRPY[0] + np.pi / 50
                 # update orientation according to roll
                 goalPose = self.curPose
                 goalPose.pose.orientation = rpy2quat([roll, self.curRPY[1], self.curRPY[2]])
                 self.marker_pub.publish(goalPose)
             elif key == 'i': # roll negative
-                roll = self.curRPY[0] - 0.01
+                roll = self.curRPY[0] - np.pi / 50
                 # update orientation according to roll
                 goalPose = self.curPose
                 goalPose.pose.orientation = rpy2quat([roll, self.curRPY[1], self.curRPY[2]])
                 self.marker_pub.publish(goalPose)
             elif key == 'j': # pitch positive   
-                pitch = self.curRPY[1] + 0.01
+                pitch = self.curRPY[1] + np.pi / 50
                 # update orientation according to pitch
                 goalPose = self.curPose
                 goalPose.pose.orientation = rpy2quat([self.curRPY[0], pitch, self.curRPY[2]])
                 self.marker_pub.publish(goalPose)
             elif key == 'k': # pitch negative
-                pitch = self.curRPY[1] - 0.01
+                pitch = self.curRPY[1] - np.pi / 50
                 # update orientation according to pitch
                 goalPose = self.curPose
                 goalPose.pose.orientation = rpy2quat([self.curRPY[0], pitch, self.curRPY[2]])
                 self.marker_pub.publish(goalPose)
             elif key == 'n': # yaw positive
-                yaw = self.curRPY[2] + 0.01
+                yaw = self.curRPY[2] + np.pi / 50
                 # update orientation according to yaw
                 goalPose = self.curPose
                 goalPose.pose.orientation = rpy2quat([self.curRPY[0], self.curRPY[1], yaw])
                 self.marker_pub.publish(goalPose)
             elif key == 'm': # yaw negative
-                yaw = self.curRPY[2] - 0.01
+                yaw = self.curRPY[2] - np.pi / 50
                 # update orientation according to yaw
                 goalPose = self.curPose
                 goalPose.pose.orientation = rpy2quat([self.curRPY[0], self.curRPY[1], yaw])

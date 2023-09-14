@@ -1,7 +1,12 @@
 import ast
 import astunparse
 import numpy as np 
+from typing import List, Dict, Any, Tuple, Optional
+import shapely
+from shapely.geometry import *
+from shapely.affinity import *
 
+############### Code execution utils #####################
 
 def var_exists(name, all_vars):
     try:
@@ -20,6 +25,52 @@ def merge_dicts(dicts):
         for k, v in d.items()
     }
     
+def prepare_vars(env):
+    """Prepare variables including APIs and objects for LMPs """
+    fixed_vars = {"np": np}
+    fixed_vars.update(
+        {name: eval(name) for name in shapely.geometry.__all__ + shapely.affinity.__all__}
+    )
+    variable_vars = {
+        k: getattr(env, k)
+        for k in [
+            "get_bbox",
+            "get_obj_pos",
+            "get_color",
+            "is_obj_visible",
+            "denormalize_xy",
+            "get_obj_names",
+            "get_corner_name",
+            "get_side_name",
+            "get_ee_pose",
+            "parse_pose",
+            "open_gripper",
+            "close_gripper",
+            "move_to_pose",
+            "move_joints_to",
+            "add_object_to_scene",
+            "attach_object",
+            "detach_object"
+            # DO NOT use mid-level skills?
+            # "grasp",
+            # "place"
+        ]
+    }
+    variable_vars["say"] = lambda msg: print(f"robot says: {msg}")
+    
+    # add moveit interfaces to variables
+    variable_vars.update(
+        {
+            k: getattr(env, k)
+            for k in [
+                "move_group",
+                "gripper_group",
+            ]
+        }
+    )
+
+    return fixed_vars, variable_vars
+
 
 def exec_safe(code_str, gvars=None, lvars=None):
     banned_phrases = ['import', '__']
@@ -62,6 +113,19 @@ class FunctionParser(ast.NodeTransformer):
             f_name = astunparse.unparse(node.value.func).strip()
             self._f_assigns[f_name] = assign_str
         return node
+
+
+
+
+##################################################
+# Text parsing utils 
+##############################################
+
+def has_keywords(text: str, keywords: List[str]) -> bool:
+    """ Check if text has any of the keywords."""
+    return any([kw in text.lower() for kw in keywords])
+
+
 
 #################################################################
 # mesh utils 

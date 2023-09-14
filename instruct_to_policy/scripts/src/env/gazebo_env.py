@@ -20,6 +20,7 @@ class GazeboEnv(Env):
         assert cfg['env']['sim'] == 'gazebo'
         self.node_name = cfg['env']['sim']
         self.frame = cfg['env']['frame']
+        self.extra_objects = cfg['env'].get('extra_objects', [])
         self.reset_world = rospy.ServiceProxy(f"/{self.node_name}/reset_world", Empty)
         self.reset_simulation = rospy.ServiceProxy(f"/{self.node_name}/reset_simulation", Empty)
         self.get_model_state = rospy.ServiceProxy(f"/{self.node_name}/get_model_state", GetModelState)
@@ -31,22 +32,38 @@ class GazeboEnv(Env):
 
     def get_obj_names(self)-> List[str]:
         """ Get all object names in the world."""
-        return [
+
+        objects = [
             obj for obj in self.get_world_properties().model_names
             if obj not in self.robot_names
         ]
+        if self.extra_objects:
+            objects += self.extra_objects
+            
+        return objects
 
     def get_obj_pos(self, obj_name):
         """ Get object position."""
         # name matching: gazebo model name is different from the name in the world, 
         # but obj_name should be a substring of the gazebo model name
+        
         gazebo_model_names = self.get_obj_names()
         for gazebo_model_name in gazebo_model_names:
             if obj_name in gazebo_model_name.lower():
                 obj_name = gazebo_model_name
                 break
-
-        return self.get_model_state(obj_name, self.frame).pose.position
+        # try query as model 
+        resp = self.get_model_state(obj_name, self.frame)
+        if resp.success:
+            return resp.pose.position
+        
+        # try query as link
+        resp = self.get_link_state(obj_name, self.frame)
+        if resp.success:
+            return resp.link_state.pose.position
+        
+        # Failed to get state for obj_name
+        return None
     
     def get_link_pose(self, obj_name, link_name, ref_frame="world"):
         """ Get link pose."""
@@ -141,21 +158,22 @@ class GazeboEnv(Env):
         w: -0.2367606801525871
         """
         pre_defined_handle_orientation = Quaternion(0.6714430184317122, 0.26515792374322233, -0.6502306735376142, -0.2367606801525871)
-
+        pre_defined_gripper_tip_offset = 0.1 # x-axis positive direction
         # TODO: consider how to design pull and push actions 
         if action in ['grasp', 'grab'] or 'grasp' in action or 'grab' in action:
             pose = Pose()
-            pose.position = self.get_link_pose(object, "handle_3").position
-            pose.orientation = pre_defined_handle_orientation
+            pose.position = self.get_link_pose(object, "link_handle_3").position 
+            pose.position.x += pre_defined_gripper_tip_offset
+            pose.orientation = pre_defined_handle_orientation 
         elif action in ['pull', 'open'] or 'pull' in action or 'open' in action:
             
             pose = Pose() 
-            pose.position = self.get_link_pose(object, "handle_3").position
-            pose.position.x += 0.2
+            pose.position = self.get_link_pose(object, "link_handle_3").position
+            pose.position.x += 0.2 + pre_defined_gripper_tip_offset
             pose.orientation = pre_defined_handle_orientation
         elif  action in ['push', 'close'] or 'push' in action or 'close' in action:
             pose = Pose()
-            pose.position = self.get_link_pose(object, "handle_3").position
-            pose.position.x -= 0.2
+            pose.position = self.get_link_pose(object, "link_handle_3").position
+            pose.position.x -= 0.2 + pre_defined_gripper_tip_offset
             pose.orientation = pre_defined_handle_orientation
         return pose

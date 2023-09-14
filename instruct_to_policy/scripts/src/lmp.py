@@ -12,10 +12,6 @@ from shapely.affinity import *
 import openai
 from openai.error import APIConnectionError, RateLimitError
 
-import shapely
-from shapely.geometry import *
-from shapely.affinity import *
-
 from src.utils import *
 from src.constants import *
 from src.config import *
@@ -220,48 +216,9 @@ def setup_LMP(env, cfg_tabletop):
     # TODO: load table top from simulation 
     cfg_tabletop["env"]["coords"] = lmp_tabletop_coords
     LMP_env = env
-    # creating APIs that the LMPs can interact with
-    fixed_vars = {"np": np}
-    fixed_vars.update(
-        {name: eval(name) for name in shapely.geometry.__all__ + shapely.affinity.__all__}
-    )
-    variable_vars = {
-        k: getattr(LMP_env, k)
-        for k in [
-            "get_bbox",
-            "get_obj_pos",
-            "get_color",
-            "is_obj_visible",
-            "denormalize_xy",
-            "get_obj_names",
-            "get_corner_name",
-            "get_side_name",
-            "get_ee_pose",
-            "parse_pose",
-            "open_gripper",
-            "close_gripper",
-            "move_to_pose",
-            "move_joints_to",
-            "add_object_to_scene",
-            "attach_object",
-            "detach_object"
-            # DO NOT use mid-level skills
-            # "grasp",
-            # "place"
-        ]
-    }
-    variable_vars["say"] = lambda msg: print(f"robot says: {msg}")
 
-    # add moveit interfaces to variables
-    variable_vars.update(
-        {
-            k: getattr(LMP_env, k)
-            for k in [
-                "move_group",
-                "gripper_group",
-            ]
-        }
-    )
+    # prepare vars including APIs and constants
+    fixed_vars, variable_vars = prepare_vars(LMP_env)
 
     # creating the function-generating LMP
     lmp_fgen = LMPFGen(cfg_tabletop["lmps"]["fgen"], fixed_vars, variable_vars)

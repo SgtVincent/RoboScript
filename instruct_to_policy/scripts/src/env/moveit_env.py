@@ -20,7 +20,6 @@ from visualization_msgs.msg import Marker
 
 import trimesh
 
-import actionlib
 import numpy as np
 from scipy.spatial.transform import Rotation
 import franka_gripper.msg
@@ -28,13 +27,16 @@ from franka_msgs.msg import ErrorRecoveryAction, ErrorRecoveryActionGoal
 import rospy
 
 # Brings in the SimpleActionClient
-import actionlib
+from actionlib import SimpleActionClient
 from moveit_msgs.msg import PositionIKRequest
 from moveit_msgs.srv import GetPositionIK
 
-
-from src.env.utils import get_pose_msg, get_stamped_pose
-from src.env.utils import load_model_into_moveit
+from src.env.utils import (
+    get_pose_msg, 
+    get_stamped_pose,
+    load_model_into_moveit
+)
+from src.utils import has_keywords
 from src.env.gazebo_env import GazeboEnv
 
 
@@ -49,31 +51,48 @@ class Grasp(NamedTuple):
 class GripperCommanderGroup:
 
     def __init__(self) -> None:    
-        self.gripper_grasp_client = actionlib.SimpleActionClient(
-            "/franka_gripper/grasp", franka_gripper.msg.GraspAction
-        )       
-        self.gripper_move_client = actionlib.SimpleActionClient(
-            "/franka_gripper/move", franka_gripper.msg.MoveAction
-        )
-        self.gripper_move_client.wait_for_server()
-        self.gripper_grasp_client.wait_for_server()
+
+        self.init_clients()
         print("Gripper action clients ready")
 
 
-    def open_gripper(self, width=0.12):
-        goal = franka_gripper.msg.MoveGoal(width=width, speed=0.04)
+    def init_clients(self):
+        self.gripper_grasp_client = SimpleActionClient(
+            "/franka_gripper/grasp", franka_gripper.msg.GraspAction
+        )       
+        self.gripper_grasp_client.wait_for_server()
+
+        self.gripper_move_client = SimpleActionClient(
+            "/franka_gripper/move", franka_gripper.msg.MoveAction
+        )
+        self.gripper_move_client.wait_for_server()
+
+        self.gripper_stop_client = SimpleActionClient(
+            "/franka_gripper/stop", franka_gripper.msg.StopAction)
+        self.gripper_stop_client.wait_for_server()
+
+
+    def reset(self):
+        self.gripper_stop_client.send_goal_and_wait(franka_gripper.msg.StopGoal())
+        self.init_clients()
+
+
+    def open_gripper(self, width=0.08):
+        goal = franka_gripper.msg.MoveGoal(width=width, speed=0.05)
         # self.gripper_move_client.send_goal_and_wait(goal, rospy.Duration(3.0))
         self.gripper_move_client.send_goal(goal)
-        self.gripper_move_client.wait_for_result(rospy.Duration(3.0))
+        done = self.gripper_move_client.wait_for_result()
+        return done
 
-    def close_gripper(self, width=0.025, speed=0.25, force=20):
+    def close_gripper(self, width=0.01, speed=0.05, force=50):
         """Close the gripper."""
         goal = franka_gripper.msg.GraspGoal(width=width, speed=speed, force=force)
-        goal.epsilon.inner = 0.03
-        goal.epsilon.outer = 0.03
+        goal.epsilon.inner = 0.08
+        goal.epsilon.outer = 0.08
         # self.gripper_grasp_client.send_goal_and_wait(goal, rospy.Duration(3.0))
         self.gripper_grasp_client.send_goal(goal)
-        self.gripper_grasp_client.wait_for_result(rospy.Duration(3.0))
+        done = self.gripper_grasp_client.wait_for_result()
+        return done
 
 
 class MoveitGazeboEnv(GazeboEnv):
@@ -98,6 +117,10 @@ class MoveitGazeboEnv(GazeboEnv):
         self.use_sim = len(self.sim) > 0
         self.verbose = cfg['env'].get('verbose', False)
 
+        # environment prior knowledge
+        # TODO: consider to parse this from external perception model
+        self.furniture_names = ['table']
+
         self.ignore_coll_check = False
         self.wait_at_grasp_pose = False
         self.wait_at_place_pose = False
@@ -111,11 +134,12 @@ class MoveitGazeboEnv(GazeboEnv):
         # MoveIt! interface
         self.robot = moveit_commander.RobotCommander()
         self.scene = moveit_commander.PlanningSceneInterface()
+        # self.move_group = moveit_commander.MoveGroupCommander("panda_arm", wait_for_servers=15)
         self.move_group = moveit_commander.MoveGroupCommander("panda_arm", wait_for_servers=15)
         # self.gripper = moveit_commander.MoveGroupCommander("panda_hand", wait_for_servers=15)
         self.gripper_group = GripperCommanderGroup()
 
-        self.error_recovery_client = actionlib.SimpleActionClient(
+        self.error_recovery_client = SimpleActionClient(
             "/franka_control/error_recovery", ErrorRecoveryAction
         )
 
@@ -278,11 +302,12 @@ class MoveitGazeboEnv(GazeboEnv):
         if gripper_group is None:
             gripper_group = self.gripper_group
         self.reset_scene()
-        self.open_gripper(gripper_group)
         group.set_joint_value_target(self.reset_joint_values)
         self._go(group)
         group.stop()
         group.clear_pose_targets()
+        gripper_group.reset()
+        self.open_gripper(gripper_group)
 
     def get_ee_pose(self, group=None):
         """Get the current pose of the end effector."""
@@ -291,19 +316,19 @@ class MoveitGazeboEnv(GazeboEnv):
         return group.get_current_pose().pose
 
     @_block
-    def open_gripper(self, gripper_group=None, width=0.12):
+    def open_gripper(self, gripper_group=None, width=0.08):
         """Open the gripper."""
         if gripper_group is None:
             gripper_group = self.gripper_group
-        gripper_group.open_gripper(width=width)
+        return gripper_group.open_gripper(width=width)
 
 
     @_block
-    def close_gripper(self, gripper_group=None):
+    def close_gripper(self, gripper_group=None, width=0.01):
         """Close the gripper."""
         if gripper_group is None:
             gripper_group = self.gripper_group
-        gripper_group.close_gripper()
+        return gripper_group.close_gripper(width=width)
 
 
     @_block
@@ -351,24 +376,31 @@ class MoveitGazeboEnv(GazeboEnv):
                 print(f"Moveit: object {object_id} not found in environment.")
 
     @_block
-    def attach_object(self, object_id, link="panda_hand"):
-        """Attach an object to the robot."""
+    def attach_object(self, object_id, link="panda_hand_tcp"):
+        """Attach an object to the robot gripper"""
     
-        # TODO: finish this part after the collision detection is done
         # TODO: add a dictionary to store the attached object
-        if object_id is not None and object_id in self.objects:
+        # DO NOT add furniture into moveit planning scene since they are static
+        if object_id in self.objects and not has_keywords(object_id, self.furniture_names):
             
-            self.move_group.attach_object(f"{object_id}", link)
+            # self.move_group.attach_object(f"{object_id}", link) 
+            self.scene.attach_mesh(object_id, object_id, 
+                                   touch_links=[*self.robot.get_link_names(group= "panda_hand"), "panda_joint7"])
             if self.verbose:
-                print(f"Moveit: attached object object {object_id} to gripper link")
+                rospy.loginfo(f"Moveit: attached object object {object_id} to gripper link")
 
     @_block
     def detach_object(self, object_id):
         """Detach an object from the robot."""
-        self.move_group.detach_object(object_id)
-        
-        if self.verbose:
-            print(f"Moveit: detached object {object_id} from gripper link")
+        try:
+            self.move_group.detach_object(object_id)
+            
+            if self.verbose:
+                print(f"Moveit: detached object {object_id} from gripper link")
+        except:
+            if self.verbose:
+                rospy.logerr(f"Moveit: failed to detach object {object_id} from gripper link")
+
 
     @_block
     def grasp(

@@ -6,6 +6,7 @@ from src.constants import *
 
 # model_name = 'code-davinci-002' # 'text-davinci-002' # deprecated in 2023
 model_name = 'gpt-3.5-turbo-16k' # recommened replacement for 'code-davinci-002'
+# model_name = 'gpt-4'
 
 cfg_tabletop = {
   'env': {
@@ -15,7 +16,7 @@ cfg_tabletop = {
       'interface': 'moveit',
       'verbose': False,
       'initial_joint_values': [0.0, -0.7854, 0.0, -2.3562, 0.0, 1.5708, 0.7854],
-      'extra_objects': ["cabinet_1076::drawer_0", "cabinet_1076::drawer_1", "cabinet_1076::drawer_2", "cabinet_1076::drawer_3"]
+      'extra_objects': ["cabinet.drawer_0", "cabinet.drawer_1", "cabinet.drawer_2", "cabinet.drawer_3"]
   },
   'lmps': {
     'tabletop_ui': {
@@ -25,7 +26,7 @@ cfg_tabletop = {
       'temperature': 0,
       'query_prefix': '# ',
       'query_suffix': '.',
-      'stop': ['#', 'objects = ['],
+      # 'stop': ['#', 'objects = ['],
       'maintain_session': True,
       'debug_mode': False,
       'include_context': True,
@@ -39,7 +40,7 @@ cfg_tabletop = {
       'temperature': 0,
       'query_prefix': '# ',
       'query_suffix': '.',
-      'stop': ['#', 'objects = ['],
+      # 'stop': ['#', 'objects = ['],
       'maintain_session': False,
       'debug_mode': False,
       'include_context': True,
@@ -67,7 +68,7 @@ cfg_tabletop = {
       'temperature': 0,
       'query_prefix': '# ',
       'query_suffix': '.',
-      'stop': ['#', 'objects = ['],
+      # 'stop': ['#', 'objects = ['],
       'maintain_session': False,
       'debug_mode': False,
       'include_context': True,
@@ -81,7 +82,7 @@ cfg_tabletop = {
       'temperature': 0,
       'query_prefix': '# ',
       'query_suffix': '.',
-      'stop': ['#'],
+      # 'stop': ['#'],
       'maintain_session': False,
       'debug_mode': False,
       'include_context': True,
@@ -95,7 +96,7 @@ cfg_tabletop = {
       'temperature': 0,
       'query_prefix': '# define function: ',
       'query_suffix': '.',
-      'stop': ['# define', '# example'],
+      # 'stop': ['# define', '# example'],
       'maintain_session': False,
       'debug_mode': False,
       'include_context': True,

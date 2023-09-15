@@ -28,7 +28,7 @@ class GazeboEnv(Env):
         self.get_world_properties = rospy.ServiceProxy(f"/{self.node_name}/get_world_properties", GetWorldProperties)
         self.get_model_properties = rospy.ServiceProxy(f"/{self.node_name}/get_model_properties", GetModelProperties)
 
-        self.robot_names = ["panda", "fr3"]
+        self.robot_names = ["panda", "fr3", "triple_camera_set"]
 
     def get_obj_names(self)-> List[str]:
         """ Get all object names in the world."""
@@ -58,18 +58,18 @@ class GazeboEnv(Env):
             return resp.pose.position
         
         # try query as link
-        resp = self.get_link_state(obj_name, self.frame)
+        link_name = obj_name.replace(".", "::")
+        resp = self.get_link_state(link_name, self.frame)
         if resp.success:
             return resp.link_state.pose.position
         
         # Failed to get state for obj_name
         return None
     
-    def get_link_pose(self, obj_name, link_name, ref_frame="world"):
+    def get_link_pose(self, link_name, ref_frame="world"):
         """ Get link pose."""
 
-        full_link_name = f"{obj_name}::{link_name}"
-        resp = self.get_link_state(full_link_name, ref_frame)
+        resp = self.get_link_state(link_name, ref_frame)
         return resp.link_state.pose
 
 
@@ -159,21 +159,31 @@ class GazeboEnv(Env):
         """
         pre_defined_handle_orientation = Quaternion(0.6714430184317122, 0.26515792374322233, -0.6502306735376142, -0.2367606801525871)
         pre_defined_gripper_tip_offset = 0.1 # x-axis positive direction
-        # TODO: consider how to design pull and push actions 
+        # get corresponding handle link ID: cabinet.drawer_0 -> cabinet::link_handle_0
+        if 'drawer' in object.lower():
+            # get drawer index 
+            drawer_index = object.split("_")[-1]
+            handle_link = object.split(".")[0] + f"::link_handle_{drawer_index}"
+        elif 'cabinet' in object.lower():
+            # use drawer_3 by default if no drawer index is specified
+            handle_link = object + "::link_handle_3"
+        else:
+            raise NotImplementedError(f"Cannot parse handle pose for object {object}")
+
         if action in ['grasp', 'grab'] or 'grasp' in action or 'grab' in action:
             pose = Pose()
-            pose.position = self.get_link_pose(object, "link_handle_3").position 
+            pose.position = self.get_link_pose(handle_link).position 
             pose.position.x += pre_defined_gripper_tip_offset
             pose.orientation = pre_defined_handle_orientation 
         elif action in ['pull', 'open'] or 'pull' in action or 'open' in action:
             
             pose = Pose() 
-            pose.position = self.get_link_pose(object, "link_handle_3").position
+            pose.position = self.get_link_pose(handle_link).position
             pose.position.x += 0.2 + pre_defined_gripper_tip_offset
             pose.orientation = pre_defined_handle_orientation
         elif  action in ['push', 'close'] or 'push' in action or 'close' in action:
             pose = Pose()
-            pose.position = self.get_link_pose(object, "link_handle_3").position
+            pose.position = self.get_link_pose(handle_link).position
             pose.position.x -= 0.2 + pre_defined_gripper_tip_offset
             pose.orientation = pre_defined_handle_orientation
         return pose

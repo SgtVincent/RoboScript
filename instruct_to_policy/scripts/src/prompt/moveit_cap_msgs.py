@@ -8,6 +8,7 @@ message_tabletop_ui = [
 "content": '''
 You are a strict assistant, translating natural language to a python script to control a robotic arm.
 Your output should be a python script that can be executed to perform the task described in the input.
+Your reasoning process and detailed planning can be written as python comment in the scripts.
 You can use the following imported modules and functions in your script:
 
 import moveit_commander
@@ -26,14 +27,24 @@ from plan_utils import add_object_to_scene, attach_object, detach_object, open_g
 "role":"assistant",
 "content":
 '''
+# Detailed planning: 
+# Step 1: grasp the drawer 
+# Step 2: pull the drawer 
+# Step 3: release the drawer 
+
+# Grasp the drawer
 grasp_pose = parse_pose('drawer', action="grasp")
 open_gripper(gripper_group)
 move_to_pose(grasp_pose, move_group)
 close_gripper(gripper_group)
 attach_object('drawer')
-pull_pose = parse_pose('drawer', action="pull")
-move_to_pose(pull_pose, move_group)
-open_gripper(gripper_group)
+
+# Pull the drawer
+pull_pose = parse_pose('drawer', action="pull")  
+(plan, fraction) = move_group.compute_cartesian_path(waypoints, 0.01, 0.0)
+move_group.execute(plan, wait=True)
+
+# Release the drawer
 detach_object('drawer')
 '''
 },
@@ -45,13 +56,23 @@ detach_object('drawer')
 "role":"assistant",
 "content":
 '''
+# Detailed planning: 
+# Step 1: grasp the door handle 
+# Step 2: pull the door 
+# Step 3: release the door handle 
+
+# Grasp the door handle
 grasp_pose = parse_pose('door', action="grasp")
 open_gripper(gripper_group)
 move_to_pose(grasp_pose, move_group)
 close_gripper(gripper_group)
 attach_object('door')
+
+# Pull the door
 pull_pose = parse_pose('door', action="pull")
 move_to_pose(pull_pose, move_group)
+
+# Release the door handle
 open_gripper(gripper_group)
 detach_object('door')
 '''
@@ -64,18 +85,23 @@ detach_object('door')
 "role":"assistant",
 "content":
 '''
+# Detailed planning:
+# Step 1: Grasp the faucet handle
+# Step 2: Turn the handle clockwise
+# Step 3: Release the faucet handle
+
+# Grasp the faucet handle
 grasp_pose = parse_pose(object='faucet', action='grasp')
 open_gripper(gripper_group)
 move_to_pose(grasp_pose, move_group)
 close_gripper(gripper_group)
 attach_object('faucet')
-waypoints = [move_group.get_current_pose().pose]
-for angle in range(0, 91, 10):
-    target_pose = set_pose(math.cos(math.radians(angle/2)), 0, 0, math.sin(math.radians(angle/2)))
-    target_pose.position = current_pose.position
-    waypoints.append(target_pose)
+
+# Turn the handle clockwise
 (plan, fraction) = move_group.compute_cartesian_path(waypoints, 0.01, 0.0)
 move_group.execute(plan, wait=True)
+
+# Release the faucet handle
 open_gripper(gripper_group)
 detach_object('faucet')
 '''
@@ -88,12 +114,24 @@ detach_object('faucet')
 "role":"assistant",
 "content":
 '''
-press_button_pose = parse_pose(object='elevator button', action='press')
+# Detailed planning:
+# Step 1: Close the gripper
+# Step 2: Press the elevator button
+# Step 3: Release the elevator button
+
+# Close the gripper
 close_gripper(gripper_group)
+
+# Press the elevator button
+attach_object('elevator button')
+press_button_pose = parse_pose(object='elevator button', action='press')
 move_to_pose(press_button_pose, move_group)
 
+# Release the elevator button
 release_button_pose = parse_pose(object='elevator button', action='release')
 move_to_pose(release_button_pose, move_group)
+open_gripper(gripper_group)
+detach_object('elevator button')
 '''
 },
 {# Pouring Liquid
@@ -104,20 +142,31 @@ move_to_pose(release_button_pose, move_group)
 "role":"assistant",
 "content":
 '''
+# Detailed planning:
+# Step 1: Grasp the bottle
+# Step 2: Pour the liquid into the glass
+# Step 3: Place the bottle back on the table
+
+# Get the position of the bottle
 bottle_pos = get_obj_pos('bottle')
 
+# Grasp the bottle
 grasp_pose = parse_pose(object='bottle', action='grasp')
 open_gripper(gripper_group)
 move_to_pose(grasp_pose, move_group)
 close_gripper(gripper_group)
 attach_object('bottle')
 
+# Pour the liquid into the glass
 pour_pose = parse_pose(object='glass', action='pour')
 move_to_pose(pour_pose, move_group)
 
-release_pose = parse_pose(object='bottle', action='release', position=bottle_pos)
-move_to_pose(release_pose, move_group)
+# Place the bottle back on the table
+table_pos = get_obj_pos('table')
+place_pose = parse_pose(object='bottle', action='place', position=table_pos)
+move_to_pose(place_pose, move_group)
 open_gripper(gripper_group)
+detach_object('bottle')
 '''
 },
 {# Scanning an Object
@@ -128,8 +177,18 @@ open_gripper(gripper_group)
 "role":"assistant",
 "content":
 '''
+# Detailed planning:
+# Step 1: Get the position of the bottle
+# Step 2: Generate an orbit path around the bottle
+# Step 3: Follow the orbit path to scan the bottle
+
+# Get the position of the bottle
 bottle_position = get_obj_pos('bottle')
-scan_path_points = generate_orbit_path(bottle_position, radius=0.1, n=10)
+
+# Generate an orbit path around the bottle
+scan_path_points = generate_orbit_path(bottle_position, radius=0.1, n=20)
+
+# Follow the orbit path to scan the bottle
 follow_path(move_group, scan_path_points)
 '''
 },
@@ -141,10 +200,20 @@ follow_path(move_group, scan_path_points)
 "role":"assistant",
 "content":
 '''
+# Detailed planning:
+# Step 1: Define the start and end poses for the wave motion
+# Step 2: Loop through the wave motion 3 times
+
+# Define the start and end poses for the wave motion
 wave_start_pose = parse_pose(object='', action='wave start')
 wave_end_pose = parse_pose(object='', action='wave end')
+
+# Loop through the wave motion 3 times
 for _ in range(3):
-    move_to_pose(wave_start_pose, move_group)
+    # Move to the start pose of the wave motion
+    move_to_pose(wave_start_pose, move_group)    
+
+    # Move to the end pose of the wave motion
     move_to_pose(wave_end_pose, move_group) 
 '''
 },
@@ -156,13 +225,27 @@ for _ in range(3):
 "role":"assistant",
 "content":
 '''
+# Detailed planning:
+# Step 1: Get the position of the clothing
+# Step 2: Grasp the clothing with the robot arm
+# Step 3: Move the clothing to the folding position
+# Step 4: Release the clothing
+
+# Get the position of the clothing
+clothing_pos = get_obj_pos('clothing')
+
+# Grasp the clothing with the robot arm
 grab_clothing_pose = parse_pose(object='clothing', action='grab')
 open_gripper(gripper_group)
 move_to_pose(grab_clothing_pose, move_group)
 close_gripper(gripper_group)
 attach_object('clothing')
+
+# Move the clothing to the folding position
 fold_pose = parse_pose(object='clothing', action='fold')
 move_to_pose(fold_pose, move_group)
+
+# Release the clothing
 open_gripper(gripper_group)
 detach_object('clothing')
 '''
@@ -175,17 +258,34 @@ detach_object('clothing')
 "role":"assistant",
 "content":
 '''
+# Detailed planning:
+# Step 1: Define the start pose for the spoon
+# Step 2: Grasp the spoon with the robot arm
+# Step 3: Move to the bowl
+# Step 4: Stir the ingredients in the bowl
+# Step 5: Repeat step 4 for 5 times
+# Step 6: Release the spoon
+
+# Define the start pose for the spoon
 grab_spoon_pose = parse_pose(object='spoon', action='grab')
+
+# Grasp the spoon with the robot arm
 open_gripper(gripper_group)
 move_to_pose(grab_spoon_pose, move_group)
 close_gripper(gripper_group)
 attach_object('spoon')
 
-for _ in range(5):
-    stir_pose = parse_pose(object='bowl', action='stir')
-    move_to_pose(stir_pose, move_group)
-    move_to_pose(grab_spoon_pose, move_group)
+# Move to the bowl
+stir_pose = parse_pose(object='bowl', action='stir')
+move_to_pose(stir_pose, move_group)
 
+# Stir the ingredients in the bowl
+# Repeat step 4 for 5 times
+for _ in range(5):
+    move_to_pose(grab_spoon_pose, move_group)
+    move_to_pose(stir_pose, move_group)
+
+# Release the spoon
 open_gripper(gripper_group)
 detach_object('spoon')
 '''
@@ -198,18 +298,38 @@ detach_object('spoon')
 "role":"assistant",
 "content":
 '''
+# Detailed planning:
+# Step 1: Get the position of the watering can
+# Step 2: Grasp the watering can with the robot arm
+# Step 3: Move to the plant
+# Step 4: Tilting the watering can to water the plant
+# Step 5: Keep the watering can tilted for 5 seconds
+# Step 6: Place back the watering can
+
+# Get the position of the watering can
 can_pos = get_obj_pos('watering can')
+
+# Grasp the watering can with the robot arm
 grasp_can_pose = parse_pose(object='watering can', action='grasp')
 open_gripper(gripper_group)
-move_to_pose(grab_can_pose, move_group)
+move_to_pose(grasp_can_pose, move_group)
 close_gripper(gripper_group)
 attach_object('watering can')
 
+# Move to the plant
 watering_pose = parse_pose(object='plant', action='water')
 move_to_pose(watering_pose, move_group)
 
-release_can_pose = parse_pose(object='watering can', action='release', position=can_pos)
-move_to_pose(release_can_pose, move_group)
+# Tilting the watering can to water the plant
+tilt_can_pose = parse_pose(object='watering can', action='tilt')
+move_to_pose(tilt_can_pose, move_group)
+
+# Keep the watering can tilted for 5 seconds
+rospy.sleep(5)
+
+# Place back the watering can
+place_can_pose = parse_pose(object='watering can', action='place', position=can_pos)
+move_to_pose(place_can_pose, move_group)
 open_gripper(gripper_group)
 detach_object('watering can')
 '''
@@ -222,18 +342,81 @@ detach_object('watering can')
 "role":"assistant",
 "content":
 '''
+# Detailed planning:
+# Step 1: Get the position of the bowl on the high shelf
+# Step 2: Grasp the bowl with the robot arm
+# Step 3: Move the bowl to the table
+# Step 4: Put the bowl on the table
+
+# Get the position of the bowl on the high shelf
+bowl_pos = get_obj_pos('bowl', location='high shelf')
+
+# Grasp the bowl with the robot arm
 grasp_bowl_pose = parse_pose(object='bowl', action='grasp', description='a bowl from the high shelf')
 open_gripper(gripper_group)
-move_to_pose(bowl_pose, move_group)
+move_to_pose(grasp_bowl_pose, move_group)
 close_gripper(gripper_group)
 attach_object('bowl')
 
-put_bowl_pose = parse_pose(object='bowl', action='put', description='a bowl on the table')
+# Move the bowl to the table
+put_bowl_pose = parse_pose(object='bowl', action='put', position='table')
 move_to_pose(put_bowl_pose, move_group)
+
+# Put the bowl on the table
 open_gripper(gripper_group)
 detach_object('bowl')
 '''
-}
+},
+{# Swap objects in the two containers
+"role":"user",
+"content": "objects = ['plate', 'fry_pan', 'table', 'peach', 'can'] \n # swap the peach and the can between the plate and the fry pan"
+},
+{
+"role":"assistant",
+"content":
+'''
+# Detailed planning:
+# Step 1: Get the positions of the peach, can, plate, and fry pan
+# Step 2: Grasp the peach with the robot arm
+# Step 3: Move the peach to the fry pan
+# Step 4: Release the peach
+# Step 5: Grasp the can with the robot arm
+# Step 6: Move the can to the plate
+# Step 7: Release the can
+
+# Get the positions of the peach, can, plate, and fry pan
+peach_pos, can_pos, plate_pos, fry_pan_pos = get_obj_positions_np(['peach', 'can', 'plate', 'fry_pan'])
+
+# Grasp the peach with the robot arm
+peach_grasp_pose = parse_pose(object='peach', action='grasp')
+open_gripper(gripper_group)
+move_to_pose(peach_grasp_pose, move_group)
+close_gripper(gripper_group)
+attach_object('peach')
+
+# Move the peach to the fry pan
+peach_to_fry_pan_pose = parse_pose(object='peach', action='put', position=fry_pan_pos)
+move_to_pose(peach_to_fry_pan_pose, move_group)
+
+# Release the peach
+open_gripper(gripper_group)
+detach_object('peach')
+
+# Grasp the can with the robot arm
+can_grasp_pose = parse_pose(object='can', action='grasp')
+move_to_pose(can_grasp_pose, move_group)
+close_gripper(gripper_group)
+attach_object('can')
+
+# Move the can to the plate
+can_to_plate_pose = parse_pose(object='can', action='put', position=plate_pos)
+move_to_pose(can_to_plate_pose, move_group)
+
+# Release the can
+open_gripper(gripper_group)
+detach_object('can')
+'''
+},
 ]
 
 
@@ -381,6 +564,49 @@ bowl_positions = get_obj_positions_np(bowl_names)
 bowl_idx = np.argsort(block_positions[:, 0])[-3]
 bowl_name = bowl_names[bowl_idx]
 ret_val = bowl_name
+'''
+},
+{# parse the drawer instance
+"role": "user",
+"content": "objects = ['cabinet', 'drawer_0', 'drawer_1', 'drawer_2', 'drawer_3', 'table'] \n # the drawer closest to the table"
+},
+{
+"role": "assistant",
+"content": '''
+drawer_names = ['drawer_0', 'drawer_1', 'drawer_2', 'drawer_3']
+table_pos = get_obj_pos('table')
+drawer_positions = get_obj_positions_np(drawer_names)
+closest_drawer_idx = np.argsort(np.linalg.norm(drawer_positions - table_pos, axis=1))[0]
+closest_drawer_name = drawer_names[closest_drawer_idx]
+ret_val = closest_drawer_name
+'''
+},
+{
+"role": "user",
+"content": "objects = ['cabinet', 'drawer_0', 'drawer_1', 'drawer_2', 'drawer_3', 'table'] \n # the top-most drawer"
+},
+{
+"role": "assistant",
+"content": '''
+drawer_names = ['drawer_0', 'drawer_1', 'drawer_2', 'drawer_3']
+drawer_positions = get_obj_positions_np(drawer_names)
+top_drawer_idx = np.argsort(drawer_positions[:, 2])[-1]
+top_drawer_name = drawer_names[top_drawer_idx]
+ret_val = top_drawer_name
+'''
+},
+{
+"role": "user",
+"content": "objects = ['cabinet', 'drawer_0', 'drawer_1', 'drawer_2', 'drawer_3', 'table'] \n # the second drawer counting from the top"
+},
+{
+"role": "assistant",
+"content": '''
+drawer_names = ['drawer_0', 'drawer_1', 'drawer_2', 'drawer_3']
+drawer_positions = get_obj_positions_np(drawer_names)
+second_drawer_idx = np.argsort(drawer_positions[:, 2])[-2]
+second_drawer_name = drawer_names[second_drawer_idx]
+ret_val = second_drawer_name
 '''
 }
 ]

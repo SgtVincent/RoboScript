@@ -25,7 +25,7 @@ class LMP:
 
         self._base_messages = self._cfg["messages"]
 
-        self._stop_tokens = list(self._cfg["stop"])
+        # self._stop_tokens = list(self._cfg["stop"])
 
         self._lmp_fgen = lmp_fgen
 
@@ -61,7 +61,7 @@ class LMP:
             try:
                 response = openai.ChatCompletion.create(
                     messages=messages,
-                    stop=self._stop_tokens,
+                    # stop=self._stop_tokens,
                     temperature=self._cfg["temperature"],
                     model=self._cfg["model"],
                     max_tokens=self._cfg["max_tokens"],
@@ -106,7 +106,7 @@ class LMPFGen:
     def __init__(self, cfg, fixed_vars, variable_vars):
         self._cfg = cfg
 
-        self._stop_tokens = list(self._cfg["stop"])
+        # self._stop_tokens = list(self._cfg["stop"])
         self._fixed_vars = fixed_vars
         self._variable_vars = variable_vars
 
@@ -125,7 +125,7 @@ class LMPFGen:
             try:
                 response = openai.ChatCompletion.create(
                     messages=messages,
-                    stop=self._stop_tokens,
+                    # stop=self._stop_tokens,
                     temperature=self._cfg["temperature"],
                     model=self._cfg["model"],
                     max_tokens=self._cfg["max_tokens"],

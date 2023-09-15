@@ -4,10 +4,16 @@
     <gravity>0 0 -9.8</gravity>
     <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
     <atmosphere type="adiabatic" />
+    <max_contacts>100</max_contacts>
     <physics type="ode">
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1</real_time_factor>
       <real_time_update_rate>1000</real_time_update_rate>
+      <constraints>
+        <cfm />
+        <contact_max_correcting_vel>1</contact_max_correcting_vel>
+        <contact_surface_layer>0.001</contact_surface_layer>
+      </constraints>
     </physics>
     <scene>
       <ambient>0.4 0.4 0.4 1</ambient>
@@ -39,7 +45,9 @@
     
     <include>
       <uri>model://cabinet_1076</uri>
-      <!-- overwrite model name -->
+      
+      <name>cabinet</name>
+      
       <name>cabinet</name>
       <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
       <scale>1 1 1</scale>
@@ -50,5 +58,5 @@
     
     
 
-  <include><uri>model://Ecoforms_Plant_Container_SB9Turquoise</uri><name>Ecoforms_Plant_Container_SB9Turquoise</name><pose>-0.3703567481532724 -0.27361542382276927 1.1506235 0.0 0.0 0.0</pose></include><include><uri>model://Footed_Bowl_Sand</uri><name>Footed_Bowl_Sand</name><pose>-0.10019043927946619 -0.20578587140349366 1.0844195 0.0 0.0 0.0</pose></include><include><uri>model://028_skillet_lid</uri><name>skillet_lid</name><pose>-0.3231681975227136 0.27197728267863563 1.0680275000000001 0.0 0.0 0.0</pose></include><include><uri>model://014_lemon</uri><name>lemon</name><pose>-0.2834138347714546 -0.22444094012379123 1.3077555 0.0 0.0 0.0</pose></include><include><uri>model://057_racquetball</uri><name>racquetball</name><pose>-0.46341204645389883 -0.21458880502172836 1.309034 0.0 0.0 0.0</pose></include></world>
+  <include><uri>model://Sapota_Threshold_4_Ceramic_Round_Planter_Red</uri><name>red_ceramic_pot</name><pose>-0.3703567481532724 -0.27361542382276927 1.0785685 0.0 0.0 0.0</pose></include><include><uri>model://Bradshaw_International_11642_7_Qt_MP_Plastic_Bowl</uri><name>red_plastic_bowl</name><pose>-0.10019043927946619 -0.20578587140349366 1.1072520000000001 0.0 0.0 0.0</pose></include><include><uri>model://Perricone_MD_No_Lipstick_Lipstick</uri><name>white_and_red_box</name><pose>-0.16538782775079855 -0.14565290299117034 1.2340145000000002 0.0 0.0 0.0</pose></include><include><uri>model://Perricone_MD_Face_Finishing_Moisturizer</uri><name>green_and_white_box</name><pose>-0.021757822662488824 -0.16128691937241643 1.2313620000000003 0.0 0.0 0.0</pose></include><include><uri>model://053_mini_soccer_ball</uri><name>mini_soccer_ball</name><pose>-0.4450300945887578 0.28391528560935075 1.0927935 0.0 0.0 0.0</pose></include></world>
 </sdf>

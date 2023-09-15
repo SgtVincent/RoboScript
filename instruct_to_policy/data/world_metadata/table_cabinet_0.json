@@ -1,0 +1,159 @@
+{
+  "table": {
+    "type": "env",
+    "bbox": [
+      [
+        -0.6,
+        -0.6,
+        0.0
+      ],
+      [
+        0.6,
+        0.6,
+        1.02
+      ]
+    ],
+    "objects_on": [
+      "Chef_Style_Round_Cake_Pan_9_inch_pan",
+      "Nordic_Ware_Original_Bundt_Pan",
+      "023_wine_glass"
+    ]
+  },
+  "cabinet": {
+    "type": "env",
+    "name": "cabinet",
+    "bbox": [],
+    "has_drawers": [
+      "cabinet.drawer0",
+      "cabinet.drawer1",
+      "cabinet.drawer2",
+      "cabinet.drawer3"
+    ]
+  },
+  "cabinet.drawer0": {
+    "type": "drawer",
+    "name": "cabinet.drawer0",
+    "bbox": [],
+    "objects_in": []
+  },
+  "cabinet.drawer1": {
+    "type": "drawer",
+    "name": "cabinet.drawer1",
+    "bbox": [],
+    "objects_in": []
+  },
+  "cabinet.drawer2": {
+    "type": "drawer",
+    "name": "cabinet.drawer2",
+    "bbox": [],
+    "objects_in": []
+  },
+  "cabinet.drawer3": {
+    "type": "drawer",
+    "name": "cabinet.drawer3",
+    "bbox": [],
+    "objects_in": []
+  },
+  "panda": {
+    "type": "robot",
+    "name": "panda_robot",
+    "bbox": [
+      [
+        -0.55,
+        -0.1,
+        1.02
+      ],
+      [
+        -0.35,
+        0.1,
+        2.02
+      ]
+    ]
+  },
+  "Chef_Style_Round_Cake_Pan_9_inch_pan": {
+    "type": "container",
+    "name": "round_cake_pan",
+    "bbox": [
+      [
+        -0.23584439303737376,
+        0.28264287576892455,
+        1.03
+      ],
+      [
+        0.01001660696262624,
+        0.5286428757689245,
+        1.075172
+      ]
+    ],
+    "objects_in": [
+      "001_chips_can"
+    ]
+  },
+  "Nordic_Ware_Original_Bundt_Pan": {
+    "type": "container",
+    "name": "black_bundt_pan",
+    "bbox": [
+      [
+        0.07685904763026463,
+        -0.042923364222667015,
+        1.0300000000000002
+      ],
+      [
+        0.3407300476302646,
+        0.22050863577733298,
+        1.129966
+      ]
+    ],
+    "objects_in": [
+      "025_mug"
+    ]
+  },
+  "chips_can": {
+    "type": "object",
+    "name": "chips_can",
+    "bbox": [
+      [
+        -0.18178995222009364,
+        0.32998151904392625,
+        1.085172
+      ],
+      [
+        -0.09827635222009364,
+        0.41608691904392625,
+        1.32574718
+      ]
+    ]
+  },
+  "mug": {
+    "type": "object",
+    "name": "mug",
+    "bbox": [
+      [
+        0.15364728474114792,
+        0.01440687700385105,
+        1.139966
+      ],
+      [
+        0.27063128474114795,
+        0.10753787700385106,
+        1.2212690000000002
+      ]
+    ]
+  },
+  "wine_glass": {
+    "type": "object",
+    "name": "wine_glass",
+    "bbox": [
+      [
+        -0.3169115960574762,
+        -0.05666035542774958,
+        1.03
+      ],
+      [
+        -0.22367559605747622,
+        0.08228234457225045,
+        1.1287025400000001
+      ]
+    ]
+  }
+}

@@ -4,10 +4,16 @@
     <gravity>0 0 -9.8</gravity>
     <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
     <atmosphere type="adiabatic" />
+    <max_contacts>100</max_contacts>
     <physics type="ode">
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1</real_time_factor>
       <real_time_update_rate>1000</real_time_update_rate>
+      <constraints>
+        <cfm />
+        <contact_max_correcting_vel>1</contact_max_correcting_vel>
+        <contact_surface_layer>0.001</contact_surface_layer>
+      </constraints>
     </physics>
     <scene>
       <ambient>0.4 0.4 0.4 1</ambient>
@@ -39,7 +45,9 @@
     
     <include>
       <uri>model://cabinet_1076</uri>
-      <!-- overwrite model name -->
+      
+      <name>cabinet</name>
+      
       <name>cabinet</name>
       <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
       <scale>1 1 1</scale>
@@ -50,5 +58,5 @@
     
     
 
-  <include><uri>model://Threshold_Dinner_Plate_Square_Rim_White_Porcelain</uri><name>Threshold_Dinner_Plate_Square_Rim_White_Porcelain</name><pose>-0.2965282886814376 -0.3914535663132484 1.049454 0.0 0.0 0.0</pose></include><include><uri>model://Ecoforms_Planter_Pot_QP6Ebony</uri><name>Ecoforms_Planter_Pot_QP6Ebony</name><pose>0.40399698352799984 0.41906882976710336 1.1141205 0.0 0.0 0.0</pose></include><include><uri>model://010_potted_meat_can</uri><name>potted_meat_can</name><pose>-0.05386275563435883 -0.34016558863969903 1.0717715 0.0 0.0 0.0</pose></include><include><uri>model://013_apple</uri><name>apple</name><pose>-0.35243332772817554 -0.3407805191766994 1.1148525000000002 0.0 0.0 0.0</pose></include><include><uri>model://024_bowl</uri><name>bowl</name><pose>0.08810998092997657 0.3796868115208051 1.0575045 0.0 0.0 0.0</pose></include></world>
+  <include><uri>model://Down_To_Earth_Ceramic_Orchid_Pot_Asst_Blue</uri><name>square_blue_flower_pot</name><pose>0.36838836187090385 -0.21709801655998476 1.089666 0.0 0.0 0.0</pose></include><include><uri>model://Now_Designs_Bowl_Akita_Black</uri><name>bowl_with_black_white_patterns</name><pose>0.14627005591858377 -0.1694600315195301 1.067607 0.0 0.0 0.0</pose></include><include><uri>model://022_windex_bottle</uri><name>windex_bottle</name><pose>0.1460004908964937 -0.15940279175871624 1.2501145 0.0 0.0 0.0</pose></include><include><uri>model://Android_Figure_Panda</uri><name>panda_toy_figure</name><pose>0.24761954102500305 0.3955490474077702 1.0678695 0.0 0.0 0.0</pose></include><include><uri>model://Perricone_MD_No_Bronzer_Bronzer</uri><name>white_and_brown_box</name><pose>0.08810998092997657 0.3796868115208051 1.080355 0.0 0.0 0.0</pose></include></world>
 </sdf>

@@ -1,0 +1,158 @@
+{
+  "table": {
+    "type": "env",
+    "bbox": [
+      [
+        -0.6,
+        -0.6,
+        0.0
+      ],
+      [
+        0.6,
+        0.6,
+        1.02
+      ]
+    ],
+    "objects_on": [
+      "Down_To_Earth_Ceramic_Orchid_Pot_Asst_Blue",
+      "Now_Designs_Bowl_Akita_Black",
+      "Android_Figure_Panda",
+      "Perricone_MD_No_Bronzer_Bronzer"
+    ]
+  },
+  "cabinet": {
+    "type": "env",
+    "name": "cabinet",
+    "bbox": [],
+    "has_drawers": [
+      "cabinet.drawer0",
+      "cabinet.drawer1",
+      "cabinet.drawer2",
+      "cabinet.drawer3"
+    ]
+  },
+  "cabinet.drawer0": {
+    "type": "drawer",
+    "name": "cabinet.drawer0",
+    "bbox": [],
+    "objects_in": []
+  },
+  "cabinet.drawer1": {
+    "type": "drawer",
+    "name": "cabinet.drawer1",
+    "bbox": [],
+    "objects_in": []
+  },
+  "cabinet.drawer2": {
+    "type": "drawer",
+    "name": "cabinet.drawer2",
+    "bbox": [],
+    "objects_in": []
+  },
+  "cabinet.drawer3": {
+    "type": "drawer",
+    "name": "cabinet.drawer3",
+    "bbox": [],
+    "objects_in": []
+  },
+  "panda": {
+    "type": "robot",
+    "name": "panda_robot",
+    "bbox": [
+      [
+        -0.55,
+        -0.1,
+        1.02
+      ],
+      [
+        -0.35,
+        0.1,
+        2.02
+      ]
+    ]
+  },
+  "Down_To_Earth_Ceramic_Orchid_Pot_Asst_Blue": {
+    "type": "container",
+    "name": "square_blue_flower_pot",
+    "bbox": [
+      [
+        0.30202586187090386,
+        -0.2834650165599848,
+        1.03
+      ],
+      [
+        0.43475086187090384,
+        -0.15073101655998475,
+        1.149332
+      ]
+    ],
+    "objects_in": []
+  },
+  "Now_Designs_Bowl_Akita_Black": {
+    "type": "container",
+    "name": "bowl_with_black_white_patterns",
+    "bbox": [
+      [
+        0.06642855591858376,
+        -0.2489315315195301,
+        1.03
+      ],
+      [
+        0.22611155591858378,
+        -0.0899885315195301,
+        1.105214
+      ]
+    ],
+    "objects_in": [
+      "022_windex_bottle"
+    ]
+  },
+  "windex_bottle": {
+    "type": "object",
+    "name": "windex_bottle",
+    "bbox": [
+      [
+        0.1046369908964937,
+        -0.20711679175871625,
+        1.115214
+      ],
+      [
+        0.1873639908964937,
+        -0.11168879175871624,
+        1.385015
+      ]
+    ]
+  },
+  "panda_toy_figure": {
+    "type": "object",
+    "name": "panda_toy_figure",
+    "bbox": [
+      [
+        0.21723904102500305,
+        0.37240804740777017,
+        1.03
+      ],
+      [
+        0.27800004102500303,
+        0.4186900474077702,
+        1.105739
+      ]
+    ]
+  },
+  "white_and_brown_box": {
+    "type": "object",
+    "name": "white_and_brown_box",
+    "bbox": [
+      [
+        0.06208198092997657,
+        0.3577168115208051,
+        1.03
+      ],
+      [
+        0.11413798092997657,
+        0.40165681152080507,
+        1.1307099999999999
+      ]
+    ]
+  }
+}

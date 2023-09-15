@@ -1,1 +1,212 @@
-{"categories": {}, "objects": {"Perricone_MD_Face_Finishing_Moisturizer": {"category": "box"}, "Android_Figure_Panda": {"category": "toy"}, "FemDophilus": {"category": "box"}, "Thomas_Friends_Wooden_Railway_Talking_Thomas_z7yi7UFHJRj": {"category": "toy"}, "JarroSil_Activated_Silicon": {"category": "box"}, "Schleich_Lion_Action_Figure": {"category": "toy"}, "SCHOOL_BUS": {"category": "toy"}, "Perricone_MD_Neuropeptide_Firming_Moisturizer": {"category": "box"}, "Toysmith_Windem_Up_Flippin_Animals_Dog": {"category": "toy"}, "Great_Dinos_Triceratops_Toy": {"category": "toy"}, "Perricone_MD_No_Bronzer_Bronzer": {"category": "box"}, "Granimals_20_Wooden_ABC_Blocks_Wagon_85VdSftGsLi": {"category": "box"}, "CoQ10": {"category": "bottle"}, "5_HTP": {"category": "bottle"}, "Nintendo_Mario_Action_Figure": {"category": "toy"}, "JarroSil_Activated_Silicon_5exdZHIeLAp": {"category": "box"}, "Beta_Glucan": {"category": "bottle"}, "Hyaluronic_Acid": {"category": "bottle"}, "AllergenFree_JarroDophilus": {"category": "bottle"}, "Phillips_Caplets_Size_24": {"category": "box"}, "Perricone_MD_Firming_Neck_Therapy_Treatment": {"category": "box"}, "Perricone_MD_No_Lipstick_Lipstick": {"category": "box"}, "Germanium_GE132": {"category": "bottle"}, "Perricone_MD_Hypoallergenic_Firming_Eye_Cream_05_oz": {"category": "box"}}}
+{
+    "categories": {
+        "bottle": [
+            "5_HTP",
+            "CoQ10",
+            "Germanium_GE132",
+            "Hyaluronic_Acid"
+        ],
+        "box": [
+            "FemDophilus",
+            "Granimals_20_Wooden_ABC_Blocks_Wagon_85VdSftGsLi",
+            "JarroSil_Activated_Silicon",
+            "Perricone_MD_Face_Finishing_Moisturizer",
+            "Perricone_MD_Hypoallergenic_Firming_Eye_Cream_05_oz",
+            "Perricone_MD_Neuropeptide_Firming_Moisturizer",
+            "Perricone_MD_No_Bronzer_Bronzer",
+            "Perricone_MD_No_Lipstick_Lipstick",
+            "Phillips_Caplets_Size_24"
+        ],
+        "toy": [
+            "Android_Figure_Panda",
+            "Great_Dinos_Triceratops_Toy",
+            "Nintendo_Mario_Action_Figure",
+            "Schleich_Lion_Action_Figure",
+            "SCHOOL_BUS",
+            "Thomas_Friends_Wooden_Railway_Talking_Thomas_z7yi7UFHJRj",
+            "Toysmith_Windem_Up_Flippin_Animals_Dog"
+        ]
+    },
+    "objects": {
+        "Perricone_MD_Face_Finishing_Moisturizer": {
+            "bbox_size": [
+                0.060762,
+                0.060819,
+                0.073716
+            ],
+            "model_name": "green_and_white_box",
+            "category": "box"
+        },
+        "Android_Figure_Panda": {
+            "bbox_size": [
+                0.060761,
+                0.046282000000000004,
+                0.075739
+            ],
+            "model_name": "panda_toy_figure",
+            "category": "toy"
+        },
+        "FemDophilus": {
+            "bbox_size": [
+                0.057982000000000006,
+                0.059217000000000006,
+                0.114582
+            ],
+            "model_name": "white_and_pink_box",
+            "category": "box"
+        },
+        "Thomas_Friends_Wooden_Railway_Talking_Thomas_z7yi7UFHJRj": {
+            "bbox_size": [
+                0.038203,
+                0.088131,
+                0.05035
+            ],
+            "model_name": "toy_train",
+            "category": "toy"
+        },
+        "JarroSil_Activated_Silicon": {
+            "bbox_size": [
+                0.060156,
+                0.046693,
+                0.10902200000000001
+            ],
+            "model_name": "maroon_box",
+            "category": "box"
+        },
+        "Schleich_Lion_Action_Figure": {
+            "bbox_size": [
+                0.11501800000000001,
+                0.041679,
+                0.070442
+            ],
+            "model_name": "lion_toy_figure",
+            "category": "toy"
+        },
+        "SCHOOL_BUS": {
+            "bbox_size": [
+                0.031831,
+                0.097799,
+                0.038286
+            ],
+            "model_name": "toy_bus",
+            "category": "toy"
+        },
+        "Perricone_MD_Neuropeptide_Firming_Moisturizer": {
+            "bbox_size": [
+                0.060856999999999994,
+                0.060235,
+                0.073356
+            ],
+            "model_name": "white_box",
+            "category": "box"
+        },
+        "Toysmith_Windem_Up_Flippin_Animals_Dog": {
+            "bbox_size": [
+                0.034836,
+                0.048406000000000005,
+                0.049926
+            ],
+            "model_name": "dog_figure",
+            "category": "toy"
+        },
+        "Great_Dinos_Triceratops_Toy": {
+            "bbox_size": [
+                0.069471,
+                0.045807,
+                0.07918399999999999
+            ],
+            "model_name": "anroid_toy_figure",
+            "category": "toy"
+        },
+        "Perricone_MD_No_Bronzer_Bronzer": {
+            "bbox_size": [
+                0.052056000000000005,
+                0.04394,
+                0.10071
+            ],
+            "model_name": "white_and_brown_box",
+            "category": "box"
+        },
+        "Granimals_20_Wooden_ABC_Blocks_Wagon_85VdSftGsLi": {
+            "bbox_size": [
+                0.030626,
+                0.031189,
+                0.030463
+            ],
+            "model_name": "wood_block",
+            "category": "box"
+        },
+        "CoQ10": {
+            "bbox_size": [
+                0.047395999999999994,
+                0.047506,
+                0.084399
+            ],
+            "model_name": "grey_medication_bottle",
+            "category": "bottle"
+        },
+        "5_HTP": {
+            "bbox_size": [
+                0.053116,
+                0.052494,
+                0.088823
+            ],
+            "model_name": "blue_medication_bottle",
+            "category": "bottle"
+        },
+        "Nintendo_Mario_Action_Figure": {
+            "bbox_size": [
+                0.063196,
+                0.054264,
+                0.102377
+            ],
+            "model_name": "Nintendo_Mario_toy_figure",
+            "category": "toy"
+        },
+        "Hyaluronic_Acid": {
+            "bbox_size": [
+                0.054167,
+                0.054205,
+                0.097981
+            ],
+            "model_name": "yellow_medication_bottle",
+            "category": "bottle"
+        },
+        "Phillips_Caplets_Size_24": {
+            "bbox_size": [
+                0.078853,
+                0.044983999999999996,
+                0.08574000000000001
+            ],
+            "model_name": "blue_box",
+            "category": "box"
+        },
+        "Perricone_MD_No_Lipstick_Lipstick": {
+            "bbox_size": [
+                0.050522,
+                0.043052,
+                0.079021
+            ],
+            "model_name": "white_and_red_box",
+            "category": "box"
+        },
+        "Germanium_GE132": {
+            "bbox_size": [
+                0.043914,
+                0.043935,
+                0.077376
+            ],
+            "model_name": "brown_medication_bottle",
+            "category": "bottle"
+        },
+        "Perricone_MD_Hypoallergenic_Firming_Eye_Cream_05_oz": {
+            "bbox_size": [
+                0.056972,
+                0.057255,
+                0.049046
+            ],
+            "model_name": "white_and_green_box",
+            "category": "box"
+        }
+    }
+}

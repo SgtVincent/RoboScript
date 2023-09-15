@@ -1,0 +1,159 @@
+{
+  "table": {
+    "type": "env",
+    "bbox": [
+      [
+        -0.6,
+        -0.6,
+        0.0
+      ],
+      [
+        0.6,
+        0.6,
+        1.02
+      ]
+    ],
+    "objects_on": [
+      "Threshold_Basket_Natural_Finish_Fabric_Liner_Small",
+      "Sea_to_Summit_Xl_Bowl",
+      "Perricone_MD_No_Lipstick_Lipstick"
+    ]
+  },
+  "cabinet": {
+    "type": "env",
+    "name": "cabinet",
+    "bbox": [],
+    "has_drawers": [
+      "cabinet.drawer0",
+      "cabinet.drawer1",
+      "cabinet.drawer2",
+      "cabinet.drawer3"
+    ]
+  },
+  "cabinet.drawer0": {
+    "type": "drawer",
+    "name": "cabinet.drawer0",
+    "bbox": [],
+    "objects_in": []
+  },
+  "cabinet.drawer1": {
+    "type": "drawer",
+    "name": "cabinet.drawer1",
+    "bbox": [],
+    "objects_in": []
+  },
+  "cabinet.drawer2": {
+    "type": "drawer",
+    "name": "cabinet.drawer2",
+    "bbox": [],
+    "objects_in": []
+  },
+  "cabinet.drawer3": {
+    "type": "drawer",
+    "name": "cabinet.drawer3",
+    "bbox": [],
+    "objects_in": []
+  },
+  "panda": {
+    "type": "robot",
+    "name": "panda_robot",
+    "bbox": [
+      [
+        -0.55,
+        -0.1,
+        1.02
+      ],
+      [
+        -0.35,
+        0.1,
+        2.02
+      ]
+    ]
+  },
+  "Threshold_Basket_Natural_Finish_Fabric_Liner_Small": {
+    "type": "container",
+    "name": "basket_with_fabric_liner",
+    "bbox": [
+      [
+        -0.12913501575019326,
+        0.3559884086995406,
+        1.0299999999999998
+      ],
+      [
+        0.11014998424980672,
+        0.5181824086995406,
+        1.177613
+      ]
+    ],
+    "objects_in": [
+      "Hyaluronic_Acid"
+    ]
+  },
+  "Sea_to_Summit_Xl_Bowl": {
+    "type": "container",
+    "name": "blue_bowl",
+    "bbox": [
+      [
+        -0.3222602556396496,
+        0.06476649266529072,
+        1.03
+      ],
+      [
+        -0.14204025563964962,
+        0.24507749266529072,
+        1.0655020000000002
+      ]
+    ],
+    "objects_in": [
+      "025_mug"
+    ]
+  },
+  "yellow_medication_bottle": {
+    "type": "object",
+    "name": "yellow_medication_bottle",
+    "bbox": [
+      [
+        -0.019250434928133445,
+        0.4171646706631046,
+        1.187613
+      ],
+      [
+        0.03491656507186655,
+        0.47136967066310453,
+        1.285594
+      ]
+    ]
+  },
+  "mug": {
+    "type": "object",
+    "name": "mug",
+    "bbox": [
+      [
+        -0.2759419505649884,
+        0.10749256938956406,
+        1.0755020000000002
+      ],
+      [
+        -0.15895795056498835,
+        0.20062356938956408,
+        1.1568050000000003
+      ]
+    ]
+  },
+  "white_and_red_box": {
+    "type": "object",
+    "name": "white_and_red_box",
+    "bbox": [
+      [
+        -0.35149215026860603,
+        -0.1645662840547673,
+        1.03
+      ],
+      [
+        -0.3009701502686061,
+        -0.12151428405476732,
+        1.109021
+      ]
+    ]
+  }
+}

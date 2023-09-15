@@ -4,10 +4,16 @@
     <gravity>0 0 -9.8</gravity>
     <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
     <atmosphere type="adiabatic" />
+    <max_contacts>100</max_contacts>
     <physics type="ode">
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1</real_time_factor>
       <real_time_update_rate>1000</real_time_update_rate>
+      <constraints>
+        <cfm />
+        <contact_max_correcting_vel>1</contact_max_correcting_vel>
+        <contact_surface_layer>0.001</contact_surface_layer>
+      </constraints>
     </physics>
     <scene>
       <ambient>0.4 0.4 0.4 1</ambient>
@@ -39,7 +45,9 @@
     
     <include>
       <uri>model://cabinet_1076</uri>
-      <!-- overwrite model name -->
+      
+      <name>cabinet</name>
+      
       <name>cabinet</name>
       <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
       <scale>1 1 1</scale>
@@ -50,5 +58,5 @@
     
     
 
-  <include><uri>model://Nordic_Ware_Original_Bundt_Pan</uri><name>Nordic_Ware_Original_Bundt_Pan</name><pose>0.33431453116894594 0.27330486920920294 1.0799830000000001 0.0 0.0 0.0</pose></include><include><uri>model://Threshold_Salad_Plate_Square_Rim_Porcelain</uri><name>Threshold_Salad_Plate_Square_Rim_Porcelain</name><pose>-0.28208694700256776 0.35330309864098 1.0471650000000001 0.0 0.0 0.0</pose></include><include><uri>model://002_master_chef_can</uri><name>master_chef_can</name><pose>-0.27996776201302187 0.3563347814505944 1.1444185000000002 0.0 0.0 0.0</pose></include><include><uri>model://025_mug</uri><name>mug</name><pose>0.32265391386809705 0.2523096257025646 1.1806175 0.0 0.0 0.0</pose></include><include><uri>model://015_peach</uri><name>peach</name><pose>-0.1591173611813203 0.01691155956902951 1.0593225 0.0 0.0 0.0</pose></include></world>
+  <include><uri>model://Room_Essentials_Salad_Plate_Turquoise</uri><name>turquoise_salad_plate</name><pose>0.3564821699311439 -0.1637968725253225 1.0441885 0.0 0.0 0.0</pose></include><include><uri>model://Ecoforms_Plant_Pot_GP9AAvocado</uri><name>green_plant_pot</name><pose>-0.35095326792509085 -0.24485835371225245 1.073401 0.0 0.0 0.0</pose></include><include><uri>model://Germanium_GE132</uri><name>brown_medication_bottle</name><pose>0.3991212717312659 -0.11545031683497432 1.107065 0.0 0.0 0.0</pose></include><include><uri>model://005_tomato_soup_can</uri><name>tomato_soup_can</name><pose>0.323758280078064 -0.17782822079467783 1.1193045 0.0 0.0 0.0</pose></include><include><uri>model://002_master_chef_can</uri><name>master_chef_can</name><pose>-0.1591173611813203 0.01691155956902951 1.1000885 0.0 0.0 0.0</pose></include></world>
 </sdf>

@@ -28,12 +28,20 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Generate a random world.")
     parser.add_argument("--container_metadata_file", type=str, default="data/google_scanned_object/container_metadata.json", 
                         help="Path to the container metadata file")
-    parser.add_argument("--object_metadata_file", type=str, default="data/ycb/metadata.json", 
-                        help="Path to the pickable object metadata file")
     parser.add_argument("--container_models_dir", type=str, default="data/google_scanned_object/models", 
                         help="Path to the folder containing the container models")
-    parser.add_argument("--object_models_dir", type=str, default="data/ycb/models", 
+    parser.add_argument("--ycb_object_metadata_file", type=str, default="data/ycb/metadata.json", 
+                        help="Path to the pickable object metadata file from YCB dataset")
+    parser.add_argument("--ycb_object_models_dir", type=str, default="data/ycb/models", 
                         help="Path to the folder containing the pickable object models")
+    parser.add_argument("--google_scanned_object_metadata_file", type=str, default="data/google_scanned_object/object_metadata.json",
+                        help="Path to the pickable object metadata file from google scanned object dataset")
+    parser.add_argument("--google_scanned_object_models_dir", type=str, default="data/google_scanned_object/models",
+                        help="Path to the folder containing the pickable object models")
+    parser.add_argument("--world_metadata_dir", type=str, default="data/world_metadata", 
+                        help="Path to the folder containing the world metadata files")
+    
+    # world generation parameters
     parser.add_argument("--num_containers", type=int, default=2, help="Number of containers to place on the table")
     parser.add_argument("--num_objects", type=int, default=3, help="Number of pickable objects to place on the table or in containers")
     parser.add_argument("--num_worlds", type=int, default=10, help="Number of worlds to generate")
@@ -44,7 +52,7 @@ def parse_args():
     parser.add_argument("--table_margin", type=int, default= 0.15, help="Margin when placing objects on the table")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     
-    # base world parameters, since the base world uses <include> tag to load the models, positions need to be manually specified here
+    # base world constants, since the base world uses <include> tag to load the models, positions need to be manually specified here
     parser.add_argument("--table_xy_bbox", type=float, nargs=4, default=[-0.6, 0.6, -0.6, 0.6], help="Table xy bounding box, [x_min, x_max, y_min, y_max]")
     parser.add_argument("--table_surface_z", type=float, default=1.02, help="Table surface z position")
     parser.add_argument("--panda_base_xy", type=float, nargs=2, default=[-0.45, 0.0], help="Panda base xy position")
@@ -72,8 +80,6 @@ def load_models_from_metadata(metadata_file) -> dict:
         for model in metadata["objects"].keys():
             models[model] = metadata["objects"][model]
             models[model]["model_id"] = model
-            if "model_name" not in models[model]:
-                models[model]["model_name"] = model
 
     return models
 
@@ -95,7 +101,8 @@ def collides_with_other_objects(bbox: List[np.ndarray], models_in_world: Dict):
     """
     for model in models_in_world.keys():
         # check if the bounding box collides with the model 
-        if collides_with_bbox(bbox, models_in_world[model]["bbox"]):
+        if len(models_in_world[model]["bbox"]) > 0 and \
+            collides_with_bbox(bbox, models_in_world[model]["bbox"]):
             return True
     return False
 
@@ -110,7 +117,7 @@ def reachable_by_panda(bbox: List[np.ndarray], panda_base_xy: np.ndarray, panda_
         return False
     return True
 
-def sample_container_position(container_id, container_models, models_in_world, args, num_trial=20):
+def sample_container_position(container_id, container_models, models_in_world, args, num_trial=100):
     """
     Randomly generate containers positions on the table with contraints:
     - container should not collide with other containers
@@ -153,7 +160,9 @@ def sample_container_position(container_id, container_models, models_in_world, a
             reachable_by_panda(container_bbox, panda_base_xy, panda_max_range):
 
             # add the container to the world
-            models_in_world[container_id] = {"type": "container", "bbox": container_bbox, "objects_in": []}
+            container_name = container_models[container_id]["model_name"]
+            models_in_world[container_id] = {"type": "container", "name": container_name, "bbox": container_bbox, "objects_in": []}
+            models_in_world["table"]["objects_on"].append(container_id)
             return container_position
         
     # If no valid container position is found, return None
@@ -161,7 +170,7 @@ def sample_container_position(container_id, container_models, models_in_world, a
     return None
 
 def sample_object_position(object_id, object_models, container_models, models_in_world, args, 
-                           ratio_in_container=0.6, max_objects_in_container=2, num_trial=40):
+                           ratio_in_container=0.6, max_objects_in_container=2, num_trial=100):
     """
     Randomly generate pickable object positions on the table with contraints:
     - object should not collide with other models
@@ -199,6 +208,7 @@ def sample_object_position(object_id, object_models, container_models, models_in
         if np.random.uniform() < ratio_in_container and len(valid_containers) > 0:
             # randomly select a container
             container_id = random.choice(valid_containers)
+            container_name = container_models[container_id]["model_name"]
             # randomly select a position on the container
             container_bbox_bottom = models_in_world[container_id]["bbox"][0]
             container_bbox_top = models_in_world[container_id]["bbox"][1]
@@ -210,6 +220,7 @@ def sample_object_position(object_id, object_models, container_models, models_in
         else:
             # sample a position on the table
             container_id = None
+            container_name = None
             # table also seen as a container, apply the container_margin constraint
             x = np.random.uniform(table_xy_bbox[0] + t_margin, table_xy_bbox[1] - t_margin)
             y = np.random.uniform(table_xy_bbox[2] + t_margin, table_xy_bbox[3] - t_margin)
@@ -231,10 +242,13 @@ def sample_object_position(object_id, object_models, container_models, models_in
             reachable_by_panda(object_bbox, panda_base_xy, panda_max_range):
 
             # add the object to the world
-            models_in_world[object_id] = {"type": "object", "bbox": object_bbox}
+            object_name = object_models[object_id]["model_name"]
+            models_in_world[object_name] = {"type": "object", "name": object_name, "bbox": object_bbox}
             # add the object to the container if it is placed in a container
-            if container_id is not None:
+            if container_name is not None:
                 models_in_world[container_id]["objects_in"].append(object_id)
+            else:
+                models_in_world["table"]["objects_on"].append(object_id)
 
             return object_position
         
@@ -282,9 +296,11 @@ def generate_random_world(args):
 
     # Read candidate models from metadata files
     container_models = load_models_from_metadata(args.container_metadata_file)
-    object_models = load_models_from_metadata(args.object_metadata_file)
+    ycb_object_models = load_models_from_metadata(args.ycb_object_metadata_file)
+    google_scanned_object_models = load_models_from_metadata(args.google_scanned_object_metadata_file)
+    object_models = {**ycb_object_models, **google_scanned_object_models}
 
-    for i in range(args.num_worlds):
+    for world_idx in range(args.num_worlds):
         # Read the base world file with xml 
         # NOTE: pysdf library will automatically load models in <include> tag, which will dilate the world file.
         # Therefore, we use xml.etree.ElementTree to read the world file and manually insert new models into the world file. 
@@ -295,10 +311,21 @@ def generate_random_world(args):
         # initialize a dictionary of bouding boxes for all models added to the world
         models_in_world = {}
         # add table and robot arm collison bounding boxes to the dictionary
-        models_in_world["table"] = {"type": "env", "bbox": 
-                                    [np.array([args.table_xy_bbox[0], args.table_xy_bbox[2], 0.0]), 
-                                     np.array([args.table_xy_bbox[1], args.table_xy_bbox[3], args.table_surface_z])]}
-        models_in_world["panda"] = {"type": "robot", "bbox": 
+        models_in_world["table"] = {
+            "type": "env", 
+            "bbox": [np.array([args.table_xy_bbox[0], args.table_xy_bbox[2], 0.0]), 
+                np.array([args.table_xy_bbox[1], args.table_xy_bbox[3], args.table_surface_z])],
+            "objects_on": []
+        }
+        # TODO: add cabinet and drawer bounding box
+        # TODO: randomly spawn objects inside cabinet drawers 
+        models_in_world["cabinet"] = {"type": "env", "name": "cabinet", "bbox": [], "has_drawers": []}
+        for i in range(0, 4):
+            drawer_name = f"cabinet.drawer{i}"
+            models_in_world[drawer_name] = {"type": "drawer", "name": f"cabinet.drawer{i}", "bbox": [], "objects_in": []}
+            models_in_world["cabinet"]["has_drawers"].append(drawer_name)
+
+        models_in_world["panda"] = {"type": "robot", "name": "panda_robot", "bbox": 
                                     [np.array([args.panda_xy_bbox[0], args.panda_xy_bbox[2], args.table_surface_z]), 
                                      np.array([args.panda_xy_bbox[1], args.panda_xy_bbox[3], args.table_surface_z + 1.0])]}
 
@@ -334,24 +361,19 @@ def generate_random_world(args):
                 add_model_to_xml(root, obj, object_models[obj]["model_name"], sampled_pose)
 
         # Write the new world file
-        output_world_file = os.path.join(args.output_folder, f"table_cabinet_{i}.world")
+        output_world_file = os.path.join(args.output_folder, f"table_cabinet_{world_idx}.world")
         tree.write(output_world_file)
 
+        # Write the world metadata file based on models_in_world dictionary
+        output_metadata_file = os.path.join(args.world_metadata_dir, f"table_cabinet_{world_idx}.json")
+        def numpy2list(obj):
+            if isinstance(obj, np.ndarray):
+                return obj.tolist()
+            raise TypeError('Not serializable')
+        with open(output_metadata_file, "w") as f:
+            json.dump(models_in_world, f, default=numpy2list, indent=2)
 
 
-    ## NOTE: Write tag to file as plain text, not sure if this is the best way to do it
-    ## Write the new world file, inserting the selected models into the original world file.
-    # output_world_file = os.path.join(args.output_folder, "table_cabinet.world")
-    # with open(world_file, "r") as original_world:
-    #     with open(output_world_file, "w") as new_world:
-    #         for line in original_world:
-    #             new_world.write(line)
-    #             if "<!-- Insert new container models here -->" in line:
-    #                 new_world.write("\n".join(f'<include filename="$(find your_package_name)/models/{container}.urdf.xacro"/>'
-    #                                           for container in selected_containers))
-    #             if "<!-- Insert new object models here -->" in line:
-    #                 new_world.write("\n".join(f'<include filename="$(find your_package_name)/models/{obj}.urdf.xacro"/>'
-    #                                           for obj in selected_objects))
 
 if __name__ == "__main__":
 

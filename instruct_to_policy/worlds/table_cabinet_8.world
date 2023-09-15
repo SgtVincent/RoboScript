@@ -4,10 +4,16 @@
     <gravity>0 0 -9.8</gravity>
     <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
     <atmosphere type="adiabatic" />
+    <max_contacts>100</max_contacts>
     <physics type="ode">
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1</real_time_factor>
       <real_time_update_rate>1000</real_time_update_rate>
+      <constraints>
+        <cfm />
+        <contact_max_correcting_vel>1</contact_max_correcting_vel>
+        <contact_surface_layer>0.001</contact_surface_layer>
+      </constraints>
     </physics>
     <scene>
       <ambient>0.4 0.4 0.4 1</ambient>
@@ -39,7 +45,9 @@
     
     <include>
       <uri>model://cabinet_1076</uri>
-      <!-- overwrite model name -->
+      
+      <name>cabinet</name>
+      
       <name>cabinet</name>
       <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
       <scale>1 1 1</scale>
@@ -50,5 +58,5 @@
     
     
 
-  <include><uri>model://Ecoforms_Plant_Container_URN_SAN</uri><name>Ecoforms_Plant_Container_URN_SAN</name><pose>0.18271706300566004 -0.12273335785863543 1.1096795 0.0 0.0 0.0</pose></include><include><uri>model://Ecoforms_Planter_Pot_QP6Ebony</uri><name>Ecoforms_Planter_Pot_QP6Ebony</name><pose>0.4246038744488646 0.4162025654479 1.1141205 0.0 0.0 0.0</pose></include><include><uri>model://013_apple</uri><name>apple</name><pose>0.4244972320402417 0.40834582091834026 1.2441855000000002 0.0 0.0 0.0</pose></include><include><uri>model://003_cracker_box</uri><name>cracker_box</name><pose>-0.40366912387500953 -0.19921818218704967 1.1367185 0.0 0.0 0.0</pose></include><include><uri>model://019_pitcher_base</uri><name>pitcher_base</name><pose>-0.2343942983997248 -0.3195946151178992 1.1511935 0.0 0.0 0.0</pose></include></world>
+  <include><uri>model://Ecoforms_Plant_Container_SB9Turquoise</uri><name>turquoise_plant_container</name><pose>0.18271706300566004 -0.12273335785863543 1.1506235 0.0 0.0 0.0</pose></include><include><uri>model://Ecoforms_Plant_Saucer_SQ8COR</uri><name>red_plant_saucer</name><pose>0.4246038744488646 0.4162025654479 1.0465945 0.0 0.0 0.0</pose></include><include><uri>model://056_tennis_ball</uri><name>tennis_ball</name><pose>0.42447485138717034 0.40695575239917114 1.1064175000000003 0.0 0.0 0.0</pose></include><include><uri>model://025_mug</uri><name>mug</name><pose>0.15225487574179913 -0.11035675156359832 1.3218985 0.0 0.0 0.0</pose></include><include><uri>model://FemDophilus</uri><name>white_and_pink_box</name><pose>-0.2343942983997248 -0.3195946151178992 1.087291 0.0 0.0 0.0</pose></include></world>
 </sdf>

@@ -1,0 +1,158 @@
+{
+  "table": {
+    "type": "env",
+    "bbox": [
+      [
+        -0.6,
+        -0.6,
+        0.0
+      ],
+      [
+        0.6,
+        0.6,
+        1.02
+      ]
+    ],
+    "objects_on": [
+      "Threshold_Basket_Natural_Finish_Fabric_Liner_Small",
+      "Ecoforms_Plant_Container_Quadra_Sand_QP6",
+      "024_bowl",
+      "002_master_chef_can"
+    ]
+  },
+  "cabinet": {
+    "type": "env",
+    "name": "cabinet",
+    "bbox": [],
+    "has_drawers": [
+      "cabinet.drawer0",
+      "cabinet.drawer1",
+      "cabinet.drawer2",
+      "cabinet.drawer3"
+    ]
+  },
+  "cabinet.drawer0": {
+    "type": "drawer",
+    "name": "cabinet.drawer0",
+    "bbox": [],
+    "objects_in": []
+  },
+  "cabinet.drawer1": {
+    "type": "drawer",
+    "name": "cabinet.drawer1",
+    "bbox": [],
+    "objects_in": []
+  },
+  "cabinet.drawer2": {
+    "type": "drawer",
+    "name": "cabinet.drawer2",
+    "bbox": [],
+    "objects_in": []
+  },
+  "cabinet.drawer3": {
+    "type": "drawer",
+    "name": "cabinet.drawer3",
+    "bbox": [],
+    "objects_in": []
+  },
+  "panda": {
+    "type": "robot",
+    "name": "panda_robot",
+    "bbox": [
+      [
+        -0.55,
+        -0.1,
+        1.02
+      ],
+      [
+        -0.35,
+        0.1,
+        2.02
+      ]
+    ]
+  },
+  "Threshold_Basket_Natural_Finish_Fabric_Liner_Small": {
+    "type": "container",
+    "name": "basket_with_fabric_liner",
+    "bbox": [
+      [
+        0.004159224219691823,
+        0.26739446831869385,
+        1.0299999999999998
+      ],
+      [
+        0.2434442242196918,
+        0.4295884683186938,
+        1.177613
+      ]
+    ],
+    "objects_in": []
+  },
+  "Ecoforms_Plant_Container_Quadra_Sand_QP6": {
+    "type": "container",
+    "name": "sand_square_plant_container",
+    "bbox": [
+      [
+        -0.12018406735424561,
+        -0.4374306786555284,
+        1.03
+      ],
+      [
+        0.07017093264575439,
+        -0.2472996786555284,
+        1.1985249999999998
+      ]
+    ],
+    "objects_in": [
+      "Perricone_MD_Hypoallergenic_Firming_Eye_Cream_05_oz"
+    ]
+  },
+  "bowl": {
+    "type": "object",
+    "name": "bowl",
+    "bbox": [
+      [
+        0.1539750437552077,
+        -0.025432522187453357,
+        1.03
+      ],
+      [
+        0.31543804375520773,
+        0.13573147781254663,
+        1.0850090000000001
+      ]
+    ]
+  },
+  "master_chef_can": {
+    "type": "object",
+    "name": "master_chef_can",
+    "bbox": [
+      [
+        -0.05684846327204836,
+        -0.030728953556205335,
+        1.03
+      ],
+      [
+        0.04568053672795165,
+        0.07164804644379466,
+        1.170177
+      ]
+    ]
+  },
+  "white_and_green_box": {
+    "type": "object",
+    "name": "white_and_green_box",
+    "bbox": [
+      [
+        -0.08975576646060256,
+        -0.4006443210548678,
+        1.2085249999999998
+      ],
+      [
+        -0.03278376646060256,
+        -0.34338932105486775,
+        1.257571
+      ]
+    ]
+  }
+}

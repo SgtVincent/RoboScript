@@ -1,6 +1,7 @@
 {
   "table": {
     "type": "env",
+    "name": "table",
     "bbox": [
       [
         -0.6,
@@ -107,7 +108,7 @@
       "056_tennis_ball"
     ]
   },
-  "tennis_ball": {
+  "056_tennis_ball": {
     "type": "object",
     "name": "tennis_ball",
     "bbox": [
@@ -123,7 +124,7 @@
       ]
     ]
   },
-  "mustard_bottle": {
+  "006_mustard_bottle": {
     "type": "object",
     "name": "mustard_bottle",
     "bbox": [
@@ -139,7 +140,7 @@
       ]
     ]
   },
-  "dog_figure": {
+  "Toysmith_Windem_Up_Flippin_Animals_Dog": {
     "type": "object",
     "name": "dog_figure",
     "bbox": [

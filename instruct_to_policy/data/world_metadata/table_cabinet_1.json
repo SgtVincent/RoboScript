@@ -1,6 +1,7 @@
 {
   "table": {
     "type": "env",
+    "name": "table",
     "bbox": [
       [
         -0.6,
@@ -107,7 +108,7 @@
     ],
     "objects_in": []
   },
-  "bleach_cleanser": {
+  "021_bleach_cleanser": {
     "type": "object",
     "name": "bleach_cleanser",
     "bbox": [
@@ -123,7 +124,7 @@
       ]
     ]
   },
-  "windex_bottle": {
+  "022_windex_bottle": {
     "type": "object",
     "name": "windex_bottle",
     "bbox": [
@@ -139,7 +140,7 @@
       ]
     ]
   },
-  "lion_toy_figure": {
+  "Schleich_Lion_Action_Figure": {
     "type": "object",
     "name": "lion_toy_figure",
     "bbox": [

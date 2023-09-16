@@ -1,6 +1,7 @@
 {
   "table": {
     "type": "env",
+    "name": "table",
     "bbox": [
       [
         -0.6,
@@ -107,7 +108,7 @@
       "Perricone_MD_Face_Finishing_Moisturizer"
     ]
   },
-  "white_and_red_box": {
+  "Perricone_MD_No_Lipstick_Lipstick": {
     "type": "object",
     "name": "white_and_red_box",
     "bbox": [
@@ -123,7 +124,7 @@
       ]
     ]
   },
-  "green_and_white_box": {
+  "Perricone_MD_Face_Finishing_Moisturizer": {
     "type": "object",
     "name": "green_and_white_box",
     "bbox": [
@@ -139,7 +140,7 @@
       ]
     ]
   },
-  "mini_soccer_ball": {
+  "053_mini_soccer_ball": {
     "type": "object",
     "name": "mini_soccer_ball",
     "bbox": [

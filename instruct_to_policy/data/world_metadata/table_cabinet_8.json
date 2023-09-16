@@ -1,6 +1,7 @@
 {
   "table": {
     "type": "env",
+    "name": "table",
     "bbox": [
       [
         -0.6,
@@ -108,7 +109,7 @@
       "056_tennis_ball"
     ]
   },
-  "tennis_ball": {
+  "056_tennis_ball": {
     "type": "object",
     "name": "tennis_ball",
     "bbox": [
@@ -124,7 +125,7 @@
       ]
     ]
   },
-  "mug": {
+  "025_mug": {
     "type": "object",
     "name": "mug",
     "bbox": [
@@ -140,7 +141,7 @@
       ]
     ]
   },
-  "white_and_pink_box": {
+  "FemDophilus": {
     "type": "object",
     "name": "white_and_pink_box",
     "bbox": [

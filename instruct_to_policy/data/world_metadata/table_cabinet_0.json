@@ -1,6 +1,7 @@
 {
   "table": {
     "type": "env",
+    "name": "table",
     "bbox": [
       [
         -0.6,
@@ -108,7 +109,7 @@
       "025_mug"
     ]
   },
-  "chips_can": {
+  "001_chips_can": {
     "type": "object",
     "name": "chips_can",
     "bbox": [
@@ -124,7 +125,7 @@
       ]
     ]
   },
-  "mug": {
+  "025_mug": {
     "type": "object",
     "name": "mug",
     "bbox": [
@@ -140,7 +141,7 @@
       ]
     ]
   },
-  "wine_glass": {
+  "023_wine_glass": {
     "type": "object",
     "name": "wine_glass",
     "bbox": [

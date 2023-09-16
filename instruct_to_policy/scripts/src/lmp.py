@@ -19,7 +19,7 @@ from src.env.env import Env
 
 
 class LMP:
-    def __init__(self, name, cfg, lmp_fgen, fixed_vars, variable_vars):
+    def __init__(self, name, cfg, lmp_fgen, fixed_vars, variable_vars, dump_file="debugging.txt"):
         self._name = name
         self._cfg = cfg
 
@@ -32,6 +32,7 @@ class LMP:
         self._fixed_vars = fixed_vars
         self._variable_vars = variable_vars
         self.exec_hist = ""
+        self.dump_file = dump_file
 
     def clear_exec_hist(self):
         self.exec_hist = ""
@@ -83,8 +84,10 @@ class LMP:
 
         to_log_pretty = highlight(to_log, PythonLexer(), TerminalFormatter())
         print(f"LMP {self._name} exec:\n\n{to_log_pretty}\n")
-
-        new_fs = self._lmp_fgen.create_new_fs_from_code(code_str)
+        if not self._cfg["debug_mode"]:
+            new_fs = self._lmp_fgen.create_new_fs_from_code(code_str)
+        else:
+            new_fs, src_fs = self._lmp_fgen.create_new_fs_from_code(code_str, return_src=True)
         self._variable_vars.update(new_fs)
 
         gvars = merge_dicts([self._fixed_vars, self._variable_vars])
@@ -92,6 +95,10 @@ class LMP:
 
         if not self._cfg["debug_mode"]:
             exec_safe(to_exec, gvars, lvars)
+        else:
+            # save to_exec, gvars, lvars into a file for debugging
+            with open(self.dump_file, "a") as f:
+                f.write(f"\n---\n{use_query}\n{src_fs}\n{to_exec}\n---\n")
 
         self.exec_hist += f"\n{to_exec}"
 

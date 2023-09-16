@@ -243,7 +243,7 @@ def sample_object_position(object_id, object_models, container_models, models_in
 
             # add the object to the world
             object_name = object_models[object_id]["model_name"]
-            models_in_world[object_name] = {"type": "object", "name": object_name, "bbox": object_bbox}
+            models_in_world[object_id] = {"type": "object", "name": object_name, "bbox": object_bbox}
             # add the object to the container if it is placed in a container
             if container_name is not None:
                 models_in_world[container_id]["objects_in"].append(object_id)
@@ -313,6 +313,7 @@ def generate_random_world(args):
         # add table and robot arm collison bounding boxes to the dictionary
         models_in_world["table"] = {
             "type": "env", 
+            "name": "table",
             "bbox": [np.array([args.table_xy_bbox[0], args.table_xy_bbox[2], 0.0]), 
                 np.array([args.table_xy_bbox[1], args.table_xy_bbox[3], args.table_surface_z])],
             "objects_on": []

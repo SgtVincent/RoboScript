@@ -1,6 +1,7 @@
 {
   "table": {
     "type": "env",
+    "name": "table",
     "bbox": [
       [
         -0.6,
@@ -108,7 +109,7 @@
       "025_mug"
     ]
   },
-  "yellow_medication_bottle": {
+  "Hyaluronic_Acid": {
     "type": "object",
     "name": "yellow_medication_bottle",
     "bbox": [
@@ -124,7 +125,7 @@
       ]
     ]
   },
-  "mug": {
+  "025_mug": {
     "type": "object",
     "name": "mug",
     "bbox": [
@@ -140,7 +141,7 @@
       ]
     ]
   },
-  "white_and_red_box": {
+  "Perricone_MD_No_Lipstick_Lipstick": {
     "type": "object",
     "name": "white_and_red_box",
     "bbox": [

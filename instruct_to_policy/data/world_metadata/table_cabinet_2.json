@@ -1,6 +1,7 @@
 {
   "table": {
     "type": "env",
+    "name": "table",
     "bbox": [
       [
         -0.6,
@@ -107,7 +108,7 @@
       "022_windex_bottle"
     ]
   },
-  "windex_bottle": {
+  "022_windex_bottle": {
     "type": "object",
     "name": "windex_bottle",
     "bbox": [
@@ -123,7 +124,7 @@
       ]
     ]
   },
-  "panda_toy_figure": {
+  "Android_Figure_Panda": {
     "type": "object",
     "name": "panda_toy_figure",
     "bbox": [
@@ -139,7 +140,7 @@
       ]
     ]
   },
-  "white_and_brown_box": {
+  "Perricone_MD_No_Bronzer_Bronzer": {
     "type": "object",
     "name": "white_and_brown_box",
     "bbox": [

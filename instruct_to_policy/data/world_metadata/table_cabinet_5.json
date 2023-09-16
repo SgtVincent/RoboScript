@@ -1,6 +1,7 @@
 {
   "table": {
     "type": "env",
+    "name": "table",
     "bbox": [
       [
         -0.6,
@@ -107,7 +108,7 @@
       "Perricone_MD_Hypoallergenic_Firming_Eye_Cream_05_oz"
     ]
   },
-  "bowl": {
+  "024_bowl": {
     "type": "object",
     "name": "bowl",
     "bbox": [
@@ -123,7 +124,7 @@
       ]
     ]
   },
-  "master_chef_can": {
+  "002_master_chef_can": {
     "type": "object",
     "name": "master_chef_can",
     "bbox": [
@@ -139,7 +140,7 @@
       ]
     ]
   },
-  "white_and_green_box": {
+  "Perricone_MD_Hypoallergenic_Firming_Eye_Cream_05_oz": {
     "type": "object",
     "name": "white_and_green_box",
     "bbox": [

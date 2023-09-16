@@ -1,6 +1,7 @@
 {
   "table": {
     "type": "env",
+    "name": "table",
     "bbox": [
       [
         -0.6,
@@ -107,7 +108,7 @@
     ],
     "objects_in": []
   },
-  "brown_medication_bottle": {
+  "Germanium_GE132": {
     "type": "object",
     "name": "brown_medication_bottle",
     "bbox": [
@@ -123,7 +124,7 @@
       ]
     ]
   },
-  "tomato_soup_can": {
+  "005_tomato_soup_can": {
     "type": "object",
     "name": "tomato_soup_can",
     "bbox": [
@@ -139,7 +140,7 @@
       ]
     ]
   },
-  "master_chef_can": {
+  "002_master_chef_can": {
     "type": "object",
     "name": "master_chef_can",
     "bbox": [

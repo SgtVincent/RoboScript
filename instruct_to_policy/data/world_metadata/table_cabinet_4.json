@@ -1,6 +1,7 @@
 {
   "table": {
     "type": "env",
+    "name": "table",
     "bbox": [
       [
         -0.6,
@@ -108,7 +109,7 @@
       "056_tennis_ball"
     ]
   },
-  "potted_meat_can": {
+  "010_potted_meat_can": {
     "type": "object",
     "name": "potted_meat_can",
     "bbox": [
@@ -124,7 +125,7 @@
       ]
     ]
   },
-  "mustard_bottle": {
+  "006_mustard_bottle": {
     "type": "object",
     "name": "mustard_bottle",
     "bbox": [
@@ -140,7 +141,7 @@
       ]
     ]
   },
-  "tennis_ball": {
+  "056_tennis_ball": {
     "type": "object",
     "name": "tennis_ball",
     "bbox": [

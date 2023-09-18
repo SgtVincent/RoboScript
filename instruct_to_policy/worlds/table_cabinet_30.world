@@ -1,0 +1,62 @@
+<sdf version="1.7">
+  <world name="default">
+    
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type="adiabatic" />
+    <max_contacts>100</max_contacts>
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <constraints>
+        <cfm />
+        <contact_max_correcting_vel>1</contact_max_correcting_vel>
+        <contact_surface_layer>0.001</contact_surface_layer>
+      </constraints>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+
+    
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    
+    <include>
+      <uri>model://Table</uri>
+      <name>table</name>
+      <pose>0 0 0 0 0 0</pose>
+      <static>1</static>
+    </include>
+    
+    <include>
+      <uri>model://cabinet_1076</uri>
+      
+      <name>cabinet</name>
+      
+      <name>cabinet</name>
+      <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
+      <scale>1 1 1</scale>
+      <static>1</static>
+    </include>
+
+    
+    
+    
+
+  <include><uri>model://Threshold_Basket_Natural_Finish_Fabric_Liner_Small</uri><name>basket_with_fabric_liner</name><pose>0.4002891568941852 0.31468265160967024 1.1038065 0.0 0.0 0.0</pose></include><include><uri>model://Footed_Bowl_Sand</uri><name>footed_bowl</name><pose>-0.22738670843112208 -0.044510278220915855 1.0844195 0.0 0.0 0.0</pose></include><include><uri>model://061_foam_brick</uri><name>foam_brick</name><pose>0.4612069129663517 0.3153670533033406 1.2132095 0.0 0.0 0.0</pose></include><include><uri>model://FemDophilus</uri><name>white_and_pink_box</name><pose>0.35263269272183567 0.3221906946488111 1.244904 0.0 0.0 0.0</pose></include><include><uri>model://Perricone_MD_Hypoallergenic_Firming_Eye_Cream_05_oz</uri><name>white_and_green_box</name><pose>-0.21459210111381477 -0.043561928273115474 1.1733620000000002 0.0 0.0 0.0</pose></include></world>
+</sdf>

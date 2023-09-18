@@ -1,0 +1,62 @@
+<sdf version="1.7">
+  <world name="default">
+    
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type="adiabatic" />
+    <max_contacts>100</max_contacts>
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <constraints>
+        <cfm />
+        <contact_max_correcting_vel>1</contact_max_correcting_vel>
+        <contact_surface_layer>0.001</contact_surface_layer>
+      </constraints>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+
+    
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    
+    <include>
+      <uri>model://Table</uri>
+      <name>table</name>
+      <pose>0 0 0 0 0 0</pose>
+      <static>1</static>
+    </include>
+    
+    <include>
+      <uri>model://cabinet_1076</uri>
+      
+      <name>cabinet</name>
+      
+      <name>cabinet</name>
+      <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
+      <scale>1 1 1</scale>
+      <static>1</static>
+    </include>
+
+    
+    
+    
+
+  <include><uri>model://Ecoforms_Plate_S20Avocado</uri><name>green_plant_plate</name><pose>0.42292295803314284 0.3079070308221378 1.0460805 0.0 0.0 0.0</pose></include><include><uri>model://Now_Designs_Bowl_Akita_Black</uri><name>bowl_with_black_white_patterns</name><pose>0.304495834240024 -0.028176156184526735 1.067607 0.0 0.0 0.0</pose></include><include><uri>model://019_pitcher_base</uri><name>pitcher_base</name><pose>0.4436011488699624 0.3447913029040897 1.1933544999999999 0.0 0.0 0.0</pose></include><include><uri>model://010_potted_meat_can</uri><name>potted_meat_can</name><pose>0.2816109082170698 0.4497459059575175 1.0717715 0.0 0.0 0.0</pose></include><include><uri>model://Hyaluronic_Acid</uri><name>yellow_medication_bottle</name><pose>0.04988853504236468 0.24208867366245945 1.0789905 0.0 0.0 0.0</pose></include></world>
+</sdf>

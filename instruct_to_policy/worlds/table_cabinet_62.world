@@ -1,0 +1,62 @@
+<sdf version="1.7">
+  <world name="default">
+    
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type="adiabatic" />
+    <max_contacts>100</max_contacts>
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <constraints>
+        <cfm />
+        <contact_max_correcting_vel>1</contact_max_correcting_vel>
+        <contact_surface_layer>0.001</contact_surface_layer>
+      </constraints>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+
+    
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    
+    <include>
+      <uri>model://Table</uri>
+      <name>table</name>
+      <pose>0 0 0 0 0 0</pose>
+      <static>1</static>
+    </include>
+    
+    <include>
+      <uri>model://cabinet_1076</uri>
+      
+      <name>cabinet</name>
+      
+      <name>cabinet</name>
+      <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
+      <scale>1 1 1</scale>
+      <static>1</static>
+    </include>
+
+    
+    
+    
+
+  <include><uri>model://Smith_Hawken_Woven_BasketTray_Organizer_with_3_Compartments_95_x_9_x_13</uri><name>woven_basket_tray</name><pose>-0.08239210823637116 -0.11458033468891743 1.1643645 0.0 0.0 0.0</pose></include><include><uri>model://Ecoforms_Plant_Bowl_Atlas_Low</uri><name>yellow_plant_bowl</name><pose>-0.3814822264587298 0.31608622264389175 1.0971865 0.0 0.0 0.0</pose></include><include><uri>model://Great_Dinos_Triceratops_Toy</uri><name>anroid_toy_figure</name><pose>-0.08669769477055786 -0.09925552008876769 1.348321 0.0 0.0 0.0</pose></include><include><uri>model://035_power_drill</uri><name>power_drill</name><pose>-0.37064694427603945 0.2960070958374914 1.2030195000000001 0.0 0.0 0.0</pose></include><include><uri>model://057_racquetball</uri><name>racquetball</name><pose>0.14260665119258298 0.31552355618481764 1.057787 0.0 0.0 0.0</pose></include></world>
+</sdf>

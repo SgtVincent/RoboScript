@@ -1,0 +1,62 @@
+<sdf version="1.7">
+  <world name="default">
+    
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type="adiabatic" />
+    <max_contacts>100</max_contacts>
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <constraints>
+        <cfm />
+        <contact_max_correcting_vel>1</contact_max_correcting_vel>
+        <contact_surface_layer>0.001</contact_surface_layer>
+      </constraints>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+
+    
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    
+    <include>
+      <uri>model://Table</uri>
+      <name>table</name>
+      <pose>0 0 0 0 0 0</pose>
+      <static>1</static>
+    </include>
+    
+    <include>
+      <uri>model://cabinet_1076</uri>
+      
+      <name>cabinet</name>
+      
+      <name>cabinet</name>
+      <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
+      <scale>1 1 1</scale>
+      <static>1</static>
+    </include>
+
+    
+    
+    
+
+  <include><uri>model://Threshold_Bistro_Ceramic_Dinner_Plate_Ruby_Ring</uri><name>ruby_ring_dinner_plate</name><pose>-0.2480034853470054 -0.24856414665963922 1.046649 0.0 0.0 0.0</pose></include><include><uri>model://Top_Paw_Dog_Bowl_Blue_Paw_Bone_Ceramic_25_fl_oz_total</uri><name>blue_dog_bowl</name><pose>0.03327698060407219 0.08364594135753278 1.060158 0.0 0.0 0.0</pose></include><include><uri>model://Toysmith_Windem_Up_Flippin_Animals_Dog</uri><name>dog_figure</name><pose>-0.0005568965489709489 0.10488264441084323 1.125279 0.0 0.0 0.0</pose></include><include><uri>model://014_lemon</uri><name>lemon</name><pose>0.32591485553890553 0.27856446725239026 1.0565085 0.0 0.0 0.0</pose></include><include><uri>model://019_pitcher_base</uri><name>pitcher_base</name><pose>0.04577163354822539 -0.37171191607973086 1.1511935 0.0 0.0 0.0</pose></include></world>
+</sdf>

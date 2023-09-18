@@ -1,0 +1,62 @@
+<sdf version="1.7">
+  <world name="default">
+    
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type="adiabatic" />
+    <max_contacts>100</max_contacts>
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <constraints>
+        <cfm />
+        <contact_max_correcting_vel>1</contact_max_correcting_vel>
+        <contact_surface_layer>0.001</contact_surface_layer>
+      </constraints>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+
+    
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    
+    <include>
+      <uri>model://Table</uri>
+      <name>table</name>
+      <pose>0 0 0 0 0 0</pose>
+      <static>1</static>
+    </include>
+    
+    <include>
+      <uri>model://cabinet_1076</uri>
+      
+      <name>cabinet</name>
+      
+      <name>cabinet</name>
+      <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
+      <scale>1 1 1</scale>
+      <static>1</static>
+    </include>
+
+    
+    
+    
+
+  <include><uri>model://Footed_Bowl_Sand</uri><name>footed_bowl</name><pose>-0.029338639875117256 0.1020702502896369 1.0844195 0.0 0.0 0.0</pose></include><include><uri>model://Ecoforms_Plant_Container_Urn_55_Avocado</uri><name>avocado_plant_container</name><pose>-0.2996694485171323 0.4420517635232788 1.1099575 0.0 0.0 0.0</pose></include><include><uri>model://Hyaluronic_Acid</uri><name>yellow_medication_bottle</name><pose>-0.28143819679002197 0.44810721517475494 1.2489054999999998 0.0 0.0 0.0</pose></include><include><uri>model://053_mini_soccer_ball</uri><name>mini_soccer_ball</name><pose>0.011419659914857716 -0.24239716945401715 1.0927935 0.0 0.0 0.0</pose></include><include><uri>model://CoQ10</uri><name>grey_medication_bottle</name><pose>-0.047824563952052146 0.0812086743083563 1.1910385 0.0 0.0 0.0</pose></include></world>
+</sdf>

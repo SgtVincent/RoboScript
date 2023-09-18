@@ -1,0 +1,62 @@
+<sdf version="1.7">
+  <world name="default">
+    
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type="adiabatic" />
+    <max_contacts>100</max_contacts>
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <constraints>
+        <cfm />
+        <contact_max_correcting_vel>1</contact_max_correcting_vel>
+        <contact_surface_layer>0.001</contact_surface_layer>
+      </constraints>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+
+    
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    
+    <include>
+      <uri>model://Table</uri>
+      <name>table</name>
+      <pose>0 0 0 0 0 0</pose>
+      <static>1</static>
+    </include>
+    
+    <include>
+      <uri>model://cabinet_1076</uri>
+      
+      <name>cabinet</name>
+      
+      <name>cabinet</name>
+      <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
+      <scale>1 1 1</scale>
+      <static>1</static>
+    </include>
+
+    
+    
+    
+
+  <include><uri>model://Top_Paw_Dog_Bowl_Blue_Paw_Bone_Ceramic_25_fl_oz_total</uri><name>blue_dog_bowl</name><pose>0.3305647808638221 0.18752667904353126 1.060158 0.0 0.0 0.0</pose></include><include><uri>model://Sea_to_Summit_Xl_Bowl</uri><name>blue_bowl</name><pose>0.16212669458427031 0.10675024039366587 1.047751 0.0 0.0 0.0</pose></include><include><uri>model://Perricone_MD_Face_Finishing_Moisturizer</uri><name>green_and_white_box</name><pose>-0.3072554052362336 0.3427836832790355 1.066858 0.0 0.0 0.0</pose></include><include><uri>model://Perricone_MD_No_Bronzer_Bronzer</uri><name>white_and_brown_box</name><pose>-0.4236774452688967 0.2932350755082864 1.080355 0.0 0.0 0.0</pose></include><include><uri>model://Granimals_20_Wooden_ABC_Blocks_Wagon_85VdSftGsLi</uri><name>wood_block</name><pose>0.14251111443777192 0.13546789958290406 1.0907335000000002 0.0 0.0 0.0</pose></include></world>
+</sdf>

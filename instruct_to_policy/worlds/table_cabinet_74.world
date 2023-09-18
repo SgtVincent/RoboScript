@@ -1,0 +1,62 @@
+<sdf version="1.7">
+  <world name="default">
+    
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type="adiabatic" />
+    <max_contacts>100</max_contacts>
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <constraints>
+        <cfm />
+        <contact_max_correcting_vel>1</contact_max_correcting_vel>
+        <contact_surface_layer>0.001</contact_surface_layer>
+      </constraints>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+
+    
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    
+    <include>
+      <uri>model://Table</uri>
+      <name>table</name>
+      <pose>0 0 0 0 0 0</pose>
+      <static>1</static>
+    </include>
+    
+    <include>
+      <uri>model://cabinet_1076</uri>
+      
+      <name>cabinet</name>
+      
+      <name>cabinet</name>
+      <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
+      <scale>1 1 1</scale>
+      <static>1</static>
+    </include>
+
+    
+    
+    
+
+  <include><uri>model://Cole_Hardware_Electric_Pot_Assortment_55</uri><name>purple_plant_pot</name><pose>0.1972816004450374 -0.24439073280183113 1.0939925 0.0 0.0 0.0</pose></include><include><uri>model://Ecoforms_Plant_Container_Urn_55_Avocado</uri><name>avocado_plant_container</name><pose>0.44670052445106767 0.42731384593210475 1.1099575 0.0 0.0 0.0</pose></include><include><uri>model://Germanium_GE132</uri><name>brown_medication_bottle</name><pose>-0.27041179416376937 0.16220541818816214 1.068688 0.0 0.0 0.0</pose></include><include><uri>model://028_skillet_lid</uri><name>skillet_lid</name><pose>0.3314452548675424 0.20445216278967715 1.0680275000000001 0.0 0.0 0.0</pose></include><include><uri>model://023_wine_glass</uri><name>wine_glass</name><pose>-0.06705599899673215 -0.1386585067077334 1.07935127 0.0 0.0 0.0</pose></include></world>
+</sdf>

@@ -1,0 +1,62 @@
+<sdf version="1.7">
+  <world name="default">
+    
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type="adiabatic" />
+    <max_contacts>100</max_contacts>
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <constraints>
+        <cfm />
+        <contact_max_correcting_vel>1</contact_max_correcting_vel>
+        <contact_surface_layer>0.001</contact_surface_layer>
+      </constraints>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+
+    
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    
+    <include>
+      <uri>model://Table</uri>
+      <name>table</name>
+      <pose>0 0 0 0 0 0</pose>
+      <static>1</static>
+    </include>
+    
+    <include>
+      <uri>model://cabinet_1076</uri>
+      
+      <name>cabinet</name>
+      
+      <name>cabinet</name>
+      <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
+      <scale>1 1 1</scale>
+      <static>1</static>
+    </include>
+
+    
+    
+    
+
+  <include><uri>model://Nordic_Ware_Original_Bundt_Pan</uri><name>black_bundt_pan</name><pose>0.029330489296427287 -0.4033588168598157 1.0799830000000001 0.0 0.0 0.0</pose></include><include><uri>model://Room_Essentials_Salad_Plate_Turquoise</uri><name>turquoise_salad_plate</name><pose>-0.392962526574509 0.4409642091509507 1.0441885 0.0 0.0 0.0</pose></include><include><uri>model://023_wine_glass</uri><name>wine_glass</name><pose>0.053314461531130175 -0.3998125400993783 1.18931727 0.0 0.0 0.0</pose></include><include><uri>model://Perricone_MD_No_Bronzer_Bronzer</uri><name>white_and_brown_box</name><pose>0.23420507390071788 0.08607486654705987 1.080355 0.0 0.0 0.0</pose></include><include><uri>model://Granimals_20_Wooden_ABC_Blocks_Wagon_85VdSftGsLi</uri><name>wood_block</name><pose>0.29755746700895624 0.4185242195998613 1.0452315 0.0 0.0 0.0</pose></include></world>
+</sdf>

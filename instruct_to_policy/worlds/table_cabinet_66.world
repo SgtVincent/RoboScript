@@ -1,0 +1,62 @@
+<sdf version="1.7">
+  <world name="default">
+    
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type="adiabatic" />
+    <max_contacts>100</max_contacts>
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <constraints>
+        <cfm />
+        <contact_max_correcting_vel>1</contact_max_correcting_vel>
+        <contact_surface_layer>0.001</contact_surface_layer>
+      </constraints>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+
+    
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    
+    <include>
+      <uri>model://Table</uri>
+      <name>table</name>
+      <pose>0 0 0 0 0 0</pose>
+      <static>1</static>
+    </include>
+    
+    <include>
+      <uri>model://cabinet_1076</uri>
+      
+      <name>cabinet</name>
+      
+      <name>cabinet</name>
+      <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
+      <scale>1 1 1</scale>
+      <static>1</static>
+    </include>
+
+    
+    
+    
+
+  <include><uri>model://Ecoforms_Planter_Pot_QP6Ebony</uri><name>ebony_planter_pot</name><pose>0.33438312553713867 0.4261400722596572 1.1141205 0.0 0.0 0.0</pose></include><include><uri>model://Cole_Hardware_Bowl_Scirocco_YellowBlue</uri><name>yellow_blue_bowl</name><pose>0.4219900697571223 0.22468664856863219 1.0609325 0.0 0.0 0.0</pose></include><include><uri>model://Phillips_Caplets_Size_24</uri><name>blue_box</name><pose>0.34263411812067907 0.3789643565667805 1.251111 0.0 0.0 0.0</pose></include><include><uri>model://035_power_drill</uri><name>power_drill</name><pose>-0.15875080276541287 -0.010221128635800825 1.0586465 0.0 0.0 0.0</pose></include><include><uri>model://022_windex_bottle</uri><name>windex_bottle</name><pose>0.1649658389458547 -0.04868756426092652 1.1649005000000001 0.0 0.0 0.0</pose></include></world>
+</sdf>

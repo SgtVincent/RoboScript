@@ -1,0 +1,62 @@
+<sdf version="1.7">
+  <world name="default">
+    
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type="adiabatic" />
+    <max_contacts>100</max_contacts>
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <constraints>
+        <cfm />
+        <contact_max_correcting_vel>1</contact_max_correcting_vel>
+        <contact_surface_layer>0.001</contact_surface_layer>
+      </constraints>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+
+    
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    
+    <include>
+      <uri>model://Table</uri>
+      <name>table</name>
+      <pose>0 0 0 0 0 0</pose>
+      <static>1</static>
+    </include>
+    
+    <include>
+      <uri>model://cabinet_1076</uri>
+      
+      <name>cabinet</name>
+      
+      <name>cabinet</name>
+      <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
+      <scale>1 1 1</scale>
+      <static>1</static>
+    </include>
+
+    
+    
+    
+
+  <include><uri>model://Room_Essentials_Bowl_Turquiose</uri><name>turquoise_bowl</name><pose>0.004727135203071442 0.2938117194969674 1.071283 0.0 0.0 0.0</pose></include><include><uri>model://Ecoforms_Plant_Container_Urn_55_Avocado</uri><name>avocado_plant_container</name><pose>-0.1619553590724494 0.3559709056465804 1.1099575 0.0 0.0 0.0</pose></include><include><uri>model://Perricone_MD_Neuropeptide_Firming_Moisturizer</uri><name>white_box</name><pose>-0.1755535831989486 0.36748578068676957 1.2365929999999998 0.0 0.0 0.0</pose></include><include><uri>model://014_lemon</uri><name>lemon</name><pose>-0.0017253554849372514 0.31119446285037067 1.1490745 0.0 0.0 0.0</pose></include><include><uri>model://Hyaluronic_Acid</uri><name>yellow_medication_bottle</name><pose>0.06609409931095744 0.1186534909528193 1.0789905 0.0 0.0 0.0</pose></include></world>
+</sdf>

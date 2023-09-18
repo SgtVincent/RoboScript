@@ -1,5 +1,5 @@
 import numpy as np
-
+import json 
 import copy
 from time import sleep
 from pygments import highlight
@@ -19,7 +19,7 @@ from src.env.env import Env
 
 
 class LMP:
-    def __init__(self, name, cfg, lmp_fgen, fixed_vars, variable_vars, dump_file="debugging.txt"):
+    def __init__(self, name, cfg, lmp_fgen, fixed_vars, variable_vars):
         self._name = name
         self._cfg = cfg
 
@@ -32,10 +32,16 @@ class LMP:
         self._fixed_vars = fixed_vars
         self._variable_vars = variable_vars
         self.exec_hist = ""
-        self.dump_file = dump_file
+        self.dump_hist = []
 
     def clear_exec_hist(self):
         self.exec_hist = ""
+
+    def save_dump_hist(self, dump_file):
+        with open(dump_file, "w") as f:
+            json.dump(self.dump_hist, f, indent=4)
+        # clear dump_hist
+        self.dump_hist = []
 
     def build_messages(self, query, context=""):
         messages = copy.deepcopy(self._base_messages)
@@ -48,8 +54,11 @@ class LMP:
         if context != "":
             query_message["content"] += f"\n{context}"
 
-        use_query = f'{self._cfg["query_prefix"]}{query}{self._cfg["query_suffix"]}'
-        query_message["content"] += f"\n{use_query}"
+            use_query = f'{self._cfg["query_prefix"]}{query}{self._cfg["query_suffix"]}'
+            query_message["content"] += f"\n{use_query}"
+        else:
+            use_query = f'{self._cfg["query_prefix"]}{query}{self._cfg["query_suffix"]}'
+            query_message["content"] += use_query
 
         messages.append(query_message)
 
@@ -96,9 +105,17 @@ class LMP:
         if not self._cfg["debug_mode"]:
             exec_safe(to_exec, gvars, lvars)
         else:
-            # save to_exec, gvars, lvars into a file for debugging
-            with open(self.dump_file, "a") as f:
-                f.write(f"\n---\n{use_query}\n{src_fs}\n{to_exec}\n---\n")
+            # append a dictionary of context, query, src_fs, code_str, gvars and lvars to dump_hist
+            self.dump_hist.append(
+                {
+                    "context": context,
+                    "query": use_query,
+                    "src_fs": src_fs,
+                    "code_str": code_str,
+                    "gvars": list(gvars.keys()),
+                    "lvars": list(lvars.keys()),
+                }
+            )
 
         self.exec_hist += f"\n{to_exec}"
 

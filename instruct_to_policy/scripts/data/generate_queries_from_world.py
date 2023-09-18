@@ -65,7 +65,7 @@ def collect_example_queries_from_prompt(prompt)-> List:
     example_queries = []
     for message in prompt:
         if message['role'] == 'user':
-            example_queries.append(message['content'])
+            example_queries.append(message['content'].replace('\n', ";"))
     return example_queries
 
 
@@ -94,11 +94,12 @@ Here are some example task queries, you can generate similar queries or more div
 """
     }
 
-    objects_string = ', '.join(objects)
+    objects_string = ', '.join(objects).strip()
     query_message = {
         "role": "user",
         "content": f"Now please generate {num_queries} task queries based on the world description and example task queries." +
-                    f"In the output, each line is a task query. Please append the context 'objects = [{objects_string}]' before all the queries."
+                    "You can combine multiple objects or multiple actions in the query." +
+                    f"In each line of your response, you should strictly copy string 'objects = [{objects_string}] ;' and concatenate it with your generated query" 
     }
 
 
@@ -123,8 +124,8 @@ if __name__ == '__main__':
     # parse arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', type=str, default='gpt-3.5-turbo-16k')
-    parser.add_argument('--temperature', type=float, default=0.7)
-    parser.add_argument('--max_tokens', type=int, default=5000)
+    parser.add_argument('--temperature', type=float, default=1.0)
+    parser.add_argument('--max_tokens', type=int, default=15000)
     parser.add_argument('--num_queries', type=int, default=100)
     parser.add_argument('--world_metadata_file', type=str, default='data/world_metadata/table_cabinet_0.json')
     parser.add_argument('--output_dir', type=str, default='data/task_queries')
@@ -136,12 +137,14 @@ if __name__ == '__main__':
     # use chatgpt to generate task queries
     queries_gen = generate_task_queries(args, args.world_metadata_file, args.num_queries)
 
-    # save generated task queries to file
+    # save generated task queries to text file
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir)
+
     output_file = os.path.join(args.output_dir, os.path.basename(args.world_metadata_file).replace('.json', '.txt'))
     with open(output_file, 'w') as f:
         f.write(queries_gen)
+
 
     # # test function 
     # json_file = 'data/world_metadata/table_cabinet_0.json'

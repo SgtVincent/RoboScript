@@ -9,6 +9,7 @@ import numpy as np
 import openai
 import argparse 
 import shapely
+import re
 # add parent directory to path
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -24,19 +25,28 @@ def load_queries(task_queries_file):
     """
     Load task queries from txt file. The first line is the world context, and the rest are task queries line by line:
     ''' 
-    objects = [table, cabinet, cabinet.drawer0, cabinet.drawer1, cabinet.drawer2, cabinet.drawer3, panda_robot, round_cake_pan, black_bundt_pan, chips_can, mug, wine_glass]
-    # open cabinet.drawer0
-    # open cabinet.drawer1
-    # open cabinet.drawer2
+    
+    objects = [table, cabinet, cabinet.drawer0, cabinet.drawer1, cabinet.drawer2, cabinet.drawer3, panda_robot] ; # open cabinet.drawer0
     ...
     '''
     """
     with open(task_queries_file, 'r') as f:
         lines = f.readlines()
-    world_context = lines[0]
-    task_queries = lines[1:]
+    
+    # use regex to extract the query in each line:
+    # objects = [table, cabinet, cabinet.drawer0, cabinet.drawer1, cabinet.drawer2, cabinet.drawer3, panda_robot] ; # open cabinet.drawer0
 
-    return world_context, task_queries
+    valid_line_pattern = re.compile(r'(?P<context>objects.*);\s*#(?P<query>.*)')
+    task_queries = []
+    for line in lines:
+        match = valid_line_pattern.match(line)
+        if match:
+            context = match.group('context')
+            query = match.group('query')
+            task_query = context + "; #" + query
+            task_queries.append(task_query)
+
+    return task_queries
 
 def prepare_vars_detached():
 
@@ -85,6 +95,46 @@ def prepare_vars_detached():
     )
     return fixed_vars, variable_vars
 
+def process_raw_output(raw_path, processed_path):
+    """
+    Convert raw output json to {query: code} pairs
+
+    Raw output json:
+    [{
+        "context": context,
+        "query": use_query,
+        "src_fs": src_fs,
+        "code_str": code_str,
+        "gvars": list(gvars.keys()),
+        "lvars": list(lvars.keys()),
+    },
+    ...
+    ]
+    """
+    with open(raw_path, 'r') as f:
+        raw_data = json.load(f)
+    
+    processed_data = []
+    for data in raw_data:
+        context = data['context']
+        query = data['query']
+        query = context + query
+
+        src_fs = data['src_fs']
+        code = data['code_str']
+        if len(src_fs) > 0:
+            fs_definition_str = '\n'.join([v for k, v in src_fs.items()])
+            code = fs_definition_str + '\n' + code
+        
+        processed_data.append({
+            "query": query,
+            "code": code
+        })
+
+    with open(processed_path, 'w') as f:
+        json.dump(processed_data, f, indent=4)
+
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Generate code for the robot arm manipulation.")
@@ -94,7 +144,8 @@ def parse_args():
                         help="Output directory (defaults to data/code)")
     parser.add_argument("--max-tokens", type=int, default=256,
                         help="Max tokens (defaults to 256)")
-    
+    parser.add_argument("--max_queries", type=int, default=200, 
+                        help="Max number of task queries to generate (defaults to 200)")
     args = parser.parse_args()
 
     if not os.path.exists(args.output_dir):
@@ -136,22 +187,51 @@ if __name__ == "__main__":
     cfg_tabletop["lmps"]["tabletop_ui"]["debug_mode"] = True
     lmp_tabletop_ui = LMP(
         "tabletop_ui", cfg_tabletop["lmps"]["tabletop_ui"], lmp_fgen, fixed_vars, variable_vars,
-        dump_file=os.path.join(args.output_dir, os.path.basename(args.task_queries))
     )
 
     # load task queries
-    world_context, task_queries = load_queries(args.task_queries)
+    task_queries = load_queries(args.task_queries)
 
+    # if no valid task queries, exit
+    if len(task_queries) == 0:
+        print(f"No valid task queries in {args.task_queries}")
+        exit()
+
+    exception_log = ""
     # generate one code snippet for each task query
     for i, task_query in enumerate(task_queries):
-        if i>=10:
+        if i >= args.max_queries:
             break
-        print(f"Generating code for task query {i}...")
-        # generate code snippet
-        lmp_tabletop_ui(task_query, world_context)
-        lmp_tabletop_ui.clear_exec_hist()
-        # save code snippet to file
-        # output_file = os.path.join(args.output_dir, f"code_{i}.txt")
-        # with open(output_file, 'w') as f:
-        #     f.write(code_snippet)
+        try:
+            # remove extra '#' and '\n' in query line
+            task_query = task_query.replace('#', '').replace('\n', '')
+
+            print(f"Generating code for task query {i}...")
+            # generate code snippet
+            lmp_tabletop_ui(task_query, "")
+            lmp_tabletop_ui.clear_exec_hist()
+        except Exception as e:
+            exception_log += "----------\n"
+            exception_log += f"Cannot generate code for task query {i}: {task_query} \n"
+            exception_log += f"Exception: {e} \n"
+            exception_log += "----------\n"
+            
+    # write exception log to file
+    exception_log_file = os.path.basename(args.task_queries).replace('.txt', '_exception_log.txt')
+    exception_log_path = os.path.join(args.output_dir, exception_log_file)
+    with open(exception_log_path, 'w') as f:
+        f.write(exception_log)
+
+    # save generated code snippets to json 
+    raw_output_file = "raw_" + os.path.basename(args.task_queries).replace('.txt', '.json')
+    raw_output_path = os.path.join(args.output_dir, raw_output_file)
+    lmp_tabletop_ui.save_dump_hist(raw_output_path)
+
+    # convert raw output json to {query: code} pairs
+    # raw_output_file = "raw_" + os.path.basename(args.task_queries).replace('.txt', '.json')
+    # raw_output_path = os.path.join(args.output_dir, raw_output_file)
+    
+    processed_file = "processed_" + os.path.basename(args.task_queries).replace('.txt', '.json')
+    processed_path = os.path.join(args.output_dir, processed_file)
+    process_raw_output(raw_output_path, processed_path)
 

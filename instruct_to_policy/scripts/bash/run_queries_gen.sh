@@ -11,8 +11,8 @@ function gen_query {
 }
 
 # run the query generation script for table_cabinet_i.json for i in {0..9}
-for i in {10..99}
-do
-    gen_query $i
-done
+# for i in {0..99}
+# do
+#     gen_query $i
+# done
 

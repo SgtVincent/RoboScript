@@ -168,6 +168,9 @@ instruct_to_policy/data/google_scanned_object/models/
 instruct_to_policy/data/google_scanned_object/*_thumbnails/
 instruct_to_policy/data/ycb/models/
 instruct_to_policy/data/ycb/*_thumbnails/
+instruct_to_policy/data/world_metadata/
+instruct_to_policy/data/task_queries/
+instruct_to_policy/data/generated_code/
 
 # not working for now 
 instruct_to_policy/scripts/data/generate_world_snapshots.py

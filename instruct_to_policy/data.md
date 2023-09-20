@@ -83,7 +83,7 @@ Example task query:
 objects = [table, cabinet, cabinet.drawer0, cabinet.drawer1, cabinet.drawer2, cabinet.drawer3, panda_robot, yellow_blue_bowl, turquoise_plant_saucer, white_box, bowl, white_and_brown_box] ; # open cabinet.drawer0 and retrieve the bowl from it
 ```
 
-You can run the bash script [run_queries_gen.sh](./scripts/data/run_queries_gen.sh) to generate task queries for all the generated worlds. The script will generate a task query file `table_cabinet_<i>.txt` for each world under the [task_queries](./data/task_queries) folder.
+You can run the bash script [run_queries_gen.sh](./scripts/bash/run_queries_gen.sh) to generate task queries for all the generated worlds. The script will generate a task query file `table_cabinet_<i>.txt` for each world under the [task_queries](./data/task_queries) folder.
 
 For more details about the task query generation script, please run the following command under instruct_to_policy package root:
 
@@ -120,9 +120,9 @@ for obj in objects:
         found_objects.append(obj)
 ```
 
-You can run the bash script [run_code_gen.sh](./scripts/data/run_code_gen.sh) to generate code snippets for all the valid task queries. The script a code snippet to execute each task query in file `table_cabinet_<i>.txt` for each world. The generated code snippets are stored in the [generated_code](./data/generated_code) folder.
+You can run the bash script [run_code_gen.sh](./scripts/bash/run_code_gen.sh) to generate code snippets for all the valid task queries. The script a code snippet to execute each task query in file `table_cabinet_<i>.txt` for each world. The generated code snippets are stored in the [generated_code](./data/generated_code) folder.
 
-For more details about the task query generation script, please run the following command under instruct_to_policy package root:
+For more details about the code generation script, please run the following command under instruct_to_policy package root:
     
 ```bash
 python ./scripts/data/generate_code.py --help

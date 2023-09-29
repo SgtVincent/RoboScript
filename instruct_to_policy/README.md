@@ -43,7 +43,7 @@ mamba deactivate
 mamba activate ros_env
 
 # Install ros-noetic common dev tools
-mamba install compilers cxx-compiler cmake pkg-config make ninja colcon-common-extensions catkin_tools boost-cpp 
+mamba install compilers cxx-compiler cmake pkg-config make ninja colcon-common-extensions catkin_tools boost-cpp ros-noetic-ros-numpy
 
 # Install ros gazebo packages
 mamba instsall ros-noetic-gazebo-ros

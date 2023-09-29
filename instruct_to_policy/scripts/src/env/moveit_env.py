@@ -38,7 +38,7 @@ from src.env.utils import (
 )
 from src.utils import has_keywords
 from src.env.gazebo_env import GazeboEnv
-
+from src.env.moveit_collision_manager import CollisionManager
 
 class Grasp(NamedTuple):
     orientation: np.ndarray
@@ -116,6 +116,8 @@ class MoveitGazeboEnv(GazeboEnv):
         self.sim = cfg['env'].get('sim', '') 
         self.use_sim = len(self.sim) > 0
         self.verbose = cfg['env'].get('verbose', False)
+        self.disabled_collisions = cfg['env'].get('disabled_collisions', [])
+
 
         # environment prior knowledge
         # TODO: consider to parse this from external perception model
@@ -138,6 +140,11 @@ class MoveitGazeboEnv(GazeboEnv):
         self.move_group = moveit_commander.MoveGroupCommander("panda_arm", wait_for_servers=15)
         # self.gripper = moveit_commander.MoveGroupCommander("panda_hand", wait_for_servers=15)
         self.gripper_group = GripperCommanderGroup()
+        # collision manager to toggle collision between objects
+        # used when contrained objects are attached to the robot
+        # moveit planning cannot understand translational and rotational joints 
+        self.collision_manager = CollisionManager()
+
 
         self.error_recovery_client = SimpleActionClient(
             "/franka_control/error_recovery", ErrorRecoveryAction
@@ -280,19 +287,33 @@ class MoveitGazeboEnv(GazeboEnv):
                 if properties.is_static or load_dynamic:
                     load_model_into_moveit(sdf_path, pose, self.scene, model, link_name="link")
 
+    def disable_cabinet_gripper_collision(self):
+        """ 
+        Temporarily workaround to disable collision between cabinet and gripper.
+        Otherwise, if attach cabinet drawer to gripper, there will be unplausible collsion between drawer and cabinet,
+        since moveit planning scene cannot understand translational joints properly.
+        
+        TODO: find a better way to handle this, by loading cabinet as a robot model?
+        """
+        link_tuples, allowed_list = [], []
+        for link_1 in ["panda_leftfinger", "panda_rightfinger"]:
+            for link_2 in ["cabinet.base_link", "cabinet.drawer_0 ", "cabinet.drawer_1", "cabinet.drawer_2", "cabinet.drawer_3"]:
+                link_tuples.append((link_1, link_2))
+                allowed_list.append(False)
+            
+        self.collision_manager.set_collision_entries(link_tuples, allowed_list)
+        
     def load_scene(self):
         """Load the scene in the MoveIt! planning scene."""
         if self.use_sim:
             # self.load_gazebo_world_into_moveit()
+            self.disable_cabinet_gripper_collision()
+            
             for name in self.object_names:
                 self.objects[name] = {}
+                    
         else:
             raise NotImplementedError("Only simulation is supported for now.")
-
-        # camera not considered for now
-        # cam_pose = get_stamped_pose([0.03, 0, 0.01], [0, 0, 0, 1], "world")
-        # self.scene.add_box("cam", cam_pose, size = (0.04, 0.14, 0.02))
-        # self.scene.attach_mesh("panda_hand", f"cam", touch_links=[*self.robot.get_link_names(group= "panda_hand"), "panda_joint7"])
 
     @_block
     def reset(self, group=None, gripper_group=None):
@@ -356,21 +377,20 @@ class MoveitGazeboEnv(GazeboEnv):
     @_block
     def add_object_to_scene(self, object_id):
         """Add an object to the moveit planning scene."""
-        # TODO: 
         if object_id is not None and object_id in self.objects:
+            pass
 
             # currently do noting 
-            collision_dict = self.get_object_collision(object_id)
-            return 
+            # collision_dict = self.get_object_collision(object_id)
             # TODO: finish this part after the collision detection is done
 
-            touch_links = self.robot.get_link_names(group="panda_hand")
-            self.scene.add_mesh(
-                object_id,
-                get_stamped_pose(self.objects[object_id]["position"], [0, 0, 0, 1], self.frame),
-                self.objects[object_id]["file"],
-                size=(1, 1, 1),
-            )
+            # touch_links = self.robot.get_link_names(group="panda_hand")
+            # self.scene.add_mesh(
+            #     object_id,
+            #     get_stamped_pose(self.objects[object_id]["position"], [0, 0, 0, 1], self.frame),
+            #     self.objects[object_id]["file"],
+            #     size=(1, 1, 1),
+            # )
         else:
             if self.verbose:
                 print(f"Moveit: object {object_id} not found in environment.")

@@ -1,4 +1,5 @@
 # for urdf/sdf parsing and processing
+numpy==1.23
 xacro
 numpy-stl
 pycollada

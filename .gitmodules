@@ -1,0 +1,6 @@
+[submodule "realsense_gazebo_plugin"]
+	path = realsense_gazebo_plugin
+	url = https://github.com/SgtVincent/realsense_gazebo_plugin.git
+[submodule "GIGA"]
+	path = GIGA
+	url = https://github.com/SgtVincent/GIGA.git

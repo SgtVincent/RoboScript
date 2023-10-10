@@ -148,6 +148,25 @@ def getColladaBounds(model, center=np.array([0,0,0])):
             minz = minz if v[2] >= minz else v[2]
     return np.array([maxx, maxy, maxz]) + center, np.array([minx, miny, minz]) + center
 
+def getMeshCenter(mesh):
+    """Returns the center of .obj/.mlt mesh"""
+    return (mesh.bounds[1, :] + mesh.bounds[0, :]) / 2
+
+def getColladaCenter(model):
+    """Returns the center of .dae mesh"""
+    minx = miny = minz = float("inf")
+    maxx = maxy = maxz = float("-inf")
+    for tr_vertex in model.geometries[0].primitives[0].vertex[model.geometries[0].primitives[0].vertex_index]:
+        for v in tr_vertex:
+            maxx = maxx if v[0] <= maxx else v[0]
+            maxy = maxy if v[1] <= maxy else v[1]
+            maxz = maxz if v[2] <= maxz else v[2]
+            minx = minx if v[0] >= minx else v[0]
+            miny = miny if v[1] >= miny else v[1]
+            minz = minz if v[2] >= minz else v[2]
+    return (np.array([maxx, maxy, maxz]) + np.array([minx, miny, minz])) / 2
+
+
 def getMeshDimensions(mesh):
     """Returns the dimensions of .obj/.mlt mesh"""
     return mesh.bounds[1, :] - mesh.bounds[0, :]

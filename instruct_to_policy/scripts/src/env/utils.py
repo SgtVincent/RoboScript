@@ -1,20 +1,14 @@
 from typing import List, Optional, Union, Tuple
-import os
+import numpy as np
+from scipy.spatial.transform import Rotation as R
+
 import xml.etree.ElementTree as ElementTree
 from moveit_commander import PlanningSceneInterface
-import moveit_commander
 
 import rospy
 import rospkg
 from geometry_msgs.msg import Pose, PoseStamped
-from gazebo_msgs.srv import (
-    GetModelState,
-    GetLinkState,
-    GetWorldProperties,
-    GetModelProperties,
-)
 
-from src.env.gazebo_env import GazeboEnv
 
 ################## ROS utils ###################
 
@@ -49,6 +43,53 @@ def pose_to_list(pose: Union[Pose, PoseStamped]) -> Tuple[List, List]:
         pose.orientation.z,
         pose.orientation.w,
     ]
+
+def pose_msg_to_matrix(pose: Pose) -> np.ndarray:
+    """
+    Convert a pose message to a 4x4 transformation matrix
+    """
+    position = np.array([pose.position.x, pose.position.y, pose.position.z])
+    orientation = np.array([pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w])
+    
+    mat = np.eye(4)
+    mat[:3, 3] = position
+    mat[:3, :3] = R.from_quat(orientation).as_matrix()
+    return mat
+    
+################### 3D geometry utils ###################
+
+def get_axis_aligned_bbox(bbox_center, bbox_size, transform):
+    """
+    Returns the axis-aligned bounding box of the object given the object's center and size
+    @param bbox_center: center of the 3D bounding box
+    @param bbox_size: size of the 3D bounding box
+    @transform: (4,4) numpy matrix representing the transformation matrix of the object
+    # 1. get bbox corner points in the object frame
+    # 2. transform the bbox corner points to the world frame
+    # 3. get the axis-aligned bounding box in the world frame from the transformed bbox corner points
+    """
+
+    bbox_corner_points = np.array([
+        [-bbox_size[0]/2, -bbox_size[1]/2, -bbox_size[2]/2],
+        [-bbox_size[0]/2, -bbox_size[1]/2, bbox_size[2]/2],
+        [-bbox_size[0]/2, bbox_size[1]/2, -bbox_size[2]/2],
+        [-bbox_size[0]/2, bbox_size[1]/2, bbox_size[2]/2],
+        [bbox_size[0]/2, -bbox_size[1]/2, -bbox_size[2]/2],
+        [bbox_size[0]/2, -bbox_size[1]/2, bbox_size[2]/2],
+        [bbox_size[0]/2, bbox_size[1]/2, -bbox_size[2]/2],
+        [bbox_size[0]/2, bbox_size[1]/2, bbox_size[2]/2],
+    ])
+    bbox_corner_points = bbox_corner_points + bbox_center
+    bbox_corner_points = bbox_corner_points.T
+    bbox_corner_points = np.vstack((bbox_corner_points, np.ones((1,8))))
+    bbox_corner_points = np.dot(transform, bbox_corner_points)
+    bbox_corner_points = bbox_corner_points[:3, :].T
+    bbox_min = np.min(bbox_corner_points, axis=0)
+    bbox_max = np.max(bbox_corner_points, axis=0)
+    aa_bbox_center = (bbox_min + bbox_max) / 2
+    aa_bbox_size = bbox_max - bbox_min
+
+    return aa_bbox_center, aa_bbox_size
 
 
 #################### Gazebo and MoveIt utils ####################

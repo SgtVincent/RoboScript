@@ -6,11 +6,11 @@ class GraspDetectionBase(object):
     """
     Base class for grasp detection models.
     """
-    def __init__(self, config: Dict, model_path: str = None):
+    def __init__(self, config: Dict):
         self.config = config
-        self.model = None
         self.model_path = None
-
+        self.model = None
+        
     def load_model(self):
         raise NotImplementedError
 

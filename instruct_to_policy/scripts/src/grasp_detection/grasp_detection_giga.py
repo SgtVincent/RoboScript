@@ -1,4 +1,5 @@
 import os
+from typing import List, Tuple, Dict
 from typing import Dict 
 import numpy as np 
 
@@ -17,8 +18,8 @@ class GraspDetectionGIGA(GraspDetectionBase):
     """
     Wrapper class for GIGA grasp detection.
     """
-    def __init__(self, config, model_path=None):
-        super(GraspDetectionGIGA, self).__init__(config, model_path)
+    def __init__(self, config):
+        super(GraspDetectionGIGA, self).__init__(config)
         self.model_path = self.config["model_path"]
         self.model_type = self.config["model_type"]
         
@@ -91,7 +92,7 @@ class GraspDetectionGIGA(GraspDetectionBase):
         return tsdf, pc 
     
         
-    def predict(self, data: Dict):
+    def predict(self, data: Dict)-> Tuple[List, List, List]:
         
         tsdf, pc = self._preprocess(data)
         state = State(tsdf, pc)

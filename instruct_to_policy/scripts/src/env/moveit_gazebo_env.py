@@ -9,14 +9,9 @@ import numpy as np
 import os 
 import rospkg
 
-from visualization_msgs.msg import Marker, MarkerArray
-from visualization_msgs.msg import Marker
-
 
 import moveit_commander
-import moveit_msgs.msg
 from geometry_msgs.msg import Pose, PoseStamped
-from visualization_msgs.msg import Marker
 
 import trimesh
 

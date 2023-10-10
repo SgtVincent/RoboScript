@@ -165,6 +165,13 @@ class CameraIntrinsic(object):
         )
         return intrinsic
 
+class Grasp(object):
+    """Grasp parameterized as pose of a 2-finger robot hand.
+    """
+    # TODO: should we specify more parameters here? e.g. velocity, max force etc.
+    def __init__(self, pose: Transform, width):
+        self.pose = pose
+        self.width = width
 
 def get_mask_from_3D_bbox(bbox_center:np.ndarray, bbox_size:np.ndarray, depth_image:np.ndarray, 
                           intrinsic:CameraIntrinsic, extrinsic:Transform)->np.ndarray:

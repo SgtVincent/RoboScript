@@ -9,7 +9,7 @@ from gazebo_msgs.srv import (
 )
 from geometry_msgs.msg import Quaternion, Point, Pose 
 from .env import Env
-
+from .gazebo_cameras import GazeboRGBDCameraSet
 
 class GazeboEnv(Env):
     """ Class to interface with Gazebo."""
@@ -19,6 +19,7 @@ class GazeboEnv(Env):
         self.node_name = cfg['env']['sim']
         self.frame = cfg['env']['frame']
         self.extra_objects = cfg['env'].get('extra_objects', [])
+        self.sensor_config = cfg['env']['sensor']
         self.reset_world = rospy.ServiceProxy(f"/{self.node_name}/reset_world", Empty)
         self.reset_simulation = rospy.ServiceProxy(f"/{self.node_name}/reset_simulation", Empty)
         self.get_model_state = rospy.ServiceProxy(f"/{self.node_name}/get_model_state", GetModelState)
@@ -27,6 +28,12 @@ class GazeboEnv(Env):
         self.get_model_properties = rospy.ServiceProxy(f"/{self.node_name}/get_model_properties", GetModelProperties)
 
         self.robot_names = ["panda", "fr3", "triple_camera_set"]
+
+        # register camera set
+        self.camera_set = GazeboRGBDCameraSet(self.sensor_config['cameras'], 
+                                              namespace=self.sensor_config['namespace'], 
+                                              sub_pcl=self.sensor_config['gt_point_cloud'])
+
 
     def get_obj_names(self)-> List[str]:
         """ Get all object names in the world."""
@@ -64,7 +71,8 @@ class GazeboEnv(Env):
         # Failed to get state for obj_name
         return None
     
-
+    def get_sensor_data(self):
+        return self.camera_set.get_latest_data()
     
     def get_link_pose(self, link_name, ref_frame="world"):
         """ Get link pose."""

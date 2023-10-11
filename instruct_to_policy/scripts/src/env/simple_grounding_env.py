@@ -33,7 +33,8 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
         """
         if self.grasp_method in ["giga", "mixed"]:
             grasp_model_config = self.grasp_config["model_params"]
-            self.grasp_model = GraspDetectionGIGA(grasp_model_config)
+            self.grasp_model = GraspDetectionGIGA(grasp_model_config, verbose=self.grasp_config["verbose"], visualize=self.grasp_config["visualize"])
+            self.grasp_model.load_model()
     
     def _load_gt_object_info(self):
         """
@@ -48,17 +49,16 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
                     self.object_info[object_name] = {
                         'bbox_size': v['bbox_size'],
                         'bbox_center': v['bbox_center'],
-                        'category': v['category'],
                     }
         
-    def get_obj_pos(self, obj_name):
+    def get_obj_pos(self, obj_name, **kwargs):
         """
         Get the position of the object in the world frame. 
-        This function uses ground truth model state from gazebo.
+        This function uses ground truth model state from gazebo and ignore all other parameters.
         """
         gt_pose = self.get_gt_obj_pose(obj_name)
         if gt_pose is None:
-            raise ValueError(f"Object {obj_name} not found in gazebo")
+            return None
         return gt_pose.position
         
 
@@ -68,12 +68,17 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
         NOTE: Grounding models/ perception models need to handle this function 
         Currently only use the position of the object and canonical orientation .
         """
-        if self.grasp_detection_model == "heuristic":
+        
+        # special case for drawer handle
+        if object in ["drawer", "cabinet"] or "drawer" in object.lower() or "cabinet" in object.lower():
+            return self.parse_drawer_handle_pose(object, action=action, description=description)
+        
+        if self.grasp_method == "heuristic":
             pose = self.parse_pose_heuristic(object, action, description)
-        elif self.grasp_detection_model == "giga":
+        elif self.grasp_method == "giga":
             pose = self.parse_pose_giga(object, action, description)
         else:
-            raise NotImplementedError(f"Grasp detection model {self.grasp_detection_model} not implemented in {self.__class__.__name__}")      
+            raise NotImplementedError(f"Grasp detection model {self.grasp_method} not implemented in {self.__class__.__name__}")      
         return pose
     
     def parse_pose_giga(self, object, action="", description=""):
@@ -84,10 +89,27 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
         bbox_center, bbox_size = get_axis_aligned_bbox(self.object_info[object]['bbox_center'], 
                                                        self.object_info[object]['bbox_size'], object_transform)
         
+        # get visual input from perception model
+        sensor_data = self.get_sensor_data()
+        
         # get grasp pose from grasp detection model
         if action in ['pick', 'grasp', 'grab', 'get', 'take', 'hold']:
-            grasps, scores, geometries = self.grasp_model.predict(bbox_center, bbox_size, object_pose, action)
+            
+            # TODO: a model should be able to predict pose for different actions
+            data = {
+                'bbox_3d':{
+                    'center': bbox_center,
+                    'size': bbox_size,
+                },
+                'object_pose': object_pose,
+                'action': action, # NOTE: currently not used
+            }
+            data.update(sensor_data)
+            
+            grasps, scores, geometries = self.grasp_model.predict(data)
             # naively select first grasp
+            if len(grasps) == 0:
+                return None
             # TODO: can we add failure recovery behavior with multiple grasp candidates?   
             grasp: Grasp = grasps[0]
             pose = Pose()
@@ -99,9 +121,6 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
             return self.parse_pose_heuristic(object, action, description)
         
     def parse_pose_heuristic(self, object, action="", description=""):
-        # special case for drawer handle
-        if object in ["drawer", "cabinet"] or "drawer" in object.lower() or "cabinet" in object.lower():
-            return self.parse_drawer_handle_pose(object="cabinet_1076", action=action, description=description)
 
         if action in ['pick', 'grasp', 'grab', 'get', 'take', 'hold']:
             pose = Pose()

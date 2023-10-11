@@ -9,7 +9,7 @@ from moviepy.editor import ImageSequenceClip
 # from src.prompt.message_definitions import *
 from src.lmp import *
 # from src.env.pybullet_env import PickPlaceEnv
-from src.env.moveit_env import MoveitGazeboEnv
+from src.env.moveit_gazebo_env import MoveitGazeboEnv
 from src.config import cfg_tabletop
 from src.openai_api_key import OPENAI_API_KEY
 import rospy 
@@ -78,7 +78,9 @@ print(env.object_names)
 # print('Running policy and recording video...')
 # lmp_tabletop_ui(user_input, f'objects = {env.object_list}')
 
-user_input = "grasp the stone and put it to the red tray"
+# user_input = "move the can from plate to table, and move the peach from table to plate"
+user_input = "grasp the can from plate to table, and grasp the peach from table to plate"
+# user_input = "grasp and pull the top-most drawer"
 
 # user_input = 'open the drawer and check the number of bottles' #@param {allow-input: true, type:"string"}
 # object_list = ['drawer', 'table']

@@ -1,8 +1,10 @@
+import os 
+# get package root from current file path
+package_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
-# from src.prompt.message_definitions import *
-# from src.prompt.moveit_message_definitions import *
 from src.prompt.moveit_cap_msgs import *
 from src.constants import *
+
 
 # model_name = 'code-davinci-002' # 'text-davinci-002' # deprecated in 2023
 model_name = 'gpt-3.5-turbo-16k' # recommened replacement for 'code-davinci-002'
@@ -16,7 +18,31 @@ cfg_tabletop = {
       'interface': 'moveit',
       'verbose': False,
       'initial_joint_values': [0.0, -0.7854, 0.0, -2.3562, 0.0, 1.5708, 0.7854],
-      'extra_objects': ["cabinet.drawer_0", "cabinet.drawer_1", "cabinet.drawer_2", "cabinet.drawer_3"]
+      'extra_objects': ["cabinet.drawer_0", "cabinet.drawer_1", "cabinet.drawer_2", "cabinet.drawer_3"],
+      'sensor': {
+        'namespace': '', # empty namespace by default 
+        'cameras': ['camera_left', 'camera_right', 'camera_top'],
+        'gt_point_cloud': False,
+      },
+      'metadata_files':[
+        os.path.join(package_root, 'data', 'ycb', 'metadata.json'),
+        os.path.join(package_root, 'data', 'google_scanned_object', 'object_metadata.json'),
+        os.path.join(package_root, 'data', 'google_scanned_object', 'container_metadata.json'),
+      ]
+  },
+  'grasp_detection': {
+      'method': 'giga', # ['heuristic', 'giga', 'mixed']
+      'visualize': False,
+      'verbose': True,
+      'model_params': {
+        'model_path': '/home/junting/repo/GIGA/data/models/giga_pile.pt',
+        'model_type': 'giga',
+        'volume_type': 'scalable',
+        'voxel_grid_size': 0.3,
+        'resolution': 40,
+        'quality_threshold': 0.8,
+        'outlier_voxel_threshold': 0.1,
+      }
   },
   'lmps': {
     'tabletop_ui': {

@@ -2,12 +2,14 @@ import os
 from typing import List, Tuple, Dict
 from typing import Dict 
 import numpy as np 
+import trimesh 
 
 # Make sure to install giga repo in conda environment 
 from vgn.detection_implicit import VGNImplicit
 from vgn.experiments.clutter_removal import State
 from vgn.perception import TSDFVolume, ScalableTSDFVolume
 from vgn.utils.visual import grasp2mesh, plot_voxel_as_cloud, plot_tsdf_with_grasps
+from vgn.utils.implicit import get_mesh_pose_list_from_world, get_scene_from_mesh_pose_list
 
 from .utils import CameraIntrinsic, Transform, Rotation, get_mask_from_2D_bbox, open3d_frustum_filter
 
@@ -18,7 +20,7 @@ class GraspDetectionGIGA(GraspDetectionBase):
     """
     Wrapper class for GIGA grasp detection.
     """
-    def __init__(self, config):
+    def __init__(self, config, **kwargs):
         super(GraspDetectionGIGA, self).__init__(config)
         self.model_path = self.config["model_path"]
         self.model_type = self.config["model_type"]
@@ -31,8 +33,9 @@ class GraspDetectionGIGA(GraspDetectionBase):
         self.qual_th = self.config.get("quality_threshold", 0.8)
         self.out_th = self.config.get("outlier_voxel_threshold", 0.1)
         
-        self.visualize = self.config.get("visualize", False)
-
+        self.visualize = kwargs.get("visualize", False)
+        self.verbose = kwargs.get("verbose", False)
+        
         
     def load_model(self):
         
@@ -40,7 +43,7 @@ class GraspDetectionGIGA(GraspDetectionBase):
                     self.model_type,
                     best=True, # rank grasps by score
                     qual_th=self.qual_th,
-                    visualize=self.visualize,
+                    visualize=False, # DO NOT use vgn visualization since gt mesh not available in the pipeline 
                     force_detection=True,
                     out_th=self.out_th,
                     resolution=self.resolution)
@@ -64,6 +67,7 @@ class GraspDetectionGIGA(GraspDetectionBase):
             intrinsics: CameraIntrinsic = data['depth_camera_intrinsic_list'][i]
             extrinsics: Transform = data['depth_camera_extrinsic_list'][i]
         
+            mask=None
             if "depth_bboxes" in data:
                 bbox = data['depth_bboxes'][i]
                 mask = get_mask_from_2D_bbox(bbox, depth) 
@@ -96,9 +100,18 @@ class GraspDetectionGIGA(GraspDetectionBase):
         
         tsdf, pc = self._preprocess(data)
         state = State(tsdf, pc)
-
+        
+        # if self.visualize: 
+            # mesh_pose_list = get_mesh_pose_list_from_world(sim.world, object_set)
+            # scene_mesh = get_scene_from_mesh_pose_list(mesh_pose_list)
+            # grasps, scores, _, composed_scene = self.model(state, scene_mesh)
+            # visualize composed scene
+            # composed_scene.show(viewer='gl') 
+            
+        # else:
         grasps, scores, _ = self.model(state)
-        print(len(grasps))
+        
+        print(f"{len(grasps)} Grasps generated.")
 
         # visualize grasps
         if self.visualize:

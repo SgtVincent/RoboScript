@@ -1,10 +1,14 @@
-# Instruction to Policy Module
+# LLM-manipulation Benchmark
 
-This module is responsible for converting the instructions in natural to policies for Franka robotic arm based on Code as Policies. 
+This benchmark is to evaluate the performance of different multimodal large language models (LLM) on the task of code generation for object manipulation. The task is to generate python script to control a robotic arm to execute tasks specified in natural language instructions.
+
+To minimize the sim-to-real gap in code generation for robotics control, the whole pipeline is built on ROS (Robot Operating System) and Gazebo simulation. Thus the generated code tested in Gazebo can be directly deployed to control real robots. 
+
+**TODO** Restructure documentation in a more readable way. 
 
 ## Installation
 
-The whole package runs on ROS 1 Noetic. You can either install ROS directly with apt or inside conda environment with Robostack. It is a known issue that native ROS 1 environment is not compatible with conda environment, so Robostack is recommended to use for ROS setup.
+The whole pipeline runs on ROS 1 Noetic. You can either install ROS directly with apt or inside conda environment with Robostack. It is a known issue that native ROS 1 environment is not compatible with conda environment, so Robostack is recommended to use for ROS setup.
 
 The components needed for this project:
 - Franka ROS: Integration of [libfranka](https://frankaemika.github.io/docs/libfranka.html) and [ROS control](https://wiki.ros.org/ros_control), which provides low-level connection/ low-level control to Franka robots.

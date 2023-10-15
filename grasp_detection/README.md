@@ -1,0 +1,2 @@
+# Grasp Detection Package
+This package contains the grasp detection node for the Franka robot with two-finger gripper. The node should runs `DetectGrasps`  service and publishes the detected grasp pose in the world frame.

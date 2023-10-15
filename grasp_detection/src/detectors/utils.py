@@ -2,19 +2,13 @@ from typing import List, Dict, Tuple
 import numpy as np
 import scipy.spatial.transform
 import open3d as o3d
-
-import rospy 
-from cv_bridge import CvBridge, CvBridgeError
-from grasp_detection.srv import DetectGrasps, DetectGraspsRequest, DetectGraspsResponse
-from grasp_detection.msg import Grasp, Perception, PerceptionSingleCamera, BoundingBox3D, BoundingBox2D
-from geometry_msgs.msg import Pose, Point, Quaternion, Vector3
-from sensor_msgs.msg import Image, CameraInfo
-from std_msgs.msg import Header
+# Credit: Modified from VGN perception and utils modules  
 
 class Rotation(scipy.spatial.transform.Rotation):
     @classmethod
     def identity(cls):
         return cls.from_quat([0.0, 0.0, 0.0, 1.0])
+
 
 class Transform(object):
     """Rigid spatial transform between coordinate systems in 3D space.
@@ -257,86 +251,4 @@ def open3d_frustum_filter(pcl: o3d.geometry.PointCloud, bbox_2d_list: List[np.nd
     filtered_pcl.colors = o3d.utility.Vector3dVector(np.asarray(pcl.colors)[mask])
     return filtered_pcl, mask
         
-def data_to_percetion_msg(data: Dict, bridge:CvBridge)->Perception:        
-    """
-    # TODO: expand to multiple detections data if needed 
-    Convert data dictionary to Perception ROS message
-    data = {
-        'camera_names': [],
-        'rgb_image_list': [],
-        'rgb_camera_intrinsic_list': [],
-        'rgb_camera_frame_list': [],
-        'rgb_camera_extrinsic_list': [],
-        'depth_image_list': [],
-        'depth_camera_intrinsic_list': [],
-        'depth_camera_frame_list': [],
-        'depth_camera_extrinsic_list': [],
-        'depth_bboxes':[],
-        'bbox_3d':{
-            'center': [],
-            'size': [],
-        },
-    }
-    """
-
-    data = Perception(
-        header = Header(frame_id="world"),
-        # currently only axis-aligned bounding box is supported
-        bboxes_3d = BoundingBox3D(
-            center = Pose(
-                position = Point(*data["bbox_3d"]["center"]),
-                orientation = Quaternion(0, 0, 0, 1)
-            ),
-            size = Vector3(*data["bbox_3d"]["size"])
-        )
-    )
-    
-    # fill camera data 
-    for i, name in enumerate(data['camera_names']):
-        camera_data = PerceptionSingleCamera()
-        camera_data.camera_id = name
-        # convert numpy array to ROS Image message
-        camera_data.rgb_image = bridge.cv2_to_imgmsg(data['rgb_image_list'][i], encoding="rgb8")
-        camera_data.depth_image = bridge.cv2_to_imgmsg(data['depth_image_list'][i], encoding="passthrough")
-        
-        # fill camera info 
-        camera_data.rgb_camera_info = CameraInfo(
-            header = Header(frame_id=data['rgb_camera_frame_list'][i]),
-            width = data['rgb_image_list'][i].shape[1],
-            height = data['rgb_image_list'][i].shape[0],
-            K = data['rgb_camera_intrinsic_list'][i].K.flatten().tolist()
-        )
-        camera_data.depth_camera_info = CameraInfo(
-            header = Header(frame_id=data['depth_camera_frame_list'][i]),
-            width = data['depth_image_list'][i].shape[1],
-            height = data['depth_image_list'][i].shape[0],
-            K = data['depth_camera_intrinsic_list'][i].K.flatten().tolist()
-        )  
-        
-        # fill camera pose
-        camera_data.rgb_camera_pose = Pose(
-            position = Point(*data['rgb_camera_extrinsic_list'][i].translation),
-            orientation = Quaternion(*data['rgb_camera_extrinsic_list'][i].rotation.as_quat())
-        )
-        
-        camera_data.depth_camera_pose = Pose(
-            position = Point(*data['depth_camera_extrinsic_list'][i].translation),
-            orientation = Quaternion(*data['depth_camera_extrinsic_list'][i].rotation.as_quat())
-        )
-        
-        # add 2D bounding box if available 
-        if "depth_bboxes" in data:
-            bbox = BoundingBox2D()
-            bbox.object_id = ""
-            bbox.min_x, bbox.min_y, bbox.max_x, bbox.max_y = data["depth_bboxes"][i]
-            camera_data.detections.append(bbox)
-            
-    return data
-            
-        
-            
-    
-        
-        
-            
     

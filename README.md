@@ -38,7 +38,7 @@ Install ROS1 Noetic:
 mamba install ros-noetic-desktop-full
 ```
 
-Install common tools and moveit dependencies:
+Install common tools and dependency pacakges:
 ```bash
 # Reactivate the environment to initialize the ros env
 mamba deactivate
@@ -50,11 +50,8 @@ mamba install compilers cxx-compiler cmake pkg-config make ninja colcon-common-e
 # Install ros gazebo packages
 mamba instsall ros-noetic-gazebo-ros
 
-# Install realsense ros packages integrated with gazebo 
-mamba install ros-noetic-realsense2-camera ros-noetic-realsense2-description ros-noetic-librealsense2
-
-# (Optional) Install moveit dependencies if missing error occurs 
-pip install catkin-tools wstool 
+# Install realsense ros packages and image processing packages
+mamba install ros-noetic-realsense2-camera ros-noetic-realsense2-description ros-noetic-librealsense2 ros-noetic-image-pipeline
 ```
 
 

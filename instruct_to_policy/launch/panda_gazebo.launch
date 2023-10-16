@@ -60,7 +60,7 @@
   <param name="camera_description" 
       command="xacro $(arg camera_model) 
           use_nominal_extrinsics:=true 
-          publish_pointcloud:=true
+          publish_pointcloud:=false
           add_plug:=false" />
 
   <rosparam file="$(find franka_gazebo)/config/franka_hw_sim.yaml" subst_value="true" />

@@ -17,17 +17,26 @@ class GazeboRGBDCamera:
     """
     This class is used to buffer gazebo RGBD camera data and provide easy IO interface.
     """
-    def __init__(self, camera_name, namespace="", buffer_size=10, sub_pcl=False) -> None:
+    def __init__(self, camera_name, namespace="", buffer_size=10, use_aligned_depth=True, sub_pcl=False) -> None:
         self.ns = namespace
         self.camera_name = camera_name
+        self.use_aligned_depth = use_aligned_depth
+        self.sub_pcl = sub_pcl
         self.rgb_camera_info:CameraInfo  = None
         self.depth_camera_info:CameraInfo = None
         
         # subscribe to camera topics
         self.rgb_image_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/color/image_raw", Image, self.rgb_image_callback)
-        self.depth_image_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/depth/image_raw", Image, self.depth_image_callback)
+        if use_aligned_depth:
+            self.depth_image_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/aligned_depth/image_raw", Image, self.depth_image_callback)
+        else:
+            self.depth_image_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/depth/image_raw", Image, self.depth_image_callback)
         self.rgb_camera_info_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/color/camera_info", CameraInfo, self.rgb_camera_info_callback)
-        self.depth_camera_info_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/depth/camera_info", CameraInfo, self.depth_camera_info_callback)
+        
+        if use_aligned_depth:
+            self.depth_camera_info_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/aligned_depth/camera_info", CameraInfo, self.depth_camera_info_callback)
+        else:
+            self.depth_camera_info_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/depth/camera_info", CameraInfo, self.depth_camera_info_callback)
         
         # point cloud subscriber 
         self.sub_pcl = None

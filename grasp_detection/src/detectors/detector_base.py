@@ -10,7 +10,7 @@ class DetectorBase(object):
         self.config = config
         
         # initialize ROS service 
-        self.service = rospy.Service(self.service_name, DetectGrasps, self.detect_srv_callback)
+        self.service = rospy.Service(self.service_name, DetectGrasps, self.detect_callback)
         rospy.loginfo('DetectGrasps service listener is ready.')
 
     def detect_callback(self, req: DetectGraspsRequest)->DetectGraspsResponse:

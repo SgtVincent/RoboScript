@@ -171,6 +171,5 @@ instruct_to_policy/data/ycb/*_thumbnails/
 instruct_to_policy/data/world_metadata/
 instruct_to_policy/data/task_queries/
 instruct_to_policy/data/generated_code/
+instruct_to_policy/models/cabinet_*/
 
-# not working for now 
-instruct_to_policy/scripts/data/generate_world_snapshots.py

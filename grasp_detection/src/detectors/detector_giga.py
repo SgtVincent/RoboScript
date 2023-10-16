@@ -14,8 +14,8 @@ from vgn.perception import TSDFVolume, ScalableTSDFVolume
 from vgn.utils.visual import grasp2mesh, plot_voxel_as_cloud, plot_tsdf_with_grasps
 from vgn.utils.implicit import get_mesh_pose_list_from_world, get_scene_from_mesh_pose_list
 
-from detectors.detector_base import DetectorBase
-from detectors.utils import CameraIntrinsic, Transform, Rotation, get_mask_from_2D_bbox, open3d_frustum_filter
+from .detector_base import DetectorBase
+from .utils import CameraIntrinsic, Transform, Rotation, get_mask_from_2D_bbox, open3d_frustum_filter
 
 
 class DetectorGIGA(DetectorBase):

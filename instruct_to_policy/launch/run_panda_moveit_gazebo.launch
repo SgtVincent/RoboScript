@@ -43,7 +43,7 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   </include>
 
   <!-- Process the raw sensor input -->
-  <include file="$(find instruct_to_policy)/launch/register_depth.launch" if="align_depth_to_rgb">
+  <include file="$(find instruct_to_policy)/launch/register_depth.launch" if="$(arg align_depth_to_rgb)">
     <arg name="publish_pointcloud" value="$(arg publish_pointcloud)"/>
   </include>
 

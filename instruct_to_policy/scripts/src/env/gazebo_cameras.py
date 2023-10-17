@@ -185,7 +185,7 @@ class GazeboRGBDCameraSet:
     """
     This class is used to buffer gazebo RGBD camera set data and provide easy IO interface.
     """
-    def __init__(self, cameras_list: List[str], namespace="", buffer_size=10, sub_pcl=False) -> None:
+    def __init__(self, cameras_list: List[str], namespace="", buffer_size=10, use_aligned_depth=True, sub_pcl=False) -> None:
         
         self.ns = namespace
         self.buffer_size = buffer_size
@@ -193,7 +193,8 @@ class GazeboRGBDCameraSet:
         self.sub_pcl = sub_pcl
         self.cameras: Dict[str, GazeboRGBDCamera] = {}
         for camera_name in cameras_list:
-            self.cameras[camera_name] = GazeboRGBDCamera(camera_name, namespace=namespace, buffer_size=buffer_size, sub_pcl=sub_pcl)
+            self.cameras[camera_name] = GazeboRGBDCamera(camera_name, namespace=namespace, 
+                                                         buffer_size=buffer_size, use_aligned_depth=use_aligned_depth, sub_pcl=sub_pcl)
 
         # initialize tf listener 
         self.tf_buffer = tf2_ros.Buffer()

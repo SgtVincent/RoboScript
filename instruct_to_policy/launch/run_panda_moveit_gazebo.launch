@@ -2,8 +2,10 @@
 https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/demo_gazebo.launch -->
 
 <launch>
-  <!-- specify the planning pipeline -->
+  <!-- Moveit options -->
+  <arg name="enable_moveit" default="true" />
   <arg name="pipeline" default="ompl" />
+  <arg name="moveit_rviz" default="true" />
 
   <!-- Panda specific options -->
   <arg name="load_gripper" default="true" />
@@ -48,11 +50,12 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   </include>
 
   <!-- Launch the MoveIt configuration for Franka Emika Panda -->
-  <include file="$(find instruct_to_policy)/launch/demo_moveit.launch" pass_all_args="true">
+  <include file="$(find instruct_to_policy)/launch/demo_moveit.launch" pass_all_args="true" if="$(arg enable_moveit)">
     <!-- robot description is loaded by gazebo.launch, to enable Gazebo features -->
     <arg name="load_robot_description" value="false" />
     <!-- MoveItSimpleControllerManager provides ros_control's JointTrajectory controllers
          as well as GripperCommand actions -->
     <arg name="moveit_controller_manager" value="simple" />
+    <arg name="use_rviz" value="$(arg moveit_rviz)" />
   </include>
 </launch>

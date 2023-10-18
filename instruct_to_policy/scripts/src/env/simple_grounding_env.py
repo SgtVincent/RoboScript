@@ -5,7 +5,7 @@ import numpy as np
 from geometry_msgs.msg import Quaternion, Pose 
 
 from .moveit_gazebo_env import MoveitGazeboEnv
-from src.grasp_detection import GraspDetectionBase, GraspDetectionGIGA
+# from src.grasp_detection import GraspDetectionBase, GraspDetectionGIGA
 from src.grasp_detection.utils import Grasp
 from src.env.utils import get_axis_aligned_bbox, pose_msg_to_matrix
 
@@ -24,7 +24,7 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
         
         self.object_info = {}
 
-        self._init_models()
+        # self._init_models()
         self._load_gt_object_info()
     
     def _init_models(self):

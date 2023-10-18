@@ -8,9 +8,10 @@ import graspnetAPI
 
 # ROS
 import rospy 
-from grasp_detection.msg import Grasp, Perception, PerceptionSingleCamera, BoundingBox2D
+from grasp_detection.msg import Grasp, Perception, PerceptionSingleCamera, BoundingBox2D, BoundingBox3D
 from grasp_detection.srv import DetectGrasps, DetectGraspsRequest, DetectGraspsResponse
 from geometry_msgs.msg import Pose, Point, Quaternion
+from sensor_msgs.msg import Image, CameraInfo
 
 # vgn utils 
 from vgn.perception import TSDFVolume, ScalableTSDFVolume
@@ -32,6 +33,12 @@ class DetectorAnygrasp(DetectorBase):
         self.model = None
         self.max_grasp_num = self.config.max_grasp_num
         self.volume_type = self.config.volume_type
+        self.voxel_grid_size = self.config.voxel_grid_size # not used for anygrasp since it uses point cloud as input
+        self.resolution = self.config.resolution
+        self.color_type = self.config.color_type
+        self.voxel_size = self.config.voxel_size
+    
+        self.debug = self.config.debug
         
     def load_model(self):
         self.model = AnyGrasp(self.config)
@@ -42,11 +49,18 @@ class DetectorAnygrasp(DetectorBase):
         Callback function for the ROS service. 
         """
         # preprocess perception data: integrate depth images into TSDF volume and point cloud 
-        cloud, min_bound, max_bound = self._preprocess(req)
-        points = np.asarray(cloud.points)
-        colors = np.asarray(cloud.colors)
+        cloud, min_bound, max_bound = self._preprocess(req.perception_data)
+        
+        # transform point cloud to the same coordinate frame as the model
+        # the anygrasp model is trained with the z axis pointing down
+        trans_mat = np.array([[1,0,0,0],[0,1,0,0],[0,0,-1,0],[0,0,0,1]])
+        cloud = cloud.transform(trans_mat)
+        
+        points = np.asarray(cloud.points).astype(np.float32)
+        colors = np.asarray(cloud.colors).astype(np.float32)
         # lims: [xmin, xmax, ymin, ymax, zmin, zmax]
-        lims = [min_bound[0], max_bound[0], min_bound[1], max_bound[1], min_bound[2], max_bound[2]]
+        # lims = [min_bound[0], max_bound[0], min_bound[1], max_bound[1], min_bound[2], max_bound[2]]
+        lims = [min_bound[0], max_bound[0], min_bound[1], max_bound[1], -max_bound[2], -min_bound[2]]
         
         # get prediction
         gg, cloud = self.model.get_grasp(points, colors, lims)
@@ -55,7 +69,18 @@ class DetectorAnygrasp(DetectorBase):
             print('No Grasp detected by Anygrasp model!')
 
         gg:graspnetAPI.GraspGroup = gg.nms().sort_by_score()
+        # transform grasps back to the original coordinate frame
+        gg = gg.transform(trans_mat)
         gg = gg[0:self.max_grasp_num]
+        
+        if self.debug:
+            cloud = cloud.transform(trans_mat)
+            grippers = gg.to_open3d_geometry_list()
+
+            # create world coordinate frame
+            world_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.1, origin=min_bound)
+            o3d.visualization.draw_geometries([*grippers, cloud, world_frame])
+            # o3d.visualization.draw_geometries([grippers[0], cloud])
         
         # compose response
         grasps_msg = []
@@ -66,7 +91,7 @@ class DetectorAnygrasp(DetectorBase):
             
             grasp_msg.grasp_pose = Pose()
             grasp_msg.grasp_pose.position = Point(*grasp.translation)
-            grasp_msg.grasp_pose.orientation = Quaternion(*R.from_matrix(grasp.rotation).as_quat())
+            grasp_msg.grasp_pose.orientation = Quaternion(*R.from_matrix(grasp.rotation_matrix).as_quat())
             
             grasp_msg.grasp_score = grasp.score
             grasp_msg.grasp_width = grasp.width
@@ -80,15 +105,25 @@ class DetectorAnygrasp(DetectorBase):
         - integrate depth images into TSDF volume
         - return TSDF volume and point cloud
         """
+        
         if self.volume_type == "uniform":
             tsdf = TSDFVolume(self.voxel_grid_size, self.resolution, color_type=self.color_type)
         elif self.volume_type == "scalable":
             tsdf = ScalableTSDFVolume(self.voxel_grid_size, self.resolution, color_type=self.color_type, voxel_size=self.voxel_size)
 
+        # assume only one object detection in perception message
+        bbox_list = []
+        intrinsics_list = []
+        extrinsics_list = []
+
         for i, camera_data in enumerate(data.cameras_data):
             camera_data: PerceptionSingleCamera
-            rgb = camera_data.rgb_image
-            depth = camera_data.depth_image 
+            rgb: Image = camera_data.rgb_image
+            depth: Image = camera_data.depth_image 
+            
+            # convert sensor_msgs/Image
+            rgb = self.cv_bridge.imgmsg_to_cv2(rgb, desired_encoding="rgb8")
+            depth = self.cv_bridge.imgmsg_to_cv2(depth, desired_encoding="32FC1")
             
             camera_info_msg = camera_data.depth_camera_info
             intrinsics = CameraIntrinsic(
@@ -118,9 +153,9 @@ class DetectorAnygrasp(DetectorBase):
             )
             
             # NOTE: Assume only one detection in single request
-            detection = camera_data.detections[0]
             mask=None
-            if "depth_bboxes" in data:
+            if len(camera_data.detections) > 0:
+                detection:BoundingBox2D = camera_data.detections[0]
                 bbox = np.array([
                     detection.x_min,
                     detection.y_min,
@@ -129,30 +164,39 @@ class DetectorAnygrasp(DetectorBase):
                 ])
                 mask = get_mask_from_2D_bbox(bbox, depth) 
 
+                bbox_list.append(bbox)
+            else:
+                bbox_list.append(None)
+                
+            intrinsics_list.append(intrinsics)
+            extrinsics_list.append(extrinsics)
+
             tsdf.integrate(depth, intrinsics, extrinsics, rgb_img=rgb, mask_img=mask)
 
 
         full_cloud: o3d.geometry.PointCloud = tsdf.get_cloud()
         
         # TODO: check this filtering part is really needed
-        if 'bbox_3d' in data:
+        if len(data.bboxes_3d) > 0:
+            # assume only one detection in the perception message s
+            bbox_msg:BoundingBox3D = data.bboxes_3d[0]
+            
             # filter the cloud by the 3D bounding box
-            bbox_3d_center = data['bbox_3d']['center']
-            bbox_3d_size = data['bbox_3d']['size']
+            # assume axis aligned bounding box
+            bbox_3d_center = [bbox_msg.center.position.x, bbox_msg.center.position.y, bbox_msg.center.position.z]
+            bbox_3d_size = [bbox_msg.size.x, bbox_msg.size.y, bbox_msg.size.z]
             
             min_bound = np.array(bbox_3d_center) - np.array(bbox_3d_size) / 2
             max_bound=np.array(bbox_3d_center) + np.array(bbox_3d_size) / 2
             filtered_cloud = full_cloud.crop(min_bound=min_bound, max_bound=max_bound)
                 
         else:
-            # filter the cloud with frustum filters and get the bounding box center 
-            assert 'bbox_2d_list' in data, 'bbox_2d_list must be provided if bbox_3d is not provided'
-            
-            filtered_cloud, mask = open3d_frustum_filter(full_cloud, data['bbox_2d_list'],
-                                                        data['depth_camera_intrinsic_list'],
-                                                        data['depth_camera_extrinsic_list'])
+            filtered_cloud, mask = open3d_frustum_filter(full_cloud, 
+                                                         bbox_list,
+                                                        intrinsics_list,
+                                                        extrinsics_list)
             min_bound = filtered_cloud.get_min_bound()
-            min_bound = filtered_cloud.get_max_bound()
+            max_bound = filtered_cloud.get_max_bound()
             
         return filtered_cloud, min_bound, max_bound
         

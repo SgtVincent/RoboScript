@@ -108,7 +108,9 @@ def save_sensor_data(sensor_data: Dict, world_name: str, output_dir: str):
         rgb_file = os.path.join(output_dir, 'rgb_images', world_name + '_' + camera + '.png')
         depth_file = os.path.join(output_dir, 'depth_images', world_name + '_' + camera + '.png')     
         cv2.imwrite(rgb_file, rgb[..., ::-1]) 
-        cv2.imwrite(depth_file, depth) # F32C1
+        # convert 32FC1 to 16UC1 and save as png
+        depth = (depth * 1000).astype(np.uint16)
+        cv2.imwrite(depth_file, depth)
         rgb_images.append(rgb)
            
     return rgb_images

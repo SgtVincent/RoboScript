@@ -22,6 +22,11 @@ class DetectorGIGA(DetectorBase):
     def __init__(self, service_name, config):
         super().__init__(service_name, config)
         self.model = None
+        self.max_grasp_num = self.config.max_grasp_num
+        self.resolution = self.config.resolution
+        self.volume_type = self.config.volume_type
+        self.voxel_grid_size = self.config.voxel_grid_size # not used for anygrasp since it uses point cloud as input
+        self.debug = self.config.debug
         
     def load_model(self):
         self.model = VGNImplicit(self.model_path,

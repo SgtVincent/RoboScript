@@ -4,19 +4,11 @@ from typing import Dict
 import numpy as np 
 import trimesh 
 import rospy 
-from cv_bridge import CvBridge, CvBridgeError
+from cv_bridge import CvBridge
 
-# Make sure to install giga repo in conda environment 
-from vgn.detection_implicit import VGNImplicit
-from vgn.experiments.clutter_removal import State
-from vgn.perception import TSDFVolume, ScalableTSDFVolume
-from vgn.utils.visual import grasp2mesh, plot_voxel_as_cloud, plot_tsdf_with_grasps
-from vgn.utils.implicit import get_mesh_pose_list_from_world, get_scene_from_mesh_pose_list
 
 from grasp_detection.srv import DetectGrasps, DetectGraspsRequest, DetectGraspsResponse
 from grasp_detection.msg import Grasp, Perception, PerceptionSingleCamera, BoundingBox3D
-from geometry_msgs.msg import Pose, Point, Quaternion, Vector3
-from std_msgs.msg import Header
 
 from .utils import data_to_percetion_msg
 from .grasp_detection_base import GraspDetectionBase

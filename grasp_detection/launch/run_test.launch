@@ -1,0 +1,21 @@
+<launch>
+
+    <arg name="model_name" default="anygrasp" />
+    <arg name="service_name" default="/detect_grasps" />
+    <arg name="world_name" default="table_cabinet_4" />
+    <arg name="object_name" default="mustard_bottle" />
+
+    <include file="$(find grasp_detection)/launch/run_node.launch">
+        <arg name="model_name" value="$(arg model_name)" />
+        <arg name="service_name" value="$(arg service_name)" />
+    </include>
+
+    <!-- <node name="test_grasp" pkg="grasp_detection" type="test_grasp.py" output="screen">
+        <param name="service_name" value="$(arg service_name)" />
+        <param name="world_name" value="$(arg world_name)" />
+        <param name="object_name" value="$(arg object_name)" />
+    </node> -->
+
+
+
+</launch>

@@ -12,8 +12,11 @@ class ConfigBase:
         # grasp detection region of interest (ROI)
         self.resolution = 40
         self.voxel_grid_size = 0.3
-        
+        self.voxel_size = 0.0075
+        # maximum number of grasps to return
+        self.max_grasp_num = 5 
         self.volume_type = "scalable"
+        self.color_type = "rgb"
         self.max_gripper_width = 0.08
 
 class ConfigGIGA(ConfigBase):
@@ -30,6 +33,9 @@ class ConfigAnygrasp(ConfigBase):
         self.checkpoint_path = self.model_path
         self.gripper_height = 0.03 # grasp pose depth 
         self.top_down_grasp = False # whether to output top-down grasps
-        self.max_grasp_num = 5 # maximum number of grasps to return
+        
+        self.debug = False # whether to visualize the grasps 
+
+        
         
         

@@ -279,7 +279,7 @@ def data_to_percetion_msg(data: Dict, bridge:CvBridge)->Perception:
     }
     """
 
-    data = Perception(
+    perception_msg = Perception(
         header = Header(frame_id="world"),
         # currently only axis-aligned bounding box is supported
         bboxes_3d = BoundingBox3D(
@@ -330,7 +330,9 @@ def data_to_percetion_msg(data: Dict, bridge:CvBridge)->Perception:
             bbox.object_id = ""
             bbox.min_x, bbox.min_y, bbox.max_x, bbox.max_y = data["depth_bboxes"][i]
             camera_data.detections.append(bbox)
-            
+        
+        perception_msg.cameras_data.append(camera_data)
+        
     return data
             
         

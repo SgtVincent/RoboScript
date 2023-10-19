@@ -281,15 +281,18 @@ def data_to_percetion_msg(data: Dict, bridge:CvBridge)->Perception:
 
     perception_msg = Perception(
         header = Header(frame_id="world"),
-        # currently only axis-aligned bounding box is supported
-        bboxes_3d = BoundingBox3D(
-            center = Pose(
-                position = Point(*data["bbox_3d"]["center"]),
-                orientation = Quaternion(0, 0, 0, 1)
-            ),
-            size = Vector3(*data["bbox_3d"]["size"])
-        )
     )
+    
+    if "bbox_3d" in data:
+        if len(data["bbox_3d"]["center"]) > 0:
+            # currently only axis-aligned bounding box is supported
+            perception_msg.bboxes_3d = [BoundingBox3D(
+                center = Pose(
+                    position = Point(*data["bbox_3d"]["center"]),
+                    orientation = Quaternion(0, 0, 0, 1)
+                ),
+                size = Vector3(*data["bbox_3d"]["size"])
+            )]
     
     # fill camera data 
     for i, name in enumerate(data['camera_names']):
@@ -328,12 +331,13 @@ def data_to_percetion_msg(data: Dict, bridge:CvBridge)->Perception:
         if "depth_bboxes" in data:
             bbox = BoundingBox2D()
             bbox.object_id = ""
-            bbox.min_x, bbox.min_y, bbox.max_x, bbox.max_y = data["depth_bboxes"][i]
+            bbox.x_min, bbox.y_min, bbox.x_max, bbox.y_max = data["depth_bboxes"][i]
             camera_data.detections.append(bbox)
         
         perception_msg.cameras_data.append(camera_data)
         
-    return data
+    return perception_msg
+
             
         
             

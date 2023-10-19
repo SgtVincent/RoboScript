@@ -8,6 +8,7 @@ import graspnetAPI
 
 # ROS
 import rospy 
+import rospkg
 from grasp_detection.msg import Grasp, Perception, PerceptionSingleCamera, BoundingBox2D, BoundingBox3D
 from grasp_detection.srv import DetectGrasps, DetectGraspsRequest, DetectGraspsResponse
 from geometry_msgs.msg import Pose, Point, Quaternion
@@ -17,8 +18,10 @@ from sensor_msgs.msg import Image, CameraInfo
 from vgn.perception import TSDFVolume, ScalableTSDFVolume
 
 # anygrasp models
-current_dir = os.path.dirname(os.path.realpath(__file__))
-anygrasp_detection_dir = os.path.join(current_dir, "anygrasp_sdk", "grasp_detection")
+# current_dir = os.path.dirname(os.path.realpath(__file__))
+# anygrasp_detection_dir = os.path.join(current_dir, "anygrasp_sdk", "grasp_detection")
+grasp_detection_dir = rospkg.RosPack().get_path('grasp_detection')
+anygrasp_detection_dir = os.path.join(grasp_detection_dir, "src", "detectors", "anygrasp_sdk", "grasp_detection")
 sys.path.append(anygrasp_detection_dir)
 from gsnet import AnyGrasp
 from .detector_base import DetectorBase
@@ -37,6 +40,7 @@ class DetectorAnygrasp(DetectorBase):
         self.resolution = self.config.resolution
         self.color_type = self.config.color_type
         self.voxel_size = self.config.voxel_size
+        self.filter_cloud_with_bbox = self.config.filter_cloud_with_bbox
     
         self.debug = self.config.debug
         
@@ -79,13 +83,12 @@ class DetectorAnygrasp(DetectorBase):
 
             # create world coordinate frame
             world_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.1, origin=min_bound)
-            o3d.visualization.draw_geometries([*grippers, cloud, world_frame])
-            # o3d.visualization.draw_geometries([grippers[0], cloud])
+            # o3d.visualization.draw_geometries([*grippers, cloud, world_frame])
+            o3d.visualization.draw_geometries([grippers[0], cloud, world_frame])
         
         # compose response
         grasps_msg = []
         for i, grasp in enumerate(gg):
-            grasp: graspnetAPI.Grasp
             grasp_msg = Grasp()
             grasp_msg.object_id = "" # not used yet 
             
@@ -95,6 +98,8 @@ class DetectorAnygrasp(DetectorBase):
             
             grasp_msg.grasp_score = grasp.score
             grasp_msg.grasp_width = grasp.width
+            
+            grasps_msg.append(grasp_msg)
 
         response = DetectGraspsResponse(grasps=grasps_msg)
         return response
@@ -188,7 +193,12 @@ class DetectorAnygrasp(DetectorBase):
             
             min_bound = np.array(bbox_3d_center) - np.array(bbox_3d_size) / 2
             max_bound=np.array(bbox_3d_center) + np.array(bbox_3d_size) / 2
-            filtered_cloud = full_cloud.crop(min_bound=min_bound, max_bound=max_bound)
+            
+            bounding_box = o3d.geometry.AxisAlignedBoundingBox(
+                min_bound=min_bound,
+                max_bound=max_bound
+            )
+            filtered_cloud = full_cloud.crop(bounding_box)
                 
         else:
             filtered_cloud, mask = open3d_frustum_filter(full_cloud, 
@@ -197,8 +207,12 @@ class DetectorAnygrasp(DetectorBase):
                                                         extrinsics_list)
             min_bound = filtered_cloud.get_min_bound()
             max_bound = filtered_cloud.get_max_bound()
-            
-        return filtered_cloud, min_bound, max_bound
+        
+        if self.filter_cloud_with_bbox:
+            return filtered_cloud, min_bound, max_bound
+        else:
+            return full_cloud, min_bound, max_bound
+
         
     
 

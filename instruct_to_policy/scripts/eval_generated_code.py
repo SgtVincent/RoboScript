@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 import os 
 import numpy as np
-import openai
-import cv2
 import argparse
 
 from src.lmp import *
 from src.env.simple_grounding_env import SimpleGroundingEnv
 from src.config import cfg_tabletop
 import rospy 
+import rospkg
 
 def filter_drawer0(processed_data, raw_data, mask):
     """
@@ -41,41 +40,34 @@ def filter_tasks(processed_data, raw_data):
     
 
 
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--processed_file", type=str, default="data/generated_code/processed_table_cabinet_4.json",
-        help=r"File of processed {query: code} pairs to check"
-    )
-    parser.add_argument(
-        "--raw_file", type=str, default="data/generated_code/raw_table_cabinet_4.json",
-        help="File of raw code generation result, used for importing pre-defined variables"
-    )
-
-    args = parser.parse_args()
-    return args
-
 if __name__ == "__main__":
     
-    args = parse_args()
-    
-    # setup env and LMP
-    rospy.init_node('eval_code', anonymous=True, log_level=rospy.WARN)
+    # setup ros node
+    rospy.init_node('eval_code', log_level=rospy.WARN)
+    # get package root path 
+    pkg_root = rospkg.RosPack().get_path('instruct_to_policy')
+
+    # Get ROS parameters 
+    processed_file = rospy.get_param('~processed_file', 'data/generated_code/processed_table_cabinet_4.json')
+    raw_file = rospy.get_param('~raw_file', 'data/generated_code/raw_table_cabinet_4.json')
+    processed_file_path = os.path.join(pkg_root, processed_file)
+    raw_file_path = os.path.join(pkg_root, raw_file)
+
+    # setup environment
     env = SimpleGroundingEnv(cfg_tabletop)
     env.reset()
 
     # prepare variables for code execution 
     fixed_vars, variable_vars = prepare_vars(env)
 
-    with open(args.processed_file, 'r') as f:
+    with open(processed_file_path, 'r') as f:
         processed_data = json.load(f)
-    with open(args.raw_file, 'r') as f:
+    with open(raw_file_path, 'r') as f:
         raw_data = json.load(f)
 
     # filter tasks that are not suitable for the environment
     filtered_processed_data, filtered_raw_data = filter_tasks(processed_data, raw_data)
     
-
     # load code_str
     # for i, data in enumerate(filtered_processed_data):
     #     if i > 0:

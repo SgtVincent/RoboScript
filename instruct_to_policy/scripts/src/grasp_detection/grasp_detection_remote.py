@@ -34,11 +34,17 @@ class GraspDetectionRemote(GraspDetectionBase):
         
     def predict(self, data: Dict)-> Tuple[List, List, List]:
 
-        perception_msg = data_to_percetion_msg(data)
-        response: DetectGraspsResponse = self.detect_grasps(perception_msg)
+        perception_msg = data_to_percetion_msg(data, self.cv_bridge)
+        request = DetectGraspsRequest(perception_data=perception_msg)
+        rospy.loginfo("Sending perception data to grasp detection service")
+        response: DetectGraspsResponse = self.detect_grasps(request)
         grasps: List[Grasp] = response.grasps
         
-        return grasps
+        pose_list = [grasp.grasp_pose for grasp in grasps]
+        width_list = [grasp.grasp_width for grasp in grasps]
+        score_list = [grasp.grasp_score for grasp in grasps]
+        
+        return pose_list, width_list, score_list
         
         
     

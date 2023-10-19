@@ -398,9 +398,9 @@ class MoveitGazeboEnv(GazeboEnv):
         # DO NOT add furniture into moveit planning scene since they are static
         if object_id in self.objects and not has_keywords(object_id, self.furniture_names):
             
-            # self.move_group.attach_object(f"{object_id}", link) 
-            self.scene.attach_mesh(object_id, object_id, 
-                                   touch_links=[*self.robot.get_link_names(group= "panda_hand"), "panda_joint7"])
+            self.move_group.attach_object(f"{object_id}.link", link) 
+            # self.scene.attach_mesh(object_id, object_id, 
+            #                        touch_links=[*self.robot.get_link_names(group= "panda_hand"), "panda_joint7"])
             if self.verbose:
                 rospy.loginfo(f"Moveit: attached object object {object_id} to gripper link")
 

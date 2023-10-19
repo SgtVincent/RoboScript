@@ -31,18 +31,12 @@ cfg_tabletop = {
       ]
   },
   'grasp_detection': {
-      'method': 'giga', # ['heuristic', 'giga', 'mixed']
-      'visualize': False,
-      'verbose': True,
+      'method': 'model', # ['heuristic', 'model']
       'model_params': {
-        'model_path': '/home/junting/repo/GIGA/data/models/giga_pile.pt',
-        'model_type': 'giga',
-        'volume_type': 'scalable',
-        'voxel_grid_size': 0.3,
-        'resolution': 40,
-        'quality_threshold': 0.8,
-        'outlier_voxel_threshold': 0.1,
-      }
+        'service_name': '/detect_grasps',
+      },
+      'visualize': False,
+      'verbose': False,
   },
   'lmps': {
     'tabletop_ui': {

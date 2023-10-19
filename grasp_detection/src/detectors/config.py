@@ -33,8 +33,9 @@ class ConfigAnygrasp(ConfigBase):
         self.checkpoint_path = self.model_path
         self.gripper_height = 0.03 # grasp pose depth 
         self.top_down_grasp = False # whether to output top-down grasps
+        self.filter_cloud_with_bbox = False # whether to filter point cloud with 2D bbox
         
-        self.debug = False # whether to visualize the grasps 
+        self.debug = True # whether to visualize the grasps 
 
         
         

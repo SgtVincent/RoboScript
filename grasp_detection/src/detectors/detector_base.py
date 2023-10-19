@@ -15,7 +15,7 @@ class DetectorBase(object):
         
         # initialize ROS service 
         self.service = rospy.Service(self.service_name, DetectGrasps, self.detect_callback)
-        rospy.loginfo('DetectGrasps service listener is ready.')
+        rospy.loginfo(f'DetectGrasps service {self.service_name} listener is ready.')
 
     def detect_callback(self, req: DetectGraspsRequest)->DetectGraspsResponse:
         raise NotImplementedError()

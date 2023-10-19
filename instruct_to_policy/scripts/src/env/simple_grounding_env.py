@@ -4,9 +4,10 @@ import json
 import numpy as np 
 from geometry_msgs.msg import Quaternion, Pose 
 
+from grasp_detection.msg import Grasp as GraspMsg
 from .moveit_gazebo_env import MoveitGazeboEnv
-# from src.grasp_detection import GraspDetectionBase, GraspDetectionGIGA
-from src.grasp_detection.utils import Grasp
+from src.grasp_detection import GraspDetectionBase, GraspDetectionRemote
+# from src.grasp_detection.utils import Grasp
 from src.env.utils import get_axis_aligned_bbox, pose_msg_to_matrix
 
 class SimpleGroundingEnv(MoveitGazeboEnv):
@@ -17,23 +18,23 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
         super().__init__(cfg)
         self.object_metadata_files = cfg["env"]["metadata_files"]
         self.grasp_config = cfg["grasp_detection"]
-        self.grasp_method = self.grasp_config["method"] # ["heuristic", "giga", "mixed"]
+        self.grasp_method = self.grasp_config["method"] # ["heuristic", "model"]
         
         self.grasp_model = None
         self.groudning_model = None 
         
         self.object_info = {}
 
-        # self._init_models()
+        self._init_models()
         self._load_gt_object_info()
     
     def _init_models(self):
         """
         Initialze all models needed for the environment: grounding, grasp detection, etc.
         """
-        if self.grasp_method in ["giga", "mixed"]:
+        if self.grasp_method in ["model"]:
             grasp_model_config = self.grasp_config["model_params"]
-            self.grasp_model = GraspDetectionGIGA(grasp_model_config, verbose=self.grasp_config["verbose"], visualize=self.grasp_config["visualize"])
+            self.grasp_model = GraspDetectionRemote(grasp_model_config)
             self.grasp_model.load_model()
     
     def _load_gt_object_info(self):
@@ -75,13 +76,13 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
         
         if self.grasp_method == "heuristic":
             pose = self.parse_pose_heuristic(object, action, description)
-        elif self.grasp_method == "giga":
-            pose = self.parse_pose_giga(object, action, description)
+        elif self.grasp_method == "model":
+            pose = self.parse_pose_model(object, action, description)
         else:
             raise NotImplementedError(f"Grasp detection model {self.grasp_method} not implemented in {self.__class__.__name__}")      
         return pose
     
-    def parse_pose_giga(self, object, action="", description=""):
+    def parse_pose_model(self, object, action="", description=""):
         
         # get axis-aligned bounding box of the object in the world: 
         object_pose = self.get_gt_obj_pose(object)
@@ -106,16 +107,15 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
             }
             data.update(sensor_data)
             
-            grasps, scores, geometries = self.grasp_model.predict(data)
-            # naively select first grasp
-            if len(grasps) == 0:
-                return None
-            # TODO: can we add failure recovery behavior with multiple grasp candidates?   
-            grasp: Grasp = grasps[0]
-            pose = Pose()
-            pose.position.x, pose.position.y, pose.position.z = grasp.pose.translation
-            pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w = grasp.pose.rotation.as_quat()
+            # call grasp detection service
+            pose_list, width_list, score_list = self.grasp_model.predict(data)
+            
+            # sort by score and get the best grasp
+            best_grasp_idx = np.argmax(score_list)
+            pose = pose_list[best_grasp_idx]
+            width = width_list[best_grasp_idx]
             return pose
+
         else:
             # TODO: how to predict pose for actions other than grasp?
             return self.parse_pose_heuristic(object, action, description)

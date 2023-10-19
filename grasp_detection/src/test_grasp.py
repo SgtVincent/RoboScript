@@ -128,8 +128,16 @@ if __name__ == "__main__":
     
     # Call service to detect grasps
     request = DetectGraspsRequest(perception_data=perception_msg)
-    response = detect_grasps(request)
+    response:DetectGraspsResponse = detect_grasps(request)
 
+    # print top 5 candidates 
+    predicted_grasps = response.grasps[:5]
+    grasp_scores = [grasp.grasp_score for grasp in predicted_grasps]
+    grasp_poses = [grasp.grasp_pose for grasp in predicted_grasps]
+    sort_idx = np.argsort(grasp_scores)[::-1]
+    for i in range(5):
+        print(f"Grasp {i}: score={grasp_scores[sort_idx[i]]}, pose={grasp_poses[sort_idx[i]]}")
+        
     # TODO: Visualize grasps
     # pcd = o3d.geometry.PointCloud()
     # pcd.points = o3d.utility.Vector3dVector(perception_data[:, :3])

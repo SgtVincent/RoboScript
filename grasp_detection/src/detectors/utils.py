@@ -226,7 +226,8 @@ def get_mask_from_2D_bbox(bbox:np.ndarray, depth_image:np.ndarray)->np.ndarray:
     return mask
 
 def open3d_frustum_filter(pcl: o3d.geometry.PointCloud, bbox_2d_list: List[np.ndarray], 
-                          camera_intrinsic_list: List[CameraIntrinsic], camera_extrinsic_list: List[Transform]):
+                          camera_intrinsic_list: List[CameraIntrinsic], camera_extrinsic_list: List[Transform],
+                          margin=0):
     """
     Filter open3d point cloud with frustum filters by projecting 3D points onto 2D image planes 
     and checking if they are within the 2D bounding boxes.
@@ -248,7 +249,7 @@ def open3d_frustum_filter(pcl: o3d.geometry.PointCloud, bbox_2d_list: List[np.nd
         pixels = (points[:, :2] / points[:, 2:]).astype(np.int32) # (x,y) pixel coordinates
         
         # check if projected pixels are within 2D bounding box
-        mask = np.all(np.logical_and(pixels >= bbox[:2], pixels <= bbox[2:]), axis=1)
+        mask = np.all(np.logical_and(pixels >= bbox[:2] - margin, pixels <= bbox[2:] + margin), axis=1)
         mask_list.append(mask)
         
     # combine masks from all cameras

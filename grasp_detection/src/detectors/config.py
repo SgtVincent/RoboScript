@@ -33,7 +33,12 @@ class ConfigAnygrasp(ConfigBase):
         self.checkpoint_path = self.model_path
         self.gripper_height = 0.03 # grasp pose depth 
         self.top_down_grasp = False # whether to output top-down grasps
-        self.filter_cloud_with_bbox = False # whether to filter point cloud with 2D bbox
+        # NOTE: by default should be True, otherwise grasps outside of the region of interest (ROI) will be predicted first 
+        # This could lead to no valid grasp 
+        self.filter_cloud_with_bbox = True # whether to filter point cloud with 2D or 3D bbox
+        # add margin to the 2D and 3D bbox to filter the point cloud, to increase grasp detection range 
+        self.filter_bbox_2d_margin = 5 # in pixel
+        self.filter_bbox_3d_margin = 0.1 # in meter
         
         self.debug = True # whether to visualize the grasps 
 

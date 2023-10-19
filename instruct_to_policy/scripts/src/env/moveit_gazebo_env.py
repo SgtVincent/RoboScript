@@ -101,22 +101,27 @@ class MoveitGazeboEnv(GazeboEnv):
         """
         super().__init__(cfg)
 
-        # rospy.init_node("moveit_gazebo_env")
-
-        # self.frame = frame
+        # self.frame = frame # already initialized in parent class
         self.moving = False
-        self.debug = True
         self.objects = {}
-        # use real robot by default 
-        self.sim = cfg['env'].get('sim', '') 
-        self.use_sim = len(self.sim) > 0
-        self.verbose = cfg['env'].get('verbose', False)
-        self.disabled_collisions = cfg['env'].get('disabled_collisions', [])
 
+        # load config
+        self.sim = cfg['env'].get('sim', "")
+        self.verbose = cfg['env'].get('verbose', False)
+        self.use_sim = len(self.sim) > 0
+        
+        self.config = cfg['env']['moveit_config']
+        self.debug = self.config.get('debug', False)
+        self.planning_time = self.config.get('planning_time', 15)
+        self.max_velocity = self.config.get('max_velocity', 0.2) 
+        self.max_acceleration = self.config.get('max_acceleration', 0.2)
+        self.goal_position_tolerance = self.config.get('goal_position_tolerance', 0.001)
+        self.goal_orientation_tolerance = self.config.get('goal_orientation_tolerance', 0.02)  
+        self.reference_frame = self.config.get('reference_frame', self.frame)
 
         # environment prior knowledge
         # TODO: consider to parse this from external perception model
-        self.furniture_names = ['table']
+        self.static_objects = ['table']
 
         self.ignore_coll_check = False
         self.wait_at_grasp_pose = False
@@ -131,15 +136,17 @@ class MoveitGazeboEnv(GazeboEnv):
         # MoveIt! interface
         self.robot = moveit_commander.RobotCommander()
         self.scene = moveit_commander.PlanningSceneInterface()
+        # NOTE: use panda_manipulator move_group to make grasp center as end effector link 
+        self.move_group = moveit_commander.MoveGroupCommander("panda_manipulator", wait_for_servers=15)
         # self.move_group = moveit_commander.MoveGroupCommander("panda_arm", wait_for_servers=15)
-        self.move_group = moveit_commander.MoveGroupCommander("panda_arm", wait_for_servers=15)
         # self.gripper = moveit_commander.MoveGroupCommander("panda_hand", wait_for_servers=15)
         self.gripper_group = GripperCommanderGroup()
         # collision manager to toggle collision between objects
         # used when contrained objects are attached to the robot
         # moveit planning cannot understand translational and rotational joints 
         self.collision_manager = CollisionManager()
-
+        
+        self.end_effctor_link = self.move_group.get_end_effector_link()
 
         self.error_recovery_client = SimpleActionClient(
             "/franka_control/error_recovery", ErrorRecoveryAction
@@ -149,21 +156,23 @@ class MoveitGazeboEnv(GazeboEnv):
         self.object_names = self.get_obj_names()
         self.load_scene()
         # TODO: moveit configurations should be set inside the config file 
-        self.move_group.set_planning_time(15)
-        self.move_group.set_max_velocity_scaling_factor(0.2)
-        self.move_group.set_max_acceleration_scaling_factor(0.2)
-        self.move_group.set_goal_position_tolerance(0.001)
-        self.move_group.set_goal_orientation_tolerance(0.02)
-        self.move_group.set_pose_reference_frame(self.frame)
+
+        # Set parameters in move_group
+        self.move_group.set_planning_time(self.planning_time)
+        self.move_group.set_max_velocity_scaling_factor(self.max_velocity)
+        self.move_group.set_max_acceleration_scaling_factor(self.max_acceleration)
+        self.move_group.set_goal_position_tolerance(self.goal_position_tolerance)
+        self.move_group.set_goal_orientation_tolerance(self.goal_orientation_tolerance)
+        self.move_group.set_pose_reference_frame(self.reference_frame)    
 
 
-        if 'initial_joint_values' in cfg['env']:
-            self.reset_joint_values = cfg['env']['initial_joint_values']
-        else:
-            self.reset_joint_values = self.move_group.get_current_joint_values()
+        self.reset_joint_values = cfg['env']['initial_joint_values']
 
-        self.reset_pose = self.move_group.get_current_pose().pose
-
+        # setup debug visualization
+        if self.debug:
+            ee_name = self.end_effctor_link.replace("/", "")
+            self.marker_pub = rospy.Publisher(f"/rviz/moveit/move_marker/goal_{ee_name}", PoseStamped, queue_size=5)
+            
         print("Set up Franka API. Ready to go!")
 
     def _block(fn):
@@ -256,11 +265,11 @@ class MoveitGazeboEnv(GazeboEnv):
 
     def reset_scene(self):
         """Reset the scene to the initial state."""
-        # self.scene.clear()
         self.objects = {}
         if self.use_sim:
             self.reset_world()
             # self.reset_simulation()
+        # reset planning scene 
         self.load_scene()
 
     def load_gazebo_world_into_moveit(self, 
@@ -310,6 +319,15 @@ class MoveitGazeboEnv(GazeboEnv):
         else:
             raise NotImplementedError("Only simulation is supported for now.")
 
+    def publish_goal_to_marker(self, goal_pose: Pose):
+        """Publish the current goal to the interactive marker for debug visualization."""
+        if not self.debug:
+            return
+        pose_stamped = PoseStamped()
+        pose_stamped.header.frame_id = self.reference_frame
+        pose_stamped.pose = goal_pose
+        self.marker_pub.publish(pose_stamped)
+        
     @_block
     def reset(self, group=None, gripper_group=None):
         """Reset the robot to the initial state and opens the gripper."""
@@ -317,13 +335,17 @@ class MoveitGazeboEnv(GazeboEnv):
             group = self.move_group
         if gripper_group is None:
             gripper_group = self.gripper_group
-        self.reset_scene()
+        # first reset robot pose, otherwise there could be collision 
         group.set_joint_value_target(self.reset_joint_values)
         self._go(group)
         group.stop()
         group.clear_pose_targets()
         gripper_group.reset()
         self.open_gripper(gripper_group)
+        
+        # then reset the world 
+        self.reset_scene()
+        
 
     def get_ee_pose(self, group=None):
         """Get the current pose of the end effector."""
@@ -350,6 +372,8 @@ class MoveitGazeboEnv(GazeboEnv):
     @_block
     def move_to_pose(self, pose: Pose, group=None):
         """Move the robot to a given pose with given orientation."""
+        # TODO: add recovery behavior to decrease gripper width and try plan again
+        
         self.move_group.set_pose_target(pose)
         if group is None:
             group = self.move_group
@@ -396,7 +420,7 @@ class MoveitGazeboEnv(GazeboEnv):
     
         # TODO: add a dictionary to store the attached object
         # DO NOT add furniture into moveit planning scene since they are static
-        if object_id in self.objects and not has_keywords(object_id, self.furniture_names):
+        if object_id in self.objects and not has_keywords(object_id, self.static_objects):
             
             self.move_group.attach_object(f"{object_id}.link", link) 
             # self.scene.attach_mesh(object_id, object_id, 

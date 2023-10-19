@@ -55,6 +55,14 @@ class DetectorAnygrasp(DetectorBase):
         # preprocess perception data: integrate depth images into TSDF volume and point cloud 
         cloud, min_bound, max_bound = self._preprocess(req.perception_data)
         
+        # visualize pre-processed input 
+        if self.debug:
+
+            # create world coordinate frame
+            world_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.1, origin=min_bound)
+            # o3d.visualization.draw_geometries([*grippers, cloud, world_frame])
+            o3d.visualization.draw_geometries([cloud, world_frame])
+        
         # transform point cloud to the same coordinate frame as the model
         # the anygrasp model is trained with the z axis pointing down
         trans_mat = np.array([[1,0,0,0],[0,1,0,0],[0,0,-1,0],[0,0,0,1]])
@@ -66,12 +74,17 @@ class DetectorAnygrasp(DetectorBase):
         # lims = [min_bound[0], max_bound[0], min_bound[1], max_bound[1], min_bound[2], max_bound[2]]
         lims = [min_bound[0], max_bound[0], min_bound[1], max_bound[1], -max_bound[2], -min_bound[2]]
         
-        # get prediction
-        gg, cloud = self.model.get_grasp(points, colors, lims)
-        
-        if len(gg) == 0:
-            print('No Grasp detected by Anygrasp model!')
 
+        
+        # get prediction
+        ret = self.model.get_grasp(points, colors, lims)
+        if len(ret) == 2:
+            gg, cloud = ret
+        else:
+            # if no valid grasp found, 3-tuple is returned for debugging (not used here)
+            print('No Grasp detected by Anygrasp model!')
+            return DetectGraspsResponse(grasps=[])
+        
         gg:graspnetAPI.GraspGroup = gg.nms().sort_by_score()
         # transform grasps back to the original coordinate frame
         gg = gg.transform(trans_mat)
@@ -191,8 +204,8 @@ class DetectorAnygrasp(DetectorBase):
             bbox_3d_center = [bbox_msg.center.position.x, bbox_msg.center.position.y, bbox_msg.center.position.z]
             bbox_3d_size = [bbox_msg.size.x, bbox_msg.size.y, bbox_msg.size.z]
             
-            min_bound = np.array(bbox_3d_center) - np.array(bbox_3d_size) / 2
-            max_bound=np.array(bbox_3d_center) + np.array(bbox_3d_size) / 2
+            min_bound = np.array(bbox_3d_center) - np.array(bbox_3d_size) / 2 - self.config.filter_bbox_3d_margin
+            max_bound=np.array(bbox_3d_center) + np.array(bbox_3d_size) / 2 + self.config.filter_bbox_3d_margin
             
             bounding_box = o3d.geometry.AxisAlignedBoundingBox(
                 min_bound=min_bound,
@@ -204,7 +217,8 @@ class DetectorAnygrasp(DetectorBase):
             filtered_cloud, mask = open3d_frustum_filter(full_cloud, 
                                                          bbox_list,
                                                         intrinsics_list,
-                                                        extrinsics_list)
+                                                        extrinsics_list,
+                                                        margin=self.config.filter_bbox_2d_margin)
             min_bound = filtered_cloud.get_min_bound()
             max_bound = filtered_cloud.get_max_bound()
         

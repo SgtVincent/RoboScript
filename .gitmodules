@@ -7,3 +7,7 @@
 [submodule "grasp_detection/src/detectors/anygrasp_sdk"]
 	path = grasp_detection/src/detectors/anygrasp_sdk
 	url = https://github.com/graspnet/anygrasp_sdk.git
+[submodule "vision_msgs"]
+	path = vision_msgs
+	url = https://github.com/ros-perception/vision_msgs.git
+	branch = noetic-devel

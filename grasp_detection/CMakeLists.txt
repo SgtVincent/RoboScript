@@ -54,6 +54,8 @@ add_message_files(
   FILES
   BoundingBox2D.msg
   BoundingBox3D.msg
+  BoundingBox2DArray.msg
+  BoundingBox3DArray.msg
   Grasp.msg
   Perception.msg
   PerceptionSingleCamera.msg

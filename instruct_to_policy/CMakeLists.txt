@@ -27,7 +27,7 @@ find_package(catkin REQUIRED COMPONENTS
   gazebo_ros
   gazebo_msgs
   moveit_msgs
-  vision_msgs
+  grasp_detection 
 )
 
 ## System dependencies are found with CMake's conventions
@@ -124,7 +124,7 @@ find_package(gazebo REQUIRED)
 catkin_package(
  INCLUDE_DIRS include 
 #  LIBRARIES instruct_to_policy
- CATKIN_DEPENDS roscpp std_msgs geometry_msgs gazebo_ros
+ CATKIN_DEPENDS roscpp std_msgs geometry_msgs gazebo_ros grasp_detection
 #  DEPENDS system_lib 
 )
 
@@ -146,10 +146,8 @@ include_directories(
 )
 
 # Declare a C++ library
-
-add_library( gazebo_ros_example_plugin src/gazebo_plugins/gazebo_ros_example_plugin.cpp)
 add_library( gazebo_ros_moveit_planning_scene src/gazebo_plugins/gazebo_ros_moveit_planning_scene.cpp)
-add_library( gazebo_ros_p3d src/gazebo_plugins/gazebo_ros_p3d.cpp)
+add_library( gazebo_ros_bbox_3d_plugin src/gazebo_plugins/gazebo_ros_bbox_3d_plugin.cpp)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -172,19 +170,13 @@ add_library( gazebo_ros_p3d src/gazebo_plugins/gazebo_ros_p3d.cpp)
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries( gazebo_ros_example_plugin
-  ${GAZEBO_LIBRARIES}
-  ${Boost_LIBRARIES}
-  ${catkin_LIBRARIES}
-)
-
 target_link_libraries( gazebo_ros_moveit_planning_scene
   ${GAZEBO_LIBRARIES}
   ${Boost_LIBRARIES}
   ${catkin_LIBRARIES}
 )
 
-target_link_libraries( gazebo_ros_p3d
+target_link_libraries( gazebo_ros_bbox_3d_plugin
   ${GAZEBO_LIBRARIES}
   ${Boost_LIBRARIES}
   ${catkin_LIBRARIES}

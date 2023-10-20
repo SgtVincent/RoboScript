@@ -37,7 +37,6 @@
     <depend>geometry_msgs</depend>
     <depend>sensor_msgs</depend>
     <depend>moveit_msgs</depend>
-    <depend>vision_msgs</depend>
     <depend>grasp_detection</depend>
 
   <!-- Use build_depend for packages you need at compile time: -->

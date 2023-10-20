@@ -26,7 +26,7 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
         self.object_info = {}
 
         self._init_models()
-        self._load_gt_object_info()
+        # self._load_gt_object_info()
     
     def _init_models(self):
         """
@@ -40,6 +40,7 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
     def _load_gt_object_info(self):
         """
         Load the ground truth object information from object metadata files 
+        TODO: deprecated, remove this function when cleaning up the code
         """
         self.object_info = {}
         for file in self.object_metadata_files:
@@ -62,6 +63,15 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
             return None
         return gt_pose.position
         
+    def get_bbox(self, obj_name, **kwargs):
+        """
+        Get the 3D bounding box of the object in the world frame.
+        This function uses ground truth model state from gazebo and ignore all other parameters.
+        """
+        center, size = self.get_gt_bbox(obj_name)
+        if center is None or size is None:
+            return None, None
+        return np.array(center), np.array(size)
 
     def parse_pose(self, object, action="", description=""):
         """ 
@@ -86,9 +96,11 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
         
         # get axis-aligned bounding box of the object in the world: 
         object_pose = self.get_gt_obj_pose(object)
-        object_transform = pose_msg_to_matrix(object_pose)
-        bbox_center, bbox_size = get_axis_aligned_bbox(self.object_info[object]['bbox_center'], 
-                                                       self.object_info[object]['bbox_size'], object_transform)
+        # object_transform = pose_msg_to_matrix(object_pose)
+        # bbox_center, bbox_size = get_axis_aligned_bbox(self.object_info[object]['bbox_center'], 
+        #                                                self.object_info[object]['bbox_size'], object_transform)
+        # NOTE: use ground truth bounding box for now
+        bbox_center, bbox_size = self.get_bbox(object)
         
         # get visual input from perception model
         sensor_data = self.get_sensor_data()

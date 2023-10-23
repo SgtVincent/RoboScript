@@ -7,3 +7,6 @@
 [submodule "grasp_detection/src/detectors/anygrasp_sdk"]
 	path = grasp_detection/src/detectors/anygrasp_sdk
 	url = https://github.com/graspnet/anygrasp_sdk.git
+[submodule "moveit_configs/panda_moveit_config"]
+	path = moveit_configs/panda_moveit_config
+	url = https://github.com/SgtVincent/panda_moveit_config.git

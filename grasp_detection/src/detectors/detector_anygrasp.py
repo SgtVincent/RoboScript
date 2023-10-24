@@ -40,7 +40,6 @@ class DetectorAnygrasp(DetectorBase):
         self.resolution = self.config.resolution
         self.color_type = self.config.color_type
         self.voxel_size = self.config.voxel_size
-        self.filter_cloud_with_bbox = self.config.filter_cloud_with_bbox
     
         self.debug = self.config.debug
         
@@ -55,16 +54,9 @@ class DetectorAnygrasp(DetectorBase):
         # preprocess perception data: integrate depth images into TSDF volume and point cloud 
         cloud, min_bound, max_bound = self._preprocess(req.perception_data)
         
-        # visualize pre-processed input 
-        if self.debug:
-
-            # create world coordinate frame
-            world_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.1, origin=min_bound)
-            # o3d.visualization.draw_geometries([*grippers, cloud, world_frame])
-            o3d.visualization.draw_geometries([cloud, world_frame])
-        
         # transform point cloud to the same coordinate frame as the model
-        # the anygrasp model is trained with the z axis pointing down
+        # the anygrasp model is trained with the x-axis pointing down
+        # 
         trans_mat = np.array([[1,0,0,0],[0,1,0,0],[0,0,-1,0],[0,0,0,1]])
         cloud = cloud.transform(trans_mat)
         
@@ -74,7 +66,6 @@ class DetectorAnygrasp(DetectorBase):
         # lims = [min_bound[0], max_bound[0], min_bound[1], max_bound[1], min_bound[2], max_bound[2]]
         lims = [min_bound[0], max_bound[0], min_bound[1], max_bound[1], -max_bound[2], -min_bound[2]]
         
-
         
         # get prediction
         ret = self.model.get_grasp(points, colors, lims)
@@ -83,6 +74,12 @@ class DetectorAnygrasp(DetectorBase):
         else:
             # if no valid grasp found, 3-tuple is returned for debugging (not used here)
             print('No Grasp detected by Anygrasp model!')
+            if self.debug:
+                cloud = cloud.transform(trans_mat)
+                # create world coordinate frame
+                world_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.1, origin=min_bound)
+                o3d.visualization.draw_geometries([cloud, world_frame])
+                
             return DetectGraspsResponse(grasps=[])
         
         gg:graspnetAPI.GraspGroup = gg.nms().sort_by_score()
@@ -105,9 +102,13 @@ class DetectorAnygrasp(DetectorBase):
             grasp_msg = Grasp()
             grasp_msg.object_id = "" # not used yet 
             
+            # NOTE: the canonical grasp pose in anygrasp is defined as the gripper pointing to +x in the world frame
+            # The canonical grasp pose in moveit is defined as the gripper pointing to +z in the world frame
+            # Therefore, we need to rotate the canonical grasp pose by 90 degrees around the y-axis to convert it to the moveit convention
+            rot_any2moveit = np.array([[0,0,1],[0,1,0],[-1,0,0]])
             grasp_msg.grasp_pose = Pose()
             grasp_msg.grasp_pose.position = Point(*grasp.translation)
-            grasp_msg.grasp_pose.orientation = Quaternion(*R.from_matrix(grasp.rotation_matrix).as_quat())
+            grasp_msg.grasp_pose.orientation = Quaternion(*R.from_matrix(grasp.rotation_matrix @ rot_any2moveit).as_quat())
             
             grasp_msg.grasp_score = grasp.score
             grasp_msg.grasp_width = grasp.width
@@ -193,8 +194,9 @@ class DetectorAnygrasp(DetectorBase):
 
 
         full_cloud: o3d.geometry.PointCloud = tsdf.get_cloud()
+        cloud = full_cloud
         
-        # TODO: check this filtering part is really needed
+        # fuse detection result to 3D bounding box if needed 
         if len(data.bboxes_3d) > 0:
             # assume only one detection in the perception message s
             bbox_msg:BoundingBox3D = data.bboxes_3d[0]
@@ -204,29 +206,46 @@ class DetectorAnygrasp(DetectorBase):
             bbox_3d_center = [bbox_msg.center.position.x, bbox_msg.center.position.y, bbox_msg.center.position.z]
             bbox_3d_size = [bbox_msg.size.x, bbox_msg.size.y, bbox_msg.size.z]
             
-            min_bound = np.array(bbox_3d_center) - np.array(bbox_3d_size) / 2 - self.config.filter_bbox_3d_margin
-            max_bound=np.array(bbox_3d_center) + np.array(bbox_3d_size) / 2 + self.config.filter_bbox_3d_margin
-            
-            bounding_box = o3d.geometry.AxisAlignedBoundingBox(
-                min_bound=min_bound,
-                max_bound=max_bound
-            )
-            filtered_cloud = full_cloud.crop(bounding_box)
+            min_bound = np.array(bbox_3d_center) - np.array(bbox_3d_size) / 2 
+            max_bound=np.array(bbox_3d_center) + np.array(bbox_3d_size) / 2 
                 
         else:
-            filtered_cloud, mask = open3d_frustum_filter(full_cloud, 
-                                                         bbox_list,
-                                                        intrinsics_list,
-                                                        extrinsics_list,
-                                                        margin=self.config.filter_bbox_2d_margin)
-            min_bound = filtered_cloud.get_min_bound()
-            max_bound = filtered_cloud.get_max_bound()
+            # if no 3D bbox is provided, use 2D bbox to filter the cloud and get the 3D bbox
+            # NOTE: instead of getting 3D bbox from the point cloud filtered by slacked 2D bbox, 
+            # we should use tight 2D bbox to get the 3D bbox
+            tight_cloud, mask = open3d_frustum_filter(cloud, 
+                                                bbox_list,
+                                                intrinsics_list,
+                                                extrinsics_list,
+                                                margin=0)
+            
+            min_bound = tight_cloud.get_min_bound()
+            max_bound = tight_cloud.get_max_bound()
         
-        if self.filter_cloud_with_bbox:
-            return filtered_cloud, min_bound, max_bound
-        else:
-            return full_cloud, min_bound, max_bound
-
+        if self.config.filter_cloud_with_bbox:
+            if len(data.bboxes_3d) > 0:
+                # filter the cloud by the 3D bounding box
+                # slack the 3D bbox by a margin to get more context of the grasp
+                bounding_box = o3d.geometry.AxisAlignedBoundingBox(
+                    min_bound=min_bound - self.config.filter_bbox_3d_margin, 
+                    max_bound=max_bound + self.config.filter_bbox_3d_margin
+                )
+                cloud = cloud.crop(bounding_box)
+            else:
+                # if no 3D bbox is provided, use 2D bbox to filter the cloud
+                cloud, mask = open3d_frustum_filter(cloud, 
+                                                    bbox_list,
+                                                    intrinsics_list,
+                                                    extrinsics_list,
+                                                    margin=self.config.filter_bbox_2d_margin)
+            
+        
+        if self.config.filter_table_plane:
+            # filter the cloud by the table plane height
+            height = self.config.table_height
+            cloud = cloud.select_by_index(np.where(np.asarray(cloud.points)[:,2] > height)[0])
+            
+        return cloud, min_bound, max_bound
         
     
 

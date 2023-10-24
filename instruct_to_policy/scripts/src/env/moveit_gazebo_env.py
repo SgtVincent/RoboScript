@@ -23,7 +23,7 @@ import rospy
 
 # Brings in the SimpleActionClient
 from actionlib import SimpleActionClient
-from moveit_msgs.msg import PositionIKRequest
+from moveit_msgs.msg import PositionIKRequest, RobotState
 from moveit_msgs.srv import GetPositionIK
 
 from src.env.utils import (
@@ -118,6 +118,7 @@ class MoveitGazeboEnv(GazeboEnv):
         self.goal_position_tolerance = self.config.get('goal_position_tolerance', 0.001)
         self.goal_orientation_tolerance = self.config.get('goal_orientation_tolerance', 0.02)  
         self.reference_frame = self.config.get('reference_frame', self.frame)
+        self.cartesian_path = self.config.get('cartesian_path', False)
 
         # environment prior knowledge
         # TODO: consider to parse this from external perception model
@@ -165,13 +166,22 @@ class MoveitGazeboEnv(GazeboEnv):
         self.move_group.set_goal_orientation_tolerance(self.goal_orientation_tolerance)
         self.move_group.set_pose_reference_frame(self.reference_frame)    
 
-
         self.reset_joint_values = cfg['env']['initial_joint_values']
+
+
+        gripper_collision_frames = ["panda_rightfinger", "panda_leftfinger"]
+
+        # disable collision between gripper and other objects
+        # NOTE: currently disable collision in srdf setting file to accelerate system booting 
+        # self.collision_manager.disable_collisions(gripper_collision_frames)
+        # rospy.loginfo(f"Moveit: frames collision turned off: {gripper_collision_frames}")
 
         # setup debug visualization
         if self.debug:
             ee_name = self.end_effctor_link.replace("/", "")
             self.marker_pub = rospy.Publisher(f"/rviz/moveit/move_marker/goal_{ee_name}", PoseStamped, queue_size=5)
+            self.goal_state_pub = rospy.Publisher(f"/rviz/moveit/update_custom_goal_state", RobotState, queue_size=1)
+
             
         print("Set up Franka API. Ready to go!")
 
@@ -192,7 +202,7 @@ class MoveitGazeboEnv(GazeboEnv):
 
     def _go(self, move_group):
         if not move_group.go(wait=True):
-            print("Execution failed! Going to retry with error recovery")
+            rospy.logwarn("Execution failed! Going to retry with error recovery")
             self.error_recovery_client.send_goal_and_wait(ErrorRecoveryActionGoal())
             return move_group.go(wait=True)
         return True
@@ -200,9 +210,11 @@ class MoveitGazeboEnv(GazeboEnv):
     def _execute(self, move_group, plan, reset_err=True):
         if not move_group.execute(plan, wait=True):
             if reset_err:
-                print("Execution failed!. Going to retry with error recovery")
+                rospy.logwarn("Execution failed!. Going to retry with error recovery")
                 self.error_recovery_client.send_goal_and_wait(ErrorRecoveryActionGoal())
-                move_group.execute(plan, wait=True)
+                return move_group.execute(plan, wait=True)
+            return False
+        return True
 
     def computeIK(
         self,
@@ -221,7 +233,7 @@ class MoveitGazeboEnv(GazeboEnv):
         ik_request.ik_link_name = ik_link_name
         ik_request.pose_stamped = pose_stamped
         ik_request.robot_state = self.robot.get_current_state()
-        ik_request.avoid_collisions = True
+        ik_request.avoid_collisions = False
 
         request_value = self.compute_ik(ik_request)
 
@@ -269,7 +281,16 @@ class MoveitGazeboEnv(GazeboEnv):
         if self.use_sim:
             self.reset_world()
             # self.reset_simulation()
+        
         # reset planning scene 
+        # remove all attached objects
+        self.scene.remove_attached_object()
+        
+        # reset visualization marker if debug is enabledss
+        if self.debug:                
+            self.goal_state_pub.publish(self.robot.get_current_state())
+            rospy.sleep(1)
+        
         self.load_scene()
 
     def load_gazebo_world_into_moveit(self, 
@@ -291,28 +312,11 @@ class MoveitGazeboEnv(GazeboEnv):
                 if properties.is_static or load_dynamic:
                     load_model_into_moveit(sdf_path, pose, self.scene, model, link_name="link")
 
-    def disable_cabinet_gripper_collision(self):
-        """ 
-        Temporarily workaround to disable collision between cabinet and gripper.
-        Otherwise, if attach cabinet drawer to gripper, there will be unplausible collsion between drawer and cabinet,
-        since moveit planning scene cannot understand translational joints properly.
-        
-        TODO: find a better way to handle this, by loading cabinet as a robot model?
-        """
-        link_tuples, allowed_list = [], []
-        for link_1 in ["panda_leftfinger", "panda_rightfinger"]:
-            for link_2 in ["cabinet.base_link", "cabinet.drawer_0 ", "cabinet.drawer_1", "cabinet.drawer_2", "cabinet.drawer_3"]:
-                link_tuples.append((link_1, link_2))
-                allowed_list.append(False)
-            
-        self.collision_manager.set_collision_entries(link_tuples, allowed_list)
         
     def load_scene(self):
         """Load the scene in the MoveIt! planning scene."""
         if self.use_sim:
-            # self.load_gazebo_world_into_moveit()
-            self.disable_cabinet_gripper_collision()
-            
+
             for name in self.object_names:
                 self.objects[name] = {}
                     
@@ -327,6 +331,9 @@ class MoveitGazeboEnv(GazeboEnv):
         pose_stamped.header.frame_id = self.reference_frame
         pose_stamped.pose = goal_pose
         self.marker_pub.publish(pose_stamped)
+        # wait for rviz to update
+        rospy.logdebug("Waiting for rviz to update")
+        rospy.sleep(1.0)
         
     @_block
     def reset(self, group=None, gripper_group=None):
@@ -343,9 +350,9 @@ class MoveitGazeboEnv(GazeboEnv):
         gripper_group.reset()
         self.open_gripper(gripper_group)
         
-        # then reset the world 
-        self.reset_scene()
-        
+        # then reset the world and moveit planning scene 
+        self.reset_scene()    
+        rospy.loginfo("Environment reset.")
 
     def get_ee_pose(self, group=None):
         """Get the current pose of the end effector."""
@@ -370,14 +377,35 @@ class MoveitGazeboEnv(GazeboEnv):
 
 
     @_block
-    def move_to_pose(self, pose: Pose, group=None):
+    def move_to_pose(self, pose: Pose, group:moveit_commander.MoveGroupCommander=None):
         """Move the robot to a given pose with given orientation."""
         # TODO: add recovery behavior to decrease gripper width and try plan again
         
-        self.move_group.set_pose_target(pose)
         if group is None:
             group = self.move_group
-        plan = self._go(group)
+            
+        # publish debug goal pose to rviz
+        if self.debug:
+            self.publish_goal_to_marker(pose)
+            
+        # first try to plan with cartesian path if enabled
+        if self.cartesian_path:
+            group.set_pose_target(pose)
+            (plan, fraction) = group.compute_cartesian_path([pose], 0.02, 0.0)
+            if fraction < 1:
+                rospy.logwarn(f"Could not plan cartesian_path to target pose \n{pose}.\n Plan accuracy: {fraction}")
+                success = False
+            else:
+                success = self._execute(group, plan)
+                
+        # if cartesian path is disabled or failed, try to plan with joint values
+        if not self.cartesian_path or not success:
+            group.set_pose_target(pose)
+            plan = self._go(group)
+            if not plan:
+                rospy.logwarn(f"Could not plan to target pose \n{pose}")
+                success = False
+        
         group.stop()
         group.clear_pose_targets()
         return plan
@@ -415,10 +443,12 @@ class MoveitGazeboEnv(GazeboEnv):
                 print(f"Moveit: object {object_id} not found in environment.")
 
     @_block
-    def attach_object(self, object_id, link="panda_hand_tcp"):
+    def attach_object(self, object_id, link=None):
         """Attach an object to the robot gripper"""
-    
-        # TODO: add a dictionary to store the attached object
+
+        if link is None:
+            link = self.end_effctor_link
+
         # DO NOT add furniture into moveit planning scene since they are static
         if object_id in self.objects and not has_keywords(object_id, self.static_objects):
             
@@ -478,16 +508,19 @@ class MoveitGazeboEnv(GazeboEnv):
 
         self.move_group.set_pose_target(waypoints[0])
 
-        # (plan, fraction) = self.move_group.compute_cartesian_path(waypoints, 0.02, 0.0)
-        # if fraction < 1:
-        #     print("Could not plan to pre-grasp pose. Plan accuracy", fraction)
-        #     return False
+        if self.cartesian_path:
+            (plan, fraction) = self.move_group.compute_cartesian_path(waypoints, 0.02, 0.0)
+            if fraction < 1:
+                print("Could not plan to pre-grasp pose. Plan accuracy", fraction)
+                return False
 
         if self.verbose:
             print("Moving to pre-grasp pose")
 
-        # self._execute(self.move_group, plan)
-        plan = self._go(self.move_group)
+        if self.cartesian_path:
+            self._execute(self.move_group, plan)
+        else:
+            plan = self._go(self.move_group)
         self.move_group.stop()
         self.move_group.clear_pose_targets()
         if not plan:

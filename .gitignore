@@ -174,4 +174,11 @@ instruct_to_policy/data/generated_code/
 instruct_to_policy/data/multiview_detection/
 instruct_to_policy/models/cabinet_*/
 
+# temporary/test data; random stuff
+instruct_to_policy/data/world_low_container_metadata/
+instruct_to_policy/data/low_container_multiview_detection/
+instruct_to_policy/worlds_low_container/
+
+
+
 

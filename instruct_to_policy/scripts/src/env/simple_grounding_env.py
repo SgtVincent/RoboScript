@@ -73,11 +73,11 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
             return None, None
         return np.array(center), np.array(size)
 
-    def parse_pose(self, object, action="", description=""):
+    def parse_pose(self, object, action="", description="", **kwargs):
         """ 
         Parse pose of action for the object.
         NOTE: Grounding models/ perception models need to handle this function 
-        Currently only use the position of the object and canonical orientation .
+        Currently only use the object name to get the grasp pose. All other parameters are ignored.
         """
         
         # special case for drawer handle
@@ -140,7 +140,7 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
             if hasattr(self, 'reset_pose'):
                 pose.orientation = self.reset_pose.orientation
             else:
-                pose.orientation = Quaternion(0,0,0,1)
+                pose.orientation = Quaternion(0,1,0,0)
         elif action in ['place', 'put', 'drop', 'release']:
             pose = Pose()
             pose.position = self.get_obj_pos(object)
@@ -148,16 +148,16 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
             if hasattr(self, 'reset_pose'):
                 pose.orientation = self.reset_pose.orientation
             else:
-                pose.orientation = Quaternion(0,0,0,1)
+                pose.orientation = Quaternion(0,1,0,0)
         else:
             rospy.logwarn(f"Action {action} not supported in heuristic grasp model, use default pose")
             pose = Pose()
             pose.position = self.get_obj_pos(object)
-            pose.orientation = Quaternion(0,0,0,1)
+            pose.orientation = Quaternion(0,1,0,0)
             if hasattr(self, 'reset_pose'):
                 pose.orientation = self.reset_pose.orientation
             else:
-                pose.orientation = Quaternion(0,0,0,1)
+                pose.orientation = Quaternion(0,1,0,0)
         return pose
     
     def parse_drawer_handle_pose(self, object, action="", description=""):

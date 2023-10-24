@@ -17,7 +17,8 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'data')
 
-from src.env.simple_grounding_env import SimpleGroundingEnv
+# from src.env.simple_grounding_env import SimpleGroundingEnv
+from src.env.gazebo_env import GazeboEnv
 from src.env.utils import pose_msg_to_matrix, get_axis_aligned_bbox
 from src.grasp_detection.utils import CameraIntrinsic, Transform
 from src.config import cfg_tabletop
@@ -168,7 +169,7 @@ def save_image_with_bbox(rgb_images: np.ndarray, annot_dict: Dict, world_name: s
                 
         cv2.imwrite(os.path.join(output_dir, 'annotated_images', world_name + '_' + camera + '.png'), rgb[..., ::-1])
 
-def save_dataset(env: SimpleGroundingEnv, object_names: List[str], world_name: str, output_dir: str):
+def save_dataset(env: GazeboEnv, object_names: List[str], world_name: str, output_dir: str):
     """Save raw sensor data and detection annotations to dataset
     sensor_data = {
         'camera_names': [],
@@ -191,10 +192,7 @@ def save_dataset(env: SimpleGroundingEnv, object_names: List[str], world_name: s
     # get 3D bounding boxes from gazebo environment
     bbox_3d_list = []
     for object_name in object_names:
-        object_pose = env.get_gt_obj_pose(object_name)
-        object_transform = pose_msg_to_matrix(object_pose)
-        bbox_center, bbox_size = get_axis_aligned_bbox(env.object_info[object_name]['bbox_center'], 
-                                                    env.object_info[object_name]['bbox_size'], object_transform)
+        bbox_center, bbox_size = env.get_gt_bbox(object_name)   
         bbox_3d_list.append((bbox_center, bbox_size))
 
     rgb_images = save_sensor_data(sensor_data, world_name, output_dir)
@@ -233,7 +231,8 @@ def parse_args():
     Parse the arguments of the program.
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("--world_name", type=str, default="table_cabinet_1")
+    # parser.add_argument("--world_name", type=str, default="table_cabinet_1")
+    parser.add_argument("--world_name", type=str, default="table_0")
     parser.add_argument(
         "--include_filters",
         type=str,
@@ -251,11 +250,21 @@ def parse_args():
     parser.add_argument(
         "--output_dir",
         type=str,
-        default=os.path.join(data_dir, "multiview_detection"),
+        # default="multiview_detection",
+        default="low_container_multiview_detection",
         help="Output directory for saving the dataset.",
     )
-
+    parser.add_argument(
+        "--metadata_dir",
+        type=str,
+        # default="world_metadata",
+        default="world_low_container_metadata",
+        help="Directory for saving world metadata.",
+    )
+    
     args, unknown_args = parser.parse_known_args()
+    args.output_dir = os.path.join(data_dir, args.output_dir)   
+    args.metadata_dir = os.path.join(data_dir, args.metadata_dir)
 
     print(
         "Generating multiview detection dataset... Please make sure that the script is executed from the instruct_to_policy pacakge root folder."
@@ -270,7 +279,7 @@ def parse_args():
 
 if __name__ == "__main__":
     args = parse_args()
-    rospy.init_node("multiview_gen", log_level=rospy.WARN)
+    rospy.init_node("multiview_gen", log_level=rospy.DEBUG)
     
     # launch gazebo world
     # NOTE: roslaunch python API somehow does not work for urdf_spawn 
@@ -284,11 +293,13 @@ if __name__ == "__main__":
     config = cfg_tabletop.copy()
     # disable model loading 
     config['grasp_detection']['method'] = 'heuristic' 
-    env = SimpleGroundingEnv(cfg_tabletop)
+    # env = SimpleGroundingEnv(cfg_tabletop)
+    # moveit interface is not needed for this script
+    env = GazeboEnv(config)
     
     # load world metadata to get objects to collect detection 
     object_names = [] 
-    metadata_file = os.path.join(data_dir, 'world_metadata', args.world_name + '.json')
+    metadata_file = os.path.join(args.metadata_dir, args.world_name + '.json')
     with open(metadata_file, 'r') as f:
         metadata = json.load(f)
         for object_id, object_info in metadata.items():

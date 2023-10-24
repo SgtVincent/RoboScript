@@ -26,7 +26,7 @@ def parse_args():
     Parse the arguments of the program.
     """
     parser = argparse.ArgumentParser(description="Generate a random world.")
-    parser.add_argument("--container_metadata_file", type=str, default="data/google_scanned_object/container_metadata.json", 
+    parser.add_argument("--container_metadata_file", type=str, default="data/google_scanned_object/container_low_metadata.json", 
                         help="Path to the container metadata file")
     parser.add_argument("--container_models_dir", type=str, default="data/google_scanned_object/models", 
                         help="Path to the folder containing the container models")
@@ -38,19 +38,28 @@ def parse_args():
                         help="Path to the pickable object metadata file from google scanned object dataset")
     parser.add_argument("--google_scanned_object_models_dir", type=str, default="data/google_scanned_object/models",
                         help="Path to the folder containing the pickable object models")
-    parser.add_argument("--world_metadata_dir", type=str, default="data/world_metadata", 
+    # output folder
+    parser.add_argument("--output_folder", type=str, default="worlds_low_container", help="Output folder")
+    parser.add_argument("--world_metadata_dir", type=str, default="data/world_low_container_metadata", 
                         help="Path to the folder containing the world metadata files")
     
     # world generation parameters
-    parser.add_argument("--num_containers", type=int, default=2, help="Number of containers to place on the table")
-    parser.add_argument("--num_objects", type=int, default=3, help="Number of pickable objects to place on the table or in containers")
+    parser.add_argument("--num_containers", type=int, default=3, help="Number of containers to place on the table")
+    parser.add_argument("--num_objects", type=int, default=4, help="Number of pickable objects to place on the table or in containers")
     parser.add_argument("--num_worlds", type=int, default=10, help="Number of worlds to generate")
-    parser.add_argument("--base_world_file", type=str, default="worlds/table_cabinet_base.world", help="World file to use as base")
-    parser.add_argument("--output_folder", type=str, default="worlds", help="Output folder")
+    # parser.add_argument("--base_world_file", type=str, default="worlds/table_cabinet_base.world", help="World file to use as base")
+    parser.add_argument("--base_world_file", type=str, default="worlds/table_base.world", help="World file to use as base")
+    parser.add_argument("--world_prefix", type=str, default="table", help="Prefix of the generated world file name")
     parser.add_argument("--model_margin", type=int, default=0.01, help="Margin to add to the model bounding box")
+    parser.add_argument("--table_margin", type=int, default= 0.25, help="Margin when placing objects on the table")
+    
+    # object-to-container placement parameters
     parser.add_argument("--container_margin", type=int, default= 0.05, help="Margin when placing objects in containers")
-    parser.add_argument("--table_margin", type=int, default= 0.15, help="Margin when placing objects on the table")
-    parser.add_argument("--seed", type=int, default=42, help="Random seed")
+    parser.add_argument("--ratio_in_container", type=float, default=0.6, help="Ratio of objects to be placed in containers")
+    parser.add_argument("--max_objects_in_container", type=int, default=1, help="Maximum number of objects in a container")
+    # ycb contains some containers that are not suitable for being placed into other containers
+    parser.add_argument("--exclude_objects_from_containers", type=str, nargs="*", default=["024_bowl", "025_mug", "028_skillet_lid"], 
+                        help="List of objects IDs to exclude from being placed in containers")
     
     # base world constants, since the base world uses <include> tag to load the models, positions need to be manually specified here
     parser.add_argument("--table_xy_bbox", type=float, nargs=4, default=[-0.6, 0.6, -0.6, 0.6], help="Table xy bounding box, [x_min, x_max, y_min, y_max]")
@@ -59,6 +68,8 @@ def parse_args():
     parser.add_argument("--panda_xy_bbox", type=float, nargs=4, default=[-0.55, -0.35, -0.1, 0.1], help="Panda arm xy bounding box, [x_min, x_max, y_min, y_max]")
     parser.add_argument("--panda_max_range", type=float, default=1.0, help="Panda arm max reachable range from its arm base, upper limit is 1.3")
     
+    # random seed for reproducibility
+    parser.add_argument("--seed", type=int, default=1, help="Random seed")
     
     args, unknown_args = parser.parse_known_args()
 
@@ -117,7 +128,7 @@ def reachable_by_panda(bbox: List[np.ndarray], panda_base_xy: np.ndarray, panda_
         return False
     return True
 
-def sample_container_position(container_id, container_models, models_in_world, args, num_trial=100):
+def sample_c_link_position(container_id, container_models, models_in_world, args, num_trial=100):
     """
     Randomly generate containers positions on the table with contraints:
     - container should not collide with other containers
@@ -134,7 +145,8 @@ def sample_container_position(container_id, container_models, models_in_world, a
     t_margin = args.table_margin
 
     # get the container dimension
-    container_dimension = np.array(container_models[container_id]["bbox_size"])
+    c_mesh_center = np.array(container_models[container_id]["bbox_center"])
+    c_dimension = np.array(container_models[container_id]["bbox_size"])
 
     for _ in range(num_trial):
             
@@ -143,8 +155,9 @@ def sample_container_position(container_id, container_models, models_in_world, a
         x = np.random.uniform(table_xy_bbox[0] + t_margin, table_xy_bbox[1] - t_margin)
         y = np.random.uniform(table_xy_bbox[2] + t_margin, table_xy_bbox[3] - t_margin)
         # bounding box bottom should be on surface
-        z = table_surface_z + container_models[container_id]["bbox_size"][2] / 2.0 + margin
-        container_position = np.array([x, y, z])
+        bbox_min_mesh_frame = c_mesh_center - c_dimension / 2.0
+        z = table_surface_z + margin - bbox_min_mesh_frame[2]
+        c_link_position = np.array([x, y, z])
 
         # NOTE: Do NOT sample orientation for now, to use axis aligned bounding box
         # Sample a container orientation
@@ -153,7 +166,8 @@ def sample_container_position(container_id, container_models, models_in_world, a
         # yaw = np.random.uniform(-np.pi, np.pi)
 
         # calculate the container bounding box
-        container_bbox = [container_position - container_dimension/2, container_position + container_dimension/2]
+        container_bbox = [c_link_position + c_mesh_center - c_dimension/2, 
+                          c_link_position + c_mesh_center + c_dimension/2]
 
         # Check if the container collides with other containers
         if not collides_with_other_objects(container_bbox, models_in_world) and \
@@ -163,14 +177,13 @@ def sample_container_position(container_id, container_models, models_in_world, a
             container_name = container_models[container_id]["model_name"]
             models_in_world[container_id] = {"type": "container", "name": container_name, "bbox": container_bbox, "objects_in": []}
             models_in_world["table"]["objects_on"].append(container_id)
-            return container_position
+            return c_link_position
         
     # If no valid container position is found, return None
     print(f"Warning: No valid position found for container {container_id}")
     return None
 
-def sample_object_position(object_id, object_models, container_models, models_in_world, args, 
-                           ratio_in_container=0.6, max_objects_in_container=2, num_trial=100):
+def sample_object_position(object_id, object_models, container_models, models_in_world, args, num_trial=100):
     """
     Randomly generate pickable object positions on the table with contraints:
     - object should not collide with other models
@@ -185,9 +198,13 @@ def sample_object_position(object_id, object_models, container_models, models_in
     margin = args.model_margin
     c_margin = args.container_margin
     t_margin = args.table_margin
-
+    ratio_in_container = args.ratio_in_container
+    max_objects_in_container = args.max_objects_in_containers
+    exclude_objects_from_containers = args.exclude_objects_from_containers
+    
     # get the object dimension
-    object_dimension = np.array(object_models[object_id]["bbox_size"])
+    o_dimension = np.array(object_models[object_id]["bbox_size"])
+    o_mesh_center = np.array(object_models[object_id]["bbox_center"])
 
     # containers available for placing objects
     all_containers = [model for model in models_in_world.keys() 
@@ -200,12 +217,15 @@ def sample_object_position(object_id, object_models, container_models, models_in
                                container_models[container]["bbox_size"][0] > object_models[object_id]["bbox_size"][0] + c_margin and
                                  container_models[container]["bbox_size"][1] > object_models[object_id]["bbox_size"][1] + c_margin] 
     
+    flag_place_in_container = np.random.uniform() < ratio_in_container and \
+        len(valid_containers) > 0 and \
+        object_id not in exclude_objects_from_containers
 
     for _ in range(num_trial):
             
         # object z position should be on the table surface or container bounding box top
         # randomly decide if the object should be placed in a container
-        if np.random.uniform() < ratio_in_container and len(valid_containers) > 0:
+        if  flag_place_in_container:
             # randomly select a container
             container_id = random.choice(valid_containers)
             container_name = container_models[container_id]["model_name"]
@@ -216,7 +236,9 @@ def sample_object_position(object_id, object_models, container_models, models_in
                                   container_bbox_top[0] - object_models[object_id]["bbox_size"][0])
             y = np.random.uniform(container_bbox_bottom[1] + object_models[object_id]["bbox_size"][1], 
                                   container_bbox_top[1] - object_models[object_id]["bbox_size"][1])
-            z = container_bbox_top[2] + object_models[object_id]["bbox_size"][2] / 2.0 + margin
+            
+            object_bbox_min_mesh_frame = o_mesh_center - o_dimension / 2.0
+            z = container_bbox_top[2] + margin - object_bbox_min_mesh_frame[2]
         else:
             # sample a position on the table
             container_id = None
@@ -224,10 +246,13 @@ def sample_object_position(object_id, object_models, container_models, models_in
             # table also seen as a container, apply the container_margin constraint
             x = np.random.uniform(table_xy_bbox[0] + t_margin, table_xy_bbox[1] - t_margin)
             y = np.random.uniform(table_xy_bbox[2] + t_margin, table_xy_bbox[3] - t_margin)
-            z = table_surface_z + object_models[object_id]["bbox_size"][2] / 2.0 + margin
+            
+            object_bbox_min_mesh_frame = o_mesh_center - o_dimension / 2.0
+            z = table_surface_z + margin - object_bbox_min_mesh_frame[2]
 
-        object_position = np.array([x, y, z])
-
+        o_link_position = np.array([x, y, z])
+        o_mesh_center = object_models[object_id]["bbox_center"]
+        
         # NOTE: Do NOT sample orientation for now, to use axis aligned bounding box
         # Sample a object orientation
         # roll = 0.0
@@ -235,7 +260,8 @@ def sample_object_position(object_id, object_models, container_models, models_in
         # yaw = np.random.uniform(-np.pi, np.pi)
 
         # calculate the object bounding box
-        object_bbox = [object_position - object_dimension/2, object_position + object_dimension/2]
+        object_bbox = [o_link_position + o_mesh_center - o_dimension/2, 
+                       o_link_position + o_mesh_center + o_dimension/2]
 
         # Check if the object collides with other models
         if not collides_with_other_objects(object_bbox, models_in_world) and \
@@ -250,7 +276,7 @@ def sample_object_position(object_id, object_models, container_models, models_in
             else:
                 models_in_world["table"]["objects_on"].append(object_id)
 
-            return object_position
+            return o_link_position
         
     # If no valid object position is found, return None
     print(f"Warning: No valid position found for object {object_id}")
@@ -338,7 +364,7 @@ def generate_random_world(args):
 
         # Randomly generate container positions on the table, and add them to the world
         for container in selected_containers:
-            sampled_position = sample_container_position(container, container_models, models_in_world, args)
+            sampled_position = sample_c_link_position(container, container_models, models_in_world, args)
             if sampled_position is not None:
                 # add the container to the world
                 # NOTE: currently random orientation is not used, to use axis aligned bounding box
@@ -362,11 +388,15 @@ def generate_random_world(args):
                 add_model_to_xml(root, obj, object_models[obj]["model_name"], sampled_pose)
 
         # Write the new world file
-        output_world_file = os.path.join(args.output_folder, f"table_cabinet_{world_idx}.world")
+        if not os.path.exists(args.output_folder):
+            os.makedirs(args.output_folder)
+        output_world_file = os.path.join(args.output_folder, f"{args.world_prefix}_{world_idx}.world")
         tree.write(output_world_file)
 
         # Write the world metadata file based on models_in_world dictionary
-        output_metadata_file = os.path.join(args.world_metadata_dir, f"table_cabinet_{world_idx}.json")
+        if not os.path.exists(args.world_metadata_dir):
+            os.makedirs(args.world_metadata_dir)
+        output_metadata_file = os.path.join(args.world_metadata_dir, f"{args.world_prefix}_{world_idx}.json")
         def numpy2list(obj):
             if isinstance(obj, np.ndarray):
                 return obj.tolist()

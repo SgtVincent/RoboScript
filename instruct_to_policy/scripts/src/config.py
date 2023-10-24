@@ -32,6 +32,7 @@ cfg_tabletop = {
         'goal_position_tolerance': 0.001,
         'goal_orientation_tolerance': 0.02,
         'refenrence_frame': 'world',
+        'cartesian_path': True,
       },
       'metadata_files':[
         os.path.join(package_root, 'data', 'ycb', 'metadata.json'),

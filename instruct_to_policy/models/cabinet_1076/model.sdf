@@ -4997,7 +4997,7 @@
     </joint>
     <joint name='joint_handle_3' type='fixed'>
       <parent>drawer3</parent>
-      <child>link_handle_0</child>
+      <child>link_handle_3</child>
       <pose>0 0 0 0 -0 0</pose>
       <physics>
         <ode>

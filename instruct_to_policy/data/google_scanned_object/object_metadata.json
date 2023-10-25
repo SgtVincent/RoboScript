@@ -137,7 +137,7 @@
                 -7.150000000000038e-05,
                 0.036666000000000004
             ],
-            "model_name": "white_box",
+            "model_name": "brown_box",
             "category": "box"
         },
         "Toysmith_Windem_Up_Flippin_Animals_Dog": {

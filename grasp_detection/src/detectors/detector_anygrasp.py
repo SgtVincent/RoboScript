@@ -105,7 +105,8 @@ class DetectorAnygrasp(DetectorBase):
             # NOTE: the canonical grasp pose in anygrasp is defined as the gripper pointing to +x in the world frame
             # The canonical grasp pose in moveit is defined as the gripper pointing to +z in the world frame
             # Therefore, we need to rotate the canonical grasp pose by 90 degrees around the y-axis to convert it to the moveit convention
-            rot_any2moveit = np.array([[0,0,1],[0,1,0],[-1,0,0]])
+            # rot_any2moveit = np.array([[0,0,1],[0,1,0],[-1,0,0]])
+            rot_any2moveit = np.array([[0,0,1],[0,1,0],[1,0,0]])
             grasp_msg.grasp_pose = Pose()
             grasp_msg.grasp_pose.position = Point(*grasp.translation)
             grasp_msg.grasp_pose.orientation = Quaternion(*R.from_matrix(grasp.rotation_matrix @ rot_any2moveit).as_quat())

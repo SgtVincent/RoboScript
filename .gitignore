@@ -168,11 +168,11 @@ instruct_to_policy/data/google_scanned_object/models/
 instruct_to_policy/data/google_scanned_object/*_thumbnails/
 instruct_to_policy/data/ycb/models/
 instruct_to_policy/data/ycb/*_thumbnails/
-instruct_to_policy/data/world_metadata/
-instruct_to_policy/data/task_queries/
-instruct_to_policy/data/generated_code/
-instruct_to_policy/data/multiview_detection/
+instruct_to_policy/data/table_cabinet_100/
+instruct_to_policy/data/benchmark/
+
 instruct_to_policy/models/cabinet_*/
+
 
 # temporary/test data; random stuff
 instruct_to_policy/data/world_low_container_metadata/

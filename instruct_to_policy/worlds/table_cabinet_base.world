@@ -51,7 +51,7 @@
       <name>cabinet</name>
       <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
       <scale>1 1 1</scale>
-      <static>1</static>
+      <static>0</static>
     </include>
 
     

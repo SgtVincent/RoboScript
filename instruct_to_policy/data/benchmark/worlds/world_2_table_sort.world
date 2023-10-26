@@ -58,70 +58,88 @@
     -->
     <!-- Add containers and objects HERE -->
     <include>
+      <name>fry_pan</name>
+      <uri>model://Chefmate_8_Frypan</uri>
+      <pose>0.019999 0.00294 1.01258 0.004188 0.038397 -0.533484</pose>
+      <scale>1 1 1</scale>
+    </include>
+    <include>
+      <name>green_plant_plate</name>
+      <uri>model://Ecoforms_Plate_S20Avocado</uri>
+      <pose>0.367619 -0.369852 1.01422 -0.008221 -0.010375 -0.053289</pose>
+      <scale>1 1 1</scale>
+    </include>
+    <include>
+      <name>maroon_box</name>
+      <uri>model://JarroSil_Activated_Silicon_5exdZHIeLAp</uri>
+      <pose>-0.084099 0.265276 1.01463 -0.008462 -0.018587 0.906984</pose>
+      <scale>0.75798 0.75798 0.75798</scale>
+    </include>
+    <include>
+      <name>white_and_red_box</name>
+      <uri>model://Perricone_MD_No_Lipstick_Lipstick</uri>
+      <pose>-0.219886 0.354572 1.01492 -0.000858 -0.003135 1.38462</pose>
+      <scale>0.918449 0.918449 0.918449</scale>
+    </include>
+    <include>
+      <name>toy_bus</name>
+      <uri>model://SCHOOL_BUS</uri>
+      <pose>-0.111986 -0.209637 1.01494 -0.001865 -0.001629 -2.2e-05</pose>
+      <scale>1.52559 1.52559 1.52559</scale>
+    </include>
+    <include>
+      <name>dog_figure</name>
+      <uri>model://Toysmith_Windem_Up_Flippin_Animals_Dog</uri>
+      <pose>-0.237193 -0.333893 1.01478 0.016758 0.007551 1.32703</pose>
+      <scale>1.56012 1.56012 1.56012</scale>
+    </include>
+    <include>
       <name>apple</name>
       <uri>model://013_apple</uri>
-      <pose>-0.019979 -0.237469 1.01538 0.003715 -0.000855 -0.625244</pose>
+      <pose>0.371741 -0.334941 1.05482 -0.985877 1.41698 -2.55599</pose>
       <scale>1 1 1</scale>
     </include>
     <include>
-      <name>bleach_cleanser</name>
-      <uri>model://021_bleach_cleanser</uri>
-      <pose>0.361156 -0.190223 1.01519 0.007843 -0.00776 -0.10139</pose>
-      <scale>1 1 1</scale>
-    </include>
-    <include>
-      <name>brown_box</name>
-      <uri>model://Perricone_MD_Neuropeptide_Firming_Moisturizer</uri>
-      <pose>0.190615 0.291675 1.01456 0.007344 -0.010446 0.001551</pose>
-      <scale>1 1 1</scale>
-    </include>
-    <include>
-      <name>brown_medication_bottle</name>
-      <uri>model://Germanium_GE132</uri>
-      <pose>0.197969 -0.386507 1.0149 -0.002359 -0.005108 -2e-06</pose>
+      <name>banana</name>
+      <uri>model://011_banana</uri>
+      <pose>0.158645 -0.147442 1.01538 -0.007198 -0.015767 2.13892</pose>
       <scale>1 1 1</scale>
     </include>
     <include>
       <name>fork</name>
       <uri>model://030_fork</uri>
-      <pose>-1.26349 0.069182 1.41221 -2.82794 -0.032907 0.091751</pose>
+      <pose>-1.27648 0.137612 1.41222 -2.82827 -0.032865 -2.70702</pose>
       <scale>1 1 1</scale>
     </include>
     <include>
       <name>knife</name>
       <uri>model://032_knife</uri>
-      <pose>-1.27492 -0.147494 1.41871 0.345187 0.038731 0.071548</pose>
+      <pose>-1.22706 -0.082683 1.41419 0.189505 0.04405 -0.9595</pose>
       <scale>1 1 1</scale>
     </include>
     <include>
-      <name>mustard_bottle</name>
-      <uri>model://006_mustard_bottle</uri>
-      <pose>0.373376 0.238211 1.01637 -1.56578 0.335176 -2.85291</pose>
-      <scale>0.787445 0.787445 0.787445</scale>
-    </include>
-    <include>
-      <name>pear</name>
-      <uri>model://016_pear</uri>
-      <pose>0.239145 -0.019736 1.01484 0.000815 0.0101 -0.234474</pose>
+      <name>lemon</name>
+      <uri>model://014_lemon</uri>
+      <pose>0.315355 -0.352856 1.0489 -0.745255 -0.597991 -0.514459</pose>
       <scale>1 1 1</scale>
     </include>
     <include>
-      <name>red_plastic_bowl</name>
-      <uri>model://Bradshaw_International_11642_7_Qt_MP_Plastic_Bowl</uri>
-      <pose>0.000926 -0.055187 1.01416 0.016552 0.001815 0.678706</pose>
-      <scale>0.470771 0.470771 0.470771</scale>
-    </include>
-    <include>
-      <name>white_and_pink_box</name>
-      <uri>model://FemDophilus</uri>
-      <pose>-0.189069 -0.399248 1.01488 -0.004331 -0.006373 0.00097</pose>
+      <name>orange</name>
+      <uri>model://017_orange</uri>
+      <pose>0.115348 -0.3854 1.08859 2.40194 -0.336207 -1.2574</pose>
       <scale>1 1 1</scale>
     </include>
     <include>
-      <name>white_ceramic_plate</name>
-      <uri>model://Threshold_Dinner_Plate_Square_Rim_White_Porcelain</uri>
-      <pose>-0.150849 0.282776 1.01406 -0.001439 -0.009852 -0.000858</pose>
+      <name>pudding_box</name>
+      <uri>model://008_pudding_box</uri>
+      <pose>0.192153 0.373196 1.01553 -0.005511 -0.002484 -0.124441</pose>
       <scale>1 1 1</scale>
+    </include>
+    <include>
+      <name>skillet_lid</name>
+      <uri>model://028_skillet_lid</uri>
+      <pose>0.179121 0.16508 1.01811 -0.003019 -0.009885 0.014871</pose>
+      <scale>0.59306 0.59306 0.59306</scale>
     </include>
   </world>
 </sdf>

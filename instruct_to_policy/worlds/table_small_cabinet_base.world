@@ -10,10 +10,9 @@
       <real_time_factor>1</real_time_factor>
       <real_time_update_rate>1000</real_time_update_rate>
       <constraints>
-        <cfm>0.1</cfm>
-        <erp>0.2</erp>
-        <contact_max_correcting_vel>10s</contact_max_correcting_vel>
-        <contact_surface_layer>0.0001</contact_surface_layer>
+        <cfm></cfm>
+        <contact_max_correcting_vel>1</contact_max_correcting_vel>
+        <contact_surface_layer>0.001</contact_surface_layer>
       </constraints>
     </physics>
     <scene>
@@ -43,15 +42,15 @@
       <pose>0 0 0 0 0 0</pose>
       <static>1</static>
     </include>
-    <!-- add cabinet 1076 -->
+    <!-- add cabinet  -->
     <include>
-      <uri>model://cabinet_1076</uri>
+      <uri>model://cabinet_44853</uri>
       <!-- overwrite model name -->
       <name>cabinet</name>
       <!-- overwrite model name -->
       <name>cabinet</name>
       <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
-      <scale>1 1 1</scale>
+      <!-- <scale>1 1 1</scale> -->
       <static>0</static>
     </include>
 

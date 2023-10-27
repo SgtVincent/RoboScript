@@ -15,8 +15,9 @@ import json
 if __name__=="__main__":
 
     # Define folders
-    default_models_folder = os.path.join("data", "google_scanned_object", "models")
-    default_template_file = os.path.join("data", "google_scanned_object", "template.sdf")
+    default_models_folder = "/home/junting/Downloads/Compressed/bottle"
+    # default_template_file = os.path.join("data", "google_scanned_object", "template.sdf")
+    default_template_file = "/home/junting/repo/ycb-tools/templates/ycb/template_omni.sdf"
     default_metadata_file = os.path.join("data", "google_scanned_object", "container_metadata.json")
     # default_metadata_file = os.path.join("data", "google_scanned_object", "object_metadata.json")
 
@@ -44,9 +45,10 @@ if __name__=="__main__":
     """)
 
     # Get the list of models from the metadata file
-    with open(args.metadata_file, "r") as f:
-        metadata = json.load(f)
-        models = list(metadata['objects'].keys())
+    # with open(args.metadata_file, "r") as f:
+    #     metadata = json.load(f)
+    #     models = list(metadata['objects'].keys())
+    models = os.listdir(args.models_folder)
 
     with open(args.template_file,"r") as f:
         model_template_text = f.read()
@@ -55,13 +57,13 @@ if __name__=="__main__":
 
     # Now loop through all the folders
     failed_models = {}
-    for model in models:
+    for model in models[:1]:
         try:
             print("Creating Gazebo files for {} ...".format(model))
 
             # Extract model name and mesh 
             model_folder = os.path.join(args.models_folder, model)
-            mesh_file = os.path.join(model_folder, "meshes", "model.obj")
+            mesh_file = os.path.join(model_folder, "Scan", "Scan.obj")
             mesh = trimesh.load(mesh_file)
 
             # If mesh is not water tight, use its convex hull instead
@@ -71,10 +73,10 @@ if __name__=="__main__":
                 assert mesh.is_watertight
                 
             # give containers larger density for stability
-            mesh.density = 500.0
+            mesh.density = 5e-6
             # change density according to the object
             if mesh.mass < 1: # less than 1000g
-                mesh.density = 1000
+                mesh.density = 1e-5
             
             # # give objects smaller density 
             # mesh.density = 100.0
@@ -96,10 +98,24 @@ if __name__=="__main__":
             com_text = com_text.replace("]", "")
             com_text = com_text.replace(",", "")
         
+            # Create a downsampled mesh file with a subset of vertices and faces
+            collision_mesh_text = model + "/Scan/Scan.obj"
+            
+            if args.downsample_ratio < 1:
+                mesh_pts = mesh.vertices.shape[0]
+                num_pts = int(mesh_pts * args.downsample_ratio)
+                (_, face_idx) = mesh.sample(num_pts, True)
+                downsampled_mesh = mesh.submesh((face_idx,), append=True)
+                with open(os.path.join(model_folder, "/Scan/downsampled.obj"), "w") as f:
+                    downsampled_mesh.export(f, "obj")
+                collision_mesh_text = model + "/Scan/downsampled.obj"
+
+        
             # Copy and modify the model file template
             model_text = model_template_text.replace("$MODEL", model)
             model_text = model_text.replace("$MASS", mass_text)
             model_text = model_text.replace("$COM_POSE", com_text)
+            model_text = model_text.replace("$COLLISION_MESH", collision_mesh_text)
             model_text = model_text.replace("$IXX", str(inertia[0][0]))
             model_text = model_text.replace("$IYY", str(inertia[1][1]))
             model_text = model_text.replace("$IZZ", str(inertia[2][2]))
@@ -110,12 +126,22 @@ if __name__=="__main__":
             with open(os.path.join(model_folder, model + ".sdf"), "w") as f:
                 f.write(model_text)
 
-            # change the default sdf file from model.sdf to $model.sdf
-            config_file = os.path.join(args.models_folder, model, "model.config")
-            with open(config_file,"r") as f:
-                config_template_text = f.read()
+            config_template_text = """
+<?xml version="1.0" ?>
+<model>
+    <name>$MODEL_NAME</name>
+    <version>1.0</version>
+    <sdf version="1.6">$MODEL_NAME.sdf</sdf>
+    <author>
+        <name></name>
+        <email></email>
+    </author>
+    <description></description>
+</model>
+            """
+                
             # Copy and modify the model configuration file template
-            config_text = config_template_text.replace("model.sdf", f"{model}.sdf")
+            config_text = config_template_text.replace("$MODEL_NAME", model)
             
             with open(os.path.join(model_folder, "model.config"), "w") as f:
                 f.write(config_text)

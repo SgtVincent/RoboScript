@@ -13,6 +13,10 @@ The components needed for this project:
 - [MoveIt](https://ros-planning.github.io/moveit_tutorials/doc/getting_started/getting_started.html): Full-stack library for robot mobile manipulation: planning, manipulation, perception, kinematics, control. 
 - Code As Policies dependencies.
 
+### Download and Install mamba (Recommended)
+You should download the mamba package manager to install the dependencies. Mamba is a faster version of conda, which is used to install the C++/python/ROS dependencies in this project.
+
+Please also disable your previously installed (if any, comment out the conda init scritps in ~/.bashrc or ~/.zshrc) conda environment and initialize the conda environment with `conda init` with mamba installation. See [miniforge](https://github.com/conda-forge/miniforge#mambaforge) for download and initialization.
 
 ### Install ROS environment with Robostack (Recommended)
 
@@ -48,25 +52,45 @@ mamba activate ros_env
 mamba install compilers cxx-compiler cmake pkg-config make ninja colcon-common-extensions catkin_tools boost-cpp ros-noetic-ros-numpy
 
 # Install ros gazebo packages
-mamba instsall ros-noetic-gazebo-ros
+mamba install ros-noetic-gazebo-ros
 
 # Install realsense ros packages and image processing packages
 mamba install ros-noetic-realsense2-camera ros-noetic-realsense2-description ros-noetic-librealsense2 ros-noetic-image-pipeline
+```
+
+### Prepare your catkin workspace 
+
+```bash
+# make sure you have activated the ros environment
+mamba activate ros_env
+# create a catkin workspace
+mkdir -p /path/to/catkin_ws/src
+cd /path/to/catkin_ws
+catkin init
+cd /path/to/catkin_ws/src
+git clone --recurse-submodules https://github.com/SgtVincent/llm-manipulation-bench.git
 ```
 
 
 ### Install MoveIt ROS Packages
 
 Install MoveIt from Robostack Prebuilt Binaries
+
 ```bash
 mamba install ros-noetic-moveit 
+```
 
+#### Test with moveit_tutorials (Optional)
+
+**You are recommended to skip this part if you only need to run the pipeline and have no trouble running moveit**
+
+To test the installation, follow the official instructions in official tutorials [Build your Catkin Workspace](https://ros-planning.github.io/moveit_tutorials/doc/getting_started/getting_started.html#create-a-catkin-workspace) to run the tutorial packages. 
+
+```
 # You might also need other dependecies for moveit_tutorials package
 # please install the dependencies with: 
 rosdep install -y --from-paths . --ignore-src --rosdistro noetic
 ```
-
-To test the installation, follow the official instructions in official tutorials [Build your Catkin Workspace](https://ros-planning.github.io/moveit_tutorials/doc/getting_started/getting_started.html#create-a-catkin-workspace) to run the tutorial packages. 
 
 Note: `moveit_tuorials` depends on QT5, which further depends on opengl libraries.
 ```bash

@@ -113,6 +113,7 @@ class DetectorAnygrasp(DetectorBase):
             
             grasp_msg.grasp_score = grasp.score
             grasp_msg.grasp_width = grasp.width
+            grasp_msg.grasp_depth = grasp.depth
             
             grasps_msg.append(grasp_msg)
 

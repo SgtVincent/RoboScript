@@ -392,7 +392,7 @@ class MoveitGazeboEnv(GazeboEnv):
         if self.cartesian_path:
             group.set_pose_target(pose)
             (plan, fraction) = group.compute_cartesian_path([pose], 0.02, 0.0)
-            if fraction < 1:
+            if fraction < 0.9:
                 rospy.logwarn(f"Could not plan cartesian_path to target pose \n{pose}.\n Plan accuracy: {fraction}")
                 success = False
             else:
@@ -487,7 +487,8 @@ class MoveitGazeboEnv(GazeboEnv):
             orientation: The orientation of the grasp (scipy format, xyzw).
             width: The width of the gripper.
             pre_grasp_approach: The distance to move towards the object before grasping.
-            dryrun: If true, the robot will not call the action to close the gripper (not available in simulation).        """
+            dryrun: If true, the robot will not call the action to close the gripper (not available in simulation).       
+        """
 
         position = np.array([pose.position.x, pose.position.y, pose.position.z])
         orientation = np.array(
@@ -510,7 +511,7 @@ class MoveitGazeboEnv(GazeboEnv):
 
         if self.cartesian_path:
             (plan, fraction) = self.move_group.compute_cartesian_path(waypoints, 0.02, 0.0)
-            if fraction < 1:
+            if fraction < 0.9:
                 print("Could not plan to pre-grasp pose. Plan accuracy", fraction)
                 return False
 

@@ -106,26 +106,9 @@ mamba install ros-noetic-franka-ros
 <!-- **However**, if you want to test the pipeline of the franka robot in gazebo simulation, you need to build the franka ros packages from source, following the tutorials on [Gazebo Simulation Integration](https://ros-planning.github.io/moveit_tutorials/doc/gazebo_simulation/gazebo_simulation.html?highlight=gazebo#gazebo-simulation-integration). -->
 
 
-### Install Realsense Plugni for Gazebo
+<!-- ### Install GIGA grasp detection package
 
-Please refer to this [repo](https://github.com/SgtVincent/realsense_gazebo_plugin) for installation:
-```bash
-git clone https://github.com/SgtVincent/realsense_gazebo_plugin
-
-cd /path/to/catkin_ws 
-catkin build realsense_gazebo_plugin
-```
-
-
-Then you can run example launch file to test the installation:
-```bash
-source devvel/setup.bash
-roslaunch realsense_gazebo_plugin view_d435_model_rviz_gazebo.launch 
-```
-
-### Install GIGA grasp detection package
-
-Please refer to the [GIGA](./GIGA/) package for installation instructions. 
+Please refer to the [GIGA](./GIGA/) package for installation instructions.  -->
 
 
 ### Troubleshooting 
@@ -164,7 +147,7 @@ If you had some link failures during catkin make, please add the corresponding l
 ### Install Code as policies dependencies:
 ```bash
 # code as policies dependencies
-pip install numpy scipy shapely astunparse pygments openai imageio==2.4.1 imageio-ffmpeg pybullet moviepy
+pip install numpy scipy shapely astunparse pygments openai imageio==2.4.1 imageio-ffmpeg moviepy
 ```
 
 ### (Optional) Install Development Tools
@@ -180,6 +163,14 @@ mamba install jupyter bqplot pyyaml ipywidgets ipycanvas
 mamba install jupyter-ros -c robostack
 ```
 Then you need to create a ros kernel, which has loaded catkin_ws environments, from the official [instructions](https://jupyter-ros.readthedocs.io/en/latest/user_troubleshooting.html).
+
+
+### Build the catkin packages
+
+```bash
+cd /path/to/catkin_ws
+catkin build
+```
 
 
 ## Data process

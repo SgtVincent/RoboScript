@@ -1,9 +1,6 @@
 [submodule "realsense_gazebo_plugin"]
 	path = realsense_gazebo_plugin
 	url = https://github.com/SgtVincent/realsense_gazebo_plugin.git
-[submodule "GIGA"]
-	path = GIGA
-	url = https://github.com/SgtVincent/GIGA.git
 [submodule "grasp_detection/src/detectors/anygrasp_sdk"]
 	path = grasp_detection/src/detectors/anygrasp_sdk
 	url = https://github.com/graspnet/anygrasp_sdk.git

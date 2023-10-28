@@ -9,10 +9,10 @@ from grasp_detection.msg import Grasp, Perception, PerceptionSingleCamera, Bound
 # except:
 #     print("Failed to import anygrasp detector. Make sure you have installed the anygrasp package.")
 from detectors.detector_anygrasp import DetectorAnygrasp
-try:
-    from detectors.detector_giga import DetectorGIGA 
-except:
-    print("Failed to import GIGA detector. Make sure you have installed the vgn package.")
+# try:
+#     from detectors.detector_giga import DetectorGIGA 
+# except:
+#     print("Failed to import GIGA detector. Make sure you have installed the vgn package.")
 
 from detectors.config import ConfigAnygrasp, ConfigGIGA
 

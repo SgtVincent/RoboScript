@@ -2,6 +2,10 @@
 
 This package contains the grasp detection node for the Franka robot with two-finger gripper. The node should runs `DetectGrasps`  service and publishes the detected grasp pose in the world frame.
 
+General notes:
+
+- We **DISABLED** gripper finger collision in moveit configuration. So that moveit api would ignore the collision between objects to grasp and grippers fingers. The reason is that, we consider this collision part of the job grasp detection model should handle. 
+
 ## Install GIGA
 
 Please follow the installation instruction in this [fork of the GIGA](https://github.com/SgtVincent/GIGA).

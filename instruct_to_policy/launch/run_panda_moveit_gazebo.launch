@@ -32,9 +32,8 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <arg name="x" default="-0.45" />
   <arg name="y" default="0.0" />
   <arg name="z" default="1.02" />
-  <!-- <arg name="world" default="$(find instruct_to_policy)/worlds/table_cabinet.world" /> -->
-  <!-- <arg name="world" default="$(find instruct_to_policy)/worlds/table_small_cabinet_base.world" /> -->
-  <arg name="world" default="$(find instruct_to_policy)/worlds/table_cabinet_4.world" />
+  <!-- run demo by default -->
+  <arg name="world" default="$(find instruct_to_policy)/worlds/demo_table_cabinet.world" />
 
 
   <!-- Launch the gazebo simulator and spawn the robot -->

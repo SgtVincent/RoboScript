@@ -68,7 +68,7 @@
       <static>0</static>
     </include>
     <include>
-      <uri>model://Orange</uri>
+      <uri>model://orange</uri>
       <name>orange</name>
       <pose>0.0 0.1 1.026 0 0 0</pose>
       <static>0</static>

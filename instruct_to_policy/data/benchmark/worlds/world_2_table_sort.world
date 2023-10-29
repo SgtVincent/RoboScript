@@ -1,6 +1,6 @@
+<?xml version="1.0" ?>
 <sdf version="1.7">
   <world name="default">
-    <!-- gazebo global world/physics parameters -->
     <gravity>0 0 -9.8</gravity>
     <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
     <atmosphere type="adiabatic"/>
@@ -10,9 +10,10 @@
       <real_time_factor>1</real_time_factor>
       <real_time_update_rate>1000</real_time_update_rate>
       <constraints>
-        <cfm/>
-        <contact_max_correcting_vel>1</contact_max_correcting_vel>
-        <contact_surface_layer>0.001</contact_surface_layer>
+        <cfm>0.1</cfm>
+        <erp>0.2</erp>
+        <contact_max_correcting_vel>10s</contact_max_correcting_vel>
+        <contact_surface_layer>0.0001</contact_surface_layer>
       </constraints>
     </physics>
     <scene>
@@ -27,119 +28,705 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    <!-- basic environments -->
     <include>
       <uri>model://ground_plane</uri>
     </include>
     <include>
       <uri>model://sun</uri>
     </include>
-    <!-- add gazebo default table  -->
     <include>
       <uri>model://Table</uri>
       <name>table</name>
       <pose>0 0 0 0 0 0</pose>
       <static>1</static>
     </include>
-    <!-- add cabinet 1076 -->
     <include>
       <uri>model://cabinet_1076</uri>
-      <!-- overwrite model name -->
-      <name>cabinet</name>
-      <!-- overwrite model name -->
       <name>cabinet</name>
       <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
       <scale>1 1 1</scale>
       <static>0</static>
     </include>
-    <!-- Panda arm configuration:  
-      - panda arm base at (-0.6, 0.0, 1.02)
-      - panda hand reachable range: 1.3 on table, z=1.02
-    -->
-    <!-- Add containers and objects HERE -->
-    <include>
-      <name>fry_pan</name>
-      <uri>model://Chefmate_8_Frypan</uri>
-      <pose>0.019999 0.00294 1.01258 0.004188 0.038397 -0.533484</pose>
+    <model name="fry_pan">
+      <link name="link">
+        <inertial>
+          <pose>-0.040777 0.003867 0.026939 3.0945 -1.49857 -3.06153</pose>
+          <mass>1.45162</mass>
+          <inertia>
+            <ixx>0.0101516</ixx>
+            <ixy>2.22788e-18</ixy>
+            <ixz>6.78897e-19</ixz>
+            <iyy>0.0077196</iyy>
+            <iyz>7.29811e-19</iyz>
+            <izz>0.00281186</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>model://Chefmate_8_Frypan/meshes/model.obj</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.8</mu>
+                <mu2>0.6</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <max_vel>0.01</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>model://Chefmate_8_Frypan/meshes/model.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>0.318513 -0.176293 1.01266 0.000406 0.036883 -1.60552</pose>
       <scale>1 1 1</scale>
-    </include>
-    <include>
-      <name>green_plant_plate</name>
-      <uri>model://Ecoforms_Plate_S20Avocado</uri>
-      <pose>0.367619 -0.369852 1.01422 -0.008221 -0.010375 -0.053289</pose>
+    </model>
+    <model name="green_plant_plate">
+      <link name="link">
+        <inertial>
+          <pose>-1.8e-05 -7e-06 0.017295 1.0885 -1.55763 -0.377994</pose>
+          <mass>0.826881</mass>
+          <inertia>
+            <ixx>0.00370296</ixx>
+            <ixy>-2.30792e-19</ixy>
+            <ixz>-2.76398e-19</ixz>
+            <iyy>0.00191179</iyy>
+            <iyz>8.37483e-20</iyz>
+            <izz>0.0019103</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>model://Ecoforms_Plate_S20Avocado/meshes/model.obj</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.8</mu>
+                <mu2>0.6</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <max_vel>0.01</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>model://Ecoforms_Plate_S20Avocado/meshes/model.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>-0.217776 -0.336339 1.01421 -0.008323 -0.009918 -0.056366</pose>
       <scale>1 1 1</scale>
-    </include>
-    <include>
-      <name>maroon_box</name>
-      <uri>model://JarroSil_Activated_Silicon_5exdZHIeLAp</uri>
-      <pose>-0.084099 0.265276 1.01463 -0.008462 -0.018587 0.906984</pose>
-      <scale>0.75798 0.75798 0.75798</scale>
-    </include>
-    <include>
-      <name>white_and_red_box</name>
-      <uri>model://Perricone_MD_No_Lipstick_Lipstick</uri>
-      <pose>-0.219886 0.354572 1.01492 -0.000858 -0.003135 1.38462</pose>
-      <scale>0.918449 0.918449 0.918449</scale>
-    </include>
-    <include>
-      <name>toy_bus</name>
-      <uri>model://SCHOOL_BUS</uri>
-      <pose>-0.111986 -0.209637 1.01494 -0.001865 -0.001629 -2.2e-05</pose>
-      <scale>1.52559 1.52559 1.52559</scale>
-    </include>
-    <include>
-      <name>dog_figure</name>
-      <uri>model://Toysmith_Windem_Up_Flippin_Animals_Dog</uri>
-      <pose>-0.237193 -0.333893 1.01478 0.016758 0.007551 1.32703</pose>
-      <scale>1.56012 1.56012 1.56012</scale>
-    </include>
-    <include>
-      <name>apple</name>
-      <uri>model://013_apple</uri>
-      <pose>0.371741 -0.334941 1.05482 -0.985877 1.41698 -2.55599</pose>
+    </model>
+    <model name="maroon_box">
+      <link name="link_0">
+        <visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/models/JarroSil_Activated_Silicon_5exdZHIeLAp/meshes/model.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name="collision_0">
+          <geometry>
+            <mesh>
+              <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/models/JarroSil_Activated_Silicon_5exdZHIeLAp/meshes/model.obj</uri>
+            </mesh>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <inertial>
+          <pose>0 0 0 0 -0 0</pose>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+          <mass>1</mass>
+        </inertial>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>-0.048838 0.31035 1.0146 -0.005392 -0.017475 0.906929</pose>
       <scale>1 1 1</scale>
-    </include>
-    <include>
-      <name>banana</name>
-      <uri>model://011_banana</uri>
-      <pose>0.158645 -0.147442 1.01538 -0.007198 -0.015767 2.13892</pose>
+    </model>
+    <model name="white_and_red_box">
+      <link name="link">
+        <inertial>
+          <pose>-4.3e-05 0.000132 0.039559 -3.13395 0.011437 1.5748</pose>
+          <mass>0.0817227</mass>
+          <inertia>
+            <ixx>5.79716e-05</ixx>
+            <ixy>5.63784e-24</ixy>
+            <ixz>-4.38902e-21</ixz>
+            <iyy>5.34429e-05</iyy>
+            <iyz>1.01942e-23</iyz>
+            <izz>2.8548e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>model://Perricone_MD_No_Lipstick_Lipstick/meshes/model.obj</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.8</mu>
+                <mu2>0.6</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <max_vel>0.01</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>model://Perricone_MD_No_Lipstick_Lipstick/meshes/model.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>-0.220026 0.354004 1.01493 -0.005956 -0.005013 1.00337</pose>
       <scale>1 1 1</scale>
-    </include>
-    <include>
-      <name>fork</name>
-      <uri>model://030_fork</uri>
-      <pose>-1.27648 0.137612 1.41222 -2.82827 -0.032865 -2.70702</pose>
+    </model>
+    <model name="toy_bus">
+      <link name="link">
+        <inertial>
+          <pose>-0.000212 0.001364 0.018716 1.49232 0.031967 -3.13917</pose>
+          <mass>0.050948</mass>
+          <inertia>
+            <ixx>4.0383e-05</ixx>
+            <ixy>4.87781e-22</ixy>
+            <ixz>5.11681e-21</ixz>
+            <iyy>3.90185e-05</iyy>
+            <iyz>3.67178e-21</iyz>
+            <izz>9.19554e-06</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>model://SCHOOL_BUS/meshes/model.obj</uri>
+              <scale>1.43944 1.43944 1.43944</scale>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.8</mu>
+                <mu2>0.6</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <max_vel>0.01</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>model://SCHOOL_BUS/meshes/model.obj</uri>
+              <scale>1.43944 1.43944 1.43944</scale>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>-0.112772 0.158799 1.01495 -0.001941 -0.00168 -0.002676</pose>
+      <scale>1.43944 1.43944 1.43944</scale>
+    </model>
+    <model name="dog_figure">
+      <link name="link">
+        <inertial>
+          <pose>0.000412 -0.002999 0.021233 -2.96878 -0.029398 -2.94411</pose>
+          <mass>0.0215071</mass>
+          <inertia>
+            <ixx>5.58229e-06</ixx>
+            <ixy>-5.85035e-23</ixy>
+            <ixz>6.80802e-23</ixz>
+            <iyy>4.70132e-06</iyy>
+            <iyz>-2.36315e-22</iyz>
+            <izz>3.49793e-06</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>model://Toysmith_Windem_Up_Flippin_Animals_Dog/meshes/model.obj</uri>
+              <scale>1.39221 1.39221 1.39221</scale>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.8</mu>
+                <mu2>0.6</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <max_vel>0.01</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>model://Toysmith_Windem_Up_Flippin_Animals_Dog/meshes/model.obj</uri>
+              <scale>1.39221 1.39221 1.39221</scale>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>-0.034356 -0.073566 1.01479 0.016567 0.007191 2.20057</pose>
+      <scale>1.39221 1.39221 1.39221</scale>
+    </model>
+    <model name="apple">
+      <static>0</static>
+      <link name="link">
+        <inertial>
+          <pose>0.00127 -0.003882 0.036366 0.173168 -0.051904 -1.65019</pose>
+          <mass>0.125978</mass>
+          <inertia>
+            <ixx>7.95905e-05</ixx>
+            <ixy>-1.39587e-21</ixy>
+            <ixz>1.95911e-20</ixz>
+            <iyy>7.83693e-05</iyy>
+            <iyz>-3.54844e-21</iyz>
+            <izz>7.65394e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>model://013_apple/google_16k/textured.obj</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.8</mu>
+                <mu2>0.6</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <max_vel>0.01</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>model://013_apple/google_16k/textured.obj</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://013_apple/apple.material</uri>
+              <name>apple</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>-0.234956 -0.343237 1.0205 0.004857 0.013333 1.60584</pose>
       <scale>1 1 1</scale>
-    </include>
-    <include>
-      <name>knife</name>
-      <uri>model://032_knife</uri>
-      <pose>-1.22706 -0.082683 1.41419 0.189505 0.04405 -0.9595</pose>
+    </model>
+    <model name="banana">
+      <static>0</static>
+      <link name="link">
+        <inertial>
+          <pose>-0.000671 0.005194 0.015295 -1.5145 1.356 2.81684</pose>
+          <mass>0.13268</mass>
+          <inertia>
+            <ixx>0.000308766</ixx>
+            <ixy>1.03519e-20</ixy>
+            <ixz>2.03037e-20</ixz>
+            <iyy>0.000281297</iyy>
+            <iyz>-1.79403e-20</iyz>
+            <izz>4.5599e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>model://011_banana/google_16k/textured.obj</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.8</mu>
+                <mu2>0.6</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <max_vel>0.01</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>model://011_banana/google_16k/textured.obj</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://011_banana/banana.material</uri>
+              <name>banana</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>0.089088 -0.177392 1.01526 -0.001781 -0.003393 2.89731</pose>
       <scale>1 1 1</scale>
-    </include>
-    <include>
-      <name>lemon</name>
-      <uri>model://014_lemon</uri>
-      <pose>0.315355 -0.352856 1.0489 -0.745255 -0.597991 -0.514459</pose>
+    </model>
+    <model name="lemon">
+      <static>0</static>
+      <link name="link">
+        <inertial>
+          <pose>-0.010808 0.020966 0.026215 -1.54673 0.631601 2.29445</pose>
+          <mass>0.0488225</mass>
+          <inertia>
+            <ixx>1.73872e-05</ixx>
+            <ixy>1.20196e-21</ixy>
+            <ixz>3.03017e-21</ixz>
+            <iyy>1.73031e-05</iyy>
+            <iyz>-1.84858e-21</iyz>
+            <izz>1.40169e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>model://014_lemon/google_16k/textured.obj</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.8</mu>
+                <mu2>0.6</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <max_vel>0.01</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>model://014_lemon/google_16k/textured.obj</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://014_lemon/lemon.material</uri>
+              <name>lemon</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>-0.148308 -0.310092 1.0688 -1.56028 -0.81486 1.85547</pose>
       <scale>1 1 1</scale>
-    </include>
-    <include>
-      <name>orange</name>
-      <uri>model://017_orange</uri>
-      <pose>0.115348 -0.3854 1.08859 2.40194 -0.336207 -1.2574</pose>
+    </model>
+    <model name="orange">
+      <static>0</static>
+      <link name="link">
+        <inertial>
+          <pose>-0.007136 -0.018374 0.033569 -2.03442 0.338169 2.97476</pose>
+          <mass>0.10164</mass>
+          <inertia>
+            <ixx>5.51141e-05</ixx>
+            <ixy>2.17992e-21</ixy>
+            <ixz>5.17251e-21</ixz>
+            <iyy>5.38238e-05</iyy>
+            <iyz>1.27018e-20</iyz>
+            <izz>5.3554e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>model://017_orange/google_16k/textured.obj</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.8</mu>
+                <mu2>0.6</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <max_vel>0.01</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>model://017_orange/google_16k/textured.obj</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://017_orange/orange.material</uri>
+              <name>orange</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>0.093397 -0.386269 1.01525 0.000286 -7.6e-05 1.51578</pose>
       <scale>1 1 1</scale>
-    </include>
-    <include>
-      <name>pudding_box</name>
-      <uri>model://008_pudding_box</uri>
-      <pose>0.192153 0.373196 1.01553 -0.005511 -0.002484 -0.124441</pose>
+    </model>
+    <model name="pudding_box">
+      <static>0</static>
+      <link name="link">
+        <inertial>
+          <pose>0.001363 0.018991 0.018473 -2.79684 -1.54161 -2.99059</pose>
+          <mass>0.17606</mass>
+          <inertia>
+            <ixx>0.000288582</ixx>
+            <ixy>7.58606e-21</ixy>
+            <ixz>-4.48961e-21</ixz>
+            <iyy>0.000195156</iyy>
+            <iyz>-4.50698e-20</iyz>
+            <izz>0.000131192</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>model://008_pudding_box/google_16k/textured.obj</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.8</mu>
+                <mu2>0.6</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <max_vel>0.01</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>model://008_pudding_box/google_16k/textured.obj</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://008_pudding_box/pudding_box.material</uri>
+              <name>pudding_box</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>0.219211 0.431916 1.01552 -0.005475 -0.002364 0.463505</pose>
       <scale>1 1 1</scale>
-    </include>
-    <include>
-      <name>skillet_lid</name>
-      <uri>model://028_skillet_lid</uri>
-      <pose>0.179121 0.16508 1.01811 -0.003019 -0.009885 0.014871</pose>
-      <scale>0.59306 0.59306 0.59306</scale>
-    </include>
+    </model>
+    <model name="basket_with_fabric_liner">
+      <link name="link">
+        <inertial>
+          <pose>0.000919 -0.000777 0.076644 -1.61754 1.40943 1.52439</pose>
+          <mass>2.51241</mass>
+          <inertia>
+            <ixx>0.0155308</ixx>
+            <ixy>5.96444e-20</ixy>
+            <ixz>3.28155e-20</ixz>
+            <iyy>0.0149572</iyy>
+            <iyz>-1.56873e-20</iyz>
+            <izz>0.00922213</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>model://Threshold_Basket_Natural_Finish_Fabric_Liner_Small/meshes/model.obj</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.8</mu>
+                <mu2>0.6</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode>
+                <max_vel>0.01</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>model://Threshold_Basket_Natural_Finish_Fabric_Liner_Small/meshes/model.obj</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>-0.081439 0.465647 1.01385 -0.003016 0.012252 -0.010031</pose>
+      <scale>1 1 1</scale>
+    </model>
   </world>
 </sdf>

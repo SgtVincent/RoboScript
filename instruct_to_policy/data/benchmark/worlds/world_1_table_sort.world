@@ -10,7 +10,7 @@
       <real_time_factor>1</real_time_factor>
       <real_time_update_rate>1000</real_time_update_rate>
       <constraints>
-        <cfm>0.1</cfm>
+        <cfm>0.2</cfm>
         <erp>0.2</erp>
         <contact_max_correcting_vel>10s</contact_max_correcting_vel>
         <contact_surface_layer>0.0001</contact_surface_layer>
@@ -72,16 +72,18 @@
           <surface>
             <friction>
               <ode>
-                <mu>0.8</mu>
-                <mu2>0.6</mu2>
+                <mu>10</mu>
+                <mu2>10</mu2>
               </ode>
               <torsional>
-                <ode/>
+                <coefficient>10.0</coefficient>
+                <use_patch_radius>true</use_patch_radius>
+                <patch_radius>0.1</patch_radius>
               </torsional>
             </friction>
             <contact>
               <ode>
-                <max_vel>1</max_vel>
+                <max_vel>0.01</max_vel>
                 <min_depth>0.001</min_depth>
               </ode>
             </contact>
@@ -134,16 +136,18 @@
           <surface>
             <friction>
               <ode>
-                <mu>0.8</mu>
-                <mu2>0.6</mu2>
+                <mu>10</mu>
+                <mu2>10</mu2>
               </ode>
               <torsional>
-                <ode/>
+                <coefficient>10.0</coefficient>
+                <use_patch_radius>true</use_patch_radius>
+                <patch_radius>0.1</patch_radius>
               </torsional>
             </friction>
             <contact>
               <ode>
-                <max_vel>1</max_vel>
+                <max_vel>0.01</max_vel>
                 <min_depth>0.001</min_depth>
               </ode>
             </contact>
@@ -195,16 +199,18 @@
           <surface>
             <friction>
               <ode>
-                <mu>0.8</mu>
-                <mu2>0.6</mu2>
+                <mu>10</mu>
+                <mu2>10</mu2>
               </ode>
               <torsional>
-                <ode/>
+                <coefficient>10.0</coefficient>
+                <use_patch_radius>true</use_patch_radius>
+                <patch_radius>0.1</patch_radius>
               </torsional>
             </friction>
             <contact>
               <ode>
-                <max_vel>1</max_vel>
+                <max_vel>0.01</max_vel>
                 <min_depth>0.001</min_depth>
               </ode>
             </contact>
@@ -398,16 +404,18 @@
           <surface>
             <friction>
               <ode>
-                <mu>0.8</mu>
-                <mu2>0.6</mu2>
+                <mu>10</mu>
+                <mu2>10</mu2>
               </ode>
               <torsional>
-                <ode/>
+                <coefficient>10.0</coefficient>
+                <use_patch_radius>true</use_patch_radius>
+                <patch_radius>0.1</patch_radius>
               </torsional>
             </friction>
             <contact>
               <ode>
-                <max_vel>1</max_vel>
+                <max_vel>0.01</max_vel>
                 <min_depth>0.001</min_depth>
               </ode>
             </contact>
@@ -459,16 +467,18 @@
           <surface>
             <friction>
               <ode>
-                <mu>0.8</mu>
-                <mu2>0.6</mu2>
+                <mu>10</mu>
+                <mu2>10</mu2>
               </ode>
               <torsional>
-                <ode/>
+                <coefficient>10.0</coefficient>
+                <use_patch_radius>true</use_patch_radius>
+                <patch_radius>0.1</patch_radius>
               </torsional>
             </friction>
             <contact>
               <ode>
-                <max_vel>1</max_vel>
+                <max_vel>0.01</max_vel>
                 <min_depth>0.001</min_depth>
               </ode>
             </contact>
@@ -515,16 +525,18 @@
           <surface>
             <friction>
               <ode>
-                <mu>0.8</mu>
-                <mu2>0.6</mu2>
+                <mu>10</mu>
+                <mu2>10</mu2>
               </ode>
               <torsional>
-                <ode/>
+                <coefficient>10.0</coefficient>
+                <use_patch_radius>true</use_patch_radius>
+                <patch_radius>0.1</patch_radius>
               </torsional>
             </friction>
             <contact>
               <ode>
-                <max_vel>1</max_vel>
+                <max_vel>0.01</max_vel>
                 <min_depth>0.001</min_depth>
               </ode>
             </contact>
@@ -555,16 +567,16 @@
     <model name="knife">
       <static>0</static>
       <link name="link">
-        <inertial>
-          <pose>0.008445 -0.029093 0.005 1.80023 1.34728 -1.35182</pose>
-          <mass>2.18355e-05</mass>
+        <inertial>       
+          <pose>-0.008823562113505531 -0.028037744224966 0.003786647746352649 1.8386968232929595 1.3841525282243516 -1.3112241739784463</pose> 
+          <mass>0.01986933654179925</mass>
           <inertia>
-            <ixx>8.20817e-08</ixx>
-            <ixy>-2.23125e-23</ixy>
-            <ixz>-1.8198e-24</ixz>
-            <iyy>8.19089e-08</iyy>
-            <iyz>1.78984e-26</iyz>
-            <izz>5.81879e-10</izz>
+            <ixx>6.299088558702036e-05</ixx>
+            <ixy>9.564465201208015e-21</ixy>
+            <ixz>-1.5155451266573168e-21</ixz>
+            <iyy>6.277600829136603e-05</iyy>
+            <iyz>3.398935180200587e-22</iyz>
+            <izz>6.743822319719429e-07</izz>
           </inertia>
         </inertial>
         <collision name="collision">
@@ -577,16 +589,18 @@
           <surface>
             <friction>
               <ode>
-                <mu>0.8</mu>
-                <mu2>0.6</mu2>
+                <mu>10</mu>
+                <mu2>10</mu2>
               </ode>
               <torsional>
-                <ode/>
+                <coefficient>10.0</coefficient>
+                <use_patch_radius>true</use_patch_radius>
+                <patch_radius>0.1</patch_radius>
               </torsional>
             </friction>
             <contact>
               <ode>
-                <max_vel>1</max_vel>
+                <max_vel>0.01</max_vel>
                 <min_depth>0.001</min_depth>
               </ode>
             </contact>
@@ -617,16 +631,16 @@
     <model name="fork">
       <static>0</static>
       <link name="link">
-        <inertial>
-          <pose>0.0085 -0.021533 0.006709 1.67967 1.44552 -1.46381</pose>
-          <mass>1.96016e-05</mass>
+        <inertial>       
+          <pose>-0.01977401808197633 -0.02201816711013321 0.005918857032995112 -1.762477191292373 -1.452167942094402 1.7714988044547613</pose> 
+          <mass>0.0214015033782645</mass>
           <inertia>
-            <ixx>4.72204e-08</ixx>
-            <ixy>-9.43492e-25</ixy>
-            <ixz>5.85258e-26</ixz>
-            <iyy>4.69245e-08</iyy>
-            <iyz>-2.55349e-25</iyz>
-            <izz>6.55612e-10</izz>
+            <ixx>5.8471187752754014e-05</ixx>
+            <ixy>2.715028762869077e-21</ixy>
+            <ixz>1.377505834049414e-22</ixz>
+            <iyy>5.7922964315198465e-05</iyy>
+            <iyz>4.891634548093174e-22</iyz>
+            <izz>9.931472453502577e-07</izz>
           </inertia>
         </inertial>
         <collision name="collision">
@@ -639,16 +653,18 @@
           <surface>
             <friction>
               <ode>
-                <mu>0.8</mu>
-                <mu2>0.6</mu2>
+                <mu>10</mu>
+                <mu2>10</mu2>
               </ode>
               <torsional>
-                <ode/>
+                <coefficient>10.0</coefficient>
+                <use_patch_radius>true</use_patch_radius>
+                <patch_radius>0.1</patch_radius>
               </torsional>
             </friction>
             <contact>
               <ode>
-                <max_vel>1</max_vel>
+                <max_vel>0.01</max_vel>
                 <min_depth>0.001</min_depth>
               </ode>
             </contact>

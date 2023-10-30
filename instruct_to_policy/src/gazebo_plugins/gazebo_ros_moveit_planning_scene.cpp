@@ -348,6 +348,16 @@ namespace gazebo
               // this happens with model:// uris
               mesh = MeshManager::Instance()->Load(uri);
 
+              // wait for mesh to be loaded
+              // int count = 0;
+              // while (!mesh && count < 100)
+              // {
+              //   mesh = MeshManager::Instance()->GetMesh(uri);
+              //   count++;
+              //   sleep(1);
+              //   ROS_WARN("mesh %s not loaded yet for %d seconds", uri.c_str(), count);
+              // }
+
               if (!mesh)
               {
                 gzwarn << "Mesh could not be loded: " << uri << std::endl;
@@ -400,14 +410,20 @@ namespace gazebo
               boost::shared_ptr<MeshShape> mesh_shape = boost::dynamic_pointer_cast<MeshShape>(shape);
               std::string name = mesh_shape->GetName();
               std::string uri = mesh_shape->GetMeshURI();
-#if GAZEBO_MAJOR_VERSION >= 8
-              ignition::math::Vector3d scale = mesh_shape->Scale();
-#else
-              ignition::math::Vector3d scale = mesh_shape->GetScale().Ign();
-#endif
+              // Mesh scale is not loaded until rendering. Directly load it from collision element.
+              auto mesh_elem = collision->GetSDF()->GetElement("geometry")->GetElement("mesh");
+              ignition::math::Vector3d scale = mesh_elem->Get<ignition::math::Vector3d>("scale");
+
+// #if GAZEBO_MAJOR_VERSION >= 8
+//               ignition::math::Vector3d scale = mesh_shape->Scale();
+// #else
+//               ignition::math::Vector3d scale = mesh_shape->GetScale().Ign();
+// #endif
               const Mesh *mesh = MeshManager::Instance()->GetMesh(uri);
 
               gzwarn << " mesh scale: " << scale << std::endl;
+              // ROS_INFO("mesh %s scale: %f %f %f", model_name.c_str(), scale.X(), scale.Y(), scale.Z());
+
               if (!mesh)
               {
                 gzwarn << "Shape has mesh type but mesh could not be retried from the MeshManager. Loading ad-hoc!" << std::endl;
@@ -416,6 +432,16 @@ namespace gazebo
                 // Load the mesh ad-hoc if the manager doesn't have it
                 // this happens with model:// uris
                 mesh = MeshManager::Instance()->Load(uri);
+
+                // wait for mesh to be loaded
+                // int count = 0;
+                // while (!mesh && count < 100)
+                // {
+                //   mesh = MeshManager::Instance()->GetMesh(uri);
+                //   count++;
+                //   sleep(1);
+                //   ROS_WARN("mesh %s not loaded yet for %d seconds", uri.c_str(), count);
+                // }
 
                 if (!mesh)
                 {

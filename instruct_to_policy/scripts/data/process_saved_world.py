@@ -47,6 +47,9 @@ if __name__ == '__main__':
         models.append(name)
         poses[name] = pose
         scales[name] = scale
+        
+
+        
 
     # Copy model tags from input XML to output XML and 
     # add/replace pose, scale tags      
@@ -60,14 +63,22 @@ if __name__ == '__main__':
         # replace pose tag if exists, otherwise add pose tag
         pose_tag = model.find('pose')
         if pose_tag is None:
-            pose_tag = ET.SubElement(model, 'pose')
+            # pose_tag = ET.SubElement(model, 'pose')
+            pose_tag = ET.Element('pose')
+            model.insert(0, pose_tag)
         pose_tag.text = poses[name]
+
+        # NOTE: the scale should be inserted in <mesh> tag instead of <model> tag
         # replace scale tag if exists, otherwise add scale tag
-        scale_tag = model.find('scale')
-        if scale_tag is None:
-            scale_tag = ET.SubElement(model, 'scale')
-        scale_tag.text = scales[name]
-        
+        for mesh_tag in model.findall('.//geometry/mesh'):
+            scale_tag = mesh_tag.find('scale')
+            if scale_tag is None:
+                # scale_tag = ET.SubElement(mesh_tag, 'scale')
+                scale_tag = ET.Element('scale')
+                mesh_tag.insert(0, scale_tag)
+                
+            scale_tag.text = scales[name]
+
     # Write output XML with formant     
     xmlstr = minidom.parseString(ET.tostring(out_root)).toprettyxml(indent="  ")
     xmlstr = os.linesep.join([s for s in xmlstr.splitlines() if s.strip()])

@@ -65,6 +65,7 @@
         <collision name="collision">
           <geometry>
             <mesh>
+              <scale>1 1 1</scale>
               <uri>model://013_apple/google_16k/textured.obj</uri>
             </mesh>
           </geometry>
@@ -91,6 +92,7 @@
         <visual name="visual">
           <geometry>
             <mesh>
+              <scale>1 1 1</scale>
               <uri>model://013_apple/google_16k/textured.obj</uri>
             </mesh>
           </geometry>
@@ -106,7 +108,6 @@
         <kinematic>0</kinematic>
       </link>
       <pose>-0.019979 -0.237469 1.01538 0.003715 -0.000855 -0.625244</pose>
-      <scale>1 1 1</scale>
     </model>
     <model name="pear">
       <static>0</static>
@@ -126,6 +127,7 @@
         <collision name="collision">
           <geometry>
             <mesh>
+              <scale>1 1 1</scale>
               <uri>model://016_pear/google_16k/textured.obj</uri>
             </mesh>
           </geometry>
@@ -152,6 +154,7 @@
         <visual name="visual">
           <geometry>
             <mesh>
+              <scale>1 1 1</scale>
               <uri>model://016_pear/google_16k/textured.obj</uri>
             </mesh>
           </geometry>
@@ -167,7 +170,6 @@
         <kinematic>0</kinematic>
       </link>
       <pose>0.239145 -0.019736 1.01484 0.000815 0.0101 -0.234474</pose>
-      <scale>1 1 1</scale>
     </model>
     <model name="white_ceramic_plate">
       <link name="link">
@@ -186,6 +188,7 @@
         <collision name="collision">
           <geometry>
             <mesh>
+              <scale>1 1 1</scale>
               <uri>model://Threshold_Dinner_Plate_Square_Rim_White_Porcelain/meshes/model.obj</uri>
             </mesh>
           </geometry>
@@ -212,6 +215,7 @@
         <visual name="visual">
           <geometry>
             <mesh>
+              <scale>1 1 1</scale>
               <uri>model://Threshold_Dinner_Plate_Square_Rim_White_Porcelain/meshes/model.obj</uri>
             </mesh>
           </geometry>
@@ -221,13 +225,13 @@
         <kinematic>0</kinematic>
       </link>
       <pose>-0.150849 0.282776 1.01406 -0.001439 -0.009852 -0.000858</pose>
-      <scale>1 1 1</scale>
     </model>
     <model name="white_and_pink_box">
       <link name="link_0">
         <visual name="visual">
           <geometry>
             <mesh>
+              <scale>1 1 1</scale>
               <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/models/FemDophilus/meshes/model.obj</uri>
             </mesh>
           </geometry>
@@ -235,6 +239,7 @@
         <collision name="collision_0">
           <geometry>
             <mesh>
+              <scale>1 1 1</scale>
               <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/models/FemDophilus/meshes/model.obj</uri>
             </mesh>
           </geometry>
@@ -269,13 +274,13 @@
         <kinematic>0</kinematic>
       </link>
       <pose>-0.189069 -0.399248 1.01488 -0.004331 -0.006373 0.00097</pose>
-      <scale>1 1 1</scale>
     </model>
     <model name="brown_box">
       <link name="link_0">
         <visual name="visual">
           <geometry>
             <mesh>
+              <scale>1 1 1</scale>
               <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/models/Perricone_MD_Neuropeptide_Firming_Moisturizer/meshes/model.obj</uri>
             </mesh>
           </geometry>
@@ -283,6 +288,7 @@
         <collision name="collision_0">
           <geometry>
             <mesh>
+              <scale>1 1 1</scale>
               <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/models/Perricone_MD_Neuropeptide_Firming_Moisturizer/meshes/model.obj</uri>
             </mesh>
           </geometry>
@@ -317,13 +323,13 @@
         <kinematic>0</kinematic>
       </link>
       <pose>0.190615 0.291675 1.01456 0.007344 -0.010446 0.001551</pose>
-      <scale>1 1 1</scale>
     </model>
     <model name="brown_medication_bottle">
       <link name="link_0">
         <visual name="visual">
           <geometry>
             <mesh>
+              <scale>1 1 1</scale>
               <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/models/Germanium_GE132/meshes/model.obj</uri>
             </mesh>
           </geometry>
@@ -331,6 +337,7 @@
         <collision name="collision_0">
           <geometry>
             <mesh>
+              <scale>1 1 1</scale>
               <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/models/Germanium_GE132/meshes/model.obj</uri>
             </mesh>
           </geometry>
@@ -365,7 +372,6 @@
         <kinematic>0</kinematic>
       </link>
       <pose>0.197969 -0.386507 1.0149 -0.002359 -0.005108 -2e-06</pose>
-      <scale>1 1 1</scale>
     </model>
     <model name="bleach_cleanser">
       <static>0</static>
@@ -385,6 +391,7 @@
         <collision name="collision">
           <geometry>
             <mesh>
+              <scale>1 1 1</scale>
               <uri>model://021_bleach_cleanser/google_16k/textured.obj</uri>
             </mesh>
           </geometry>
@@ -411,6 +418,7 @@
         <visual name="visual">
           <geometry>
             <mesh>
+              <scale>1 1 1</scale>
               <uri>model://021_bleach_cleanser/google_16k/textured.obj</uri>
             </mesh>
           </geometry>
@@ -426,7 +434,6 @@
         <kinematic>0</kinematic>
       </link>
       <pose>0.361156 -0.190223 1.01519 0.007843 -0.00776 -0.10139</pose>
-      <scale>1 1 1</scale>
     </model>
     <model name="red_plastic_bowl">
       <link name="link">
@@ -445,8 +452,8 @@
         <collision name="collision">
           <geometry>
             <mesh>
-              <uri>model://Bradshaw_International_11642_7_Qt_MP_Plastic_Bowl/meshes/model.obj</uri>
               <scale>0.470771 0.470771 0.470771</scale>
+              <uri>model://Bradshaw_International_11642_7_Qt_MP_Plastic_Bowl/meshes/model.obj</uri>
             </mesh>
           </geometry>
           <surface>
@@ -472,8 +479,8 @@
         <visual name="visual">
           <geometry>
             <mesh>
-              <uri>model://Bradshaw_International_11642_7_Qt_MP_Plastic_Bowl/meshes/model.obj</uri>
               <scale>0.470771 0.470771 0.470771</scale>
+              <uri>model://Bradshaw_International_11642_7_Qt_MP_Plastic_Bowl/meshes/model.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -482,7 +489,6 @@
         <kinematic>0</kinematic>
       </link>
       <pose>0.000926 -0.055187 1.01416 0.016552 0.001815 0.678706</pose>
-      <scale>0.470771 0.470771 0.470771</scale>
     </model>
     <model name="mustard_bottle">
       <static>0</static>
@@ -545,7 +551,6 @@
         <kinematic>0</kinematic>
       </link>
       <pose>0.373376 0.238211 1.01637 -1.56578 0.335176 -2.85291</pose>
-      <scale>0.787445 0.787445 0.787445</scale>
     </model>
     <model name="knife">
       <static>0</static>
@@ -565,6 +570,7 @@
         <collision name="collision">
           <geometry>
             <mesh>
+              <scale>1 1 1</scale>
               <uri>model://032_knife/google_16k/textured.obj</uri>
             </mesh>
           </geometry>
@@ -591,6 +597,7 @@
         <visual name="visual">
           <geometry>
             <mesh>
+              <scale>1 1 1</scale>
               <uri>model://032_knife/google_16k/textured.obj</uri>
             </mesh>
           </geometry>
@@ -606,7 +613,6 @@
         <kinematic>0</kinematic>
       </link>
       <pose>-1.27492 -0.147494 1.41871 0.345187 0.038731 0.071548</pose>
-      <scale>1 1 1</scale>
     </model>
     <model name="fork">
       <static>0</static>
@@ -626,6 +632,7 @@
         <collision name="collision">
           <geometry>
             <mesh>
+              <scale>1 1 1</scale>
               <uri>model://030_fork/google_16k/textured.obj</uri>
             </mesh>
           </geometry>
@@ -652,6 +659,7 @@
         <visual name="visual">
           <geometry>
             <mesh>
+              <scale>1 1 1</scale>
               <uri>model://030_fork/google_16k/textured.obj</uri>
             </mesh>
           </geometry>
@@ -667,7 +675,6 @@
         <kinematic>0</kinematic>
       </link>
       <pose>-1.26349 0.069182 1.41221 -2.82794 -0.032907 0.091751</pose>
-      <scale>1 1 1</scale>
     </model>
   </world>
 </sdf>

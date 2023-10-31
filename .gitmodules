@@ -7,3 +7,6 @@
 [submodule "moveit_configs/panda_moveit_config"]
 	path = moveit_configs/panda_moveit_config
 	url = https://github.com/SgtVincent/panda_moveit_config.git
+[submodule "moveit_configs/ur5_package"]
+	path = moveit_configs/ur5_package
+	url = https://github.com/ClangWU/ur5_package.git

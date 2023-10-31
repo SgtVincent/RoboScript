@@ -180,6 +180,7 @@ class MoveitGazeboEnv(GazeboEnv):
         if self.debug:
             ee_name = self.end_effctor_link.replace("/", "")
             self.marker_pub = rospy.Publisher(f"/rviz/moveit/move_marker/goal_{ee_name}", PoseStamped, queue_size=5)
+            self.start_state_pub = rospy.Publisher(f"/rviz/moveit/update_custom_start_state", RobotState, queue_size=1)
             self.goal_state_pub = rospy.Publisher(f"/rviz/moveit/update_custom_goal_state", RobotState, queue_size=1)
 
             
@@ -287,7 +288,8 @@ class MoveitGazeboEnv(GazeboEnv):
         self.scene.remove_attached_object()
         
         # reset visualization marker if debug is enabledss
-        if self.debug:                
+        if self.debug:              
+            self.start_state_pub.publish(self.robot.get_current_state())  
             self.goal_state_pub.publish(self.robot.get_current_state())
             rospy.sleep(1)
         
@@ -369,11 +371,11 @@ class MoveitGazeboEnv(GazeboEnv):
 
 
     @_block
-    def close_gripper(self, gripper_group=None, width=0.01):
+    def close_gripper(self, gripper_group=None, width=0.01, force=50):
         """Close the gripper."""
         if gripper_group is None:
             gripper_group = self.gripper_group
-        return gripper_group.close_gripper(width=width)
+        return gripper_group.close_gripper(width=width, force=force)
 
 
     @_block

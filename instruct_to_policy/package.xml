@@ -37,7 +37,10 @@
     <depend>geometry_msgs</depend>
     <depend>sensor_msgs</depend>
     <depend>moveit_msgs</depend>
+    <!-- local dependent packages -->
     <depend>grasp_detection</depend>
+    <depend>realsense_gazebo_plugin</depend>
+    <depend>panda_moveit_config</depend>
 
   <!-- Use build_depend for packages you need at compile time: -->
   <!--   <build_depend>message_generation</build_depend> -->

@@ -2,8 +2,9 @@ from typing import List, Tuple, Dict
 import rospy 
 import json
 import numpy as np 
-from geometry_msgs.msg import Quaternion, Pose 
+import re 
 
+from geometry_msgs.msg import Quaternion, Pose 
 from grasp_detection.msg import Grasp as GraspMsg
 from .moveit_gazebo_env import MoveitGazeboEnv
 from src.grasp_detection import GraspDetectionBase, GraspDetectionRemote
@@ -175,37 +176,66 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
         z: -0.6502306735376142
         w: -0.2367606801525871
         """
-        pre_defined_handle_orientation = Quaternion(0.6714430184317122, 0.26515792374322233, -0.6502306735376142, -0.2367606801525871)
-        pre_defined_gripper_tip_offset = 0.1 # x-axis positive direction
+        pre_defined_handle_orientation = Quaternion(-0.5, -0.5, 0.5, 0.5)
+        # pre_defined_gripper_tip_offset = 0.1 # x-axis positive direction
         # get corresponding handle link ID: cabinet.drawer_0 -> cabinet::link_handle_0
         if 'drawer' in object.lower():
-            # get drawer index 
-            drawer_index = object.split("_")[-1]
-            handle_link = object.split(".")[0] + f"::link_handle_{drawer_index}"
+            # get drawer index at the end by regex
+            drawer_index = re.findall(r'\d+', object)[-1]
+            handle_link = f"cabinet::link_handle_{drawer_index}"
         elif 'cabinet' in object.lower():
             # use drawer_3 by default if no drawer index is specified
-            handle_link = object + "::link_handle_3"
+            handle_link = "cabinet::link_handle_3"
         else:
             raise NotImplementedError(f"Cannot parse handle pose for object {object}")
 
         if action in ['grasp', 'grab'] or 'grasp' in action or 'grab' in action:
             pose = Pose()
             pose.position = self.get_link_pose(handle_link).position 
-            pose.position.x += pre_defined_gripper_tip_offset
+            # pose.position.x += pre_defined_gripper_tip_offset
             pose.orientation = pre_defined_handle_orientation 
         elif action in ['pull', 'open'] or 'pull' in action or 'open' in action:
             
             pose = Pose() 
             pose.position = self.get_link_pose(handle_link).position
-            pose.position.x += 0.2 + pre_defined_gripper_tip_offset
+            # pose.position.x += 0.2 + pre_defined_gripper_tip_offset
             pose.orientation = pre_defined_handle_orientation
         elif  action in ['push', 'close'] or 'push' in action or 'close' in action:
             pose = Pose()
             pose.position = self.get_link_pose(handle_link).position
-            pose.position.x -= 0.2 + pre_defined_gripper_tip_offset
+            # pose.position.x -= 0.2 + pre_defined_gripper_tip_offset
             pose.orientation = pre_defined_handle_orientation
         return pose
     
+    
+    def get_lying_objects(self, objects=[], **kwargs):
+        """
+        Get the list of objects that are lying on the table by their ground truth pose.
+        """
+        if len(objects) == 0:
+            objects = self.get_obj_names()
+
+        # judge if the object is lying on the table by its ground truth pose:
+        # calculate the angle between the object's z-axis and the table normal
+        angle_threnshold = 60 * np.pi / 180 # 60 degree
+        table_normal = np.array([0, 0, 1])
+        lying_objects = []
+        for object in objects:
+            object_gt_pose = self.get_gt_obj_pose(object)
+            if object_gt_pose is not None:
+                object_rotation = pose_msg_to_matrix(object_gt_pose)[:3, :3]
+                object_z_axis = object_rotation[:, 2] / np.linalg.norm(object_rotation[:, 2])
+                # compute the angle between the object's z-axis and the table normal
+                angle = np.arccos(np.dot(object_z_axis, table_normal))
+
+                if angle < angle_threnshold:
+                    lying_objects.append(object)
+                
+        return lying_objects
+                
+        
+            
+        
     
 # unit test
 if __name__ == "__main__":

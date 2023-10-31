@@ -34,7 +34,7 @@ class ConfigAnygrasp(ConfigBase):
         super().__init__()
         self.model_path = os.path.join(current_dir, "anygrasp_sdk", "grasp_detection", "log", "checkpoint_detection.tar")
         self.checkpoint_path = self.model_path
-        self.gripper_height = 0.03 # grasp pose depth 
+        self.gripper_height = 0.05 # grasp pose depth 
         self.top_down_grasp = True # whether to output top-down grasps
         # NOTE: by default should be True, otherwise grasps outside of the region of interest (ROI) will be predicted first 
         # This could lead to no valid grasp 
@@ -42,7 +42,7 @@ class ConfigAnygrasp(ConfigBase):
         # add margin to the 2D and 3D bbox to filter the point cloud, to increase grasp detection range 
         self.filter_bbox_2d_margin = 5 # in pixel
         self.filter_bbox_3d_margin = 0.1 # in meter
-        self.filter_table_plane = True # whether to filter table plane
+        self.filter_table_plane = False # whether to filter table plane
         
         self.debug = True # whether to visualize the grasps 
 

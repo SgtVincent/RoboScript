@@ -1,0 +1,14 @@
+<launch>
+
+    <arg name="model_name" default="anygrasp" />
+    <arg name="service_name" default="/detect_grasps" />
+
+    
+    <node name="grasp_detection_node" pkg="grasp_detection" type="run_node.py" output="screen">
+    <!-- model_name = rospy.get_param('~model_name', 'anygrasp')  -->
+    <!-- service_name = rospy.get_param('~service_name', '/detect_grasps') -->
+        <param name="model_name" value="$(arg model_name)" />
+        <param name="service_name" value="$(arg service_name)" />
+    </node>
+
+</launch>

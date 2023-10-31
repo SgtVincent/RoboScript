@@ -1,0 +1,55 @@
+<?xml version='1.0'?>
+<sdf version="1.4">
+  <model name="orange">
+    <static>false</static>
+    <link name="link">
+      <inertial>       
+        <pose>-0.007136249804599346 -0.018374164361657223 0.03356913305679878 -2.034420272463139 0.3381694605373405 2.9747569096921724</pose> 
+        <mass>0.10164034620525149</mass>
+        <inertia>
+          <ixx>5.511413660620726e-05</ixx>
+          <ixy>2.17992038285975e-21</ixy>
+          <ixz>5.1725136843075276e-21</ixz>
+          <iyy>5.382375090724524e-05</iyy>
+          <iyz>1.2701834501936496e-20</iyz>
+          <izz>5.355397696298084e-05</izz>
+        </inertia>
+      </inertial>
+      <collision name="collision">
+        <geometry>
+          <mesh>
+            <!-- Use a downsampled mesh for collisions -->
+            <uri>model://orange/google_16k/textured.obj</uri>
+	        </mesh>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.8</mu>
+              <mu2>0.6</mu2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <max_vel>0.01</max_vel>
+              <min_depth>0</min_depth>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://orange/google_16k/textured.obj</uri>
+	        </mesh>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://orange/orange.material</uri>
+            <name>orange</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

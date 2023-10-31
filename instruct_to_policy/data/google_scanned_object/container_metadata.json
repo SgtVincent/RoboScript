@@ -1,0 +1,637 @@
+{
+    "categories": {
+        "planter": [
+            "Sapota_Threshold_4_Ceramic_Round_Planter_Red",
+            "Ecoforms_Plant_Container_Urn_55_Avocado",
+            "Ecoforms_Plant_Container_SB9Turquoise",
+            "Ecoforms_Plant_Container_URN_SAN",
+            "Ecoforms_Plant_Container_S24NATURAL",
+            "Ecoforms_Plant_Container_Quadra_Sand_QP6"
+        ],
+        "plate": [
+            "Threshold_Dinner_Plate_Square_Rim_White_Porcelain",
+            "Ecoforms_Plant_Plate_S11Turquoise",
+            "Threshold_Salad_Plate_Square_Rim_Porcelain",
+            "Threshold_Bistro_Ceramic_Dinner_Plate_Ruby_Ring",
+            "Ecoforms_Plate_S20Avocado",
+            "Room_Essentials_Salad_Plate_Turquoise"
+        ],
+        "bowl": [
+            "Threshold_Porcelain_Serving_Bowl_Coupe_White",
+            "Cole_Hardware_Deep_Bowl_Good_Earth_1075",
+            "Threshold_Bead_Cereal_Bowl_White",
+            "Bradshaw_International_11642_7_Qt_MP_Plastic_Bowl",
+            "Sea_to_Summit_Xl_Bowl",
+            "Cole_Hardware_Bowl_Scirocco_YellowBlue",
+            "Top_Paw_Dog_Bowl_Blue_Paw_Bone_Ceramic_25_fl_oz_total",
+            "Ecoforms_Plant_Bowl_Turquoise_7",
+            "Now_Designs_Bowl_Akita_Black",
+            "Footed_Bowl_Sand",
+            "Grreatv_Choice_Dog_Bowl_Gray_Bones_Plastic_20_fl_oz_total",
+            "Room_Essentials_Bowl_Turquiose",
+            "Ecoforms_Plant_Bowl_Atlas_Low"
+        ],
+        "pot": [
+            "Ecoforms_Planter_Pot_QP6Ebony",
+            "Ecoforms_Plant_Pot_GP9AAvocado",
+            "Pennington_Electric_Pot_Cabana_4",
+            "Cole_Hardware_Electric_Pot_Assortment_55",
+            "Central_Garden_Flower_Pot_Goo_425",
+            "Down_To_Earth_Ceramic_Orchid_Pot_Asst_Blue"
+        ],
+        "saucer": [
+            "Ecoforms_Plant_Saucer_SQ8COR",
+            "Cole_Hardware_Plant_Saucer_Glazed_9",
+            "Ecoforms_Saucer_SQ3_Turquoise"
+        ],
+        "pan": [
+            "Nordic_Ware_Original_Bundt_Pan",
+            "Chefmate_8_Frypan",
+            "Chef_Style_Round_Cake_Pan_9_inch_pan"
+        ],
+        "basket": [
+            "Smith_Hawken_Woven_BasketTray_Organizer_with_3_Compartments_95_x_9_x_13",
+            "Threshold_Basket_Natural_Finish_Fabric_Liner_Small",
+            "Spritz_Easter_Basket_Plastic_Teal"
+        ],
+        "tray": [
+            "Threshold_Tray_Rectangle_Porcelain"
+        ]
+    },
+    "objects": {
+        "Sapota_Threshold_4_Ceramic_Round_Planter_Red": {
+            "category": "planter",
+            "bbox_size": [
+                0.105991,
+                0.109554,
+                0.097137
+            ],
+            "bbox_center": [
+                1.8499999999997685e-05,
+                1.4000000000000123e-05,
+                0.0485435
+            ],
+            "model_name": "red_ceramic_pot"
+        },
+        "Threshold_Dinner_Plate_Square_Rim_White_Porcelain": {
+            "category": "plate",
+            "bbox_size": [
+                0.270964,
+                0.27354,
+                0.038908
+            ],
+            "bbox_center": [
+                7.999999999999674e-05,
+                0.0002940000000000026,
+                0.019408
+            ],
+            "model_name": "white_ceramic_plate"
+        },
+        "Ecoforms_Plant_Plate_S11Turquoise": {
+            "category": "plate",
+            "bbox_size": [
+                0.11802699999999999,
+                0.118147,
+                0.022858
+            ],
+            "bbox_center": [
+                -1.5499999999998154e-05,
+                1.5000000000015001e-06,
+                0.011425
+            ],
+            "model_name": "turquoise_plant_plate"
+        },
+        "Threshold_Porcelain_Serving_Bowl_Coupe_White": {
+            "category": "bowl",
+            "bbox_size": [
+                0.208234,
+                0.209341,
+                0.068883
+            ],
+            "bbox_center": [
+                3.200000000000425e-05,
+                -5.9500000000003994e-05,
+                0.0343895
+            ],
+            "model_name": "white_porcelain_serving_bowl"
+        },
+        "Ecoforms_Plant_Container_Urn_55_Avocado": {
+            "category": "planter",
+            "bbox_size": [
+                0.149513,
+                0.14887499999999998,
+                0.159915
+            ],
+            "bbox_center": [
+                1.4500000000000624e-05,
+                -2.3500000000002685e-05,
+                0.0799315
+            ],
+            "model_name": "avocado_plant_container"
+        },
+        "Ecoforms_Planter_Pot_QP6Ebony": {
+            "category": "pot",
+            "bbox_size": [
+                0.189654,
+                0.189199,
+                0.168241
+            ],
+            "bbox_center": [
+                -1.9999999999950613e-06,
+                4.149999999999987e-05,
+                0.08413949999999999
+            ],
+            "model_name": "ebony_planter_pot"
+        },
+        "Ecoforms_Plant_Saucer_SQ8COR": {
+            "category": "saucer",
+            "bbox_size": [
+                0.180842,
+                0.180498,
+                0.033189
+            ],
+            "bbox_center": [
+                0.00010299999999999893,
+                -7.000000000000062e-06,
+                0.0165735
+            ],
+            "model_name": "red_plant_saucer"
+        },
+        "Nordic_Ware_Original_Bundt_Pan": {
+            "category": "pan",
+            "bbox_size": [
+                0.26387099999999997,
+                0.263432,
+                0.099966
+            ],
+            "bbox_center": [
+                -1.9499999999991746e-05,
+                -4.499999999998949e-05,
+                0.049908999999999995
+            ],
+            "model_name": "black_bundt_pan"
+        },
+        "Cole_Hardware_Deep_Bowl_Good_Earth_1075": {
+            "category": "bowl",
+            "bbox_size": [
+                0.28370300000000004,
+                0.284281,
+                0.131771
+            ],
+            "bbox_center": [
+                2.0499999999992746e-05,
+                1.0499999999996623e-05,
+                0.06578650000000001
+            ],
+            "model_name": "clay_bowl"
+        },
+        "Threshold_Bead_Cereal_Bowl_White": {
+            "category": "bowl",
+            "bbox_size": [
+                0.169761,
+                0.166325,
+                0.07072400000000001
+            ],
+            "bbox_center": [
+                -2.4499999999996747e-05,
+                1.1499999999997623e-05,
+                0.035329
+            ],
+            "model_name": "white_cereal_bowl"
+        },
+        "Bradshaw_International_11642_7_Qt_MP_Plastic_Bowl": {
+            "category": "bowl",
+            "bbox_size": [
+                0.28261400000000003,
+                0.28509,
+                0.154504
+            ],
+            "bbox_center": [
+                5.000000000000837e-05,
+                2.8000000000000247e-05,
+                0.077224
+            ],
+            "model_name": "red_plastic_bowl"
+        },
+        "Smith_Hawken_Woven_BasketTray_Organizer_with_3_Compartments_95_x_9_x_13": {
+            "category": "basket",
+            "bbox_size": [
+                0.360726,
+                0.25745300000000004,
+                0.268729
+            ],
+            "bbox_center": [
+                -3.0000000000002247e-05,
+                -0.002082500000000001,
+                0.13443149999999998
+            ],
+            "model_name": "woven_basket_tray"
+        },
+        "Ecoforms_Plant_Pot_GP9AAvocado": {
+            "category": "pot",
+            "bbox_size": [
+                0.093661,
+                0.094238,
+                0.086802
+            ],
+            "bbox_center": [
+                1.9500000000002154e-05,
+                -4.9999999999980616e-06,
+                0.043371
+            ],
+            "model_name": "green_plant_pot"
+        },
+        "Sea_to_Summit_Xl_Bowl": {
+            "category": "bowl",
+            "bbox_size": [
+                0.18022,
+                0.180311,
+                0.035502
+            ],
+            "bbox_center": [
+                -1.6000000000002124e-05,
+                7.499999999993623e-06,
+                0.017733000000000002
+            ],
+            "model_name": "blue_bowl"
+        },
+        "Ecoforms_Plant_Container_SB9Turquoise": {
+            "category": "planter",
+            "bbox_size": [
+                0.29974500000000004,
+                0.299224,
+                0.241247
+            ],
+            "bbox_center": [
+                5.000000000005e-07,
+                -2.4999999999997247e-05,
+                0.1204655
+            ],
+            "model_name": "turquoise_plant_container"
+        },
+        "Cole_Hardware_Bowl_Scirocco_YellowBlue": {
+            "category": "bowl",
+            "bbox_size": [
+                0.113488,
+                0.114898,
+                0.061864999999999996
+            ],
+            "bbox_center": [
+                1.5999999999998654e-05,
+                1.0999999999997123e-05,
+                0.0309055
+            ],
+            "model_name": "yellow_blue_bowl"
+        },
+        "Pennington_Electric_Pot_Cabana_4": {
+            "category": "pot",
+            "bbox_size": [
+                0.103581,
+                0.103433,
+                0.097826
+            ],
+            "bbox_center": [
+                6.500000000003031e-06,
+                1.5000000000015001e-06,
+                0.048896999999999996
+            ],
+            "model_name": "yellow_pot"
+        },
+        "Ecoforms_Plant_Container_URN_SAN": {
+            "category": "planter",
+            "bbox_size": [
+                0.149179,
+                0.14869,
+                0.159359
+            ],
+            "bbox_center": [
+                4.4999999999975615e-06,
+                -1.1000000000004062e-05,
+                0.0796265
+            ],
+            "model_name": "brown_plant_container"
+        },
+        "Top_Paw_Dog_Bowl_Blue_Paw_Bone_Ceramic_25_fl_oz_total": {
+            "category": "bowl",
+            "bbox_size": [
+                0.152494,
+                0.153074,
+                0.060316
+            ],
+            "bbox_center": [
+                -1.4000000000000123e-05,
+                -1.7999999999997185e-05,
+                0.030156
+            ],
+            "model_name": "blue_dog_bowl"
+        },
+        "Ecoforms_Plant_Container_S24NATURAL": {
+            "category": "planter",
+            "bbox_size": [
+                0.241269,
+                0.240786,
+                0.03316
+            ],
+            "bbox_center": [
+                -4.449999999999593e-05,
+                -9.999999999996123e-06,
+                0.016545
+            ],
+            "model_name": "brown_tray"
+        },
+        "Chefmate_8_Frypan": {
+            "category": "pan",
+            "bbox_size": [
+                0.35577499999999995,
+                0.204345,
+                0.05502
+            ],
+            "bbox_center": [
+                0.0002525000000000027,
+                0.0027545,
+                0.027409000000000003
+            ],
+            "model_name": "fry_pan"
+        },
+        "Ecoforms_Plant_Bowl_Turquoise_7": {
+            "category": "bowl",
+            "bbox_size": [
+                0.181586,
+                0.181971,
+                0.122619
+            ],
+            "bbox_center": [
+                -1.5000000000001124e-05,
+                3.349999999999881e-05,
+                0.0612805
+            ],
+            "model_name": "turquoise_plant_bowl"
+        },
+        "Threshold_Basket_Natural_Finish_Fabric_Liner_Small": {
+            "category": "basket",
+            "bbox_size": [
+                0.239285,
+                0.162194,
+                0.147613
+            ],
+            "bbox_center": [
+                5.5499999999999994e-05,
+                0.00022900000000000004,
+                0.0737845
+            ],
+            "model_name": "basket_with_fabric_liner"
+        },
+        "Threshold_Salad_Plate_Square_Rim_Porcelain": {
+            "category": "plate",
+            "bbox_size": [
+                0.211951,
+                0.21240799999999999,
+                0.03433
+            ],
+            "bbox_center": [
+                -8.550000000000224e-05,
+                -0.00022100000000000591,
+                0.017167
+            ],
+            "model_name": "square_porcelain_plate"
+        },
+        "Cole_Hardware_Plant_Saucer_Glazed_9": {
+            "category": "saucer",
+            "bbox_size": [
+                0.228571,
+                0.228736,
+                0.036971
+            ],
+            "bbox_center": [
+                4.550000000000387e-05,
+                -8.000000000001062e-06,
+                0.0184115
+            ],
+            "model_name": "brown_plant_saucer"
+        },
+        "Threshold_Bistro_Ceramic_Dinner_Plate_Ruby_Ring": {
+            "category": "plate",
+            "bbox_size": [
+                0.274492,
+                0.27397400000000005,
+                0.033298
+            ],
+            "bbox_center": [
+                3.0000000000030003e-06,
+                1.5000000000001124e-05,
+                0.016613
+            ],
+            "model_name": "ruby_ring_dinner_plate"
+        },
+        "Now_Designs_Bowl_Akita_Black": {
+            "category": "bowl",
+            "bbox_size": [
+                0.15968300000000002,
+                0.158943,
+                0.075214
+            ],
+            "bbox_center": [
+                -7.500000000000562e-06,
+                -1.7500000000003624e-05,
+                0.037600999999999996
+            ],
+            "model_name": "bowl_with_black_white_patterns"
+        },
+        "Footed_Bowl_Sand": {
+            "category": "bowl",
+            "bbox_size": [
+                0.16092800000000002,
+                0.161543,
+                0.108839
+            ],
+            "bbox_center": [
+                1.9999999999950613e-06,
+                -4.649999999999793e-05,
+                0.0543775
+            ],
+            "model_name": "footed_bowl"
+        },
+        "Cole_Hardware_Electric_Pot_Assortment_55": {
+            "category": "pot",
+            "bbox_size": [
+                0.142984,
+                0.140571,
+                0.12798500000000002
+            ],
+            "bbox_center": [
+                3.499999999999337e-05,
+                -2.6499999999998747e-05,
+                0.0639905
+            ],
+            "model_name": "purple_plant_pot"
+        },
+        "Grreatv_Choice_Dog_Bowl_Gray_Bones_Plastic_20_fl_oz_total": {
+            "category": "bowl",
+            "bbox_size": [
+                0.170853,
+                0.183525,
+                0.053836
+            ],
+            "bbox_center": [
+                9.499999999995623e-06,
+                5.499999999998562e-06,
+                0.026938
+            ],
+            "model_name": "gray_bones_dog_bowl"
+        },
+        "Ecoforms_Plate_S20Avocado": {
+            "category": "plate",
+            "bbox_size": [
+                0.207011,
+                0.206515,
+                0.032160999999999995
+            ],
+            "bbox_center": [
+                -6.500000000006501e-06,
+                2.2500000000001685e-05,
+                0.0160065
+            ],
+            "model_name": "green_plant_plate"
+        },
+        "Room_Essentials_Bowl_Turquiose": {
+            "category": "bowl",
+            "bbox_size": [
+                0.156887,
+                0.157221,
+                0.082566
+            ],
+            "bbox_center": [
+                -3.449999999999981e-05,
+                -1.7500000000003624e-05,
+                0.041309
+            ],
+            "model_name": "turquoise_bowl"
+        },
+        "Spritz_Easter_Basket_Plastic_Teal": {
+            "category": "basket",
+            "bbox_size": [
+                0.19129000000000002,
+                0.18263400000000002,
+                0.128924
+            ],
+            "bbox_center": [
+                0.00041300000000000364,
+                0.00042299999999999977,
+                0.064395
+            ],
+            "model_name": "bright_blue_basket"
+        },
+        "Central_Garden_Flower_Pot_Goo_425": {
+            "category": "pot",
+            "bbox_size": [
+                0.115311,
+                0.113736,
+                0.100678
+            ],
+            "bbox_center": [
+                -3.500000000000031e-06,
+                1.8000000000000654e-05,
+                0.050349
+            ],
+            "model_name": "brown_flower_pot"
+        },
+        "Down_To_Earth_Ceramic_Orchid_Pot_Asst_Blue": {
+            "category": "pot",
+            "bbox_size": [
+                0.132725,
+                0.13273400000000002,
+                0.11933200000000001
+            ],
+            "bbox_center": [
+                8.350000000000024e-05,
+                -0.0001999999999999988,
+                0.059649
+            ],
+            "model_name": "square_blue_flower_pot"
+        },
+        "Ecoforms_Saucer_SQ3_Turquoise": {
+            "category": "saucer",
+            "bbox_size": [
+                0.26184,
+                0.09153900000000001,
+                0.024839
+            ],
+            "bbox_center": [
+                3.0000000000030003e-06,
+                -0.00023950000000000013,
+                0.012390499999999999
+            ],
+            "model_name": "turquoise_plant_saucer"
+        },
+        "Room_Essentials_Salad_Plate_Turquoise": {
+            "category": "plate",
+            "bbox_size": [
+                0.22190700000000002,
+                0.22189399999999998,
+                0.028377
+            ],
+            "bbox_center": [
+                -6.149999999999906e-05,
+                -4.9999999999980616e-06,
+                0.0141535
+            ],
+            "model_name": "turquoise_salad_plate"
+        },
+        "Threshold_Tray_Rectangle_Porcelain": {
+            "category": "tray",
+            "bbox_size": [
+                0.168848,
+                0.31446799999999997,
+                0.034873
+            ],
+            "bbox_center": [
+                -0.00021699999999999497,
+                0.0002950000000000036,
+                0.0174075
+            ],
+            "model_name": "rectangle_porcelain_tray"
+        },
+        "Ecoforms_Plant_Container_Quadra_Sand_QP6": {
+            "category": "planter",
+            "bbox_size": [
+                0.190355,
+                0.190131,
+                0.168525
+            ],
+            "bbox_center": [
+                -9.05000000000003e-05,
+                6.499999999999562e-06,
+                0.0842355
+            ],
+            "model_name": "sand_square_plant_container"
+        },
+        "Ecoforms_Plant_Bowl_Atlas_Low": {
+            "category": "bowl",
+            "bbox_size": [
+                0.321905,
+                0.32199900000000004,
+                0.13437300000000002
+            ],
+            "bbox_center": [
+                1.8500000000004624e-05,
+                3.550000000000775e-05,
+                0.0672325
+            ],
+            "model_name": "yellow_plant_bowl"
+        },
+        "Chef_Style_Round_Cake_Pan_9_inch_pan": {
+            "category": "pan",
+            "bbox_size": [
+                0.245861,
+                0.246,
+                0.045172000000000004
+            ],
+            "bbox_center": [
+                -5.000000000005e-07,
+                3.299999999999831e-05,
+                0.022583
+            ],
+            "model_name": "round_cake_pan"
+        }
+    }
+}

@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="panda">
+
+  <xacro:include filename="$(find instruct_to_policy)/robots/panda/franka_robot.xacro"/>
+
+  <xacro:arg name="arm_id" default="panda" />
+
+  <xacro:franka_robot arm_id="$(arg arm_id)"
+                      joint_limits="${xacro.load_yaml('$(find franka_description)/robots/panda/joint_limits.yaml')}">
+  </xacro:franka_robot>
+  <!-- gazebo plugin to publish models to moveit planning scene -->
+  <!-- problem remains: wrong position, FIXME later -->
+  <gazebo>
+    <!-- plugin to publish GT world state to moveit planning scene -->
+    <plugin filename="libgazebo_ros_moveit_planning_scene.so" name="gazebo_ros_moveit_planning_scene">
+      <topicName>/planning_scene</topicName>
+      <updatePeriod>3.0</updatePeriod>
+    </plugin>
+    
+    <!-- plugin to publish GT 3D bounding boxes to env node -->
+    <plugin filename="libgazebo_ros_bbox_3d_plugin.so " name="gazebo_ros_bbox_3d_plugin">
+      <updatePeriod>1.0</updatePeriod>
+      <links_to_publish>
+        <link>cabinet::drawer0</link>
+        <link>cabinet::drawer1</link>
+        <link>cabinet::drawer2</link>
+        <link>cabinet::drawer3</link>
+      </links_to_publish>
+    </plugin>
+  </gazebo>
+
+</robot>

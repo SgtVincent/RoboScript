@@ -1,0 +1,4 @@
+
+<launch>
+    <node name="multiview_detection" pkg="instruct_to_policy" type="generate_multiview_detection.py"/>
+</launch>

@@ -1,0 +1,755 @@
+Panels:
+  - Class: rviz/Displays
+    Help Height: 85
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /MotionPlanning1
+        - /MotionPlanning1/Scene Robot1
+        - /MotionPlanning1/Planning Request1
+        - /TF1
+        - /Depth1
+      Splitter Ratio: 0.5692771077156067
+    Tree Height: 461
+  - Class: rviz/Help
+    Name: Help
+  - Class: rviz/Views
+    Expanded:
+      - /Current View1
+    Name: Views
+    Splitter Ratio: 0.5
+Preferences:
+  PromptSaveOnExit: true
+Toolbars:
+  toolButtonStyle: 2
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 10
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Acceleration_Scaling_Factor: 0.1
+      Class: moveit_rviz_plugin/MotionPlanning
+      Enabled: true
+      Move Group Namespace: ""
+      MoveIt_Allow_Approximate_IK: false
+      MoveIt_Allow_External_Program: true
+      MoveIt_Allow_Replanning: false
+      MoveIt_Allow_Sensor_Positioning: false
+      MoveIt_Planning_Attempts: 10
+      MoveIt_Planning_Time: 5
+      MoveIt_Use_Cartesian_Path: false
+      MoveIt_Use_Constraint_Aware_IK: false
+      MoveIt_Workspace:
+        Center:
+          X: 0
+          Y: 0
+          Z: 0
+        Size:
+          X: 2
+          Y: 2
+          Z: 2
+      Name: MotionPlanning
+      Planned Path:
+        Color Enabled: false
+        Interrupt Display: false
+        Links:
+          All Links Enabled: true
+          Expand Joint Details: false
+          Expand Link Details: false
+          Expand Tree: false
+          Link Tree Style: Links in Alphabetic Order
+          panda_hand:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_hand_sc:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_hand_tcp:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_leftfinger:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_link0:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_link0_sc:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_link1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_link1_sc:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_link2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_link2_sc:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_link3:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_link3_sc:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_link4:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_link4_sc:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_link5:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_link5_sc:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_link6:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_link6_sc:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_link7:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_link7_sc:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_link8:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_rightfinger:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          world:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+        Loop Animation: true
+        Robot Alpha: 0.5
+        Robot Color: 150; 50; 150
+        Show Robot Collision: false
+        Show Robot Visual: false
+        Show Trail: false
+        State Display Time: 0.05 s
+        Trail Step Size: 1
+        Trajectory Topic: move_group/display_planned_path
+        Use Sim Time: false
+      Planning Metrics:
+        Payload: 1
+        Show Joint Torques: false
+        Show Manipulability: false
+        Show Manipulability Index: false
+        Show Weight Limit: false
+        TextHeight: 0.07999999821186066
+      Planning Request:
+        Colliding Link Color: 255; 0; 0
+        Goal State Alpha: 1
+        Goal State Color: 250; 128; 0
+        Interactive Marker Size: 0
+        Joint Violation Color: 255; 0; 255
+        Planning Group: panda_manipulator
+        Query Goal State: true
+        Query Start State: true
+        Show Workspace: false
+        Start State Alpha: 1
+        Start State Color: 0; 255; 0
+      Planning Scene Topic: move_group/monitored_planning_scene
+      Robot Description: robot_description
+      Scene Geometry:
+        Scene Alpha: 1
+        Scene Color: 50; 230; 50
+        Scene Display Time: 0.009999999776482582
+        Show Scene Geometry: true
+        Voxel Coloring: Z-Axis
+        Voxel Rendering: Occupied Voxels
+      Scene Robot:
+        Attached Body Color: 150; 50; 150
+        Links:
+          All Links Enabled: true
+          Expand Joint Details: false
+          Expand Link Details: false
+          Expand Tree: false
+          Link Tree Style: Links in Alphabetic Order
+          panda_hand:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_hand_sc:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_hand_tcp:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_leftfinger:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_link0:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_link0_sc:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_link1:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_link1_sc:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_link2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_link2_sc:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_link3:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_link3_sc:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_link4:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_link4_sc:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_link5:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_link5_sc:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_link6:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_link6_sc:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_link7:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          panda_link7_sc:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_link8:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          panda_rightfinger:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          world:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+        Robot Alpha: 0.5
+        Show Robot Collision: false
+        Show Robot Visual: false
+      Value: true
+      Velocity_Scaling_Factor: 0.1
+    - Class: rviz/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: false
+        base_link:
+          Value: false
+        camera_left_bottom_screw_frame:
+          Value: false
+        camera_left_color_frame:
+          Value: false
+        camera_left_color_optical_frame:
+          Value: false
+        camera_left_depth_frame:
+          Value: false
+        camera_left_depth_optical_frame:
+          Value: false
+        camera_left_infra1_frame:
+          Value: false
+        camera_left_infra1_optical_frame:
+          Value: false
+        camera_left_infra2_frame:
+          Value: false
+        camera_left_infra2_optical_frame:
+          Value: false
+        camera_left_link:
+          Value: false
+        camera_right_bottom_screw_frame:
+          Value: false
+        camera_right_color_frame:
+          Value: false
+        camera_right_color_optical_frame:
+          Value: false
+        camera_right_depth_frame:
+          Value: false
+        camera_right_depth_optical_frame:
+          Value: false
+        camera_right_infra1_frame:
+          Value: false
+        camera_right_infra1_optical_frame:
+          Value: false
+        camera_right_infra2_frame:
+          Value: false
+        camera_right_infra2_optical_frame:
+          Value: false
+        camera_right_link:
+          Value: false
+        camera_top_bottom_screw_frame:
+          Value: false
+        camera_top_color_frame:
+          Value: false
+        camera_top_color_optical_frame:
+          Value: false
+        camera_top_depth_frame:
+          Value: false
+        camera_top_depth_optical_frame:
+          Value: false
+        camera_top_infra1_frame:
+          Value: false
+        camera_top_infra1_optical_frame:
+          Value: false
+        camera_top_infra2_frame:
+          Value: false
+        camera_top_infra2_optical_frame:
+          Value: false
+        camera_top_link:
+          Value: false
+        panda_EE:
+          Value: true
+        panda_K:
+          Value: false
+        panda_NE:
+          Value: false
+        panda_hand:
+          Value: false
+        panda_hand_sc:
+          Value: false
+        panda_hand_tcp:
+          Value: false
+        panda_leftfinger:
+          Value: false
+        panda_link0:
+          Value: false
+        panda_link0_sc:
+          Value: false
+        panda_link1:
+          Value: false
+        panda_link1_sc:
+          Value: false
+        panda_link2:
+          Value: false
+        panda_link2_sc:
+          Value: false
+        panda_link3:
+          Value: false
+        panda_link3_sc:
+          Value: false
+        panda_link4:
+          Value: false
+        panda_link4_sc:
+          Value: false
+        panda_link5:
+          Value: false
+        panda_link5_sc:
+          Value: false
+        panda_link6:
+          Value: false
+        panda_link6_sc:
+          Value: false
+        panda_link7:
+          Value: false
+        panda_link7_sc:
+          Value: false
+        panda_link8:
+          Value: false
+        panda_rightfinger:
+          Value: false
+        world:
+          Value: false
+      Marker Alpha: 1
+      Marker Scale: 1
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        world:
+          base_link:
+            camera_left_bottom_screw_frame:
+              camera_left_link:
+                camera_left_color_frame:
+                  camera_left_color_optical_frame:
+                    {}
+                camera_left_depth_frame:
+                  camera_left_depth_optical_frame:
+                    {}
+                camera_left_infra1_frame:
+                  camera_left_infra1_optical_frame:
+                    {}
+                camera_left_infra2_frame:
+                  camera_left_infra2_optical_frame:
+                    {}
+            camera_right_bottom_screw_frame:
+              camera_right_link:
+                camera_right_color_frame:
+                  camera_right_color_optical_frame:
+                    {}
+                camera_right_depth_frame:
+                  camera_right_depth_optical_frame:
+                    {}
+                camera_right_infra1_frame:
+                  camera_right_infra1_optical_frame:
+                    {}
+                camera_right_infra2_frame:
+                  camera_right_infra2_optical_frame:
+                    {}
+            camera_top_bottom_screw_frame:
+              camera_top_link:
+                camera_top_color_frame:
+                  camera_top_color_optical_frame:
+                    {}
+                camera_top_depth_frame:
+                  camera_top_depth_optical_frame:
+                    {}
+                camera_top_infra1_frame:
+                  camera_top_infra1_optical_frame:
+                    {}
+                camera_top_infra2_frame:
+                  camera_top_infra2_optical_frame:
+                    {}
+          panda_link0:
+            panda_link0_sc:
+              {}
+            panda_link1:
+              panda_link1_sc:
+                {}
+              panda_link2:
+                panda_link2_sc:
+                  {}
+                panda_link3:
+                  panda_link3_sc:
+                    {}
+                  panda_link4:
+                    panda_link4_sc:
+                      {}
+                    panda_link5:
+                      panda_link5_sc:
+                        {}
+                      panda_link6:
+                        panda_link6_sc:
+                          {}
+                        panda_link7:
+                          panda_link7_sc:
+                            {}
+                          panda_link8:
+                            panda_NE:
+                              panda_EE:
+                                panda_K:
+                                  {}
+                            panda_hand:
+                              panda_hand_sc:
+                                {}
+                              panda_hand_tcp:
+                                {}
+                              panda_leftfinger:
+                                {}
+                              panda_rightfinger:
+                                {}
+      Update Interval: 0
+      Value: true
+    - Class: rviz/Group
+      Displays:
+        - Class: rviz/Image
+          Enabled: true
+          Image Topic: /camera_left/color/image_raw
+          Max Value: 1
+          Median window: 5
+          Min Value: 0
+          Name: RGB_left
+          Normalize Range: true
+          Queue Size: 2
+          Transport Hint: compressed
+          Unreliable: false
+          Value: true
+        - Class: rviz/Image
+          Enabled: true
+          Image Topic: /camera_right/color/image_raw
+          Max Value: 1
+          Median window: 5
+          Min Value: 0
+          Name: RGB_right
+          Normalize Range: true
+          Queue Size: 2
+          Transport Hint: compressed
+          Unreliable: false
+          Value: true
+        - Class: rviz/Image
+          Enabled: true
+          Image Topic: /camera_top/color/image_raw
+          Max Value: 1
+          Median window: 5
+          Min Value: 0
+          Name: RGB_top
+          Normalize Range: true
+          Queue Size: 2
+          Transport Hint: compressed
+          Unreliable: false
+          Value: true
+      Enabled: false
+      Name: RGB
+    - Class: rviz/Group
+      Displays:
+        - Alpha: 1
+          Auto Size:
+            Auto Size Factor: 1
+            Value: true
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 10
+            Min Value: -10
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/DepthCloud
+          Color: 255; 255; 255
+          Color Image Topic: ""
+          Color Transformer: RGB8
+          Color Transport Hint: raw
+          Decay Time: 0
+          Depth Map Topic: /camera_top/depth/image_raw
+          Depth Map Transport Hint: raw
+          Enabled: false
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Min Color: 0; 0; 0
+          Name: depth_top
+          Occlusion Compensation:
+            Occlusion Time-Out: 30
+            Value: false
+          Position Transformer: XYZ
+          Queue Size: 5
+          Selectable: true
+          Size (Pixels): 3
+          Style: Flat Squares
+          Topic Filter: true
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: false
+        - Alpha: 1
+          Auto Size:
+            Auto Size Factor: 1
+            Value: true
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 10
+            Min Value: -10
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/DepthCloud
+          Color: 255; 255; 255
+          Color Image Topic: ""
+          Color Transformer: RGB8
+          Color Transport Hint: raw
+          Decay Time: 0
+          Depth Map Topic: /camera_left/depth/image_raw
+          Depth Map Transport Hint: raw
+          Enabled: false
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Min Color: 0; 0; 0
+          Name: depth_left
+          Occlusion Compensation:
+            Occlusion Time-Out: 30
+            Value: false
+          Position Transformer: XYZ
+          Queue Size: 5
+          Selectable: true
+          Size (Pixels): 3
+          Style: Flat Squares
+          Topic Filter: true
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: false
+        - Alpha: 1
+          Auto Size:
+            Auto Size Factor: 1
+            Value: true
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 10
+            Min Value: -10
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/DepthCloud
+          Color: 255; 255; 255
+          Color Image Topic: ""
+          Color Transformer: RGB8
+          Color Transport Hint: raw
+          Decay Time: 0
+          Depth Map Topic: /camera_right/depth/image_raw
+          Depth Map Transport Hint: raw
+          Enabled: false
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Min Color: 0; 0; 0
+          Name: depth_right
+          Occlusion Compensation:
+            Occlusion Time-Out: 30
+            Value: false
+          Position Transformer: XYZ
+          Queue Size: 5
+          Selectable: true
+          Size (Pixels): 3
+          Style: Flat Squares
+          Topic Filter: true
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: false
+      Enabled: false
+      Name: Depth
+  Enabled: true
+  Global Options:
+    Background Color: 48; 48; 48
+    Default Light: true
+    Fixed Frame: world
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/Interact
+      Hide Inactive Objects: true
+    - Class: rviz/MoveCamera
+    - Class: rviz/Select
+  Value: true
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 3.634945869445801
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.05999999865889549
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Field of View: 0.75
+      Focal Point:
+        X: 0.0657726377248764
+        Y: -0.01069299690425396
+        Z: 0.17016194760799408
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05000000074505806
+      Invert Z Axis: false
+      Name: Current View
+      Near Clip Distance: 0.009999999776482582
+      Pitch: 0.11979485303163528
+      Target Frame: panda_link0
+      Yaw: 0.05677967518568039
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 1369
+  Help:
+    collapsed: false
+  Hide Left Dock: false
+  Hide Right Dock: false
+  MotionPlanning:
+    collapsed: false
+  MotionPlanning - Trajectory Slider:
+    collapsed: false
+  QMainWindow State: 000000ff00000000fd00000002000000000000029a000004f7fc020000000afb000000100044006900730070006c006100790073010000004400000263000000eb00fffffffb0000000800480065006c00700000000342000000bb0000008100fffffffb0000000a00560069006500770073000000010c000000a4000000b900fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006701000002ae0000028d000001a100fffffffb0000000c00430061006d00650072006102000006a50000042d0000022d000000e0fb0000000c00430061006d0065007200610000000379000001c20000000000000000fb0000000a0049006d0061006700650000000463000000d800000000000000000000000100000140000004f7fc0200000003fb00000010005200470042005f006c0065006600740000000044000001790000001600fffffffb00000012005200470042005f0072006900670068007400000001c4000001bb0000001600fffffffb0000000e005200470042005f0074006f00700000000386000001b50000001600ffffff00000717000004f700000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  RGB_left:
+    collapsed: false
+  RGB_right:
+    collapsed: false
+  RGB_top:
+    collapsed: false
+  Views:
+    collapsed: false
+  Width: 2488
+  X: 1512
+  Y: 34

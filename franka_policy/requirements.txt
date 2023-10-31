@@ -1,0 +1,14 @@
+numpy
+scipy
+trimesh
+open3d
+
+# rospy dependencies
+open3d_ros_helper
+rosnumpy 
+
+# randomly selected version of pytorch and torchvision, not tested yet
+--find-links https://download.pytorch.org/whl/torch_stable.html
+torch==1.12.1+cu113
+torchvision==0.13.1+cu113
+torchaudio==0.12.1

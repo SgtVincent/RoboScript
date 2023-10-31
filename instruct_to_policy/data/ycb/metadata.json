@@ -1,0 +1,382 @@
+{
+    "objects": {
+        "018_plum": {
+            "model_id": "018_plum",
+            "model_name": "plum",
+            "bbox_size": [
+                0.057190000000000005,
+                0.054941,
+                0.05304
+            ],
+            "bbox_center": [
+                -0.007818,
+                0.0194235,
+                0.026223
+            ]
+        },
+        "001_chips_can": {
+            "model_id": "001_chips_can",
+            "model_name": "chips_can",
+            "bbox_size": [
+                0.0835136,
+                0.0861054,
+                0.24057518
+            ],
+            "bbox_center": [
+                -0.004574900000000003,
+                0.013698599999999998,
+                0.12615841
+            ]
+        },
+        "002_master_chef_can": {
+            "model_id": "002_master_chef_can",
+            "model_name": "master_chef_can",
+            "bbox_size": [
+                0.10252900000000001,
+                0.102377,
+                0.140177
+            ],
+            "bbox_center": [
+                -0.017048499999999998,
+                -0.009760500000000002,
+                0.0699015
+            ]
+        },
+        "003_cracker_box": {
+            "model_id": "003_cracker_box",
+            "model_name": "cracker_box",
+            "bbox_size": [
+                0.0718,
+                0.16403600000000002,
+                0.213437
+            ],
+            "bbox_center": [
+                -0.012885,
+                -0.014141999999999995,
+                0.1034755
+            ]
+        },
+        "005_tomato_soup_can": {
+            "model_id": "005_tomato_soup_can",
+            "model_name": "tomato_soup_can",
+            "bbox_size": [
+                0.067911,
+                0.067743,
+                0.101855
+            ],
+            "bbox_center": [
+                -0.009168500000000001,
+                0.0840175,
+                0.051006499999999996
+            ]
+        },
+        "006_mustard_bottle": {
+            "model_id": "006_mustard_bottle",
+            "model_name": "mustard_bottle",
+            "bbox_size": [
+                0.09719799999999999,
+                0.066621,
+                0.191301
+            ],
+            "bbox_center": [
+                -0.015338999999999998,
+                -0.0234985,
+                0.09249750000000001
+            ]
+        },
+        "010_potted_meat_can": {
+            "model_id": "010_potted_meat_can",
+            "model_name": "potted_meat_can",
+            "bbox_size": [
+                0.102085,
+                0.060103000000000004,
+                0.08354299999999999
+            ],
+            "bbox_center": [
+                -0.0327845,
+                -0.0265525,
+                0.0385835
+            ]
+        },
+        "013_apple": {
+            "model_id": "013_apple",
+            "model_name": "apple",
+            "bbox_size": [
+                0.075448,
+                0.074871,
+                0.07188900000000001
+            ],
+            "bbox_center": [
+                0.0008589999999999987,
+                -0.0037844999999999997,
+                0.0355515
+            ]
+        },
+        "014_lemon": {
+            "model_id": "014_lemon",
+            "model_name": "lemon",
+            "bbox_size": [
+                0.060588,
+                0.059299000000000004,
+                0.053017
+            ],
+            "bbox_center": [
+                -0.010579,
+                0.0216535,
+                0.0262735
+            ]
+        },
+        "015_peach": {
+            "model_id": "015_peach",
+            "model_name": "peach",
+            "bbox_size": [
+                0.062123,
+                0.06263200000000001,
+                0.058645
+            ],
+            "bbox_center": [
+                -0.014270499999999998,
+                0.005633000000000001,
+                0.0291075
+            ]
+        },
+        "016_pear": {
+            "model_id": "016_pear",
+            "model_name": "pear",
+            "bbox_size": [
+                0.066546,
+                0.100455,
+                0.065663
+            ],
+            "bbox_center": [
+                -0.03332,
+                0.017994500000000004,
+                0.0326525
+            ]
+        },
+        "017_orange": {
+            "model_id": "017_orange",
+            "model_name": "orange",
+            "bbox_size": [
+                0.072158,
+                0.073986,
+                0.071352
+            ],
+            "bbox_center": [
+                -0.0069349999999999985,
+                -0.01836,
+                0.035428
+            ]
+        },
+        "019_pitcher_base": {
+            "model_id": "019_pitcher_base",
+            "model_name": "pitcher_base",
+            "bbox_size": [
+                0.149134,
+                0.14482899999999999,
+                0.242387
+            ],
+            "bbox_center": [
+                -0.005829000000000001,
+                0.0400515,
+                0.1183715
+            ]
+        },
+        "021_bleach_cleanser": {
+            "model_id": "021_bleach_cleanser",
+            "model_name": "bleach_cleanser",
+            "bbox_size": [
+                0.102433,
+                0.06769900000000001,
+                0.25058
+            ],
+            "bbox_center": [
+                -0.021663500000000002,
+                0.011709500000000001,
+                0.124838
+            ]
+        },
+        "022_windex_bottle": {
+            "model_id": "022_windex_bottle",
+            "model_name": "windex_bottle",
+            "bbox_size": [
+                0.082727,
+                0.095428,
+                0.269801
+            ],
+            "bbox_center": [
+                0.0182865,
+                0.011928000000000001,
+                0.1342495
+            ]
+        },
+        "023_wine_glass": {
+            "model_id": "023_wine_glass",
+            "model_name": "wine_glass",
+            "bbox_size": [
+                0.09323599999999999,
+                0.13894270000000003,
+                0.09870254
+            ],
+            "bbox_center": [
+                -0.177733,
+                0.15753365,
+                0.05632373
+            ]
+        },
+        "024_bowl": {
+            "model_id": "024_bowl",
+            "model_name": "bowl",
+            "bbox_size": [
+                0.16146300000000002,
+                0.161164,
+                0.055009
+            ],
+            "bbox_center": [
+                -0.014839499999999999,
+                -0.043689000000000006,
+                0.0269745
+            ]
+        },
+        "025_mug": {
+            "model_id": "025_mug",
+            "model_name": "mug",
+            "bbox_size": [
+                0.116984,
+                0.093131,
+                0.081303
+            ],
+            "bbox_center": [
+                -0.008857000000000004,
+                0.0173395,
+                0.040119499999999995
+            ]
+        },
+        "028_skillet_lid": {
+            "model_id": "028_skillet_lid",
+            "model_name": "skillet_lid",
+            "bbox_size": [
+                0.268264,
+                0.269153,
+                0.076055
+            ],
+            "bbox_center": [
+                0.008872999999999992,
+                0.024286500000000003,
+                0.0330495
+            ]
+        },
+        "035_power_drill": {
+            "model_id": "035_power_drill",
+            "model_name": "power_drill",
+            "bbox_size": [
+                0.18420699999999998,
+                0.187515,
+                0.057293000000000004
+            ],
+            "bbox_center": [
+                -0.045955499999999996,
+                0.0105875,
+                0.0254735
+            ]
+        },
+        "036_wood_block": {
+            "model_id": "036_wood_block",
+            "model_name": "wood_block",
+            "bbox_size": [
+                0.103917,
+                0.103464,
+                0.206003
+            ],
+            "bbox_center": [
+                0.023789499999999998,
+                -0.009884999999999998,
+                0.1029445
+            ]
+        },
+        "053_mini_soccer_ball": {
+            "model_id": "053_mini_soccer_ball",
+            "model_name": "mini_soccer_ball",
+            "bbox_size": [
+                0.128057,
+                0.127837,
+                0.125587
+            ],
+            "bbox_center": [
+                -0.0061715,
+                0.011029500000000001,
+                0.062270500000000006
+            ]
+        },
+        "054_softball": {
+            "model_id": "054_softball",
+            "model_name": "softball",
+            "bbox_size": [
+                0.09537,
+                0.09617400000000001,
+                0.09459100000000001
+            ],
+            "bbox_center": [
+                -0.019673000000000003,
+                0.010704000000000002,
+                0.0469735
+            ]
+        },
+        "055_baseball": {
+            "model_id": "055_baseball",
+            "model_name": "baseball",
+            "bbox_size": [
+                0.073078,
+                0.073712,
+                0.072563
+            ],
+            "bbox_center": [
+                -0.010081000000000001,
+                -0.048244999999999996,
+                0.036076500000000004
+            ]
+        },
+        "056_tennis_ball": {
+            "model_id": "056_tennis_ball",
+            "model_name": "tennis_ball",
+            "bbox_size": [
+                0.066975,
+                0.06703,
+                0.066457
+            ],
+            "bbox_center": [
+                0.0082115,
+                -0.044278,
+                0.0331315
+            ]
+        },
+        "057_racquetball": {
+            "model_id": "057_racquetball",
+            "model_name": "racquetball",
+            "bbox_size": [
+                0.055778,
+                0.05605600000000001,
+                0.055574
+            ],
+            "bbox_center": [
+                -0.009053000000000002,
+                -0.12223200000000001,
+                0.027596000000000002
+            ]
+        },
+        "061_foam_brick": {
+            "model_id": "061_foam_brick",
+            "model_name": "foam_brick",
+            "bbox_size": [
+                0.052559999999999996,
+                0.077874,
+                0.051193
+            ],
+            "bbox_center": [
+                -0.018261,
+                0.0172,
+                0.025250500000000002
+            ]
+        }
+    }
+}

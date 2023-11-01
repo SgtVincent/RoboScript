@@ -154,7 +154,7 @@ class MoveitGazeboEnv(GazeboEnv):
         )
 
         print("Loading static scene information")
-        self.object_names = self.get_obj_names()
+        self.object_names = self.get_obj_name_list()
         self.load_scene()
         # TODO: moveit configurations should be set inside the config file 
 
@@ -356,7 +356,7 @@ class MoveitGazeboEnv(GazeboEnv):
         self.reset_scene()    
         rospy.loginfo("Environment reset.")
 
-    def get_ee_pose(self, group=None):
+    def get_end_effector_pose(self, group=None):
         """Get the current pose of the end effector."""
         if group is None:
             group = self.move_group

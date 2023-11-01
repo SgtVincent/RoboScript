@@ -54,7 +54,7 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
                         'bbox_center': v['bbox_center'],
                     }
         
-    def get_obj_pos(self, obj_name, **kwargs):
+    def get_object_center_position(self, obj_name, **kwargs):
         """
         Get the position of the object in the world frame. 
         This function uses ground truth model state from gazebo and ignore all other parameters.
@@ -64,7 +64,7 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
             return None
         return gt_pose.position
         
-    def get_bbox(self, obj_name, **kwargs):
+    def get_3d_bbox(self, obj_name, **kwargs):
         """
         Get the 3D bounding box of the object in the world frame.
         This function uses ground truth model state from gazebo and ignore all other parameters.
@@ -101,7 +101,7 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
         # bbox_center, bbox_size = get_axis_aligned_bbox(self.object_info[object]['bbox_center'], 
         #                                                self.object_info[object]['bbox_size'], object_transform)
         # NOTE: use ground truth bounding box for now
-        bbox_center, bbox_size = self.get_bbox(object)
+        bbox_center, bbox_size = self.get_3d_bbox(object)
         
         # get visual input from perception model
         sensor_data = self.get_sensor_data()
@@ -137,14 +137,14 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
 
         if action in ['pick', 'grasp', 'grab', 'get', 'take', 'hold']:
             pose = Pose()
-            pose.position = self.get_obj_pos(object)
+            pose.position = self.get_object_center_position(object)
             if hasattr(self, 'reset_pose'):
                 pose.orientation = self.reset_pose.orientation
             else:
                 pose.orientation = Quaternion(0,1,0,0)
         elif action in ['place', 'put', 'drop', 'release']:
             pose = Pose()
-            pose.position = self.get_obj_pos(object)
+            pose.position = self.get_object_center_position(object)
             pose.position.z += 0.2
             if hasattr(self, 'reset_pose'):
                 pose.orientation = self.reset_pose.orientation
@@ -153,7 +153,7 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
         else:
             rospy.logwarn(f"Action {action} not supported in heuristic grasp model, use default pose")
             pose = Pose()
-            pose.position = self.get_obj_pos(object)
+            pose.position = self.get_object_center_position(object)
             pose.orientation = Quaternion(0,1,0,0)
             if hasattr(self, 'reset_pose'):
                 pose.orientation = self.reset_pose.orientation
@@ -213,7 +213,7 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
         Get the list of objects that are lying on the table by their ground truth pose.
         """
         if len(objects) == 0:
-            objects = self.get_obj_names()
+            objects = self.get_obj_name_list()
 
         # judge if the object is lying on the table by its ground truth pose:
         # calculate the angle between the object's z-axis and the table normal

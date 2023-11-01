@@ -59,15 +59,10 @@ def prepare_vars_detached():
     variable_vars = {
         k: None
         for k in [
-            "get_bbox",
-            "get_obj_pos",
-            "get_color",
-            "is_obj_visible",
-            "denormalize_xy",
-            "get_obj_names",
-            "get_corner_name",
-            "get_side_name",
-            "get_ee_pose",
+            "get_3d_bbox",
+            "get_object_center_position",
+            "get_obj_name_list",
+            "get_end_effector_pose",
             "parse_pose",
             "open_gripper",
             "close_gripper",

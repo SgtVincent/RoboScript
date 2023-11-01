@@ -21,7 +21,7 @@ import rospy
 from franka_gripper.msg import GraspAction, MoveAction
 import geometry_msgs, std_msgs
 
-from utils import get_obj_pos, get_obj_names, parse_obj_name, bbox_contains_pt, is_obj_visible
+from utils import get_obj_pos, get_obj_name_list, parse_obj_name, bbox_contains_pt, 
 from plan_utils import parse_obj_name, parse_position, parse_pose, parse_question, transform_shape_pts  
 
 rospy.init_node('pandas_moveit', anonymous=True)
@@ -391,7 +391,7 @@ Your output should be a python script that can be executed to perform the task d
 import numpy as np
 from shapely.geometry import *
 from shapely.affinity import *
-from env_utils import denormalize_xy, parse_obj_name, get_obj_names, get_obj_pos
+from env_utils import denormalize_xy, parse_obj_name, get_obj_name_list, get_obj_pos
 '''
 },
 {
@@ -457,7 +457,7 @@ ret_val = points
 {
 "role": "assistant",
 "content": '''
-block_name = parse_obj_name('the sun colored block', f'objects = {get_obj_names()}')
+block_name = parse_obj_name('the sun colored block', f'objects = {get_obj_name_list()}')
 corner_positions = np.array([denormalize_xy(pos) for pos in [[0, 0], [0, 1], [1, 1], [1, 0]]])
 closest_corner_pos = get_closest_point(points=corner_positions, point=get_obj_pos(block_name))
 ret_val = closest_corner_pos
@@ -470,7 +470,7 @@ ret_val = closest_corner_pos
 {
 "role": "assistant",
 "content": '''
-bowl_name = parse_obj_name('the right most bowl', f'objects = {get_obj_names()}')
+bowl_name = parse_obj_name('the right most bowl', f'objects = {get_obj_name_list()}')
 side_positions = np.array([denormalize_xy(pos) for pos in [[0.5, 0], [0.5, 1], [1, 0.5], [0, 0.5]]])
 farthest_side_pos = get_farthest_point(points=side_positions, point=get_obj_pos(bowl_name))
 ret_val = farthest_side_pos
@@ -483,7 +483,7 @@ ret_val = farthest_side_pos
 {
 "role": "assistant",
 "content": '''
-block_name = parse_obj_name('the third block from the bottom', f'objects = {get_obj_names()}')
+block_name = parse_obj_name('the third block from the bottom', f'objects = {get_obj_name_list()}')
 ret_val = get_obj_pos(block_name) + [0.1, 0]
 '''
 },
@@ -494,7 +494,7 @@ ret_val = get_obj_pos(block_name) + [0.1, 0]
 {
 "role": "assistant",
 "content": '''
-bowl_names = parse_obj_name('the bowls', f'objects = {get_obj_names()}')
+bowl_names = parse_obj_name('the bowls', f'objects = {get_obj_name_list()}')
 bowl_positions = get_all_object_positions_np(obj_names=bowl_names)
 left_obj_pos = bowl_positions[np.argmin(bowl_positions[:, 0])] + [-0.1, 0]
 ret_val = left_obj_pos
@@ -536,7 +536,7 @@ Your output should be a python script that can be executed to perform the task d
 {
 "role": "assistant",
 "content": '''
-from utils import get_obj_pos, get_obj_names, parse_obj_name, bbox_contains_pt, is_obj_visible
+from utils import get_obj_pos, get_obj_name_list, parse_obj_name, bbox_contains_pt, 
 '''
 },
 {
@@ -556,7 +556,7 @@ ret_val = get_obj_pos('blue block')[0] > get_obj_pos('yellow bowl')[0]
 {
 "role": "assistant",
 "content": '''
-yellow_object_names = parse_obj_name('the yellow objects', f'objects = {get_obj_names()}')
+yellow_object_names = parse_obj_name('the yellow objects', f'objects = {get_obj_name_list()}')
 ret_val = len(yellow_object_names)
 '''
 },
@@ -577,7 +577,7 @@ ret_val = bbox_contains_pt(container_name='green bowl', obj_name='pink block')
 {
 "role": "assistant",
 "content": '''
-block_names = parse_obj_name('the blocks', f'objects = {get_obj_names()}')
+block_names = parse_obj_name('the blocks', f'objects = {get_obj_name_list()}')
 green_bowl_pos = get_obj_pos('green bowl')
 left_block_names = []
 for block_name in block_names:
@@ -593,7 +593,7 @@ ret_val = left_block_names
 {
 "role": "assistant",
 "content": '''
-sun_block_name = parse_obj_name('sun colored block', f'objects = {get_obj_names()}')
+sun_block_name = parse_obj_name('sun colored block', f'objects = {get_obj_name_list()}')
 sun_block_pos = get_obj_pos(sun_block_name)
 blue_bowl_pos = get_obj_pos('blue bowl')
 ret_val = sun_block_pos[1] > blue_bowl_pos[1]
@@ -623,7 +623,7 @@ Your output should be a python script that can be executed to transform the shap
 "role": "assistant",
 "content": '''
 import numpy as np
-from utils import get_obj_pos, get_obj_names, parse_position, parse_obj_name
+from utils import get_obj_pos, get_obj_name_list, parse_position, parse_obj_name
 '''
 },
 {
@@ -676,7 +676,7 @@ new_shape_pts = scale_pts_around_centroid_np(new_shape_pts, scale_x=0.7, scale_y
 {
 "role": "assistant",
 "content": '''
-block_name = parse_obj_name('the blue block', f'objects = {get_obj_names()}')
+block_name = parse_obj_name('the blue block', f'objects = {get_obj_name_list()}')
 block_pos = get_obj_pos(block_name)
 mean_delta = np.mean(block_pos - shape_pts, axis=1)
 new_shape_pts = translate_pts_np(shape_pts, mean_delta)

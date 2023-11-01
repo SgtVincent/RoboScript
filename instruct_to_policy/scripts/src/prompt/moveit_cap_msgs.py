@@ -16,8 +16,8 @@ import moveit_commander
 import actionlib
 import rospy
 from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
-from utils import get_obj_pos, get_obj_names, parse_obj_name, bbox_contains_pt, is_obj_visible, parse_pose, parse_question, transform_shape_pts, get_pose, get_bbox, get_color, get_corner_name, get_side_name, denormalize_xy
-from plan_utils import add_object_to_scene, attach_object, detach_object, open_gripper, close_gripper, move_to_pose, move_joints_to, get_ee_pose,
+from utils import get_object_center_position, get_obj_name_list, parse_obj_name, bbox_contains_pt, , parse_pose, parse_question, transform_shape_pts, get_pose, get_3d_bbox, get_corner_name, get_side_name, denormalize_xy
+from plan_utils import add_object_to_scene, attach_object, detach_object, open_gripper, close_gripper, move_to_pose, move_joints_to, get_end_effector_pose,
 '''
 
 Your generated content should only contain comments starting with '#' and python code!
@@ -152,7 +152,7 @@ detach_object('elevator button')
 # Step 3: Place the bottle back on the table
 
 # Get the position of the bottle
-bottle_pos = get_obj_pos('bottle')
+bottle_pos = get_object_center_position('bottle')
 
 # Grasp the bottle
 grasp_pose = parse_pose(object='bottle', action='grasp')
@@ -166,7 +166,7 @@ pour_pose = parse_pose(object='glass', action='pour')
 move_to_pose(pour_pose, move_group)
 
 # Place the bottle back on the table
-table_pos = get_obj_pos('table')
+table_pos = get_object_center_position('table')
 place_pose = parse_pose(object='bottle', action='place', position=table_pos)
 move_to_pose(place_pose, move_group)
 open_gripper(gripper_group)
@@ -187,7 +187,7 @@ detach_object('bottle')
 # Step 3: Follow the orbit path to scan the bottle
 
 # Get the position of the bottle
-bottle_position = get_obj_pos('bottle')
+bottle_position = get_object_center_position('bottle')
 
 # Generate an orbit path around the bottle
 scan_path_points = generate_orbit_path(bottle_position, radius=0.1, n=20)
@@ -236,7 +236,7 @@ for _ in range(3):
 # Step 4: Release the clothing
 
 # Get the position of the clothing
-clothing_pos = get_obj_pos('clothing')
+clothing_pos = get_object_center_position('clothing')
 
 # Grasp the clothing with the robot arm
 grab_clothing_pose = parse_pose(object='clothing', action='grab')
@@ -311,7 +311,7 @@ detach_object('spoon')
 # Step 6: Place back the watering can
 
 # Get the position of the watering can
-can_pos = get_obj_pos('watering can')
+can_pos = get_object_center_position('watering can')
 
 # Grasp the watering can with the robot arm
 grasp_can_pose = parse_pose(object='watering can', action='grasp')
@@ -353,7 +353,7 @@ detach_object('watering can')
 # Step 4: Put the bowl on the table
 
 # Get the position of the bowl on the high shelf
-bowl_pos = get_obj_pos('bowl', location='high shelf')
+bowl_pos = get_object_center_position('bowl', location='high shelf')
 
 # Grasp the bowl with the robot arm
 grasp_bowl_pose = parse_pose(object='bowl', action='grasp', description='a bowl from the high shelf')
@@ -389,7 +389,7 @@ detach_object('bowl')
 # Step 7: Release the can
 
 # Get the positions of the peach, can, plate, and fry pan
-peach_pos, can_pos, plate_pos, fry_pan_pos = get_obj_positions_np(['peach', 'can', 'plate', 'fry_pan'])
+peach_pos, can_pos, plate_pos, fry_pan_pos = get_object_center_positionitions_np(['peach', 'can', 'plate', 'fry_pan'])
 
 # Grasp the peach with the robot arm
 peach_grasp_pose = parse_pose(object='peach', action='grasp')
@@ -436,8 +436,8 @@ Your output should be a python script that can be executed to perform the task d
 "role": "assistant",
 "content": '''
 import numpy as np
-from env_utils import get_obj_pos, parse_pose
-from utils import get_obj_positions_np
+from env_utils import get_object_center_position, parse_pose
+from utils import get_object_center_positionitions_np
 '''
 },
 {
@@ -448,8 +448,8 @@ from utils import get_obj_positions_np
 "role": "assistant",
 "content": '''
 block_names = ['blue block', 'cyan block', 'purple block']
-block_positions = get_obj_positions_np(block_names)
-closest_block_idx = np.argsort(np.linalg.norm(block_positions - get_obj_pos('purple bowl'), axis=1))[0]
+block_positions = get_object_center_positionitions_np(block_names)
+closest_block_idx = np.argsort(np.linalg.norm(block_positions - get_object_center_position('purple bowl'), axis=1))[0]
 closest_block_name = block_names[closest_block_idx]
 ret_val = closest_block_name
 '''
@@ -495,10 +495,10 @@ for fruit_name in fruit_names:
 "role": "assistant",
 "content": '''
 block_names = ['blue block', 'cyan block', 'purple block']
-brown_bowl_pos = get_obj_pos('brown bowl')
+brown_bowl_pos = get_object_center_position('brown bowl')
 use_block_names = []
 for block_name in block_names:
-    if get_obj_pos(block_name)[1] > brown_bowl_pos[1]:
+    if get_object_center_position(block_name)[1] > brown_bowl_pos[1]:
         use_block_names.append(block_name)
 ret_val = use_block_names
 '''
@@ -522,7 +522,7 @@ ret_val = 'blue block'
 "content": '''
 corner_pos = parse_position('bottom right corner')
 block_names = ['blue block', 'cyan block', 'purple block']
-block_positions = get_obj_positions_np(block_names)
+block_positions = get_object_center_positionitions_np(block_names)
 closest_block_idx = np.argsort(np.linalg.norm(block_positions - corner_pos, axis=1))[0]
 closest_block_name = block_names[closest_block_idx]
 ret_val = closest_block_name
@@ -536,7 +536,7 @@ ret_val = closest_block_name
 "role": "assistant",
 "content": '''
 block_names = ['green block', 'brown block', 'blue block']
-block_positions = get_obj_positions_np(block_names)
+block_positions = get_object_center_positionitions_np(block_names)
 left_block_idx = np.argsort(block_positions[:, 0])[0]
 left_block_name = block_names[left_block_idx]
 ret_val = left_block_name
@@ -550,7 +550,7 @@ ret_val = left_block_name
 "role": "assistant",
 "content": '''
 bowl_names = ['brown bowl', 'green bowl', 'blue bowl']
-bowl_positions = get_obj_positions_np(bowl_names)
+bowl_positions = get_object_center_positionitions_np(bowl_names)
 top_bowl_idx = np.argsort(block_positions[:, 1])[-1]
 top_bowl_name = bowl_names[top_bowl_idx]
 ret_val = top_bowl_name
@@ -564,7 +564,7 @@ ret_val = top_bowl_name
 "role": "assistant",
 "content": '''
 bowl_names = ['yellow bowl', 'purple bowl', 'pink bowl']
-bowl_positions = get_obj_positions_np(bowl_names)
+bowl_positions = get_object_center_positionitions_np(bowl_names)
 bowl_idx = np.argsort(block_positions[:, 0])[-3]
 bowl_name = bowl_names[bowl_idx]
 ret_val = bowl_name
@@ -578,8 +578,8 @@ ret_val = bowl_name
 "role": "assistant",
 "content": '''
 drawer_names = ['drawer_0', 'drawer_1', 'drawer_2', 'drawer_3']
-table_pos = get_obj_pos('table')
-drawer_positions = get_obj_positions_np(drawer_names)
+table_pos = get_object_center_position('table')
+drawer_positions = get_object_center_positionitions_np(drawer_names)
 closest_drawer_idx = np.argsort(np.linalg.norm(drawer_positions - table_pos, axis=1))[0]
 closest_drawer_name = drawer_names[closest_drawer_idx]
 ret_val = closest_drawer_name
@@ -593,7 +593,7 @@ ret_val = closest_drawer_name
 "role": "assistant",
 "content": '''
 drawer_names = ['drawer_0', 'drawer_1', 'drawer_2', 'drawer_3']
-drawer_positions = get_obj_positions_np(drawer_names)
+drawer_positions = get_object_center_positionitions_np(drawer_names)
 top_drawer_idx = np.argsort(drawer_positions[:, 2])[-1]
 top_drawer_name = drawer_names[top_drawer_idx]
 ret_val = top_drawer_name
@@ -607,7 +607,7 @@ ret_val = top_drawer_name
 "role": "assistant",
 "content": '''
 drawer_names = ['drawer_0', 'drawer_1', 'drawer_2', 'drawer_3']
-drawer_positions = get_obj_positions_np(drawer_names)
+drawer_positions = get_object_center_positionitions_np(drawer_names)
 second_drawer_idx = np.argsort(drawer_positions[:, 2])[-2]
 second_drawer_name = drawer_names[second_drawer_idx]
 ret_val = second_drawer_name
@@ -626,7 +626,7 @@ Your output should be a python script that can be executed to perform the task d
 {
 "role": "assistant",
 "content": '''
-from utils import get_obj_pos, get_obj_names, parse_obj_name, bbox_contains_pt, is_obj_visible
+from utils import get_object_center_position, get_obj_name_list, parse_obj_name, bbox_contains_pt, 
 '''
 },
 {
@@ -636,7 +636,7 @@ from utils import get_obj_pos, get_obj_names, parse_obj_name, bbox_contains_pt, 
 {
 "role": "assistant",
 "content": '''
-ret_val = get_obj_pos('blue block')[0] > get_obj_pos('yellow bowl')[0]
+ret_val = get_object_center_position('blue block')[0] > get_object_center_position('yellow bowl')[0]
 '''
 },
 {
@@ -646,7 +646,7 @@ ret_val = get_obj_pos('blue block')[0] > get_obj_pos('yellow bowl')[0]
 {
 "role": "assistant",
 "content": '''
-yellow_object_names = parse_obj_name('the yellow objects', f'objects = {get_obj_names()}')
+yellow_object_names = parse_obj_name('the yellow objects', f'objects = {get_obj_name_list()}')
 ret_val = len(yellow_object_names)
 '''
 },
@@ -667,11 +667,11 @@ ret_val = bbox_contains_pt(container_name='green bowl', obj_name='pink block')
 {
 "role": "assistant",
 "content": '''
-block_names = parse_obj_name('the blocks', f'objects = {get_obj_names()}')
-green_bowl_pos = get_obj_pos('green bowl')
+block_names = parse_obj_name('the blocks', f'objects = {get_obj_name_list()}')
+green_bowl_pos = get_object_center_position('green bowl')
 left_block_names = []
 for block_name in block_names:
-  if get_obj_pos(block_name)[0] < green_bowl_pos[0]:
+  if get_object_center_position(block_name)[0] < green_bowl_pos[0]:
     left_block_names.append(block_name) 
 ret_val = left_block_names
 '''
@@ -683,9 +683,9 @@ ret_val = left_block_names
 {
 "role": "assistant",
 "content": '''
-sun_block_name = parse_obj_name('sun colored block', f'objects = {get_obj_names()}')
-sun_block_pos = get_obj_pos(sun_block_name)
-blue_bowl_pos = get_obj_pos('blue bowl')
+sun_block_name = parse_obj_name('sun colored block', f'objects = {get_obj_name_list()}')
+sun_block_pos = get_object_center_position(sun_block_name)
+blue_bowl_pos = get_object_center_position('blue bowl')
 ret_val = sun_block_pos[1] > blue_bowl_pos[1]
 '''
 },
@@ -696,7 +696,7 @@ ret_val = sun_block_pos[1] > blue_bowl_pos[1]
 {
 "role": "assistant",
 "content": '''
-ret_val = get_obj_pos('green block')[1] < get_obj_pos('blue bowl')[1]
+ret_val = get_object_center_position('green block')[1] < get_object_center_position('blue bowl')[1]
 '''
 }
 ]
@@ -713,7 +713,7 @@ Your output should be a python script that can be executed to transform the shap
 "role": "assistant",
 "content": '''
 import numpy as np
-from utils import get_obj_pos, get_obj_names, parse_pose, get_obj_pos
+from utils import get_object_center_position, get_obj_name_list, parse_pose, get_object_center_position
 '''
 },
 {
@@ -766,8 +766,8 @@ new_shape_pts = scale_pts_around_centroid_np(new_shape_pts, scale_x=0.7, scale_y
 {
 "role": "assistant",
 "content": '''
-block_name = parse_obj_name('the blue block', f'objects = {get_obj_names()}')
-block_pos = get_obj_pos(block_name)
+block_name = parse_obj_name('the blue block', f'objects = {get_obj_name_list()}')
+block_pos = get_object_center_position(block_name)
 mean_delta = np.mean(block_pos - shape_pts, axis=1)
 new_shape_pts = translate_pts_np(shape_pts, mean_delta)
 '''
@@ -822,16 +822,16 @@ Your output should be a python script that can be executed to perform the task d
 def parse_pose(object, action, description):
     if action in ['pick', 'grasp', 'grab', 'get', 'take', 'hold']:
         pose = Pose()
-        pose.position = get_obj_pos(object)
+        pose.position = get_object_center_position(object)
         pose.orientation = Quaternion(0,0,0,1)
     elif action in ['place', 'put', 'drop', 'release']:
         pose = Pose()
-        pose.position = get_obj_pos(object)
+        pose.position = get_object_center_position(object)
         pose.position.z += 0.2
         pose.orientation = Quaternion(0,0,0,1)
     else:
         pose = Pose()
-        pose.position = get_obj_pos(object)
+        pose.position = get_object_center_position(object)
         pose.orientation = Quaternion(0,0,0,1)
 '''
 },

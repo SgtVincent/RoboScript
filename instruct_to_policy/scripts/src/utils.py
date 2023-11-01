@@ -34,21 +34,15 @@ def prepare_vars(env):
     variable_vars = {
         k: getattr(env, k)
         for k in [
-            "get_bbox",
-            "get_obj_pos",
-            "get_color",
-            "is_obj_visible",
-            "denormalize_xy",
-            "get_obj_names",
-            "get_corner_name",
-            "get_side_name",
-            "get_ee_pose",
-            "parse_pose",
+            "get_3d_bbox",
+            "get_object_center_position",
+            "get_obj_name_list",
+            "get_end_effector_pose",
             "open_gripper",
             "close_gripper",
             "move_to_pose",
             "move_joints_to",
-            "add_object_to_scene",
+            "detect_new_objects",
             "attach_object",
             "detach_object"
             # DO NOT use mid-level skills?

@@ -7,10 +7,6 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <arg name="pipeline" default="ompl" />
   <arg name="moveit_rviz" default="true" />
 
-  <!-- Panda specific options -->
-  <arg name="load_gripper" default="true" />
-  <arg name="transmission" default="effort" />
-
   <!-- Gazebo specific options -->
   <arg name="gazebo_gui" default="true" />
   <arg name="paused" default="false" />
@@ -28,19 +24,16 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <env name="LD_LIBRARY_PATH" value="$(find instruct_to_policy)/../../../devel/lib:$(optenv LD_LIBRARY_PATH)"/>
 
   <!-- world settings -->
-  <!-- fix panda at the table edge -->
+  <!-- pose to spawn UR5 robot -->
   <arg name="x" default="-0.45" />
   <arg name="y" default="0.0" />
   <arg name="z" default="1.02" />
   <!-- run demo by default -->
   <arg name="world" default="$(find instruct_to_policy)/worlds/demo_table_cabinet.world" />
 
-
-  <!-- Launch the gazebo simulator and spawn the robot -->
-  <include file="$(find instruct_to_policy)/launch/panda_gazebo.launch" pass_all_args="true">
-    <arg name="headless" value="$(eval not arg('gazebo_gui'))" />
-    <arg name="use_gripper" default="$(arg load_gripper)" />
-    <arg name="controller" default="$(arg transmission)_joint_trajectory_controller" />
+  <!-- Launch Gazebo and spawn the robot -->
+  <include file="$(find instruct_to_policy)/launch/ur5_gazebo.launch" pass_all_args="true">
+    <arg name="world_name" value="$(arg world)"/>
   </include>
 
   <!-- Launch the camera set -->
@@ -49,14 +42,11 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
     <arg name="align_depth_to_rgb" value="$(arg align_depth_to_rgb)"/>
     <arg name="publish_pointcloud" value="$(arg publish_pointcloud)"/>  
   </include>
-
-  <!-- Launch the MoveIt configuration for Franka Emika Panda -->
-  <include file="$(find instruct_to_policy)/launch/run_moveit.launch" pass_all_args="true" if="$(arg enable_moveit)">
-    <!-- robot description is loaded by gazebo.launch, to enable Gazebo features -->
+  
+  <!-- Launch MoveIt for UR5 -->
+  <include file="$(find ur5_gripper_moveit_config)/launch/demo.launch" pass_all_args="true" if="$(arg enable_moveit)">
+    <!-- robot_description is loaded by gazebo.launch, to enable Gazebo features -->
     <arg name="load_robot_description" value="false" />
-    <!-- MoveItSimpleControllerManager provides ros_control's JointTrajectory controllers
-         as well as GripperCommand actions -->
-    <arg name="moveit_controller_manager" value="simple" />
-    <arg name="use_rviz" value="$(arg moveit_rviz)" />
+    <arg name="moveit_controller_manager" value="ros_control" />
   </include>
 </launch>

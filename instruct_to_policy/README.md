@@ -34,12 +34,14 @@ Then, you can run the code generation demo script by roslauch:
 roslaunch instruct_to_policy run_cap.launch 
 ```
 
-### Gazebo plugins (deprecated)
-
-**No longer used.**
+### Gazebo plugins
 
 Our locally-built plugins are in `/path/to/catkin_ws/devel/lib`. To load it in gazebo, you should specify the LD_LIBRARY_PATH to the directory of the plugin. 
 
 ```bash
 e.g. export LD_LIBRARY_PATH=/path/to/catkin_ws/devel/lib
 ```
+
+### TODO List
+
+- [x] Try to decouple the ros plugins and the robot urdf model.

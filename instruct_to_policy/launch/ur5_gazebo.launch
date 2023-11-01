@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- UR5 spawn base pose -->
+  <arg name="x" default="-0.45" />
+  <arg name="y" default="0.0" />
+  <arg name="z" default="1.02" />
+  <arg name="roll" default="0"/>
+  <arg name="pitch" default="0"/>
+  <arg name="yaw" default="0"/>
+
+  <!-- UR5 spawn joint positions -->
+  <arg name="robotiq_85_left_knuckle_joint" default="0.1"/>
+  <arg name="shoulder_lift_joint" default="-1.5447"/>
+  <arg name="shoulder_pan_joint" default="-1.5447"/>
+  <arg name="elbow_joint" default="-1.5447"/>
+  <arg name="wrist_1_joint" default="-1.5794"/>
+  <arg name="wrist_2_joint" default="+1.5794"/>
+  <arg name="wrist_3_joint" default="+1.5794"/>
+
+  <!-- Gazebo options -->
+  <arg name="robot_name" default="ur5" doc="Name of the robot to spawn" />
+  <arg name="gazebo_gui" default="true" doc="Start Gazebo GUI"/>
+  <arg name="paused" default="false" doc="Start Gazebo paused"/>
+  <arg name="verbose" default="false" doc="Should gazebo be started in verbose mode?" />
+  <arg name="world_name" default="worlds/empty.world" doc="Gazebo world file"/>
+  <arg name="initial_joint_positions" default="
+          -J robotiq_85_left_knuckle_joint $(arg robotiq_85_left_knuckle_joint) 
+          -J shoulder_lift_joint $(arg shoulder_lift_joint) 
+          -J shoulder_pan_joint $(arg shoulder_pan_joint) 
+          -J elbow_joint $(arg elbow_joint) 
+          -J wrist_1_joint $(arg wrist_1_joint) 
+          -J wrist_2_joint $(arg wrist_2_joint) 
+          -J wrist_3_joint $(arg wrist_3_joint)" 
+          doc="Initial joint configuration of the robot"/>
+
+
+  <!-- Start Gazebo paused to allow the controllers to pickup the initial pose -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch" pass_all_args="true">
+    <arg name="paused" value="true"/>
+    <arg name="verbose" value="$(arg verbose)"/>
+  </include>
+
+  <!-- Set the robot urdf on the parameter server -->
+  <param name="robot_description" 
+    command="xacro  $(find instruct_to_policy)/urdf/ur5_robotiq85_gripper.urdf.xacro
+          xyz:='$(arg x) $(arg y) $(arg z)' 
+          rpy:='$(arg roll) $(arg pitch) $(arg yaw)'"/>
+
+  <!-- Unpause the simulation after loading the robot model -->
+  <arg name="unpause" value="$(eval '' if arg('paused') else '-unpause')" />
+
+  <!-- Spawn the robot in Gazebo -->
+  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" 
+    args="-urdf -param robot_description -model $(arg robot_name) $(arg unpause) $(arg initial_joint_positions)"
+    respawn="false" output="screen" />
+
+  <!-- Load the controller parameters onto the parameter server -->
+  <rosparam file="$(find ur5_gripper_moveit_config)/config/gazebo_controllers.yaml" />
+  <include file="$(find ur5_gripper_moveit_config)/launch/ros_controllers.launch"/>
+
+  <!-- Spawn the Gazebo ROS controllers -->
+  <node name="gazebo_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="joint_state_controller" />
+
+  <!-- Given the published joint states, publish tf for the robot links -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
+  <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" respawn="true" output="screen" /> -->
+</launch>

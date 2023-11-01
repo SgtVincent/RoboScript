@@ -6,7 +6,7 @@
   <!-- Environment variables for loading local artifacts -->
   <env name="GAZEBO_MODEL_PATH" value="$(find instruct_to_policy)/data/ycb/models:$(find instruct_to_policy)/data/google_scanned_object/models:$(find instruct_to_policy)/models:$(optenv GAZEBO_MODEL_PATH)"/>
   <env name="GAZEBO_RESOURCE_PATH" value="$(find instruct_to_policy)/worlds:$(optenv GAZEBO_RESOURCE_PATH)"/>
-  <env name="LD_LIBRARY_PATH" value="$(find instruct_to_policy)/../../../devel/lib:$(optenv LD_LIBRARY_PATH)"/>s
+  <env name="LD_LIBRARY_PATH" value="$(find instruct_to_policy)/../../../devel/lib:$(optenv LD_LIBRARY_PATH)"/>
 
   <!-- Gazebo & GUI Configuration -->
   <arg name="gazebo"      default="true"  doc="Should the gazebo simulation be launched? Use false in case if you want to include this file and launch gazebo yourself" />
@@ -15,12 +15,12 @@
   <arg name="world"       default="worlds/empty.world" doc="Filename to a SDF World for gazebo to use" />
   <arg name="rviz"        default="false" doc="Should RVIz be launched?" />
   <arg name="verbose"     default="false" doc="Should gazebo be started in verbose mode?" />
-  <arg name="camera_model" default="$(find instruct_to_policy)/robots/panda/triple_d435_cameras.urdf.xacro" doc="Filename to a urdf.xacro file for gazebo to use" />
-  <!-- Image pipeline options -->
+  <!-- Camera options -->
+  <arg name="camera_model" default="$(find instruct_to_policy)/urdf/triple_d435_cameras.urdf.xacro" doc="Filename to a urdf.xacro file for gazebo to use" />
   <arg name="align_depth_to_rgb" default="true" />
   <arg name="publish_pointcloud" default="false" />
 
-
+  <!-- Launch Gazebo -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch" if="$(arg gazebo)">
     <arg name="world_name" value="$(arg world)"/>
     <arg name="paused" value="$(arg paused)"/>
@@ -29,31 +29,10 @@
     <arg name="verbose" value="$(arg verbose)"/>
   </include>
 
-  <!-- camera description to load in gazebo -->
-  <param name="camera_description" 
-      command="xacro $(arg camera_model) 
-          use_nominal_extrinsics:=true 
-          publish_pointcloud:=false
-          add_plug:=false" />
-
-  <!-- Process the raw sensor input -->
-  <include file="$(find instruct_to_policy)/launch/register_depth.launch" if="$(arg align_depth_to_rgb)">
+  <include file="$(find instruct_to_policy)/launch/gazebo_spawn_camera.launch">
+    <arg name="camera_model" value="$(arg camera_model)"/>
+    <arg name="align_depth_to_rgb" value="$(arg align_depth_to_rgb)"/>
     <arg name="publish_pointcloud" value="$(arg publish_pointcloud)"/>
   </include>
-
-  <!-- push camera to factory and spawn robot in gazebo -->
-  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
-        args="-urdf -model triple_camera_set -param camera_description" output="screen" />
-
-  <!-- state publisher for camera set -->
-  <node name="camera_joint_state_publisher" type="joint_state_publisher" pkg="joint_state_publisher">
-      <remap from="robot_description" to="camera_description"/>
-      <remap from="joint_states" to="camera_joint_states"/>
-      <param name="rate" value="30"/>
-  </node>
-  <node name="$(anon camera_state_publisher)" pkg="robot_state_publisher" type="robot_state_publisher">
-    <remap from="robot_description" to="camera_description"/>
-    <remap from="joint_states" to="camera_joint_states"/>
-  </node>
 
 </launch>

@@ -10,7 +10,7 @@ from cv_bridge import CvBridge
 from grasp_detection.srv import DetectGrasps, DetectGraspsRequest, DetectGraspsResponse
 from grasp_detection.msg import Grasp, Perception, PerceptionSingleCamera, BoundingBox3D
 
-from .utils import data_to_percetion_msg
+from src.perception.utils import data_to_percetion_msg
 from .grasp_detection_base import GraspDetectionBase
 
 

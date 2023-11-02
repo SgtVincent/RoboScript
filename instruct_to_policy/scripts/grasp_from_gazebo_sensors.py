@@ -29,7 +29,7 @@ from vgn.perception import TSDFVolume, ScalableTSDFVolume
 from vgn.utils.visual import grasp2mesh, plot_voxel_as_cloud, plot_tsdf_with_grasps
 
 from src.env.gazebo_cameras import GazeboRGBDCameraSet, GazeboRGBDCamera
-from src.grasp_detection.utils import Transform, Rotation, CameraIntrinsic, get_mask_from_3D_bbox
+from src.perception.utils import Transform, Rotation, CameraIntrinsic, get_mask_from_3D_bbox
   
 def predict_grasp(args, planner, data: Dict):
     # DO NOT use color since realsense D435 camera has different color and depth image resolution & optical center

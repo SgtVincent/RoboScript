@@ -356,8 +356,8 @@ class MoveitGazeboEnv(GazeboEnv):
         self.reset_scene()    
         rospy.loginfo("Environment reset.")
 
-    def get_end_effector_pose(self, group=None):
-        """Get the current pose of the end effector."""
+    def get_gripper_pose(self, group=None):
+        """Get the current pose of the gripper."""
         if group is None:
             group = self.move_group
         return group.get_current_pose().pose

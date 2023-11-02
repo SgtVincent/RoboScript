@@ -20,7 +20,7 @@ data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 
 # from src.env.simple_grounding_env import SimpleGroundingEnv
 from src.env.gazebo_env import GazeboEnv
 from src.env.utils import pose_msg_to_matrix, get_axis_aligned_bbox
-from src.grasp_detection.utils import CameraIntrinsic, Transform
+from src.perception.utils import CameraIntrinsic, Transform
 from src.config import cfg_tabletop
 
 def get_2D_bbox_from_3D(bbox_center:np.ndarray, bbox_size:np.ndarray,

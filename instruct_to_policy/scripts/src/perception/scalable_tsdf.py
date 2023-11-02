@@ -24,6 +24,14 @@ class ScalableTSDFVolume(object):
             color_type=color,
         )
 
+    def reset(self):
+        """Reset the tsdf volume.
+        """
+        self._volume = o3d.pipelines.integration.ScalableTSDFVolume(
+            voxel_length=self.voxel_size,
+            sdf_trunc=self.sdf_trunc,
+            color_type=self._volume.color_type,
+        )
 
     def integrate(self, depth_img, intrinsic, extrinsic, rgb_img=None, mask_img=None):
         """

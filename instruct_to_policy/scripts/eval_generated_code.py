@@ -4,7 +4,7 @@ import numpy as np
 import argparse
 
 from src.lmp import *
-from src.env.simple_grounding_env import SimpleGroundingEnv
+from src.env.true_grounding_env import SimpleGroundingEnv
 from src.config import cfg_tabletop
 import rospy 
 import rospkg

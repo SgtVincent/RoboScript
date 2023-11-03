@@ -26,7 +26,7 @@ from perception_utils import (
     get_3d_bbox,                 # Returns the 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array, [x_min, y_min, z_min, x_max, y_max, z_max]
     get_obj_name_list,           # Returns a list of names of objects present in the scene
     parse_grasp_pose,            # Predict a grasp pose for a specified object. Args: object_name: str. Returns: grasp_pose: Pose
-    parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: str. Returns: place_pose: Pose
+    parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: str, position: [x,y,z]. Returns: place_pose: Pose
     detect_objects               # Detects objects and update objects states after robot action execution and returns their names as a list.
 )
 
@@ -377,6 +377,43 @@ move_to_pose(put_bowl_pose)
 # Release the bowl
 open_gripper()
 detach_object('bowl')
+'''
+},
+{# Move an object away from another object
+"role":"user",
+"content": "objects = ['bowl', 'table', 'apple'] \n # move the apple away from the bowl by 0.1m"
+},
+{
+"role":"assistant",
+"content":
+'''
+# Detailed planning:
+# Step 1: Grasp the apple
+# Step 2: Calculate the position to move the apple to
+# Step 3: Move the apple to the calculated position
+# Step 4: Release the apple
+
+# Grasp the apple
+open_gripper()
+grasp_apple_pose = parse_grasp_pose(object='apple')
+grasp(grasp_apple_pose)
+close_gripper()
+attach_object('apple')
+
+# Calculate the position to move the apple to
+apple_position = get_object_center_position('apple')
+bowl_position = get_object_center_position('bowl')
+direction = apple_position - bowl_position
+direction = direction / np.linalg.norm(direction)
+move_position = apple_position + direction * 0.1
+
+# Move the apple to the calculated position
+put_apple_pose = parse_place_pose(object_name='apple', position=move_position)
+move_to_pose(put_apple_pose)
+ 
+# Release the apple
+open_gripper()
+detach_object('apple')
 '''
 },
 {# Swap objects in the two containers

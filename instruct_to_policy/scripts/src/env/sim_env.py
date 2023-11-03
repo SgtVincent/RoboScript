@@ -9,7 +9,7 @@ from .moveit_gazebo_env import MoveitGazeboEnv
 from src.grasp_detection import GraspDetectionBase, GraspDetectionRemote
 from src.grounding_model import GroundingBase, GroundingEmbodiedGPT
 # from src.grasp_detection.utils import Grasp
-from src.env.utils import calculate_place_position
+from src.env.utils import calculate_place_position, is_collision, adjust_z
 from src.perception.scene_manager import SceneManager
 
 class SimEnv(MoveitGazeboEnv):
@@ -98,6 +98,14 @@ class SimEnv(MoveitGazeboEnv):
         description: str= kwargs.get('description', "gripper current pose") 
         # assert description in ["gripper canonical pose", "gripper current pose"] # only support canonical pose and current pose for now
         
+        # get the bounding box of the object and all other objectss
+        object_bbox = self.get_3d_bbox(object_name)
+        object_names = self.get_obj_name_list()
+        obstacle_bbox_list = [
+            self.get_3d_bbox(obstacle_name) for obstacle_name in object_names 
+            if obstacle_name not in [object_name]
+        ]
+        
         # If receptacle_name is given, get the receptacle position and bounding box
         if receptacle_name is not None:
             receptacle_center_position, receptacle_bbox_size = self.get_3d_bbox(receptacle_name)
@@ -106,13 +114,16 @@ class SimEnv(MoveitGazeboEnv):
         
         # If position is given, use it directly, otherwise use grounding model to get the receptacle position
         if position is None:
-            object_bbox = self.get_3d_bbox(object_name)
-            obstacle_bbox_list = [
-                self.get_3d_bbox(obstacle_name) for obstacle_name in self.scene.object_names 
-                if obstacle_name not in [object_name, 'table', 'ground', 'cabinet']
-            ]
+            assert receptacle_name is not None, "parse_place_pose: position must be given if receptacle_name is not given"
             position = calculate_place_position(
                 object_bbox, receptacle_bbox, obstacle_bbox_list, max_tries=100)
+        else:
+            # position already given, check if the position is valid, if not, adjust it
+            collision_mask = np.array([is_collision(object_bbox, obstacle_bbox) for obstacle_bbox in obstacle_bbox_list])
+            # adjust the z position if there is collision
+            if np.any(collision_mask):
+                collided_bbox_list = np.array(obstacle_bbox_list)[collision_mask]
+                position[2] = adjust_z(object_bbox, collided_bbox_list)  
         
         # Now we compose the place pose with the position and orientation
         pose = Pose()

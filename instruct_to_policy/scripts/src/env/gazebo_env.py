@@ -35,7 +35,8 @@ class GazeboEnv(Env):
         self.get_model_properties = rospy.ServiceProxy(f"/{self.node_name}/get_model_properties", GetModelProperties)
 
         self.robot_names = ["panda", "fr3", "triple_camera_set"]
-
+        self.environment_names = ["ground_plane"]
+        
         # register camera set
         self.camera_set = GazeboRGBDCameraSet(self.sensor_config['cameras'], 
                                               namespace=self.sensor_config['namespace'], 
@@ -51,7 +52,7 @@ class GazeboEnv(Env):
 
         objects = [
             obj for obj in self.get_world_properties().model_names
-            if obj not in self.robot_names
+            if obj not in self.robot_names and obj not in self.environment_names
         ]
         if self.extra_objects:
             objects += self.extra_objects

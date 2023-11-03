@@ -143,6 +143,23 @@ def calculate_place_position(object_bbox, receptacle_bbox, obstacle_bbox_list, m
     # return last trial even if it is in collision
     return position
 
+
+def adjust_z(object_bbox, collided_bbox_list):
+    """
+    Calculate the new minimum object center z-position for object given its 3D bounding box and a list of collided 3D bounding boxes.
+    """
+    # Calculate the maximum z_max of the collided bounding boxes
+    max_z = max(bbox[5] for bbox in collided_bbox_list)
+
+    # Calculate the object's height (z dimension size)
+    object_height = object_bbox[5] - object_bbox[2]
+
+    # Calculate the new z position for the center of the object's bounding box
+    new_z_center = max_z + object_height / 2
+
+    return new_z_center
+
+
 #################### Gazebo and MoveIt utils ####################
 
 

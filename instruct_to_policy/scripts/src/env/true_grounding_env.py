@@ -4,12 +4,13 @@ import json
 import numpy as np 
 import re 
 
-from geometry_msgs.msg import Quaternion, Pose 
+from geometry_msgs.msg import Quaternion, Pose, Point
 from grasp_detection.msg import Grasp as GraspMsg
 from .moveit_gazebo_env import MoveitGazeboEnv
 from src.grasp_detection import GraspDetectionBase, GraspDetectionRemote
 # from src.grasp_detection.utils import Grasp
-from src.env.utils import get_axis_aligned_bbox, pose_msg_to_matrix
+from src.env.utils import get_axis_aligned_bbox, pose_msg_to_matrix, calculate_place_position, is_collision, adjust_z
+
 
 class TrueGroundingEnv(MoveitGazeboEnv):
     """
@@ -98,25 +99,6 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         pose = pose_list[best_grasp_idx]
         
         return pose
-
-    def parse_pose(self, object, action="", description="", **kwargs):
-        """ 
-        Parse pose of action for the object.
-        NOTE: Grounding models/ perception models need to handle this function 
-        Currently only use the object name to get the grasp pose. All other parameters are ignored.
-        """
-        
-        # special case for drawer handle
-        if object in ["drawer", "cabinet"] or "drawer" in object.lower() or "cabinet" in object.lower():
-            return self.parse_gt_drawer_handle_grasp_pose(object)
-        
-        if self.grasp_method == "heuristic":
-            pose = self.parse_pose_heuristic(object, action, description)
-        elif self.grasp_method == "model":
-            pose = self.parse_pose_model(object, action, description)
-        else:
-            raise NotImplementedError(f"Grasp detection model {self.grasp_method} not implemented in {self.__class__.__name__}")      
-        return pose
     
     def parse_grasp_pose(self, object_name, description=""):
         """
@@ -147,15 +129,63 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         width = width_list[best_grasp_idx]
         return pose
 
+    def parse_place_pose(self, object_name, **kwargs):
+        """
+        Parse place pose for the object. Use ground truth grounding and heuristic place position calculation.
+        """
+        # get parameters from kwargs
+        receptacle_name: str = kwargs.get('receptacle_name', None)
+        position: np.ndarray = kwargs.get('position', None)
+        description: str= kwargs.get('description', "gripper current pose") 
+        # assert description in ["gripper canonical pose", "gripper current pose"] # only support canonical pose and current pose for now
         
+        # get the bounding box of the object and all other objectss
+        object_bbox = self.get_3d_bbox(object_name)
+        object_names = self.get_obj_name_list()
+        obstacle_bbox_list = [
+            self.get_3d_bbox(obstacle_name) for obstacle_name in object_names 
+            if obstacle_name not in [object_name]
+        ]
+        
+        # If receptacle_name is given, get the receptacle position and bounding box
+        if receptacle_name is not None:
+            receptacle_center_position, receptacle_bbox_size = self.get_3d_bbox(receptacle_name)
+            receptacle_bbox = np.array([receptacle_center_position - receptacle_bbox_size / 2, 
+                                        receptacle_center_position + receptacle_bbox_size / 2])
+        
+        # If position is given, use it directly, otherwise use grounding model to get the receptacle position
+        if position is None:
+            assert receptacle_name is not None, "parse_place_pose: position must be given if receptacle_name is not given"
+            position = calculate_place_position(
+                object_bbox, receptacle_bbox, obstacle_bbox_list, max_tries=100)
+        else:
+            # position already given, check if the position is valid, if not, adjust it
+            collision_mask = np.array([is_collision(object_bbox, obstacle_bbox) for obstacle_bbox in obstacle_bbox_list])
+            # adjust the z position if there is collision
+            if np.any(collision_mask):
+                collided_bbox_list = np.array(obstacle_bbox_list)[collision_mask]
+                position[2] = adjust_z(object_bbox, collided_bbox_list)          
+            
+        # Now we compose the place pose with the position and orientation
+        pose = Pose()
+        pose.position = Point(*position)
+        # remain current orientation
+        pose.orientation = self.get_gripper_pose().orientation
+        
+        return pose
+
+    # TODO: implement this failure recovery behavior if needed
     def parse_pose_default(self, object_name, action="", description=""):
         """
         Default pose parser for the object. Call when all other parsers fail.
         """
-        pose = Pose()
-        pose.position = self.get_object_center_position(object_name)
-        pose.orientation = Quaternion(0,1,0,0)
-        return pose
+        if "drawer" in object_name.lower() or "cabinet" in object_name.lower():
+            return self.parse_gt_drawer_handle_grasp_pose(object_name)
+        else:
+            pose = Pose()
+            pose.position = self.get_object_center_position(object_name)
+            pose.orientation = Quaternion(0,1,0,0)
+            return pose
     
     def parse_gt_drawer_handle_grasp_pose(self, object):
         """ 
@@ -208,32 +238,3 @@ class TrueGroundingEnv(MoveitGazeboEnv):
                     lying_objects.append(object)
                 
         return lying_objects
-                
-        
-            
-        
-    
-# unit test
-if __name__ == "__main__":
-    # test _load_gt_object_info function 
-    cfg = {
-        "env": {
-            "metadata_files": [
-                "/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/ycb/metadata.json",
-                "/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/object_metadata.json",
-                "/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/container_metadata.json"
-            ]
-        }
-    }
-    object_metadata_files = cfg["env"]["metadata_files"]
-    object_info = {}
-    for file in object_metadata_files:
-        with open(file, 'r') as f:
-            metadata = json.load(f)
-            for k, v in metadata["objects"].items():
-                object_name = v['model_name']
-                object_info[object_name] = {
-                    'bbox_size': v['bbox_size'],
-                    'bbox_center': v['bbox_center'],
-                }
-    print(object_info)

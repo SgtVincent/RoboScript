@@ -1385,7 +1385,7 @@
         </surface>
       </collision>
     </link>
-    <link name='drawer0'>
+    <link name='drawer3'>
       <pose>0 0 0 1.5708 0 -1.5708</pose>
       <inertial>
         <pose>0 0 0 0 -0 0</pose>
@@ -1402,7 +1402,7 @@
       <self_collide>0</self_collide>
       <enable_wind>0</enable_wind>
       <kinematic>0</kinematic>
-      <visual name='drawer0_fixed_joint_lump__handle-45_visual_10'>
+      <visual name='drawer3_fixed_joint_lump__handle-45_visual_10'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -1417,7 +1417,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__drawer_back-50_visual_4'>
+      <visual name='drawer3_fixed_joint_lump__drawer_back-50_visual_4'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -1432,7 +1432,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__handle-45_visual_9'>
+      <visual name='drawer3_fixed_joint_lump__handle-45_visual_9'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -1447,7 +1447,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__drawer_bottom-51_visual_5'>
+      <visual name='drawer3_fixed_joint_lump__drawer_bottom-51_visual_5'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -1462,7 +1462,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__drawer_side-48_visual_2'>
+      <visual name='drawer3_fixed_joint_lump__drawer_side-48_visual_2'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -1477,7 +1477,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__drawer_side-49_visual_3'>
+      <visual name='drawer3_fixed_joint_lump__drawer_side-49_visual_3'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -1492,7 +1492,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__handle-45_visual_8'>
+      <visual name='drawer3_fixed_joint_lump__handle-45_visual_8'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -1507,7 +1507,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__other_leaf-53_visual_7'>
+      <visual name='drawer3_fixed_joint_lump__other_leaf-53_visual_7'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -1522,7 +1522,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__drawer_front-47_visual_1'>
+      <visual name='drawer3_fixed_joint_lump__drawer_front-47_visual_1'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -1537,7 +1537,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__drawer_front-46_visual'>
+      <visual name='drawer3_fixed_joint_lump__drawer_front-46_visual'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -1552,7 +1552,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__drawer_bottom-51_visual_6'>
+      <visual name='drawer3_fixed_joint_lump__drawer_bottom-51_visual_6'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -1567,7 +1567,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <collision name='drawer0_collision_10'>
+      <collision name='drawer3_collision_10'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -1616,7 +1616,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_1'>
+      <collision name='drawer3_collision_1'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -1665,7 +1665,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_2'>
+      <collision name='drawer3_collision_2'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -1714,7 +1714,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_4'>
+      <collision name='drawer3_collision_4'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -1763,7 +1763,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_5'>
+      <collision name='drawer3_collision_5'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -1812,7 +1812,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_7'>
+      <collision name='drawer3_collision_7'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -1861,7 +1861,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_3'>
+      <collision name='drawer3_collision_3'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -1910,7 +1910,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_6'>
+      <collision name='drawer3_collision_6'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -1959,7 +1959,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision'>
+      <collision name='drawer3_collision'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -2008,7 +2008,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_8'>
+      <collision name='drawer3_collision_8'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -2057,7 +2057,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_9'>
+      <collision name='drawer3_collision_9'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -2107,7 +2107,7 @@
         </surface>
       </collision>
     </link>
-    <link name='drawer1'>
+    <link name='drawer2'>
       <pose>0 0 0 1.5708 0 -1.5708</pose>
       <inertial>
         <pose>0 0 0 0 -0 0</pose>
@@ -2124,7 +2124,7 @@
       <self_collide>0</self_collide>
       <enable_wind>0</enable_wind>
       <kinematic>0</kinematic>
-      <visual name='drawer1_fixed_joint_lump__handle-35_visual_8'>
+      <visual name='drawer2_fixed_joint_lump__handle-35_visual_8'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2139,7 +2139,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer1_fixed_joint_lump__drawer_side-39_visual_3'>
+      <visual name='drawer2_fixed_joint_lump__drawer_side-39_visual_3'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2154,7 +2154,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer1_fixed_joint_lump__drawer_bottom-41_visual_5'>
+      <visual name='drawer2_fixed_joint_lump__drawer_bottom-41_visual_5'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2169,7 +2169,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer1_fixed_joint_lump__handle-35_visual_9'>
+      <visual name='drawer2_fixed_joint_lump__handle-35_visual_9'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2184,7 +2184,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer1_fixed_joint_lump__drawer_front-37_visual_1'>
+      <visual name='drawer2_fixed_joint_lump__drawer_front-37_visual_1'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2199,7 +2199,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer1_fixed_joint_lump__drawer_front-36_visual'>
+      <visual name='drawer2_fixed_joint_lump__drawer_front-36_visual'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2214,7 +2214,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer1_fixed_joint_lump__handle-35_visual_10'>
+      <visual name='drawer2_fixed_joint_lump__handle-35_visual_10'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2229,7 +2229,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer1_fixed_joint_lump__drawer_back-40_visual_4'>
+      <visual name='drawer2_fixed_joint_lump__drawer_back-40_visual_4'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2244,7 +2244,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer1_fixed_joint_lump__drawer_bottom-41_visual_6'>
+      <visual name='drawer2_fixed_joint_lump__drawer_bottom-41_visual_6'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2259,7 +2259,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer1_fixed_joint_lump__drawer_side-38_visual_2'>
+      <visual name='drawer2_fixed_joint_lump__drawer_side-38_visual_2'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2274,7 +2274,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer1_fixed_joint_lump__other_leaf-43_visual_7'>
+      <visual name='drawer2_fixed_joint_lump__other_leaf-43_visual_7'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2289,7 +2289,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <collision name='drawer1_collision_7'>
+      <collision name='drawer2_collision_7'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -2338,7 +2338,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision_4'>
+      <collision name='drawer2_collision_4'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -2387,7 +2387,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision_5'>
+      <collision name='drawer2_collision_5'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -2436,7 +2436,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision_1'>
+      <collision name='drawer2_collision_1'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -2485,7 +2485,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision_3'>
+      <collision name='drawer2_collision_3'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -2534,7 +2534,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision_6'>
+      <collision name='drawer2_collision_6'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -2583,7 +2583,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision_2'>
+      <collision name='drawer2_collision_2'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -2632,7 +2632,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision_9'>
+      <collision name='drawer2_collision_9'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -2681,7 +2681,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision'>
+      <collision name='drawer2_collision'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -2730,7 +2730,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision_10'>
+      <collision name='drawer2_collision_10'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -2779,7 +2779,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision_8'>
+      <collision name='drawer2_collision_8'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -2829,7 +2829,7 @@
         </surface>
       </collision>
     </link>
-    <link name='drawer2'>
+    <link name='drawer1'>
       <pose>0 0 0 1.5708 0 -1.5708</pose>
       <inertial>
         <pose>0 0 0 0 -0 0</pose>
@@ -2846,7 +2846,7 @@
       <self_collide>0</self_collide>
       <enable_wind>0</enable_wind>
       <kinematic>0</kinematic>
-      <visual name='drawer2_fixed_joint_lump__handle-25_visual_8'>
+      <visual name='drawer1_fixed_joint_lump__handle-25_visual_8'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2861,7 +2861,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__drawer_bottom-31_visual_6'>
+      <visual name='drawer1_fixed_joint_lump__drawer_bottom-31_visual_6'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2876,7 +2876,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__handle-25_visual_10'>
+      <visual name='drawer1_fixed_joint_lump__handle-25_visual_10'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2891,7 +2891,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__other_leaf-33_visual_7'>
+      <visual name='drawer1_fixed_joint_lump__other_leaf-33_visual_7'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2906,7 +2906,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__drawer_front-26_visual'>
+      <visual name='drawer1_fixed_joint_lump__drawer_front-26_visual'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2921,7 +2921,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__drawer_back-30_visual_4'>
+      <visual name='drawer1_fixed_joint_lump__drawer_back-30_visual_4'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2936,7 +2936,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__drawer_bottom-31_visual_5'>
+      <visual name='drawer1_fixed_joint_lump__drawer_bottom-31_visual_5'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2951,7 +2951,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__drawer_front-27_visual_1'>
+      <visual name='drawer1_fixed_joint_lump__drawer_front-27_visual_1'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2966,7 +2966,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__drawer_side-28_visual_2'>
+      <visual name='drawer1_fixed_joint_lump__drawer_side-28_visual_2'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2981,7 +2981,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__drawer_side-29_visual_3'>
+      <visual name='drawer1_fixed_joint_lump__drawer_side-29_visual_3'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -2996,7 +2996,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__handle-25_visual_9'>
+      <visual name='drawer1_fixed_joint_lump__handle-25_visual_9'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -3011,7 +3011,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <collision name='drawer2_collision'>
+      <collision name='drawer1_collision'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -3060,7 +3060,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision_5'>
+      <collision name='drawer1_collision_5'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -3109,7 +3109,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision_4'>
+      <collision name='drawer1_collision_4'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -3158,7 +3158,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision_7'>
+      <collision name='drawer1_collision_7'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -3207,7 +3207,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision_3'>
+      <collision name='drawer1_collision_3'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -3256,7 +3256,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision_8'>
+      <collision name='drawer1_collision_8'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -3305,7 +3305,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision_6'>
+      <collision name='drawer1_collision_6'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -3354,7 +3354,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision_1'>
+      <collision name='drawer1_collision_1'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -3403,7 +3403,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision_2'>
+      <collision name='drawer1_collision_2'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -3452,7 +3452,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision_10'>
+      <collision name='drawer1_collision_10'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -3501,7 +3501,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision_9'>
+      <collision name='drawer1_collision_9'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -3551,7 +3551,7 @@
         </surface>
       </collision>
     </link>
-    <link name='drawer3'>
+    <link name='drawer0'>
       <pose>-0.001909 0.013948 0 1.5708 0 -1.5708</pose>
       <inertial>
         <pose>0 0 0 0 -0 0</pose>
@@ -3569,7 +3569,7 @@
       <enable_wind>0</enable_wind>
       <kinematic>0</kinematic>
       <gravity>1</gravity>
-      <visual name='drawer3_fixed_joint_lump__drawer_back-22_visual_5'>
+      <visual name='drawer0_fixed_joint_lump__drawer_back-22_visual_5'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -3585,7 +3585,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__drawer_bottom-23_visual_6'>
+      <visual name='drawer0_fixed_joint_lump__drawer_bottom-23_visual_6'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -3601,7 +3601,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__drawer_bottom-23_visual_7'>
+      <visual name='drawer0_fixed_joint_lump__drawer_bottom-23_visual_7'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -3617,7 +3617,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__handle-9_visual_8'>
+      <visual name='drawer0_fixed_joint_lump__handle-9_visual_8'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -3633,7 +3633,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__handle-9_visual_9'>
+      <visual name='drawer0_fixed_joint_lump__handle-9_visual_9'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -3649,7 +3649,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__handle-9_visual_10'>
+      <visual name='drawer0_fixed_joint_lump__handle-9_visual_10'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -3665,7 +3665,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__other_leaf-17_visual'>
+      <visual name='drawer0_fixed_joint_lump__other_leaf-17_visual'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -3681,7 +3681,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__drawer_front-18_visual_1'>
+      <visual name='drawer0_fixed_joint_lump__drawer_front-18_visual_1'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -3697,7 +3697,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__drawer_front-19_visual_2'>
+      <visual name='drawer0_fixed_joint_lump__drawer_front-19_visual_2'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -3713,7 +3713,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__drawer_side-20_visual_3'>
+      <visual name='drawer0_fixed_joint_lump__drawer_side-20_visual_3'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -3729,7 +3729,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__drawer_side-21_visual_4'>
+      <visual name='drawer0_fixed_joint_lump__drawer_side-21_visual_4'>
         <pose>0 0 0 0 -0 0</pose>
         <geometry>
           <mesh>
@@ -3745,7 +3745,7 @@
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <collision name='drawer3_collision'>
+      <collision name='drawer0_collision'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -3794,7 +3794,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision_2'>
+      <collision name='drawer0_collision_2'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -3843,7 +3843,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision_1'>
+      <collision name='drawer0_collision_1'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -3892,7 +3892,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision_3'>
+      <collision name='drawer0_collision_3'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -3941,7 +3941,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision_4'>
+      <collision name='drawer0_collision_4'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -3990,7 +3990,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision_5'>
+      <collision name='drawer0_collision_5'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -4039,7 +4039,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision_6'>
+      <collision name='drawer0_collision_6'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -4088,7 +4088,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision_7'>
+      <collision name='drawer0_collision_7'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -4137,7 +4137,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision_8'>
+      <collision name='drawer0_collision_8'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -4186,7 +4186,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision_9'>
+      <collision name='drawer0_collision_9'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -4235,7 +4235,7 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision_10'>
+      <collision name='drawer0_collision_10'>
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
         <pose>0 0 0 0 -0 0</pose>
@@ -4285,7 +4285,7 @@
         </surface>
       </collision>
     </link>
-    <link name='link_handle_3'>
+    <link name='link_handle_0'>
       <pose>-0.485562 -0.020534 0.57629 1.5708 -2e-06 -1.5708</pose>
       <inertial>
         <pose>0 0 0 0 -0 0</pose>
@@ -4304,7 +4304,7 @@
       <kinematic>0</kinematic>
       <gravity>1</gravity>
     </link>
-    <link name='link_handle_2'>
+    <link name='link_handle_1'>
       <pose>-0.485562 -0.020534 0.26629 1.5708 0 -1.5708</pose>
       <inertial>
         <pose>0 0 0 0 -0 0</pose>
@@ -4323,7 +4323,7 @@
       <kinematic>0</kinematic>
       <gravity>1</gravity>
     </link>
-    <link name='link_handle_1'>
+    <link name='link_handle_2'>
       <pose>-0.485562 -0.020534 -0.023708 1.5708 0 -1.5708</pose>
       <inertial>
         <pose>0 0 0 0 -0 0</pose>
@@ -4342,7 +4342,7 @@
       <kinematic>0</kinematic>
       <gravity>1</gravity>
     </link>
-    <link name='link_handle_0'>
+    <link name='link_handle_3'>
       <pose>-0.485562 -0.020534 -0.413708 1.5708 0 -1.5708</pose>
       <inertial>
         <pose>0 0 0 0 -0 0</pose>
@@ -4362,102 +4362,6 @@
       <gravity>1</gravity>
     </link>
     <joint name='joint_0' type='prismatic'>
-      <parent>base_link</parent>
-      <child>drawer0</child>
-      <pose>0 0 0 0 -0 0</pose>
-      <axis>
-        <xyz>0 0 1</xyz>
-        <limit>
-          <lower>0</lower>
-          <upper>0.55</upper>
-          <effort>1000</effort>
-          <velocity>0.5</velocity>
-        </limit>
-        <dynamics>
-          <spring_reference>0</spring_reference>
-          <spring_stiffness>0</spring_stiffness>
-          <damping>5</damping>
-          <friction>5</friction>
-        </dynamics>
-      </axis>
-      <physics>
-        <ode>
-          <limit>
-            <cfm>0</cfm>
-            <erp>0.2</erp>
-          </limit>
-          <suspension>
-            <cfm>0</cfm>
-            <erp>0.2</erp>
-          </suspension>
-        </ode>
-      </physics>
-    </joint>
-    <joint name='joint_1' type='prismatic'>
-      <parent>base_link</parent>
-      <child>drawer1</child>
-      <pose>0 0 0 0 -0 0</pose>
-      <axis>
-        <xyz>0 0 1</xyz>
-        <limit>
-          <lower>0</lower>
-          <upper>0.55</upper>
-          <effort>1000</effort>
-          <velocity>0.5</velocity>
-        </limit>
-        <dynamics>
-          <spring_reference>0</spring_reference>
-          <spring_stiffness>0</spring_stiffness>
-          <damping>5</damping>
-          <friction>5</friction>
-        </dynamics>
-      </axis>
-      <physics>
-        <ode>
-          <limit>
-            <cfm>0</cfm>
-            <erp>0.2</erp>
-          </limit>
-          <suspension>
-            <cfm>0</cfm>
-            <erp>0.2</erp>
-          </suspension>
-        </ode>
-      </physics>
-    </joint>
-    <joint name='joint_2' type='prismatic'>
-      <parent>base_link</parent>
-      <child>drawer2</child>
-      <pose>0 0 0 0 -0 0</pose>
-      <axis>
-        <xyz>0 0 1</xyz>
-        <limit>
-          <lower>0</lower>
-          <upper>0.55</upper>
-          <effort>1000</effort>
-          <velocity>0.5</velocity>
-        </limit>
-        <dynamics>
-          <spring_reference>0</spring_reference>
-          <spring_stiffness>0</spring_stiffness>
-          <damping>5</damping>
-          <friction>5</friction>
-        </dynamics>
-      </axis>
-      <physics>
-        <ode>
-          <limit>
-            <cfm>0</cfm>
-            <erp>0.2</erp>
-          </limit>
-          <suspension>
-            <cfm>0</cfm>
-            <erp>0.2</erp>
-          </suspension>
-        </ode>
-      </physics>
-    </joint>
-    <joint name='joint_3' type='prismatic'>
       <parent>base_link</parent>
       <child>drawer3</child>
       <pose>0 0 0 0 -0 0</pose>
@@ -4489,10 +4393,25 @@
         </ode>
       </physics>
     </joint>
-    <joint name='joint_handle_0' type='fixed'>
-      <parent>drawer0</parent>
-      <child>link_handle_0</child>
+    <joint name='joint_1' type='prismatic'>
+      <parent>base_link</parent>
+      <child>drawer2</child>
       <pose>0 0 0 0 -0 0</pose>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>0.55</upper>
+          <effort>1000</effort>
+          <velocity>0.5</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+          <damping>5</damping>
+          <friction>5</friction>
+        </dynamics>
+      </axis>
       <physics>
         <ode>
           <limit>
@@ -4506,9 +4425,73 @@
         </ode>
       </physics>
     </joint>
-    <joint name='joint_handle_1' type='fixed'>
-      <parent>drawer1</parent>
-      <child>link_handle_1</child>
+    <joint name='joint_2' type='prismatic'>
+      <parent>base_link</parent>
+      <child>drawer1</child>
+      <pose>0 0 0 0 -0 0</pose>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>0.55</upper>
+          <effort>1000</effort>
+          <velocity>0.5</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+          <damping>5</damping>
+          <friction>5</friction>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+          <suspension>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </suspension>
+        </ode>
+      </physics>
+    </joint>
+    <joint name='joint_3' type='prismatic'>
+      <parent>base_link</parent>
+      <child>drawer0</child>
+      <pose>0 0 0 0 -0 0</pose>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>0.55</upper>
+          <effort>1000</effort>
+          <velocity>0.5</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+          <damping>5</damping>
+          <friction>5</friction>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+          <suspension>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </suspension>
+        </ode>
+      </physics>
+    </joint>
+    <joint name='joint_handle_3' type='fixed'>
+      <parent>drawer3</parent>
+      <child>link_handle_3</child>
       <pose>0 0 0 0 -0 0</pose>
       <physics>
         <ode>
@@ -4540,9 +4523,26 @@
         </ode>
       </physics>
     </joint>
-    <joint name='joint_handle_3' type='fixed'>
-      <parent>drawer3</parent>
-      <child>link_handle_3</child>
+    <joint name='joint_handle_1' type='fixed'>
+      <parent>drawer1</parent>
+      <child>link_handle_1</child>
+      <pose>0 0 0 0 -0 0</pose>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </limit>
+          <suspension>
+            <cfm>0</cfm>
+            <erp>0.2</erp>
+          </suspension>
+        </ode>
+      </physics>
+    </joint>
+    <joint name='joint_handle_0' type='fixed'>
+      <parent>drawer0</parent>
+      <child>link_handle_0</child>
       <pose>0 0 0 0 -0 0</pose>
       <physics>
         <ode>

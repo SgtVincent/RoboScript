@@ -11,9 +11,9 @@ from src.grasp_detection import GraspDetectionBase, GraspDetectionRemote
 # from src.grasp_detection.utils import Grasp
 from src.env.utils import get_axis_aligned_bbox, pose_msg_to_matrix
 
-class SimpleGroundingEnv(MoveitGazeboEnv):
+class TrueGroundingEnv(MoveitGazeboEnv):
     """
-    Simple grounding environment to use gazebo GT model state as observation, and GIGA for grasp pose prediction.
+    Environment to use gazebo GT model state as observation and grounding.
     """
     def __init__(self, cfg) -> None:
         super().__init__(cfg)
@@ -64,15 +64,40 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
             return None
         return gt_pose.position
         
-    def get_3d_bbox(self, obj_name, **kwargs):
+    def get_3d_bbox(self, obj_name, **kwargs)->np.array:
         """
         Get the 3D bounding box of the object in the world frame.
         This function uses ground truth model state from gazebo and ignore all other parameters.
+        Return [x_min, y_min, z_min, x_max, y_max, z_max]
         """
         center, size = self.get_gt_bbox(obj_name)
         if center is None or size is None:
-            return None, None
-        return np.array(center), np.array(size)
+            return None
+        bbox = np.array([center[0] - size[0]/2, center[1] - size[1]/2, center[2] - size[2]/2, 
+                            center[0] + size[0]/2, center[1] + size[1]/2, center[2] + size[2]/2])
+        return bbox
+
+    def parse_grasp_pose(self, object_name, description="flexible_mode"):
+        """
+        object_name --[MM]--> bbox_2d_list --[anygrasp]--> pose_list --> pose 
+        """
+        bbox_2d_list = self.groudning_model.get_3d_bbox(object_name)
+        
+        sensor_data = self.get_sensor_data()   
+                 
+        data = {
+            'depth_bboxes': bbox_2d_list
+        }
+        data.update(sensor_data)
+        
+        # call grasp detection service
+        pose_list, width_list, score_list = self.grasp_model.predict(data)
+        
+        # sort by score and get the best grasp
+        best_grasp_idx = np.argmax(score_list)
+        pose = pose_list[best_grasp_idx]
+        
+        return pose
 
     def parse_pose(self, object, action="", description="", **kwargs):
         """ 
@@ -83,7 +108,7 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
         
         # special case for drawer handle
         if object in ["drawer", "cabinet"] or "drawer" in object.lower() or "cabinet" in object.lower():
-            return self.parse_drawer_handle_pose(object, action=action, description=description)
+            return self.parse_gt_drawer_handle_grasp_pose(object)
         
         if self.grasp_method == "heuristic":
             pose = self.parse_pose_heuristic(object, action, description)
@@ -93,88 +118,51 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
             raise NotImplementedError(f"Grasp detection model {self.grasp_method} not implemented in {self.__class__.__name__}")      
         return pose
     
-    def parse_pose_model(self, object, action="", description=""):
-        
-        # get axis-aligned bounding box of the object in the world: 
-        object_pose = self.get_gt_obj_pose(object)
-        # object_transform = pose_msg_to_matrix(object_pose)
-        # bbox_center, bbox_size = get_axis_aligned_bbox(self.object_info[object]['bbox_center'], 
-        #                                                self.object_info[object]['bbox_size'], object_transform)
-        # NOTE: use ground truth bounding box for now
-        bbox_center, bbox_size = self.get_3d_bbox(object)
+    def parse_grasp_pose(self, object_name, description=""):
+        """
+        Parse grasp pose for the object. Use ground truth grounding and grasp detection model.
+        """
+        object_bbox = self.get_3d_bbox(object_name)
+        bbox_center = (object_bbox[:3] + object_bbox[3:]) / 2
+        bbox_size = object_bbox[3:] - object_bbox[:3]
         
         # get visual input from perception model
         sensor_data = self.get_sensor_data()
-        
-        # get grasp pose from grasp detection model
-        if action in ['pick', 'grasp', 'grab', 'get', 'take', 'hold']:
             
-            # TODO: a model should be able to predict pose for different actions
-            data = {
-                'bbox_3d':{
-                    'center': bbox_center,
-                    'size': bbox_size,
-                },
-                'object_pose': object_pose,
-                'action': action, # NOTE: currently not used
+        # TODO: a model should be able to predict pose for different actions
+        data = {
+            'bbox_3d':{
+                'center': bbox_center,
+                'size': bbox_size,
             }
-            data.update(sensor_data)
-            
-            # call grasp detection service
-            pose_list, width_list, score_list = self.grasp_model.predict(data)
-            
-            # sort by score and get the best grasp
-            best_grasp_idx = np.argmax(score_list)
-            pose = pose_list[best_grasp_idx]
-            width = width_list[best_grasp_idx]
-            return pose
-
-        else:
-            # TODO: how to predict pose for actions other than grasp?
-            return self.parse_pose_heuristic(object, action, description)
+        }
+        data.update(sensor_data)
         
-    def parse_pose_heuristic(self, object, action="", description=""):
+        # call grasp detection service
+        pose_list, width_list, score_list = self.grasp_model.predict(data)
+        
+        # sort by score and get the best grasp
+        best_grasp_idx = np.argmax(score_list)
+        pose = pose_list[best_grasp_idx]
+        width = width_list[best_grasp_idx]
+        return pose
 
-        if action in ['pick', 'grasp', 'grab', 'get', 'take', 'hold']:
-            pose = Pose()
-            pose.position = self.get_object_center_position(object)
-            if hasattr(self, 'reset_pose'):
-                pose.orientation = self.reset_pose.orientation
-            else:
-                pose.orientation = Quaternion(0,1,0,0)
-        elif action in ['place', 'put', 'drop', 'release']:
-            pose = Pose()
-            pose.position = self.get_object_center_position(object)
-            pose.position.z += 0.2
-            if hasattr(self, 'reset_pose'):
-                pose.orientation = self.reset_pose.orientation
-            else:
-                pose.orientation = Quaternion(0,1,0,0)
-        else:
-            rospy.logwarn(f"Action {action} not supported in heuristic grasp model, use default pose")
-            pose = Pose()
-            pose.position = self.get_object_center_position(object)
-            pose.orientation = Quaternion(0,1,0,0)
-            if hasattr(self, 'reset_pose'):
-                pose.orientation = self.reset_pose.orientation
-            else:
-                pose.orientation = Quaternion(0,1,0,0)
+        
+    def parse_pose_default(self, object_name, action="", description=""):
+        """
+        Default pose parser for the object. Call when all other parsers fail.
+        """
+        pose = Pose()
+        pose.position = self.get_object_center_position(object_name)
+        pose.orientation = Quaternion(0,1,0,0)
         return pose
     
-    def parse_drawer_handle_pose(self, object, action="", description=""):
+    def parse_gt_drawer_handle_grasp_pose(self, object):
         """ 
-        Parse pose of action for the drawer handle.
+        Parse ground truth pose for grasping drawer handle.
         NOTE: Grounding models/ perception models need to handle this function 
         Currently get the position of the handle by get the handle link position from gazebo. 
         The orientation is canonical, perpendicular to the cabinet door.
-        """
-        # TODO: get the orientation of the handle from perception model or find another way to get the orientation
-        """
-        orientation: 
-        x: 0.6714430184317122
-        y: 0.26515792374322233
-        z: -0.6502306735376142
-        w: -0.2367606801525871
         """
         pre_defined_handle_orientation = Quaternion(-0.5, -0.5, 0.5, 0.5)
         # pre_defined_gripper_tip_offset = 0.1 # x-axis positive direction
@@ -189,22 +177,10 @@ class SimpleGroundingEnv(MoveitGazeboEnv):
         else:
             raise NotImplementedError(f"Cannot parse handle pose for object {object}")
 
-        if action in ['grasp', 'grab'] or 'grasp' in action or 'grab' in action:
-            pose = Pose()
-            pose.position = self.get_link_pose(handle_link).position 
-            # pose.position.x += pre_defined_gripper_tip_offset
-            pose.orientation = pre_defined_handle_orientation 
-        elif action in ['pull', 'open'] or 'pull' in action or 'open' in action:
-            
-            pose = Pose() 
-            pose.position = self.get_link_pose(handle_link).position
-            # pose.position.x += 0.2 + pre_defined_gripper_tip_offset
-            pose.orientation = pre_defined_handle_orientation
-        elif  action in ['push', 'close'] or 'push' in action or 'close' in action:
-            pose = Pose()
-            pose.position = self.get_link_pose(handle_link).position
-            # pose.position.x -= 0.2 + pre_defined_gripper_tip_offset
-            pose.orientation = pre_defined_handle_orientation
+        pose = Pose()
+        pose.position = self.get_link_pose(handle_link).position 
+        pose.orientation = pre_defined_handle_orientation 
+
         return pose
     
     

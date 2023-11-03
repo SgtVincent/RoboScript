@@ -1,7 +1,3 @@
-'''
-TODO: improve the message prompt in the following ways:
-'''
-
 message_tabletop_ui = [
 {
 "role":"system",
@@ -15,8 +11,8 @@ You can use the following imported modules and functions in your script:
 # Import rospy, the foundational Python library for ROS (Robot Operating System)
 import rospy
 
-# Import moveit_commander, the Python library for controlling robot arms in ROS
-import moveit_commander
+# Import move_group, the class handle for moving the robot arm in MoveIt!
+import move_group
 
 # Import various ROS message types for handling robot pose and orientation
 from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
@@ -27,7 +23,7 @@ from utils import parse_question
 # Import utility functions for perception
 from perception_utils import (
     get_object_center_position,  # Returns the position of an object in the world frame
-    get_3d_bbox,                 # Returns the 3D bounding box of an object in the world frame
+    get_3d_bbox,                 # Returns the 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array, [x_min, y_min, z_min, x_max, y_max, z_max]
     get_obj_name_list,           # Returns a list of names of objects present in the scene
     parse_grasp_pose,            # Predict a grasp pose for a specified object. Args: object_name: str. Returns: grasp_pose: Pose
     parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: str. Returns: place_pose: Pose
@@ -713,8 +709,6 @@ new_shape_pts = translate_pts_np(shape_pts, mean_delta)
 }
 ]
 
-# TODO: adapt to real API
-
 message_fgen= [
 {
 "role":"system",
@@ -727,70 +721,26 @@ Your output should be a python script that can be executed to perform the task d
 "role":"user",
 "content": "# define function: open_gripper()"
 },
-# NOTE: open/close gripper are basic actions, so we don't need to define them ?
-# {
-# "role":"assistant",
-# "content": '''
-# def open_gripper():
-#     .set_named_target("open")
-#     .go(wait=True)
-# '''
-# },
-# {
-# "role":"user",
-# "content": "# define function: close_gripper()"
-# },
-# {
-# "role":"assistant",
-# "content": '''
-# def close_gripper():
-#     .set_named_target("closed")
-#     .go(wait=True)
-# '''
-# },
-# TODO: add skills functions like grasp, place, pull, pick up, etc.
-{ # Currently, parse_pose function is a naive implementation that only works for pick and place
-# TODO: The pose grouding should be done by Large-scale multimodal model. 
+{# def pick_and_place(pick_pose, place_pose)
 "role":"user",
-"content": "# define function: pose = parse_pose(object_name, action, description)"
-},
-{
-"role":"assistant",
-"content":
-'''
-def parse_pose(object, action, description):
-    if action in ['pick', 'grasp', 'grab', 'get', 'take', 'hold']:
-        pose = Pose()
-        pose.position = get_object_center_position(object)
-        pose.orientation = Quaternion(0,0,0,1)
-    elif action in ['place', 'put', 'drop', 'release']:
-        pose = Pose()
-        pose.position = get_object_center_position(object)
-        pose.position.z += 0.2
-        pose.orientation = Quaternion(0,0,0,1)
-    else:
-        pose = Pose()
-        pose.position = get_object_center_position(object)
-        pose.orientation = Quaternion(0,0,0,1)
-'''
-},
-{
-"role":"user",
-"content": "# define function: pick_and_place(move_group, pick_pose, place_pose)"
+"content": "# define function: pick_and_place(object_name, pick_pose, place_pose)"
 },
 {
 "role":"assistant",
 "content": 
 '''
-def pick_and_place(move_group, pick_pose, place_pose):
-    waypoints = [move_group.get_current_pose().pose, pick_pose, place_pose]
-    (plan, fraction) = move_group.compute_cartesian_path(waypoints, 0.01, 0.0)
-    move_group.execute(plan, wait=True)
+def pick_and_place(pick_pose, place_pose):
+    move_to_pose(pick_pose)
+    close_gripper()
+    attach_object(object_name)
+    move_to_pose(place_pose)
+    open_gripper()
+    detach_object(object_name)
 '''
 },
 {
 "role":"user",
-"content": "# define function: follow_path(move_group, pose)"
+"content": "# define function: follow_path(move_group, path_points)"
 },
 {
 "role":"assistant",
@@ -819,6 +769,5 @@ def move_in_direction(axis: np.array, distance: float):
     move_to_pose(target_pose)
 '''
 }
-
 ]
 

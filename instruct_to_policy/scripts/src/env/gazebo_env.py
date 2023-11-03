@@ -91,7 +91,7 @@ class GazeboEnv(Env):
             
         # gt bbox of drawer has name: cabinet::drawer0
         if 'drawer' in obj_name:
-            object_name = obj_name.replace('.', '::')
+            obj_name = obj_name.replace('.', '::')
         
         for bbox in self.gazebo_gt_bboxes:
             if bbox.object_id == obj_name:

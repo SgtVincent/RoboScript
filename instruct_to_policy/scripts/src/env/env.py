@@ -26,9 +26,13 @@ class Env:
         """ Get object position."""
         raise NotImplementedError("get_object_center_position() not implemented")
 
-    def get_3d_bbox(self, obj_name):
+    def get_3d_bbox(self, obj_name: str)-> np.ndarray:
         """
         Get the bounding box of the object.
+        Args:
+            obj_name: name of the object
+        Returns:
+            bbox: np.ndarray, [x_min, y_min, z_min, x_max, y_max, z_max]
         """
         raise NotImplementedError("get_3d_bbox() not implemented")
 

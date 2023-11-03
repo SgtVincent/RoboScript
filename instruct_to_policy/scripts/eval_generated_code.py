@@ -4,7 +4,7 @@ import numpy as np
 import argparse
 
 from src.lmp import *
-from src.env.true_grounding_env import SimpleGroundingEnv
+from src.env.true_grounding_env import TrueGroundingEnv
 from src.config import cfg_tabletop
 import rospy 
 import rospkg
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     raw_file_path = os.path.join(pkg_root, raw_file)
 
     # setup environment
-    env = SimpleGroundingEnv(cfg_tabletop)
+    env = TrueGroundingEnv(cfg_tabletop)
     env.reset()
 
     # prepare variables for code execution 

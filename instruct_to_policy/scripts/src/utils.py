@@ -34,20 +34,26 @@ def prepare_vars(env):
     variable_vars = {
         k: getattr(env, k)
         for k in [
-            "get_3d_bbox",
+            "rospy",
+            "move_group",
+            "PoseStamped",
+            "Pose",
+            "Point",
+            "Quaternion",
+            "parse_question",
             "get_object_center_position",
+            "get_3d_bbox",
             "get_obj_name_list",
-            "get_end_effector_pose",
+            "parse_grasp_pose",
+            "parse_place_pose",
+            "detect_objects",
             "open_gripper",
             "close_gripper",
-            "move_to_pose",
-            "move_joints_to",
-            "detect_new_objects",
             "attach_object",
-            "detach_object"
-            # DO NOT use mid-level skills?
-            # "grasp",
-            # "place"
+            "detach_object",
+            "move_to_pose",
+            "get_gripper_pose",
+            "grasp",
         ]
     }
     variable_vars["say"] = lambda msg: print(f"robot says: {msg}")

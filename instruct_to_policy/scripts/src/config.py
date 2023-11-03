@@ -4,8 +4,7 @@ package_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(
 
 from src.prompt.moveit_cap_msgs import *
 from src.constants import *
-
-
+from src.prompt.message_parse_question import message_parse_question
 # model_name = 'code-davinci-002' # 'text-davinci-002' # deprecated in 2023
 model_name = 'gpt-3.5-turbo-16k' # recommened replacement for 'code-davinci-002'
 # model_name = 'gpt-4'

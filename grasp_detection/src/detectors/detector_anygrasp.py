@@ -93,8 +93,9 @@ class DetectorAnygrasp(DetectorBase):
 
             # create world coordinate frame
             world_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.1, origin=min_bound)
-            # o3d.visualization.draw_geometries([*grippers, cloud, world_frame])
-            o3d.visualization.draw_geometries([grippers[0], cloud, world_frame])
+            grippers[0].paint_uniform_color([1,0,0])
+            o3d.visualization.draw_geometries([*grippers, cloud, world_frame])
+            # o3d.visualization.draw_geometries([grippers[0], cloud, world_frame])
         
         # compose response
         grasps_msg = []

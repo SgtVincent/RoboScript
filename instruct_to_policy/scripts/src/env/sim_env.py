@@ -9,7 +9,7 @@ from .moveit_gazebo_env import MoveitGazeboEnv
 from src.grasp_detection import GraspDetectionBase, GraspDetectionRemote
 from src.grounding_model import GroundingBase, GroundingEmbodiedGPT
 # from src.grasp_detection.utils import Grasp
-from src.env.utils import calculate_place_position, is_collision, adjust_z
+from src.env.utils import calculate_place_position, is_collision, adjust_z, pose_msg_to_matrix
 from src.perception.scene_manager import SceneManager
 
 class SimEnv(MoveitGazeboEnv):
@@ -64,10 +64,19 @@ class SimEnv(MoveitGazeboEnv):
         # TODO: Get the bounding box of the object from perception model 
         pass
     
-    def parse_grasp_pose(self, object_name, description="flexible_mode"):
+    def parse_grasp_pose(self, object_name, **kwargs):
         """
-        object_name --[MM]--> bbox_2d_list --[anygrasp]--> pose_list --> pose 
+        Parse grasp pose for the object. Use the grounding model and grasp detection model.
+        Args:
+            object_name: name of the object
+            preferred_position: np.array, prefered position of the gripper
+            preferred_direction: np.array, prefered direction of the gripper
+            description: str, description of the pose
         """
+        preferred_position: np.array = kwargs.get('preferred_position', None)
+        preferred_direction:np.array = kwargs.get('preferred_direction', None)
+        description:str = kwargs.get('description', None)
+        
         bbox_2d_list = self.groudning_model.get_3d_bbox(object_name)
         
         sensor_data = self.get_sensor_data()   
@@ -80,9 +89,41 @@ class SimEnv(MoveitGazeboEnv):
         # call grasp detection service
         pose_list, width_list, score_list = self.grasp_model.predict(data)
         
-        # sort by score and get the best grasp
-        best_grasp_idx = np.argmax(score_list)
+        rank = []
+        if preferred_position is not None:
+            # if preferred_position is given, choose the grasp pose closest to the prefered position
+            position_list = np.array([np.array([p.position.x, p.position.y, p.position.z]) for p in pose_list])
+            distance = np.linalg.norm(position_list - preferred_position, axis=1)
+            distance_rank_idx = np.argsort(distance)
+            distance_rank = np.zeros(len(distance), dtype=np.int)
+            distance_rank[distance_rank_idx] = np.arange(len(distance))
+            rank.append(distance_rank)
+            
+        if preferred_direction is not None:
+            # if preferred_direction is given, choose the grasp pose with z-axis closest to the prefered direction
+            rotation_list = np.array([pose_msg_to_matrix(p)[:3, :3] for p in pose_list])
+            z_axis_list = rotation_list[:, :, 2]
+            z_axis_list = z_axis_list / np.linalg.norm(z_axis_list, axis=1, keepdims=True)
+            preferred_direction = preferred_direction / np.linalg.norm(preferred_direction)
+            cos_similarity = np.sum(z_axis_list * preferred_direction, axis=1)
+            cos_similarity_rank_idx = np.argsort(cos_similarity)[::-1]
+            cos_similarity_rank = np.zeros(len(cos_similarity), dtype=np.int)
+            cos_similarity_rank[cos_similarity_rank_idx] = np.arange(len(cos_similarity))
+            rank.append(cos_similarity_rank)
+                  
+        # sort by score 
+        score_rank_idx = np.argsort(score_list)[::-1]
+        score_rank = np.zeros(len(score_list), dtype=np.int)
+        score_rank[score_rank_idx] = np.arange(len(score_list))
+        rank.append(score_rank)
+
+        # get the best grasp based on all the ranks, the grasp with the lowest rank sum is the best grasps
+        rank = np.array(rank)
+        rank_sum = np.sum(rank, axis=0)
+        best_grasp_idx = np.argmin(rank_sum)
+
         pose = pose_list[best_grasp_idx]
+        width = width_list[best_grasp_idx]
         
         return pose
 

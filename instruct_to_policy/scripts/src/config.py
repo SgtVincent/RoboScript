@@ -17,7 +17,8 @@ cfg_tabletop = {
       'interface': 'moveit',
       'verbose': False,
       'initial_joint_values': [0.0, -0.7854, 0.0, -2.3562, 0.0, 1.5708, 0.7854],
-      'extra_objects': ["cabinet.drawer0", "cabinet.drawer1", "cabinet.drawer2", "cabinet.drawer3"],
+      'extra_objects': ["cabinet.drawer0", "cabinet.drawer1", "cabinet.drawer2", "cabinet.drawer3", 
+                        "cabinet.handle_0", "cabinet.handle_1", "cabinet.handle_2", "cabinet.handle_3"],
       'sensor': {
         'namespace': '', # empty namespace by default 
         'cameras': ['camera_left', 'camera_right', 'camera_top'],

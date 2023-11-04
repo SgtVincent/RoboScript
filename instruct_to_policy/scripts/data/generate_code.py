@@ -150,13 +150,13 @@ def parse_args():
     # parser.add_argument("--max-queries", type=int, default=200, 
     #                     help="Max number of task queries to generate (defaults to 200)")
 
-    parser.add_argument("--task-queries", type=str, default="data/benchmark/task_queries/world_1_table_sort_debug.txt",
+    parser.add_argument("--task-queries", type=str, default="data/benchmark/task_queries/world_1_table_sort.txt",
                         help="Task queries file")
     parser.add_argument("--output-dir", type=str, default="data/benchmark/generated_code",
                         help="Output directory (defaults to data/code)")
     parser.add_argument("--max-tokens", type=int, default=2048,
                         help="Max tokens (defaults to 2048)")
-    parser.add_argument("--max-queries", type=int, default=2, 
+    parser.add_argument("--max-queries", type=int, default=10, 
                         help="Max number of task queries to generate (defaults to 200)")
     os.chdir("/home/junting/franka_ws/src/franka_fisher/instruct_to_policy")
     

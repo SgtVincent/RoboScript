@@ -90,8 +90,8 @@ class GazeboEnv(Env):
             rospy.logdebug("gazebo_env: Waiting for ground truth bounding boxes")
             rospy.sleep(0.5)
             
-        # gt bbox of drawer has name: cabinet::drawer0
-        if 'drawer' in obj_name:
+        # gt bbox of drawer or handle: need to convert to link name
+        if 'cabinet.drawer' in obj_name or 'cabinet.handle' in obj_name:
             obj_name = obj_name.replace('.', '::')
         
         for bbox in self.gazebo_gt_bboxes:
@@ -99,6 +99,7 @@ class GazeboEnv(Env):
                 center = [bbox.center.position.x, bbox.center.position.y, bbox.center.position.z]
                 size = [bbox.size.x, bbox.size.y, bbox.size.z]
                 return center, size
+            
         rospy.logwarn(f"Query object {obj_name} has no ground truth bounding box in gazebo")
         return None, None
         

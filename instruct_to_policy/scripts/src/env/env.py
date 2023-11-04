@@ -65,3 +65,12 @@ class Env:
         """ place object at pose """
         raise NotImplementedError("place() not implemented")
     
+
+    ################ multimodal grounding interface ################
+    def detect_objects(self, **kwargs):
+        """ detect objects in the scene with perception model"""
+        raise NotImplementedError("detect_objects() not implemented")
+    
+    def parse_question(self, question, **kwargs):
+        """ parse question into a dictionary """
+        raise NotImplementedError("parse_question() not implemented")

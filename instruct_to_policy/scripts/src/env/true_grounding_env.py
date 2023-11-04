@@ -77,34 +77,21 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         bbox = np.array([center[0] - size[0]/2, center[1] - size[1]/2, center[2] - size[2]/2, 
                             center[0] + size[0]/2, center[1] + size[1]/2, center[2] + size[2]/2])
         return bbox
-
-    def parse_grasp_pose(self, object_name, description="flexible_mode"):
-        """
-        object_name --[MM]--> bbox_2d_list --[anygrasp]--> pose_list --> pose 
-        """
-        bbox_2d_list = self.groudning_model.get_3d_bbox(object_name)
-        
-        sensor_data = self.get_sensor_data()   
-                 
-        data = {
-            'depth_bboxes': bbox_2d_list
-        }
-        data.update(sensor_data)
-        
-        # call grasp detection service
-        pose_list, width_list, score_list = self.grasp_model.predict(data)
-        
-        # sort by score and get the best grasp
-        best_grasp_idx = np.argmax(score_list)
-        pose = pose_list[best_grasp_idx]
-        
-        return pose
     
-    def parse_grasp_pose(self, object_name, description=""):
+    def parse_grasp_pose(self, object_name, **kwargs):
         """
         Parse grasp pose for the object. Use ground truth grounding and grasp detection model.
+        Args:
+            object_name: name of the object
+            preferred_position: np.array, prefered position of the gripper
+            preferred_direction: np.array, prefered direction of the gripper
+            description: str, description of the pose
         """
         object_bbox = self.get_3d_bbox(object_name)
+        preferred_position: np.array = kwargs.get('preferred_position', None)
+        preferred_direction:np.array = kwargs.get('preferred_direction', None)
+        description:str = kwargs.get('description', None)
+        
         bbox_center = (object_bbox[:3] + object_bbox[3:]) / 2
         bbox_size = object_bbox[3:] - object_bbox[:3]
         
@@ -122,11 +109,43 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         
         # call grasp detection service
         pose_list, width_list, score_list = self.grasp_model.predict(data)
-        
-        # sort by score and get the best grasp
-        best_grasp_idx = np.argmax(score_list)
+    
+        rank = []
+        if preferred_position is not None:
+            # if preferred_position is given, choose the grasp pose closest to the prefered position
+            position_list = np.array([np.array([p.position.x, p.position.y, p.position.z]) for p in pose_list])
+            distance = np.linalg.norm(position_list - preferred_position, axis=1)
+            distance_rank_idx = np.argsort(distance)
+            distance_rank = np.zeros(len(distance), dtype=np.int)
+            distance_rank[distance_rank_idx] = np.arange(len(distance))
+            rank.append(distance_rank)
+            
+        if preferred_direction is not None:
+            # if preferred_direction is given, choose the grasp pose with z-axis closest to the prefered direction
+            rotation_list = np.array([pose_msg_to_matrix(p)[:3, :3] for p in pose_list])
+            z_axis_list = rotation_list[:, :, 2]
+            z_axis_list = z_axis_list / np.linalg.norm(z_axis_list, axis=1, keepdims=True)
+            preferred_direction = preferred_direction / np.linalg.norm(preferred_direction)
+            cos_similarity = np.sum(z_axis_list * preferred_direction, axis=1)
+            cos_similarity_rank_idx = np.argsort(cos_similarity)[::-1]
+            cos_similarity_rank = np.zeros(len(cos_similarity), dtype=np.int)
+            cos_similarity_rank[cos_similarity_rank_idx] = np.arange(len(cos_similarity))
+            rank.append(cos_similarity_rank)
+                  
+        # sort by score 
+        score_rank_idx = np.argsort(score_list)[::-1]
+        score_rank = np.zeros(len(score_list), dtype=np.int)
+        score_rank[score_rank_idx] = np.arange(len(score_list))
+        rank.append(score_rank)
+
+        # get the best grasp based on all the ranks, the grasp with the lowest rank sum is the best grasps
+        rank = np.array(rank)
+        rank_sum = np.sum(rank, axis=0)
+        best_grasp_idx = np.argmin(rank_sum)
+
         pose = pose_list[best_grasp_idx]
         width = width_list[best_grasp_idx]
+        
         return pose
 
     def parse_place_pose(self, object_name, **kwargs):
@@ -196,14 +215,14 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         """
         pre_defined_handle_orientation = Quaternion(-0.5, -0.5, 0.5, 0.5)
         # pre_defined_gripper_tip_offset = 0.1 # x-axis positive direction
-        # get corresponding handle link ID: cabinet.drawer_0 -> cabinet::link_handle_0
+        # get corresponding handle link ID: cabinet.drawer_0 -> cabinet::handle_0
         if 'drawer' in object.lower():
             # get drawer index at the end by regex
             drawer_index = re.findall(r'\d+', object)[-1]
-            handle_link = f"cabinet::link_handle_{drawer_index}"
+            handle_link = f"cabinet::handle_{drawer_index}"
         elif 'cabinet' in object.lower():
             # use drawer_3 by default if no drawer index is specified
-            handle_link = "cabinet::link_handle_3"
+            handle_link = "cabinet::handle_3"
         else:
             raise NotImplementedError(f"Cannot parse handle pose for object {object}")
 
@@ -213,6 +232,9 @@ class TrueGroundingEnv(MoveitGazeboEnv):
 
         return pose
     
+    def parse_question(self, question, **kwargs):
+        """ parse question into a dictionary """
+        raise NotImplementedError("parse_question() not implemented")
     
     def get_lying_objects(self, objects=[], **kwargs):
         """

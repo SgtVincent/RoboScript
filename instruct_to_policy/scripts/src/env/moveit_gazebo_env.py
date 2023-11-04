@@ -345,11 +345,12 @@ class MoveitGazeboEnv(GazeboEnv):
         if gripper_group is None:
             gripper_group = self.gripper_group
         # first reset robot pose, otherwise there could be collision 
+        # stop gripper command to stop ongoing action
+        gripper_group.reset()
         group.set_joint_value_target(self.reset_joint_values)
         self._go(group)
         group.stop()
         group.clear_pose_targets()
-        gripper_group.reset()
         self.open_gripper(gripper_group)
         
         # then reset the world and moveit planning scene 
@@ -477,19 +478,19 @@ class MoveitGazeboEnv(GazeboEnv):
     def grasp(
         self,
         pose: Pose,
-        width=0.025,
-        pre_grasp_approach=0.05,
-        dryrun=False,
-        object_id=None,
+        pre_grasp_approach=0.1,
+        depth=0.03,
     ):
         """Executes a grasp at a given pose with given orientation.
+        It first moves to a pre-grasp pose, then approaches the grasp pose.
 
         Args:
-            position: The position of the grasp.
-            orientation: The orientation of the grasp (scipy format, xyzw).
-            width: The width of the gripper.
+            pose: The pose of the grasp.
             pre_grasp_approach: The distance to move towards the object before grasping.
-            dryrun: If true, the robot will not call the action to close the gripper (not available in simulation).       
+            depth: The distance to move towards the object after grasping.
+            
+        NOTE: for anygrasp and the offset between gripper tip and grasp center is 0.02, depth = 0.05 - 0.02 = 0.03
+        # TODO: should add pre_grasp_approach and depth to the robot-specifig config file
         """
 
         position = np.array([pose.position.x, pose.position.y, pose.position.z])
@@ -497,75 +498,40 @@ class MoveitGazeboEnv(GazeboEnv):
             [pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w]
         )
 
+        # calculate pre-grasp pose 
         pre_grasp_pose = get_pose_msg(
             position
-            + Rotation.from_quat(orientation).as_matrix()
-            @ (pre_grasp_approach * np.array([0, 0, -1])),
+            + Rotation.from_quat(orientation).as_matrix() @ (pre_grasp_approach * np.array([0, 0, -1])),
             orientation,
         )
-        waypoints = [pre_grasp_pose]
 
-        # make sure gripper is open before moving to pre-grasp pose
-        if not dryrun:
-            self.open_gripper()
-
-        self.move_group.set_pose_target(waypoints[0])
-
-        if self.cartesian_path:
-            (plan, fraction) = self.move_group.compute_cartesian_path(waypoints, 0.02, 0.0)
-            if fraction < 0.9:
-                print("Could not plan to pre-grasp pose. Plan accuracy", fraction)
-                return False
-
-        if self.verbose:
-            print("Moving to pre-grasp pose")
-
-        if self.cartesian_path:
-            self._execute(self.move_group, plan)
-        else:
-            plan = self._go(self.move_group)
-        self.move_group.stop()
-        self.move_group.clear_pose_targets()
+        plan = self.move_to_pose(pre_grasp_pose)
         if not plan:
-            print("Failed")
+            rospy.logwarn("MoveitEnv: Failed to move to pre-grasp pose")
             return False
-
+        
         if self.verbose:
-            print("Moved to pre grasp. Remmoving object")
-
-        if object_id is not None and object_id in self.objects:
-            self.scene.remove_world_object(f"inst_{object_id}")
-            self.objects[object_id]["active"] = False
-
-        waypoints = [get_pose_msg(position, orientation)]
-        # (plan, fraction) = self.move_group.compute_cartesian_path(waypoints, 0.003, 0.001, True)
-        # if fraction < 0.7:
-        #     print("Could not plan to pre-grasp pose. Plan Accuracy", fraction)
-        #     return False
-
-        if self.verbose:
-            print("Moving to grasp pose")
-
-        self.move_group.set_pose_target(waypoints[0])
-        self.error_recovery_client.send_goal_and_wait(ErrorRecoveryActionGoal())
-        self._go(self.move_group)
-        # plan = self.move_group.g/o(wait=True)
-        self.move_group.stop()
-        self.move_group.clear_pose_targets()
+            rospy.loginfo("MoveitEnv: Moved to pre-grasp pose")
+        
+        # calculate approach pose
+        approach_pose = get_pose_msg(
+            position
+            + Rotation.from_quat(orientation).as_matrix() @ (depth * np.array([0, 0, 1])),
+            orientation,
+        )
+        
+        plan = self.move_to_pose(approach_pose)
         if not plan:
-            print("Failed!")
+            rospy.logwarn("MoveitEnv: Failed to approach to grasp pose")
             return False
+        
+        if self.verbose:
+            rospy.loginfo("MoveitEnv: Approached to grasp pose")
 
         if self.wait_at_grasp_pose:
             import time
-
             time.sleep(5)
-
-        if not dryrun:
-            if self.verbose:
-                print("Closing gripper")
-                self.close_gripper(width=width)
-
+        
         return True
 
     @_block

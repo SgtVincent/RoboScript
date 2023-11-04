@@ -2,9 +2,7 @@ import ast
 import astunparse
 import numpy as np 
 from typing import List, Dict, Any, Tuple, Optional
-import shapely
-from shapely.geometry import *
-from shapely.affinity import *
+import geometry_msgs.msg 
 
 ############### Code execution utils #####################
 
@@ -27,19 +25,24 @@ def merge_dicts(dicts):
     
 def prepare_vars(env):
     """Prepare variables including APIs and objects for LMPs """
-    fixed_vars = {"np": np}
+    fixed_vars = {
+        "np": np
+    }
+    # add geometry_msgs to fixed variables
     fixed_vars.update(
-        {name: eval(name) for name in shapely.geometry.__all__ + shapely.affinity.__all__}
+        {
+            k: getattr(geometry_msgs.msg, k)
+            for k in [
+                "Pose",
+                "PoseStamped",
+                "Point",
+                "Quaternion",
+            ]
+        }
     )
     variable_vars = {
         k: getattr(env, k)
         for k in [
-            "rospy",
-            "move_group",
-            "PoseStamped",
-            "Pose",
-            "Point",
-            "Quaternion",
             "parse_question",
             "get_object_center_position",
             "get_3d_bbox",

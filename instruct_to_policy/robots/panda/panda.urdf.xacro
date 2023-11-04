@@ -25,6 +25,10 @@
         <link>cabinet::drawer1</link>
         <link>cabinet::drawer2</link>
         <link>cabinet::drawer3</link>
+        <link>cabinet::handle_0</link>
+        <link>cabinet::handle_1</link>
+        <link>cabinet::handle_2</link>
+        <link>cabinet::handle_3</link>
       </links_to_publish>
     </plugin>
   </gazebo>

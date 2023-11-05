@@ -34,8 +34,29 @@ def as_mesh(scene_or_mesh):
         mesh = scene_or_mesh
     return mesh
 
-def compute_intertial_link(link_element: ET.Element, use_visual_mesh=False, density=10.0):
+def parse_mesh_path(mesh_file: str):
+    file_tag = "file://"
+    model_tag = "model://"
+    mesh_path = mesh_file
+    if mesh_file.startswith(file_tag):
+        mesh_path = mesh_file.replace(file_tag, "")
+    elif mesh_file.startswith(model_tag):
+        # get model path from GAZEBO_MODEL_PATH
+        gazebo_model_path = os.getenv("GAZEBO_MODEL_PATH")
+        model_dirs = gazebo_model_path.split(":")
+        model_name = mesh_file.replace(model_tag, "")
+        # iterate through all model dirs and find the first existing file
+        for model_dir in model_dirs:
+            model_path = os.path.join(model_dir, model_name)
+            if os.path.exists(model_path):
+                mesh_path = model_path
+                return mesh_path
+        # if not found, raise error
+        raise ValueError(f"Mesh file {mesh_file} not found in GAZEBO_MODEL_PATH:\n{gazebo_model_path}")
+    
+    return mesh_path
 
+def compute_intertial_link(link_element: ET.Element, use_visual_mesh=False, density=10.0, min_mass=0.1):
 
     total_mass = 0.0
     total_inertia = np.zeros((3, 3))
@@ -47,13 +68,13 @@ def compute_intertial_link(link_element: ET.Element, use_visual_mesh=False, dens
     for mesh_element in link_element.findall(xpath):
 
         if mesh_element is not None:
+            # urdf format
             mesh_file = mesh_element.attrib.get("filename", "")
-            mesh = trimesh.load_mesh(mesh_file, force="mesh", skip_texture=True)
-            # Do we need list of inertias? 
-            # mesh_mass, mesh_inertia = compute_mesh_mass_and_inertia(mesh)
-
-            # total_mass += mesh_mass
-            # total_inertia += mesh_inertia
+            # sdf format
+            if mesh_file == "":
+                mesh_file = mesh_element.find("uri").text
+            mesh_path = parse_mesh_path(mesh_file)
+            mesh = trimesh.load_mesh(mesh_path, force="mesh", skip_texture=True)
             mesh_list.append(mesh)
 
     combined_mesh = trimesh.util.concatenate(mesh_list)
@@ -61,8 +82,15 @@ def compute_intertial_link(link_element: ET.Element, use_visual_mesh=False, dens
     link_name = link_element.attrib['name']
     combined_origin, total_mass, total_inertia = compute_mesh_origin_mass_and_inertia(
         combined_mesh, mesh_name=link_name, density=density)
-                
+    
+    if total_mass < min_mass:
+        print(f"Link {link_name} has mass {total_mass} less than {min_mass}. Reset mass to {min_mass}.")
+        min_density = min_mass / total_mass * density
+        combined_origin, total_mass, total_inertia = compute_mesh_origin_mass_and_inertia(
+                combined_mesh, mesh_name=link_name, density=min_density)
+        
     return combined_origin, total_mass, total_inertia, combined_mesh
+
 
 def add_intertial_urdf(urdf_path, output_urdf_path, density, use_visual_mesh=False, debug=False):
     """

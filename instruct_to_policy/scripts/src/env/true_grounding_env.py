@@ -168,9 +168,7 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         
         # If receptacle_name is given, get the receptacle position and bounding box
         if receptacle_name is not None:
-            receptacle_center_position, receptacle_bbox_size = self.get_3d_bbox(receptacle_name)
-            receptacle_bbox = np.array([receptacle_center_position - receptacle_bbox_size / 2, 
-                                        receptacle_center_position + receptacle_bbox_size / 2])
+            receptacle_bbox = self.get_3d_bbox(receptacle_name)
         
         # If position is given, use it directly, otherwise use grounding model to get the receptacle position
         if position is None:
@@ -235,6 +233,10 @@ class TrueGroundingEnv(MoveitGazeboEnv):
     def parse_question(self, question, **kwargs):
         """ parse question into a dictionary """
         raise NotImplementedError("parse_question() not implemented")
+    
+    def detect_objects(self, **kwargs):
+        # True grounding env does not need to detect objects since it receives ground truth model state from gazebo
+        pass
     
     def get_lying_objects(self, objects=[], **kwargs):
         """

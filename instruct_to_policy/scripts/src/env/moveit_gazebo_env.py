@@ -22,7 +22,7 @@ from franka_msgs.msg import ErrorRecoveryAction, ErrorRecoveryActionGoal
 import rospy
 
 # Brings in the SimpleActionClient
-from actionlib import SimpleActionClient
+from actionlib import SimpleActionClient, GoalStatus
 from moveit_msgs.msg import PositionIKRequest, RobotState
 from moveit_msgs.srv import GetPositionIK
 
@@ -72,24 +72,29 @@ class GripperCommanderGroup:
         self.init_clients()
 
 
-    def open_gripper(self, width=0.08):
+    def open_gripper(self, width=0.08, max_wait_time=5.0):
         goal = franka_gripper.msg.MoveGoal(width=width, speed=0.05)
-        # self.gripper_move_client.send_goal_and_wait(goal, rospy.Duration(3.0))
+        # send_goal_and_wait will clear the grasp goal when it timed out, which is not desired
+        # status = self.gripper_move_client.send_goal_and_wait(goal, rospy.Duration(max_wait_time))
         self.gripper_move_client.send_goal(goal)
-        done = self.gripper_move_client.wait_for_result()
+        done = self.gripper_move_client.wait_for_result(rospy.Duration(max_wait_time))
+        if not done:
+            rospy.logwarn("MoveitEnv: Open gripper timed out.")
         return done
 
-    def close_gripper(self, width=0.01, speed=0.05, force=50):
+    def close_gripper(self, width=0.01, speed=0.05, force=50, max_wait_time=5.0):
         """Close the gripper."""
         goal = franka_gripper.msg.GraspGoal(width=width, speed=speed, force=force)
         goal.epsilon.inner = 0.08
         goal.epsilon.outer = 0.08
-        # self.gripper_grasp_client.send_goal_and_wait(goal, rospy.Duration(3.0))
+        # send_goal_and_wait will clear the grasp goal when it timed out, which is not desired
+        # status = self.gripper_grasp_client.send_goal_and_wait(goal, rospy.Duration(max_wait_time))
         self.gripper_grasp_client.send_goal(goal)
-        done = self.gripper_grasp_client.wait_for_result()
+        done = self.gripper_grasp_client.wait_for_result(rospy.Duration(max_wait_time))
+        if not done:
+            rospy.logwarn("MoveitEnv: Close gripper timed out.")
         return done
-
-
+    
 class MoveitGazeboEnv(GazeboEnv):
     """Class to execute grasps on the Franka Emika panda robot."""
 
@@ -122,7 +127,7 @@ class MoveitGazeboEnv(GazeboEnv):
 
         # environment prior knowledge
         # TODO: consider to parse this from external perception model
-        self.static_objects = ['table']
+        self.static_objects = ['table', 'cabinet']
 
         self.ignore_coll_check = False
         self.wait_at_grasp_pose = False
@@ -136,7 +141,7 @@ class MoveitGazeboEnv(GazeboEnv):
         self.lower_limit = np.array([-2.8973, -1.7628, -2.8973, -3.0718, -2.8973, -0.0175, -2.8973])
         # MoveIt! interface
         self.robot = moveit_commander.RobotCommander()
-        self.scene = moveit_commander.PlanningSceneInterface()
+        self.planning_scene = moveit_commander.PlanningSceneInterface()
         # NOTE: use panda_manipulator move_group to make grasp center as end effector link 
         self.move_group = moveit_commander.MoveGroupCommander("panda_manipulator", wait_for_servers=15)
         # self.move_group = moveit_commander.MoveGroupCommander("panda_arm", wait_for_servers=15)
@@ -167,7 +172,6 @@ class MoveitGazeboEnv(GazeboEnv):
         self.move_group.set_pose_reference_frame(self.reference_frame)    
 
         self.reset_joint_values = cfg['env']['initial_joint_values']
-
 
         gripper_collision_frames = ["panda_rightfinger", "panda_leftfinger"]
 
@@ -269,7 +273,7 @@ class MoveitGazeboEnv(GazeboEnv):
             "position": position,
         }
         print("Registering mesh for fraem", self.frame)
-        self.scene.add_mesh(
+        self.planning_scene.add_mesh(
             f"inst_{object_id}",
             get_stamped_pose(position, [0, 0, 0, 1], self.frame),
             f,
@@ -285,7 +289,7 @@ class MoveitGazeboEnv(GazeboEnv):
         
         # reset planning scene 
         # remove all attached objects
-        self.scene.remove_attached_object()
+        self.planning_scene.remove_attached_object()
         
         # reset visualization marker if debug is enabledss
         if self.debug:              
@@ -299,7 +303,9 @@ class MoveitGazeboEnv(GazeboEnv):
                                     gazebo_models_dir="",
                                     gazebo_models_filter=["panda", "fr3"],
                                     load_dynamic=True):
-
+        """
+        TODO: Deprecated. A gazebo plugin will publish the models in the world into moveit planning scene
+        """
         # change the models path accordingly
         if gazebo_models_dir == "":
             gazebo_models_dir = os.path.join(
@@ -312,7 +318,7 @@ class MoveitGazeboEnv(GazeboEnv):
                 pose = self.get_model_state(model, "world").pose
                 properties = self.get_model_properties(model)
                 if properties.is_static or load_dynamic:
-                    load_model_into_moveit(sdf_path, pose, self.scene, model, link_name="link")
+                    load_model_into_moveit(sdf_path, pose, self.planning_scene, model, link_name="link")
 
         
     def load_scene(self):
@@ -344,16 +350,18 @@ class MoveitGazeboEnv(GazeboEnv):
             group = self.move_group
         if gripper_group is None:
             gripper_group = self.gripper_group
-        # first reset robot pose, otherwise there could be collision 
+            
         # stop gripper command to stop ongoing action
         gripper_group.reset()
+        self.open_gripper(gripper_group)
+        
+        # reset robot arm pose 
         group.set_joint_value_target(self.reset_joint_values)
         self._go(group)
         group.stop()
         group.clear_pose_targets()
-        self.open_gripper(gripper_group)
         
-        # then reset the world and moveit planning scene 
+        # reset the world and moveit planning scene 
         self.reset_scene()    
         rospy.loginfo("Environment reset.")
 
@@ -372,7 +380,7 @@ class MoveitGazeboEnv(GazeboEnv):
 
 
     @_block
-    def close_gripper(self, gripper_group=None, width=0.01, force=50):
+    def close_gripper(self, gripper_group=None, width=0.01, force=100):
         """Close the gripper."""
         if gripper_group is None:
             gripper_group = self.gripper_group
@@ -455,23 +463,36 @@ class MoveitGazeboEnv(GazeboEnv):
         # DO NOT add furniture into moveit planning scene since they are static
         if object_id in self.objects and not has_keywords(object_id, self.static_objects):
             
-            self.move_group.attach_object(f"{object_id}.link", link) 
-            # self.scene.attach_mesh(object_id, object_id, 
-            #                        touch_links=[*self.robot.get_link_names(group= "panda_hand"), "panda_joint7"])
-            if self.verbose:
-                rospy.loginfo(f"Moveit: attached object object {object_id} to gripper link")
+            # NOTE: since the object name in moveit planning scene is different from the object name in gazebo with Gazebo plugin
+            # we need to convert the object name to the name in moveit planning scene
+            # e.g. 'apple' in gazebo -> 'apple.link' in moveit planning scene
+            moveit_object_names = self.planning_scene.get_known_object_names()
+            
+            for moveit_object_name in moveit_object_names:
+                if object_id in moveit_object_name:
+                    self.objects[object_id]["attach_name"] = moveit_object_name
+                    self.move_group.attach_object(moveit_object_name, link) 
+                    if self.verbose:
+                        rospy.loginfo(f"Moveit: attached object object {object_id} to {link}")
+                    return True
+            
+            rospy.logerr(f"Moveit: object {object_id} not found in moveit planning scene. Planning scene objects: {moveit_object_names}")
+            return False
+        return False
+
 
     @_block
     def detach_object(self, object_id):
         """Detach an object from the robot."""
         try:
-            self.move_group.detach_object(object_id)
+            moveit_object_name = self.objects[object_id]["attach_name"]
+            self.move_group.detach_object(moveit_object_name)
             
             if self.verbose:
-                print(f"Moveit: detached object {object_id} from gripper link")
+                print(f"Moveit: detached object {object_id}")
         except:
             if self.verbose:
-                rospy.logerr(f"Moveit: failed to detach object {object_id} from gripper link")
+                rospy.logerr(f"Moveit: failed to detach object {object_id}")
 
 
     @_block

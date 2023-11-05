@@ -82,7 +82,7 @@ class GripperCommanderGroup:
             rospy.logwarn("MoveitEnv: Open gripper timed out.")
         return done
 
-    def close_gripper(self, width=0.01, speed=0.05, force=50, max_wait_time=5.0):
+    def close_gripper(self, width=0.01, speed=0.05, force=10, max_wait_time=5.0):
         """Close the gripper."""
         goal = franka_gripper.msg.GraspGoal(width=width, speed=speed, force=force)
         goal.epsilon.inner = 0.08
@@ -124,6 +124,7 @@ class MoveitGazeboEnv(GazeboEnv):
         self.goal_orientation_tolerance = self.config.get('goal_orientation_tolerance', 0.02)  
         self.reference_frame = self.config.get('reference_frame', self.frame)
         self.cartesian_path = self.config.get('cartesian_path', False)
+        self.tentative_approach = self.config.get('tentative_approach', True)
 
         # environment prior knowledge
         # TODO: consider to parse this from external perception model
@@ -401,7 +402,6 @@ class MoveitGazeboEnv(GazeboEnv):
             
         # first try to plan with cartesian path if enabled
         if self.cartesian_path:
-            group.set_pose_target(pose)
             (plan, fraction) = group.compute_cartesian_path([pose], 0.02, 0.0)
             if fraction < 0.9:
                 rospy.logwarn(f"Could not plan cartesian_path to target pose \n{pose}.\n Plan accuracy: {fraction}")
@@ -501,6 +501,7 @@ class MoveitGazeboEnv(GazeboEnv):
         pose: Pose,
         pre_grasp_approach=0.1,
         depth=0.03,
+        tentative_depth=[0.03, 0.01, -0.01],
     ):
         """Executes a grasp at a given pose with given orientation.
         It first moves to a pre-grasp pose, then approaches the grasp pose.
@@ -534,17 +535,33 @@ class MoveitGazeboEnv(GazeboEnv):
         if self.verbose:
             rospy.loginfo("MoveitEnv: Moved to pre-grasp pose")
         
-        # calculate approach pose
-        approach_pose = get_pose_msg(
-            position
-            + Rotation.from_quat(orientation).as_matrix() @ (depth * np.array([0, 0, 1])),
-            orientation,
-        )
+        if not self.tentative_approach:
+            # calculate approach pose
+            approach_pose = get_pose_msg(
+                position
+                + Rotation.from_quat(orientation).as_matrix() @ (depth * np.array([0, 0, 1])),
+                orientation,
+            )
+            plan = self.move_to_pose(approach_pose)
         
-        plan = self.move_to_pose(approach_pose)
-        if not plan:
-            rospy.logwarn("MoveitEnv: Failed to approach to grasp pose")
-            return False
+            if not plan:
+                rospy.logwarn("MoveitEnv: Failed to approach to grasp pose")
+                return False
+        else:
+            # calculate tentative approach pose
+            for tentative_depth in tentative_depth:
+                tentative_approach_pose = get_pose_msg(
+                    position
+                    + Rotation.from_quat(orientation).as_matrix() @ (tentative_depth * np.array([0, 0, 1])),
+                    orientation,
+                )
+                plan = self.move_to_pose(tentative_approach_pose)
+                if plan:
+                    break
+            if not plan:
+                rospy.logwarn("MoveitEnv: Failed to approach to grasp pose")
+                return False
+            
         
         if self.verbose:
             rospy.loginfo("MoveitEnv: Approached to grasp pose")

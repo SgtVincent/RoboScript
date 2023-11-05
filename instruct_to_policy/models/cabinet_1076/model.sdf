@@ -1389,7 +1389,7 @@
       <pose>0 0 0 1.5708 0 -1.5708</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
-        <mass>5</mass>
+        <mass>1</mass>
         <inertia> 
           <ixx> 0.06598219020833333 </ixx>
           <ixy> 0 </ixy>
@@ -1920,7 +1920,7 @@
       <pose>0 0 0 1.5708 0 -1.5708</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
-        <mass>5</mass>
+        <mass>1</mass>
         <inertia>
           <ixx>1</ixx>
           <ixy>0</ixy>
@@ -2451,7 +2451,7 @@
       <pose>0 0 0 1.5708 0 -1.5708</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
-        <mass>5</mass>
+        <mass>1</mass>
         <inertia> 
           <ixx>0.05435549562616668</ixx>
           <ixy>0</ixy>
@@ -2983,7 +2983,7 @@
       <pose>0 0 0 1.5708 0 -1.5708</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
-        <mass>5</mass>
+        <mass>1</mass>
         <inertia>
           <ixx>0.05670848092041667</ixx>
           <ixy>0</ixy>
@@ -4524,7 +4524,7 @@
           <spring_reference>0</spring_reference>
           <spring_stiffness>0</spring_stiffness>
           <damping>5</damping>
-          <friction>5</friction>
+          <friction>20</friction>
         </dynamics>
       </axis>
       <physics>
@@ -4556,7 +4556,7 @@
           <spring_reference>0</spring_reference>
           <spring_stiffness>0</spring_stiffness>
           <damping>5</damping>
-          <friction>5</friction>
+          <friction>20</friction>
         </dynamics>
       </axis>
       <physics>
@@ -4588,7 +4588,7 @@
           <spring_reference>0</spring_reference>
           <spring_stiffness>0</spring_stiffness>
           <damping>5</damping>
-          <friction>5</friction>
+          <friction>20</friction>
         </dynamics>
       </axis>
       <physics>
@@ -4620,7 +4620,7 @@
           <spring_reference>0</spring_reference>
           <spring_stiffness>0</spring_stiffness>
           <damping>5</damping>
-          <friction>5</friction>
+          <friction>20</friction>
         </dynamics>
       </axis>
       <physics>

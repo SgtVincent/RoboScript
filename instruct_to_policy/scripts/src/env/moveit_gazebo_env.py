@@ -285,8 +285,8 @@ class MoveitGazeboEnv(GazeboEnv):
         """Reset the scene to the initial state."""
         self.objects = {}
         if self.use_sim:
+            self.reset_simulation()
             self.reset_world()
-            # self.reset_simulation()
         
         # reset planning scene 
         # remove all attached objects
@@ -400,26 +400,32 @@ class MoveitGazeboEnv(GazeboEnv):
         if self.debug:
             self.publish_goal_to_marker(pose)
             
+        plan_success = False
         # first try to plan with cartesian path if enabled
         if self.cartesian_path:
             (plan, fraction) = group.compute_cartesian_path([pose], 0.02, 0.0)
-            if fraction < 0.9:
-                rospy.logwarn(f"Could not plan cartesian_path to target pose \n{pose}.\n Plan accuracy: {fraction}")
-                success = False
+            if fraction > 0.9:
+                plan_success = True
             else:
-                success = self._execute(group, plan)
-                
-        # if cartesian path is disabled or failed, try to plan with joint values
-        if not self.cartesian_path or not success:
+                rospy.logwarn(f"MoveitEnv: Could not plan cartesian_path to target pose \n{pose}.\n Plan accuracy: {fraction}")
+
+
+        # if cartesian path is disabled or failed, try to replan non-cartesian path
+        if not self.cartesian_path or not plan_success:
             group.set_pose_target(pose)
-            plan = self._go(group)
-            if not plan:
-                rospy.logwarn(f"Could not plan to target pose \n{pose}")
-                success = False
+            # API change for move_group.plan()
+            # return: (success flag : boolean, trajectory message : RobotTrajectory, planning time : float, error code : MoveitErrorCodes)
+            plan_success, plan, _, _ = group.plan()
+            if not plan_success:
+                rospy.logwarn(f"MoveitEnv: Could not plan to target pose \n{pose}")
+                 
+        if not plan_success:
+            return False
         
+        success = self._execute(group, plan)
         group.stop()
         group.clear_pose_targets()
-        return plan
+        return success
 
     @_block
     def move_joints_to(self, joint_values, group=None):
@@ -527,8 +533,8 @@ class MoveitGazeboEnv(GazeboEnv):
             orientation,
         )
 
-        plan = self.move_to_pose(pre_grasp_pose)
-        if not plan:
+        success = self.move_to_pose(pre_grasp_pose)
+        if not success:
             rospy.logwarn("MoveitEnv: Failed to move to pre-grasp pose")
             return False
         
@@ -542,9 +548,9 @@ class MoveitGazeboEnv(GazeboEnv):
                 + Rotation.from_quat(orientation).as_matrix() @ (depth * np.array([0, 0, 1])),
                 orientation,
             )
-            plan = self.move_to_pose(approach_pose)
+            success = self.move_to_pose(approach_pose)
         
-            if not plan:
+            if not success:
                 rospy.logwarn("MoveitEnv: Failed to approach to grasp pose")
                 return False
         else:
@@ -555,10 +561,10 @@ class MoveitGazeboEnv(GazeboEnv):
                     + Rotation.from_quat(orientation).as_matrix() @ (tentative_depth * np.array([0, 0, 1])),
                     orientation,
                 )
-                plan = self.move_to_pose(tentative_approach_pose)
-                if plan:
+                success = self.move_to_pose(tentative_approach_pose)
+                if success:
                     break
-            if not plan:
+            if not success:
                 rospy.logwarn("MoveitEnv: Failed to approach to grasp pose")
                 return False
             

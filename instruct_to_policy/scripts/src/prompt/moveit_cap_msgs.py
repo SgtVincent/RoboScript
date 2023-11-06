@@ -220,7 +220,8 @@ close_gripper()
 attach_object('faucet_handle')
 
 # Generate an arc path around the faucet
-waypoints = generate_arc_path(center=get_object_center_position('faucet'), radius=0.1, n=20)
+current_pose = get_gripper_pose()
+waypoints = generate_arc_path(current_pose, center=get_object_center_position('faucet'), radius=0.1, n=20)
 
 # Turn the handle clockwise
 (plan, fraction) = move_group.compute_cartesian_path(waypoints, 0.01, 0.0)
@@ -252,12 +253,14 @@ close_gripper()
 attach_object('door_handle')
 
 # Pull the door handle downwards with an arc path of small radius by 30 degrees
-waypoints = generate_arc_path(center=get_object_center_position('door_handle'), radius=0.1, n=20, angle=30)
+current_pose = get_gripper_pose()
+waypoints = generate_arc_path(current_pose, center=get_object_center_position('door_handle'), radius=0.1, n=20, angle=30)
 (plan, fraction) = move_group.compute_cartesian_path(waypoints, 0.01, 0.0)
 move_group.execute(plan, wait=True)
 
 # pull the door horizontally with an arc path of large radius by 60 degrees
-waypoints = generate_arc_path(center=get_object_center_position('door_handle'), radius=0.5, n=40, angle=60)
+current_pose = get_gripper_pose()
+waypoints = generate_arc_path(current_pose, center=get_object_center_position('door_handle'), radius=0.5, n=40, angle=60)
 (plan, fraction) = move_group.compute_cartesian_path(waypoints, 0.01, 0.0)
 move_group.execute(plan, wait=True)
 
@@ -294,12 +297,14 @@ move_to_pose(pour_pose)
 
 # Rotate the bottle to pour the liquid into the glass
 pour_angle = 90
-waypoints = generate_arc_path(center=get_object_center_position('bottle'), radius=0.1, n=30, angle=pour_angle)
+current_pose = get_gripper_pose()
+waypoints = generate_arc_path(current_pose, center=get_object_center_position('bottle'), radius=0.1, n=30, angle=pour_angle)
 (plan, fraction) = move_group.compute_cartesian_path(waypoints, 0.01, 0.0)
 move_group.execute(plan, wait=True)
 
 # Rotate the bottle back to the original orientation
-waypoints = generate_arc_path(center=get_object_center_position('bottle'), radius=0.1, n=30, angle=-pour_angle)
+current_pose = get_gripper_pose()
+waypoints = generate_arc_path(current_pose, center=get_object_center_position('bottle'), radius=0.1, n=30, angle=-pour_angle)
 (plan, fraction) = move_group.compute_cartesian_path(waypoints, 0.01, 0.0)
 move_group.execute(plan, wait=True)
 
@@ -777,6 +782,26 @@ def pick_and_place(pick_pose, place_pose):
 },
 {
 "role":"user",
+"content": "# define function: generate_arc_path(current_pose, center, radius, n, angle)"
+},
+{
+"role":"assistant",
+"content": 
+'''
+def generate_arc_path(current_pose, center, radius, n, angle):
+    waypoints = []
+    for i in range(n):
+        waypoint = Pose()
+        waypoint.position.x = center[0] + radius * np.cos(angle / n * i)
+        waypoint.position.y = center[1] + radius * np.sin(angle / n * i)
+        waypoint.position.z = center[2]
+        waypoint.orientation = current_pose.orientation
+        waypoints.append(waypoint)
+    return waypoints
+'''
+},
+{
+"role":"user",
 "content": "# define function: follow_path(move_group, path_points)"
 },
 {
@@ -784,8 +809,7 @@ def pick_and_place(pick_pose, place_pose):
 "content":
 '''
 def follow_path(move_group, path_points):
-    waypoints = [set_pose(1.0, point[0], point[1], point[2]) for point in path_points]
-    (plan, fraction) = move_group.compute_cartesian_path(waypoints, 0.01, 0.0)
+    (plan, fraction) = move_group.compute_cartesian_path(path_points, 0.01, 0.0)
     move_group.execute(plan, wait=True)
 '''
 },

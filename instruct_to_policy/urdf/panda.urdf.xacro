@@ -8,6 +8,63 @@
   <xacro:franka_robot arm_id="$(arg arm_id)"
                       joint_limits="${xacro.load_yaml('$(find franka_description)/robots/panda/joint_limits.yaml')}">
   </xacro:franka_robot>
+  
+  <!-- overwrite physics parameters for gripper fingers -->
+
+  <gazebo reference="$(arg arm_id)_leftfinger">
+    <collision>
+      <max_contacts>10</max_contacts>
+      <surface>
+        <contact>
+          <ode>
+            <kp>100000</kp>
+            <kd>5.0</kd>
+            <max_vel>0</max_vel>
+            <min_depth>0.001</min_depth>
+          </ode>
+        </contact>
+        <friction>
+          <ode>
+            <mu>10</mu>
+            <mu2>10</mu2>
+          </ode>
+          <torsional>
+            <coefficient>10.0</coefficient>
+            <use_patch_radius>true</use_patch_radius>
+            <patch_radius>0.1</patch_radius>
+          </torsional>
+        </friction>
+      </surface>
+    </collision>
+  </gazebo>
+
+  <gazebo reference="$(arg arm_id)_rightfinger">
+    <collision>
+      <max_contacts>10</max_contacts>
+      <surface>
+        <contact>
+          <ode>
+            <kp>100000</kp>
+            <kd>5.0</kd>
+            <max_vel>0</max_vel>
+            <min_depth>0.001</min_depth>
+          </ode>
+        </contact>
+        <friction>
+          <ode>
+            <mu>10</mu>
+            <mu2>10</mu2>
+          </ode>
+          <torsional>
+            <coefficient>10.0</coefficient>
+            <use_patch_radius>true</use_patch_radius>
+            <patch_radius>0.1</patch_radius>
+          </torsional>
+        </friction>
+      </surface>
+    </collision>
+  </gazebo>
+  
   <!-- gazebo plugin to publish models to moveit planning scene -->
   <!-- problem remains: wrong position, FIXME later -->
   <gazebo>
@@ -25,6 +82,10 @@
         <link>cabinet::drawer1</link>
         <link>cabinet::drawer2</link>
         <link>cabinet::drawer3</link>
+        <link>cabinet::handle_0</link>
+        <link>cabinet::handle_1</link>
+        <link>cabinet::handle_2</link>
+        <link>cabinet::handle_3</link>
       </links_to_publish>
     </plugin>
   </gazebo>

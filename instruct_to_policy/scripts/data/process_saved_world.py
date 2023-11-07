@@ -46,10 +46,7 @@ if __name__ == '__main__':
         scale = model.find('scale').text
         models.append(name)
         poses[name] = pose
-        scales[name] = scale
-        
-
-        
+        scales[name] = scale   
 
     # Copy model tags from input XML to output XML and 
     # add/replace pose, scale tags      

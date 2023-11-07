@@ -4,8 +4,7 @@ package_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(
 
 from src.prompt.moveit_cap_msgs import *
 from src.constants import *
-
-
+from src.prompt.message_parse_question import message_parse_question
 # model_name = 'code-davinci-002' # 'text-davinci-002' # deprecated in 2023
 model_name = 'gpt-3.5-turbo-16k' # recommened replacement for 'code-davinci-002'
 # model_name = 'gpt-4'
@@ -18,7 +17,8 @@ cfg_tabletop = {
       'interface': 'moveit',
       'verbose': False,
       'initial_joint_values': [0.0, -0.7854, 0.0, -2.3562, 0.0, 1.5708, 0.7854],
-      'extra_objects': ["cabinet.drawer0", "cabinet.drawer1", "cabinet.drawer2", "cabinet.drawer3"],
+      'extra_objects': ["cabinet.drawer0", "cabinet.drawer1", "cabinet.drawer2", "cabinet.drawer3", 
+                        "cabinet.handle_0", "cabinet.handle_1", "cabinet.handle_2", "cabinet.handle_3"],
       'sensor': {
         'namespace': '', # empty namespace by default 
         'cameras': ['camera_left', 'camera_right', 'camera_top'],

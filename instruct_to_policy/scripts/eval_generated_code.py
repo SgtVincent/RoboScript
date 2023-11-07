@@ -4,12 +4,12 @@ import numpy as np
 import argparse
 
 from src.lmp import *
-from src.env.simple_grounding_env import SimpleGroundingEnv
+from src.env.true_grounding_env import TrueGroundingEnv
 from src.config import cfg_tabletop
 import rospy 
 import rospkg
 
-def filter_drawer0(processed_data, raw_data, mask):
+def filter_drawer0(processed_data, mask):
     """
     Filter tasks involving interacting with drawer 0, since it is too far from the robot.
     """
@@ -25,18 +25,18 @@ def filter_drawer0(processed_data, raw_data, mask):
     return mask 
 
 
-def filter_tasks(processed_data, raw_data):
+def filter_tasks(processed_data):
     """
     Filter the tasks that are not suitable for the environment based on hand-crafted rules.
     """
-    filter_funcs = [filter_drawer0]
+    # filter_funcs = [filter_drawer0]
+    filter_funcs = []
     mask = np.ones((len(processed_data)))
     for func in filter_funcs:
-        mask = func(processed_data, raw_data, mask)
+        mask = func(processed_data, mask)
         
     filtered_processed_data = [processed_data[i] for i in range(len(processed_data)) if mask[i] == 1]
-    filtered_raw_data = [raw_data[i] for i in range(len(raw_data)) if mask[i] == 1]
-    return filtered_processed_data, filtered_raw_data
+    return filtered_processed_data 
     
 
 
@@ -48,13 +48,11 @@ if __name__ == "__main__":
     pkg_root = rospkg.RosPack().get_path('instruct_to_policy')
 
     # Get ROS parameters 
-    processed_file = rospy.get_param('~processed_file', 'data/generated_code/processed_table_cabinet_4.json')
-    raw_file = rospy.get_param('~raw_file', 'data/generated_code/raw_table_cabinet_4.json')
+    processed_file = rospy.get_param('~processed_file', 'data/benchmark/validated_code/processed_world_1_table_sort.json')
     processed_file_path = os.path.join(pkg_root, processed_file)
-    raw_file_path = os.path.join(pkg_root, raw_file)
 
     # setup environment
-    env = SimpleGroundingEnv(cfg_tabletop)
+    env = TrueGroundingEnv(cfg_tabletop)
     env.reset()
 
     # prepare variables for code execution 
@@ -62,17 +60,15 @@ if __name__ == "__main__":
 
     with open(processed_file_path, 'r') as f:
         processed_data = json.load(f)
-    with open(raw_file_path, 'r') as f:
-        raw_data = json.load(f)
 
     # filter tasks that are not suitable for the environment
-    filtered_processed_data, filtered_raw_data = filter_tasks(processed_data, raw_data)
+    filtered_processed_data = filter_tasks(processed_data)
     
     # load code_str
     # for i, data in enumerate(filtered_processed_data):
     #     if i > 0:
     #         break
-    data = filtered_processed_data[1]
+    data = filtered_processed_data[0]
     query = data['query']
     code_str = data['code']
     rospy.loginfo("Running code for query: {}".format(query))

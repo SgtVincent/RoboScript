@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 This script is used to generate the code for the robot arm manipulation.
 The code is generated with OpenAI API (gpt-3.5-turbo) chat completion.
@@ -5,6 +6,7 @@ The code is generated with OpenAI API (gpt-3.5-turbo) chat completion.
 
 #!/usr/bin/env python3
 import os 
+import traceback
 import numpy as np
 import openai
 import argparse 
@@ -55,29 +57,30 @@ def prepare_vars_detached():
     fixed_vars.update(
         {name: eval(name) for name in shapely.geometry.__all__ + shapely.affinity.__all__}
     )
+
     variable_vars = {
         k: None
         for k in [
-            "get_bbox",
-            "get_obj_pos",
-            "get_color",
-            "is_obj_visible",
-            "denormalize_xy",
-            "get_obj_names",
-            "get_corner_name",
-            "get_side_name",
-            "get_ee_pose",
-            "parse_pose",
+            "rospy",
+            "move_group",
+            "PoseStamped",
+            "Pose",
+            "Point",
+            "Quaternion",
+            "parse_question",
+            "get_object_center_position",
+            "get_3d_bbox",
+            "get_obj_name_list",
+            "parse_grasp_pose",
+            "parse_place_pose",
+            "detect_objects",
             "open_gripper",
             "close_gripper",
-            "move_to_pose",
-            "move_joints_to",
-            "add_object_to_scene",
             "attach_object",
-            "detach_object"
-            # DO NOT use mid-level skills?
-            # "grasp",
-            # "place"
+            "detach_object",
+            "move_to_pose",
+            "get_gripper_pose",
+            "grasp",
         ]
     }
     variable_vars["say"] = lambda msg: print(f"robot says: {msg}")
@@ -137,15 +140,26 @@ def process_raw_output(raw_path, processed_path):
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Generate code for the robot arm manipulation.")
-    parser.add_argument("--task-queries", type=str, default="data/task_queries/table_cabinet_0.txt",
+    # parser.add_argument("--task-queries", type=str, default="data/table_cabinet_100/task_queries/table_cabinet_0.txt",
+    #                     help="Task queries file")
+    # parser.add_argument("--output-dir", type=str, default="data/table_cabinet_100/generated_code",
+    #                     help="Output directory")
+    # parser.add_argument("--max-tokens", type=int, default=2048,
+    #                     help="Max tokens (defaults to 2048)")
+    # parser.add_argument("--max-queries", type=int, default=200, 
+    #                     help="Max number of task queries to generate (defaults to 200)")
+
+    parser.add_argument("--task-queries", type=str, default="data/benchmark/task_queries/world_1_table_sort.txt",
                         help="Task queries file")
-    parser.add_argument("--output-dir", type=str, default="data/generated_code",
+    parser.add_argument("--output-dir", type=str, default="data/benchmark/generated_code",
                         help="Output directory (defaults to data/code)")
-    parser.add_argument("--max-tokens", type=int, default=256,
-                        help="Max tokens (defaults to 256)")
-    parser.add_argument("--max_queries", type=int, default=200, 
+    parser.add_argument("--max-tokens", type=int, default=2048,
+                        help="Max tokens (defaults to 2048)")
+    parser.add_argument("--max-queries", type=int, default=10, 
                         help="Max number of task queries to generate (defaults to 200)")
-    args = parser.parse_args()
+    os.chdir("/home/junting/franka_ws/src/franka_fisher/instruct_to_policy")
+    
+    args, unknown_args = parser.parse_known_args()
 
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir)
@@ -213,6 +227,7 @@ if __name__ == "__main__":
             exception_log += "----------\n"
             exception_log += f"Cannot generate code for task query {i}: {task_query} \n"
             exception_log += f"Exception: {e} \n"
+            exception_log += f"Traceback: {traceback.format_exc()} \n"
             exception_log += "----------\n"
             
     # write exception log to file

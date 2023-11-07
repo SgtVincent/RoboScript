@@ -21,7 +21,7 @@ from franka_msgs.msg import ErrorRecoveryAction, ErrorRecoveryActionGoal
 import rospy
 
 # Brings in the SimpleActionClient
-from actionlib import SimpleActionClient
+from actionlib import SimpleActionClient, GoalStatus
 from moveit_msgs.msg import PositionIKRequest, RobotState
 from moveit_msgs.srv import GetPositionIK
 
@@ -41,7 +41,6 @@ class Grasp(NamedTuple):
     score: float
     width: float
     instance_id: int
-
 
 class MoveitGazeboEnv(GazeboEnv):
     """Class to execute grasps on the Franka Emika panda robot."""
@@ -71,6 +70,7 @@ class MoveitGazeboEnv(GazeboEnv):
         self.goal_orientation_tolerance = self.config.get('goal_orientation_tolerance', 0.02)  
         self.reference_frame = self.config.get('reference_frame', self.frame)
         self.cartesian_path = self.config.get('cartesian_path', False)
+        self.tentative_approach = self.config.get('tentative_approach', True)
 
         # group name 
         # franka default
@@ -85,7 +85,7 @@ class MoveitGazeboEnv(GazeboEnv):
 
         # environment prior knowledge
         # TODO: consider to parse this from external perception model
-        self.static_objects = ['table']
+        self.static_objects = ['table', 'cabinet']
 
         self.ignore_coll_check = False
         self.wait_at_grasp_pose = False
@@ -120,7 +120,7 @@ class MoveitGazeboEnv(GazeboEnv):
         # )
 
         print("Loading static scene information")
-        self.object_names = self.get_obj_names()
+        self.object_names = self.get_obj_name_list()
         self.load_scene()
         # TODO: moveit configurations should be set inside the config file 
 
@@ -234,7 +234,7 @@ class MoveitGazeboEnv(GazeboEnv):
             "position": position,
         }
         print("Registering mesh for fraem", self.frame)
-        self.scene.add_mesh(
+        self.planning_scene.add_mesh(
             f"inst_{object_id}",
             get_stamped_pose(position, [0, 0, 0, 1], self.frame),
             f,
@@ -245,12 +245,12 @@ class MoveitGazeboEnv(GazeboEnv):
         """Reset the scene to the initial state."""
         self.objects = {}
         if self.use_sim:
+            self.reset_simulation()
             self.reset_world()
-            # self.reset_simulation()
         
         # reset planning scene 
         # remove all attached objects
-        self.scene.remove_attached_object()
+        self.planning_scene.remove_attached_object()
         
         # reset visualization marker if debug is enabledss
         if self.debug:              
@@ -264,7 +264,9 @@ class MoveitGazeboEnv(GazeboEnv):
                                     gazebo_models_dir="",
                                     gazebo_models_filter=["panda", "fr3"],
                                     load_dynamic=True):
-
+        """
+        TODO: Deprecated. A gazebo plugin will publish the models in the world into moveit planning scene
+        """
         # change the models path accordingly
         if gazebo_models_dir == "":
             gazebo_models_dir = os.path.join(
@@ -277,7 +279,7 @@ class MoveitGazeboEnv(GazeboEnv):
                 pose = self.get_model_state(model, "world").pose
                 properties = self.get_model_properties(model)
                 if properties.is_static or load_dynamic:
-                    load_model_into_moveit(sdf_path, pose, self.scene, model, link_name="link")
+                    load_model_into_moveit(sdf_path, pose, self.planning_scene, model, link_name="link")
 
         
     def load_scene(self):
@@ -309,20 +311,23 @@ class MoveitGazeboEnv(GazeboEnv):
             group = self.move_group
         if gripper_group is None:
             gripper_group = self.gripper_group
-        # first reset robot pose, otherwise there could be collision 
+            
+        # stop gripper command to stop ongoing action
+        gripper_group.reset()
+        self.open_gripper(gripper_group)
+        
+        # reset robot arm pose 
         group.set_joint_value_target(self.reset_joint_values)
         self._go(group)
         group.stop()
         group.clear_pose_targets()
-        gripper_group.reset()
-        self.open_gripper(gripper_group)
         
-        # then reset the world and moveit planning scene 
+        # reset the world and moveit planning scene 
         self.reset_scene()    
         rospy.loginfo("Environment reset.")
 
-    def get_ee_pose(self, group=None):
-        """Get the current pose of the end effector."""
+    def get_gripper_pose(self, group=None):
+        """Get the current pose of the gripper."""
         if group is None:
             group = self.move_group
         return group.get_current_pose().pose
@@ -336,7 +341,7 @@ class MoveitGazeboEnv(GazeboEnv):
 
 
     @_block
-    def close_gripper(self, gripper_group=None, width=0.01, force=50):
+    def close_gripper(self, gripper_group=None, width=0.01, force=100):
         """Close the gripper."""
         if gripper_group is None:
             gripper_group = self.gripper_group
@@ -355,27 +360,32 @@ class MoveitGazeboEnv(GazeboEnv):
         if self.debug:
             self.publish_goal_to_marker(pose)
             
+        plan_success = False
         # first try to plan with cartesian path if enabled
         if self.cartesian_path:
-            group.set_pose_target(pose)
             (plan, fraction) = group.compute_cartesian_path([pose], 0.02, 0.0)
-            if fraction < 0.9:
-                rospy.logwarn(f"Could not plan cartesian_path to target pose \n{pose}.\n Plan accuracy: {fraction}")
-                success = False
+            if fraction > 0.9:
+                plan_success = True
             else:
-                success = self._execute(group, plan)
-                
-        # if cartesian path is disabled or failed, try to plan with joint values
-        if not self.cartesian_path or not success:
+                rospy.logwarn(f"MoveitEnv: Could not plan cartesian_path to target pose \n{pose}.\n Plan accuracy: {fraction}")
+
+
+        # if cartesian path is disabled or failed, try to replan non-cartesian path
+        if not self.cartesian_path or not plan_success:
             group.set_pose_target(pose)
-            plan = self._go(group)
-            if not plan:
-                rospy.logwarn(f"Could not plan to target pose \n{pose}")
-                success = False
+            # API change for move_group.plan()
+            # return: (success flag : boolean, trajectory message : RobotTrajectory, planning time : float, error code : MoveitErrorCodes)
+            plan_success, plan, _, _ = group.plan()
+            if not plan_success:
+                rospy.logwarn(f"MoveitEnv: Could not plan to target pose \n{pose}")
+                 
+        if not plan_success:
+            return False
         
+        success = self._execute(group, plan)
         group.stop()
         group.clear_pose_targets()
-        return plan
+        return success
 
     @_block
     def move_joints_to(self, joint_values, group=None):
@@ -419,42 +429,56 @@ class MoveitGazeboEnv(GazeboEnv):
         # DO NOT add furniture into moveit planning scene since they are static
         if object_id in self.objects and not has_keywords(object_id, self.static_objects):
             
-            self.move_group.attach_object(f"{object_id}.link", link) 
-            # self.scene.attach_mesh(object_id, object_id, 
-            #                        touch_links=[*self.robot.get_link_names(group= "panda_hand"), "panda_joint7"])
-            if self.verbose:
-                rospy.loginfo(f"Moveit: attached object object {object_id} to gripper link")
+            # NOTE: since the object name in moveit planning scene is different from the object name in gazebo with Gazebo plugin
+            # we need to convert the object name to the name in moveit planning scene
+            # e.g. 'apple' in gazebo -> 'apple.link' in moveit planning scene
+            moveit_object_names = self.planning_scene.get_known_object_names()
+            
+            for moveit_object_name in moveit_object_names:
+                if object_id in moveit_object_name:
+                    self.objects[object_id]["attach_name"] = moveit_object_name
+                    self.move_group.attach_object(moveit_object_name, link) 
+                    if self.verbose:
+                        rospy.loginfo(f"Moveit: attached object object {object_id} to {link}")
+                    return True
+            
+            rospy.logerr(f"Moveit: object {object_id} not found in moveit planning scene. Planning scene objects: {moveit_object_names}")
+            return False
+        return False
+
 
     @_block
     def detach_object(self, object_id):
         """Detach an object from the robot."""
         try:
-            self.move_group.detach_object(object_id)
+            moveit_object_name = self.objects[object_id]["attach_name"]
+            self.move_group.detach_object(moveit_object_name)
             
             if self.verbose:
-                print(f"Moveit: detached object {object_id} from gripper link")
+                print(f"Moveit: detached object {object_id}")
         except:
             if self.verbose:
-                rospy.logerr(f"Moveit: failed to detach object {object_id} from gripper link")
+                rospy.logerr(f"Moveit: failed to detach object {object_id}")
 
 
     @_block
     def grasp(
         self,
         pose: Pose,
-        width=0.025,
-        pre_grasp_approach=0.05,
-        dryrun=False,
-        object_id=None,
+        pre_grasp_approach=0.1,
+        depth=0.03,
+        tentative_depth=[0.03, 0.01, -0.01],
     ):
         """Executes a grasp at a given pose with given orientation.
+        It first moves to a pre-grasp pose, then approaches the grasp pose.
 
         Args:
-            position: The position of the grasp.
-            orientation: The orientation of the grasp (scipy format, xyzw).
-            width: The width of the gripper.
+            pose: The pose of the grasp.
             pre_grasp_approach: The distance to move towards the object before grasping.
-            dryrun: If true, the robot will not call the action to close the gripper (not available in simulation).       
+            depth: The distance to move towards the object after grasping.
+            
+        NOTE: for anygrasp and the offset between gripper tip and grasp center is 0.02, depth = 0.05 - 0.02 = 0.03
+        # TODO: should add pre_grasp_approach and depth to the robot-specifig config file
         """
 
         position = np.array([pose.position.x, pose.position.y, pose.position.z])
@@ -462,74 +486,56 @@ class MoveitGazeboEnv(GazeboEnv):
             [pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w]
         )
 
+        # calculate pre-grasp pose 
         pre_grasp_pose = get_pose_msg(
             position
-            + Rotation.from_quat(orientation).as_matrix()
-            @ (pre_grasp_approach * np.array([0, 0, -1])),
+            + Rotation.from_quat(orientation).as_matrix() @ (pre_grasp_approach * np.array([0, 0, -1])),
             orientation,
         )
-        waypoints = [pre_grasp_pose]
 
-        # make sure gripper is open before moving to pre-grasp pose
-        if not dryrun:
-            self.open_gripper()
-
-        self.move_group.set_pose_target(waypoints[0])
-
-        if self.cartesian_path:
-            (plan, fraction) = self.move_group.compute_cartesian_path(waypoints, 0.02, 0.0)
-            if fraction < 0.9:
-                print("Could not plan to pre-grasp pose. Plan accuracy", fraction)
+        success = self.move_to_pose(pre_grasp_pose)
+        if not success:
+            rospy.logwarn("MoveitEnv: Failed to move to pre-grasp pose")
+            return False
+        
+        if self.verbose:
+            rospy.loginfo("MoveitEnv: Moved to pre-grasp pose")
+        
+        if not self.tentative_approach:
+            # calculate approach pose
+            approach_pose = get_pose_msg(
+                position
+                + Rotation.from_quat(orientation).as_matrix() @ (depth * np.array([0, 0, 1])),
+                orientation,
+            )
+            success = self.move_to_pose(approach_pose)
+        
+            if not success:
+                rospy.logwarn("MoveitEnv: Failed to approach to grasp pose")
                 return False
-
-        if self.verbose:
-            print("Moving to pre-grasp pose")
-
-        if self.cartesian_path:
-            self._execute(self.move_group, plan)
         else:
-            plan = self._go(self.move_group)
-        self.move_group.stop()
-        self.move_group.clear_pose_targets()
-        if not plan:
-            print("Failed")
-            return False
-
+            # calculate tentative approach pose
+            for tentative_depth in tentative_depth:
+                tentative_approach_pose = get_pose_msg(
+                    position
+                    + Rotation.from_quat(orientation).as_matrix() @ (tentative_depth * np.array([0, 0, 1])),
+                    orientation,
+                )
+                success = self.move_to_pose(tentative_approach_pose)
+                if success:
+                    break
+            if not success:
+                rospy.logwarn("MoveitEnv: Failed to approach to grasp pose")
+                return False
+            
+        
         if self.verbose:
-            print("Moved to pre grasp. Remmoving object")
-
-        if object_id is not None and object_id in self.objects:
-            self.scene.remove_world_object(f"inst_{object_id}")
-            self.objects[object_id]["active"] = False
-
-        waypoints = [get_pose_msg(position, orientation)]
-        # (plan, fraction) = self.move_group.compute_cartesian_path(waypoints, 0.003, 0.001, True)
-        # if fraction < 0.7:
-        #     print("Could not plan to pre-grasp pose. Plan Accuracy", fraction)
-        #     return False
-
-        if self.verbose:
-            print("Moving to grasp pose")
-
-        self.move_group.set_pose_target(waypoints[0])
-        self._go(self.move_group)
-        # plan = self.move_group.g/o(wait=True)
-        self.move_group.stop()
-        self.move_group.clear_pose_targets()
-        if not plan:
-            print("Failed!")
-            return False
+            rospy.loginfo("MoveitEnv: Approached to grasp pose")
 
         if self.wait_at_grasp_pose:
             import time
-
             time.sleep(5)
-
-        if not dryrun:
-            if self.verbose:
-                print("Closing gripper")
-                self.close_gripper(width=width)
-
+        
         return True
 
     @_block

@@ -35,7 +35,8 @@ class GazeboEnv(Env):
         self.get_model_properties = rospy.ServiceProxy(f"/{self.node_name}/get_model_properties", GetModelProperties)
 
         self.robot_names = ["panda", "fr3", "triple_camera_set"]
-
+        self.environment_names = ["ground_plane"]
+        
         # register camera set
         self.camera_set = GazeboRGBDCameraSet(self.sensor_config['cameras'], 
                                               namespace=self.sensor_config['namespace'], 
@@ -46,12 +47,12 @@ class GazeboEnv(Env):
         self.gazebo_gt_bboxes = msg.bboxes_3d
 
 
-    def get_obj_names(self)-> List[str]:
+    def get_obj_name_list(self)-> List[str]:
         """ Get all object names in the world."""
 
         objects = [
             obj for obj in self.get_world_properties().model_names
-            if obj not in self.robot_names
+            if obj not in self.robot_names and obj not in self.environment_names
         ]
         if self.extra_objects:
             objects += self.extra_objects
@@ -63,7 +64,7 @@ class GazeboEnv(Env):
         # name matching: gazebo model name is different from the name in the world, 
         # but obj_name should be a substring of the gazebo model name
         
-        gazebo_model_names = self.get_obj_names()
+        gazebo_model_names = self.get_obj_name_list()
         for gazebo_model_name in gazebo_model_names:
             if obj_name in gazebo_model_name.lower():
                 obj_name = gazebo_model_name
@@ -89,15 +90,16 @@ class GazeboEnv(Env):
             rospy.logdebug("gazebo_env: Waiting for ground truth bounding boxes")
             rospy.sleep(0.5)
             
-        # gt bbox of drawer has name: cabinet::drawer0
-        if 'drawer' in obj_name:
-            object_name = obj_name.replace('.', '::')
+        # gt bbox of drawer or handle: need to convert to link name
+        if 'cabinet.drawer' in obj_name or 'cabinet.handle' in obj_name:
+            obj_name = obj_name.replace('.', '::')
         
         for bbox in self.gazebo_gt_bboxes:
             if bbox.object_id == obj_name:
                 center = [bbox.center.position.x, bbox.center.position.y, bbox.center.position.z]
                 size = [bbox.size.x, bbox.size.y, bbox.size.z]
                 return center, size
+            
         rospy.logwarn(f"Query object {obj_name} has no ground truth bounding box in gazebo")
         return None, None
         
@@ -112,14 +114,9 @@ class GazeboEnv(Env):
         resp = self.get_link_state(link_name, ref_frame)
         return resp.link_state.pose
 
-    
     def get_mesh(self, obj_name):
         """ Get object mesh."""
         raise NotImplementedError("get_mesh() not implemented: Not knowing how to get the ground truth mesh from gazebo")
-
-    def get_color(self, obj_name):
-        """ Get object color."""
-        raise NotImplementedError("get_color() not implemented: Not knowing how to get the ground truth color from gazebo (from mesh file)")
 
     def get_object_collision(self, obj_name):
         """
@@ -133,7 +130,7 @@ class GazeboEnv(Env):
             pass
 
         try:
-            collision_dict["collision"] = self.get_bbox(obj_name)
+            collision_dict["collision"] = self.get_3d_bbox(obj_name)
             collision_dict["type"] = "box"
         except:
             rospy.logwarn(f"Object {obj_name} has no collision mesh or bounding box in gazebo")

@@ -9,8 +9,9 @@ from cv_bridge import CvBridge
 
 from grasp_detection.srv import DetectGrasps, DetectGraspsRequest, DetectGraspsResponse
 from grasp_detection.msg import Grasp, Perception, PerceptionSingleCamera, BoundingBox3D
+from geometry_msgs.msg import Pose, Point, Quaternion
 
-from .utils import data_to_percetion_msg
+from src.perception.utils import data_to_percetion_msg
 from .grasp_detection_base import GraspDetectionBase
 
 
@@ -32,7 +33,7 @@ class GraspDetectionRemote(GraspDetectionBase):
         # waiting for DetectGrasp service to be ready 
         rospy.wait_for_service(self.service_name)
         
-    def predict(self, data: Dict)-> Tuple[List, List, List]:
+    def predict(self, data: Dict)-> Tuple[List[Pose], List[float], List[float]]:
 
         perception_msg = data_to_percetion_msg(data, self.cv_bridge)
         request = DetectGraspsRequest(perception_data=perception_msg)

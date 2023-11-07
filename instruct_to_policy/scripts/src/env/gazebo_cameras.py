@@ -11,7 +11,7 @@ from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image, CameraInfo, PointCloud2
 from geometry_msgs.msg import TransformStamped
 
-from src.grasp_detection.utils import Transform, CameraIntrinsic
+from src.perception.utils import Transform, CameraIntrinsic
 
 class GazeboRGBDCamera:
     """

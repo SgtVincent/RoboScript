@@ -1,5 +1,6 @@
 from typing import List, Optional, Union, Tuple
 import numpy as np
+import numpy.random as random
 from scipy.spatial.transform import Rotation as R
 
 import xml.etree.ElementTree as ElementTree
@@ -90,6 +91,73 @@ def get_axis_aligned_bbox(bbox_center, bbox_size, transform):
     aa_bbox_size = bbox_max - bbox_min
 
     return aa_bbox_center, aa_bbox_size
+
+
+def is_collision(bbox1, bbox2):
+    # Check for overlap in x, y, and z axes
+    overlap_x = not (bbox1[0] > bbox2[3] or bbox1[3] < bbox2[0])
+    overlap_y = not (bbox1[1] > bbox2[4] or bbox1[4] < bbox2[1])
+    overlap_z = not (bbox1[2] > bbox2[5] or bbox1[5] < bbox2[2])
+
+    # If overlap in all three axes, then the bounding boxes collide
+    return overlap_x and overlap_y and overlap_z
+
+def calculate_place_position(object_bbox, receptacle_bbox, obstacle_bbox_list, max_tries=100):
+    """
+    Given object bbox, receptacle bbox, and other obstacle objects bboxes, calculate a valid position to place the object.
+    The position is calculated as the center of the object bounding box above the receptacle bounding box.
+    Each bounding box is [[x_min, y_min, z_min], [x_max, y_max, z_max]]
+    """
+    # Calculate boundaries for x and y within the receptacle
+    x_min = receptacle_bbox[0] + (receptacle_bbox[3] - receptacle_bbox[0]) * 0.25
+    x_max = receptacle_bbox[0] + (receptacle_bbox[3] - receptacle_bbox[0]) * 0.75
+    y_min = receptacle_bbox[1] + (receptacle_bbox[4] - receptacle_bbox[1]) * 0.25
+    y_max = receptacle_bbox[1] + (receptacle_bbox[4] - receptacle_bbox[1]) * 0.75
+    
+    # Calculate the object bounding box size
+    object_size = np.array([object_bbox[3] - object_bbox[0], object_bbox[4] - object_bbox[1], object_bbox[5] - object_bbox[2]])
+    
+    # Calculate the z position which is constant across all placement attempts
+    z = receptacle_bbox[5] + object_size[2] / 2
+     
+    # Initialize the object position
+    position = np.array([0, 0, z])
+    
+    # Try to find a valid position
+    for _ in range(max_tries):
+        # Randomly sample a new position
+        position[0] = random.uniform(x_min, x_max)
+        position[1] = random.uniform(y_min, y_max)
+        
+        # Create a new bounding box for the object in the new position
+        new_object_bbox = np.array([position[0] - object_size[0] / 2, position[1] - object_size[1] / 2, position[2] - object_size[2] / 2, 
+                                    position[0] + object_size[0] / 2, position[1] + object_size[1] / 2, position[2] + object_size[2] / 2])
+        
+        # If the object is in collision with any other object, continue to the next attempt
+        if any(is_collision(new_object_bbox, obstacle_bbox) for obstacle_bbox in obstacle_bbox_list):
+            continue
+        
+        # If no collision, return the found position
+        return position
+    
+    # return last trial even if it is in collision
+    return position
+
+
+def adjust_z(object_bbox, collided_bbox_list):
+    """
+    Calculate the new minimum object center z-position for object given its 3D bounding box and a list of collided 3D bounding boxes.
+    """
+    # Calculate the maximum z_max of the collided bounding boxes
+    max_z = max(bbox[5] for bbox in collided_bbox_list)
+
+    # Calculate the object's height (z dimension size)
+    object_height = object_bbox[5] - object_bbox[2]
+
+    # Calculate the new z position for the center of the object's bounding box
+    new_z_center = max_z + object_height / 2
+
+    return new_z_center
 
 
 #################### Gazebo and MoveIt utils ####################

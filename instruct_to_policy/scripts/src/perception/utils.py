@@ -3,9 +3,7 @@ import numpy as np
 import scipy.spatial.transform
 import open3d as o3d
 
-import rospy 
-from cv_bridge import CvBridge, CvBridgeError
-from grasp_detection.srv import DetectGrasps, DetectGraspsRequest, DetectGraspsResponse
+from cv_bridge import CvBridge
 from grasp_detection.msg import Grasp, Perception, PerceptionSingleCamera, BoundingBox3D, BoundingBox2D
 from geometry_msgs.msg import Pose, Point, Quaternion, Vector3
 from sensor_msgs.msg import Image, CameraInfo
@@ -171,14 +169,6 @@ class CameraIntrinsic(object):
         )
         return intrinsic
 
-class Grasp(object):
-    """Grasp parameterized as pose of a 2-finger robot hand.
-    """
-    # TODO: should we specify more parameters here? e.g. velocity, max force etc.
-    def __init__(self, pose: Transform, width):
-        self.pose = pose
-        self.width = width
-
 def get_mask_from_3D_bbox(bbox_center:np.ndarray, bbox_size:np.ndarray, depth_image:np.ndarray, 
                           intrinsic:CameraIntrinsic, extrinsic:Transform)->np.ndarray:
     """
@@ -338,7 +328,16 @@ def data_to_percetion_msg(data: Dict, bridge:CvBridge)->Perception:
         
     return perception_msg
 
-            
+def camera_on_sphere(origin, radius, theta, phi):
+    eye = np.r_[
+        radius * np.sin(theta) * np.cos(phi),
+        radius * np.sin(theta) * np.sin(phi),
+        radius * np.cos(theta),
+    ]
+    target = np.array([0.0, 0.0, 0.0])
+    up = np.array([0.0, 0.0, 1.0])  # this breaks when looking straight down
+    return Transform.look_at(eye, target, up) * origin.inverse()
+
         
             
     

@@ -51,15 +51,15 @@
       <static>0</static>
       <link name="link">
         <inertial>
-          <pose>0.001311 -0.003861 0.036337 1.28659 -0.495792 -1.57796</pose>
-          <mass>0.000246595</mass>
+          <pose>0.0012699770565694562 -0.0038815756989430124 0.036365961776603596 0 0 0</pose>
+          <mass>0.1</mass>
           <inertia>
-            <ixx>1.53466e-07</ixx>
-            <ixy>-1.94457e-23</ixy>
-            <ixz>1.35809e-24</ixz>
-            <iyy>1.52372e-07</iyy>
-            <iyz>6.00744e-24</iyz>
-            <izz>1.50583e-07</izz>
+            <ixx>6.217383921064393e-05</ixx>
+            <ixy>9.217442396340213e-08</ixy>
+            <ixz>2.3565510584374067e-07</ixz>
+            <iyy>6.316323872630923e-05</iyy>
+            <iyz>-1.4238634330465556e-07</iyz>
+            <izz>6.0805580711956574e-05</izz>
           </inertia>
         </inertial>
         <collision name="collision">
@@ -72,18 +72,18 @@
           <surface>
             <friction>
               <ode>
-                <mu>10</mu>
-                <mu2>10</mu2>
+                <mu>5</mu>
+                <mu2>5</mu2>
               </ode>
               <torsional>
-                <coefficient>10.0</coefficient>
+                <coefficient>5.0</coefficient>
                 <use_patch_radius>true</use_patch_radius>
                 <patch_radius>0.1</patch_radius>
               </torsional>
             </friction>
             <contact>
               <ode>
-                <max_vel>0.01</max_vel>
+                <max_vel>0.001</max_vel>
                 <min_depth>0.001</min_depth>
               </ode>
             </contact>
@@ -115,15 +115,15 @@
       <static>0</static>
       <link name="link">
         <inertial>
-          <pose>-0.032543 0.011076 0.030041 2.04054 -0.742351 2.74464</pose>
-          <mass>0.000192218</mass>
+          <pose>-0.032354501294908175 0.012253282674399414 0.02956637632435795 0 0 0</pose>
+          <mass>0.1</mass>
           <inertia>
-            <ixx>1.30711e-07</ixx>
-            <ixy>-5.06436e-23</ixy>
-            <ixz>-2.00641e-24</ixz>
-            <iyy>1.28085e-07</iyy>
-            <iyz>-2.01074e-24</iyz>
-            <izz>7.7209e-08</izz>
+            <ixx>6.880896404077303e-05</ixx>
+            <ixy>-2.0903359878404828e-06</ixy>
+            <ixz>1.1427352958947068e-07</ixz>
+            <iyy>4.403653851717332e-05</iyy>
+            <iyz>9.017484657966038e-06</iyz>
+            <izz>6.58811917466079e-05</izz>
           </inertia>
         </inertial>
         <collision name="collision">
@@ -136,18 +136,18 @@
           <surface>
             <friction>
               <ode>
-                <mu>10</mu>
-                <mu2>10</mu2>
+                <mu>5</mu>
+                <mu2>5</mu2>
               </ode>
               <torsional>
-                <coefficient>10.0</coefficient>
+                <coefficient>5.0</coefficient>
                 <use_patch_radius>true</use_patch_radius>
                 <patch_radius>0.1</patch_radius>
               </torsional>
             </friction>
             <contact>
               <ode>
-                <max_vel>0.01</max_vel>
+                <max_vel>0.001</max_vel>
                 <min_depth>0.001</min_depth>
               </ode>
             </contact>
@@ -178,15 +178,15 @@
     <model name="white_ceramic_plate">
       <link name="link">
         <inertial>
-          <pose>0.000739 -0.000608 0.02065 -1.42426 -1.56062 -0.46156</pose>
-          <mass>0.0110835</mass>
+          <pose>0.0007390488445934092 -0.0006078520007953306 0.02064993745562509 0 0 0</pose>
+          <mass>0.10000000000000002</mass>
           <inertia>
-            <ixx>0.000113984</ixx>
-            <ixy>4.59134e-21</ixy>
-            <ixz>-1.93272e-20</ixz>
-            <iyy>5.82673e-05</iyy>
-            <iyz>-1.51385e-20</iyz>
-            <izz>5.79885e-05</izz>
+            <ixx>0.0005255126862303397</ixx>
+            <ixy>-7.619368250224453e-07</ixy>
+            <ixz>4.576883432015038e-06</ixz>
+            <iyy>0.0005234484726531098</iyy>
+            <iyz>-2.2806393743107892e-06</iyz>
+            <izz>0.0010283633692890614</izz>
           </inertia>
         </inertial>
         <collision name="collision">
@@ -199,18 +199,18 @@
           <surface>
             <friction>
               <ode>
-                <mu>10</mu>
-                <mu2>10</mu2>
+                <mu>5</mu>
+                <mu2>5</mu2>
               </ode>
               <torsional>
-                <coefficient>10.0</coefficient>
+                <coefficient>5.0</coefficient>
                 <use_patch_radius>true</use_patch_radius>
                 <patch_radius>0.1</patch_radius>
               </torsional>
             </friction>
             <contact>
               <ode>
-                <max_vel>0.01</max_vel>
+                <max_vel>0.001</max_vel>
                 <min_depth>0.001</min_depth>
               </ode>
             </contact>
@@ -233,7 +233,19 @@
       <pose>-0.150849 0.282776 1.01406 -0.001439 -0.009852 -0.000858</pose>
     </model>
     <model name="white_and_pink_box">
-      <link name="link_0">
+      <link name="link">
+        <inertial>
+          <pose>1.6685363486751105e-05 -0.0001456445208685878 0.05679962845306447 0 0 0</pose>
+          <mass>0.10000000000000002</mass>
+          <inertia>
+            <ixx>0.00013321772629876235</ixx>
+            <ixy>-1.8214424086704092e-08</ixy>
+            <ixz>-8.00998377741634e-07</ixz>
+            <iyy>0.00013354365245406969</iyy>
+            <iyz>2.1946008312693555e-06</iyz>
+            <izz>5.317721432345506e-05</izz>
+          </inertia>
+        </inertial>
         <visual name="visual">
           <geometry>
             <mesh>
@@ -264,25 +276,25 @@
           </surface>
         </collision>
         <self_collide>0</self_collide>
-        <inertial>
-          <pose>0 0 0 0 -0 0</pose>
-          <inertia>
-            <ixx>1</ixx>
-            <ixy>0</ixy>
-            <ixz>0</ixz>
-            <iyy>1</iyy>
-            <iyz>0</iyz>
-            <izz>1</izz>
-          </inertia>
-          <mass>1</mass>
-        </inertial>
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
       <pose>-0.189069 -0.399248 1.01488 -0.004331 -0.006373 0.00097</pose>
     </model>
     <model name="brown_box">
-      <link name="link_0">
+      <link name="link">
+        <inertial>
+          <pose>8.453197999075617e-05 -3.505103270420546e-05 0.036814385793671266 0 0 0</pose>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>7.278948686979979e-05</ixx>
+            <ixy>1.0694699256225507e-07</ixy>
+            <ixz>8.886256959901719e-09</ixz>
+            <iyy>7.302723119353887e-05</iyy>
+            <iyz>-1.6672024460499861e-07</iyz>
+            <izz>5.900563569878249e-05</izz>
+          </inertia>
+        </inertial>
         <visual name="visual">
           <geometry>
             <mesh>
@@ -313,25 +325,25 @@
           </surface>
         </collision>
         <self_collide>0</self_collide>
-        <inertial>
-          <pose>0 0 0 0 -0 0</pose>
-          <inertia>
-            <ixx>1</ixx>
-            <ixy>0</ixy>
-            <ixz>0</ixz>
-            <iyy>1</iyy>
-            <iyz>0</iyz>
-            <izz>1</izz>
-          </inertia>
-          <mass>1</mass>
-        </inertial>
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
       <pose>0.190615 0.291675 1.01456 0.007344 -0.010446 0.001551</pose>
     </model>
     <model name="brown_medication_bottle">
-      <link name="link_0">
+      <link name="link">
+        <inertial>
+          <pose>-2.8841929088560762e-05 3.0398468173490514e-05 0.0364057744067228 0 0 0</pose>
+          <mass>0.09999999999999999</mass>
+          <inertia>
+            <ixx>5.655403049840094e-05</ixx>
+            <ixy>-1.1613554299147672e-08</ixy>
+            <ixz>2.4465598394250383e-08</ixz>
+            <iyy>5.6545341540761366e-05</iyy>
+            <iyz>2.1170785249101947e-08</iyz>
+            <izz>2.2490636134770765e-05</izz>
+          </inertia>
+        </inertial>
         <visual name="visual">
           <geometry>
             <mesh>
@@ -362,18 +374,6 @@
           </surface>
         </collision>
         <self_collide>0</self_collide>
-        <inertial>
-          <pose>0 0 0 0 -0 0</pose>
-          <inertia>
-            <ixx>1</ixx>
-            <ixy>0</ixy>
-            <ixz>0</ixz>
-            <iyy>1</iyy>
-            <iyz>0</iyz>
-            <izz>1</izz>
-          </inertia>
-          <mass>1</mass>
-        </inertial>
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
@@ -383,15 +383,15 @@
       <static>0</static>
       <link name="link">
         <inertial>
-          <pose>-0.017139 0.011574 0.099698 -3.07106 0.000113 1.56037</pose>
-          <mass>0.000972343</mass>
+          <pose>-0.017506516107378748 0.011594340679970689 0.10253327855898828 0 0 0</pose>
+          <mass>0.1</mass>
           <inertia>
-            <ixx>4.56613e-06</ixx>
-            <ixy>-1.26903e-22</ixy>
-            <ixz>7.80825e-22</ixz>
-            <iyy>4.25149e-06</iyy>
-            <iyz>-1.59888e-22</iyz>
-            <izz>7.65292e-07</izz>
+            <ixx>0.00045534765242005303</ixx>
+            <ixy>2.6262017687309007e-07</ixy>
+            <ixz>-2.6404895622922153e-05</ixz>
+            <iyy>0.0004879860428134732</iyy>
+            <iyz>2.411956968320779e-07</iyz>
+            <izz>8.343938664009761e-05</izz>
           </inertia>
         </inertial>
         <collision name="collision">
@@ -404,18 +404,18 @@
           <surface>
             <friction>
               <ode>
-                <mu>10</mu>
-                <mu2>10</mu2>
+                <mu>5</mu>
+                <mu2>5</mu2>
               </ode>
               <torsional>
-                <coefficient>10.0</coefficient>
+                <coefficient>5.0</coefficient>
                 <use_patch_radius>true</use_patch_radius>
                 <patch_radius>0.1</patch_radius>
               </torsional>
             </friction>
             <contact>
               <ode>
-                <max_vel>0.01</max_vel>
+                <max_vel>0.001</max_vel>
                 <min_depth>0.001</min_depth>
               </ode>
             </contact>
@@ -446,15 +446,15 @@
     <model name="red_plastic_bowl">
       <link name="link">
         <inertial>
-          <pose>0.001229 -0.000178 0.090103 1.6477 -1.55414 -3.07189</pose>
-          <mass>0.032274</mass>
+          <pose>0.0012293180361304247 -0.0001778823486961287 0.09010321687540569 0 0 0</pose>
+          <mass>0.1</mass>
           <inertia>
-            <ixx>0.00024106</ixx>
-            <ixy>4.94386e-21</ixy>
-            <ixz>2.01285e-20</ixz>
-            <iyy>0.000174629</iyy>
-            <iyz>6.36679e-21</iyz>
-            <izz>0.000173322</izz>
+            <ixx>0.0005410520523585383</ixx>
+            <ixy>5.890180754795462e-07</ixy>
+            <ixz>-3.4194476243381175e-06</ixz>
+            <iyy>0.0005371194614401078</iyy>
+            <iyz>-2.3354661382189755e-07</iyz>
+            <izz>0.0007468615753124657</izz>
           </inertia>
         </inertial>
         <collision name="collision">
@@ -467,18 +467,18 @@
           <surface>
             <friction>
               <ode>
-                <mu>10</mu>
-                <mu2>10</mu2>
+                <mu>5</mu>
+                <mu2>5</mu2>
               </ode>
               <torsional>
-                <coefficient>10.0</coefficient>
+                <coefficient>5.0</coefficient>
                 <use_patch_radius>true</use_patch_radius>
                 <patch_radius>0.1</patch_radius>
               </torsional>
             </friction>
             <contact>
               <ode>
-                <max_vel>0.01</max_vel>
+                <max_vel>0.001</max_vel>
                 <min_depth>0.001</min_depth>
               </ode>
             </contact>
@@ -504,15 +504,15 @@
       <static>0</static>
       <link name="link">
         <inertial>
-          <pose>-0.015054 -0.023109 0.075042 3.13978 -0.006898 -1.97079</pose>
-          <mass>0.000612039</mass>
+          <pose>-0.015065822555286573 -0.02309281620962691 0.07657678106120852 0 0 0</pose>
+          <mass>0.10000000000000002</mass>
           <inertia>
-            <ixx>1.66972e-06</ixx>
-            <ixy>-7.60804e-23</ixy>
-            <ixz>-8.85497e-24</ixz>
-            <iyy>1.455e-06</iyy>
-            <iyz>5.18367e-24</iyz>
-            <izz>4.29289e-07</izz>
+            <ixx>0.00024836786249855363</ixx>
+            <ixy>1.2750717320849565e-05</ixy>
+            <ixz>-7.972889977292509e-07</ixz>
+            <iyy>0.00027321204161271116</iyy>
+            <iyz>-1.0704153722323617e-06</iyz>
+            <izz>7.527801725860971e-05</izz>
           </inertia>
         </inertial>
         <collision name="collision">
@@ -525,18 +525,18 @@
           <surface>
             <friction>
               <ode>
-                <mu>10</mu>
-                <mu2>10</mu2>
+                <mu>5</mu>
+                <mu2>5</mu2>
               </ode>
               <torsional>
-                <coefficient>10.0</coefficient>
+                <coefficient>5.0</coefficient>
                 <use_patch_radius>true</use_patch_radius>
                 <patch_radius>0.1</patch_radius>
               </torsional>
             </friction>
             <contact>
               <ode>
-                <max_vel>0.01</max_vel>
+                <max_vel>0.001</max_vel>
                 <min_depth>0.001</min_depth>
               </ode>
             </contact>
@@ -567,16 +567,16 @@
     <model name="knife">
       <static>0</static>
       <link name="link">
-        <inertial>       
-          <pose>-0.008823562113505531 -0.028037744224966 0.003786647746352649 1.8386968232929595 1.3841525282243516 -1.3112241739784463</pose> 
-          <mass>0.01986933654179925</mass>
+        <inertial>
+          <pose>-0.008823562113505531 -0.028037744224966 0.003786647746352649 0 0 0</pose>
+          <mass>0.1</mass>
           <inertia>
-            <ixx>6.299088558702036e-05</ixx>
-            <ixy>9.564465201208015e-21</ixy>
-            <ixz>-1.5155451266573168e-21</ixz>
-            <iyy>6.277600829136603e-05</iyy>
-            <iyz>3.398935180200587e-22</iyz>
-            <izz>6.743822319719429e-07</izz>
+            <ixx>4.155357693739671e-06</ixx>
+            <ixy>1.2035336460155234e-06</ixy>
+            <ixz>-1.5384313445340938e-05</ixz>
+            <iyy>0.00031597422673640613</iyy>
+            <iyz>2.502285666555522e-07</iyz>
+            <izz>0.0003162342712243347</izz>
           </inertia>
         </inertial>
         <collision name="collision">
@@ -589,18 +589,18 @@
           <surface>
             <friction>
               <ode>
-                <mu>10</mu>
-                <mu2>10</mu2>
+                <mu>5</mu>
+                <mu2>5</mu2>
               </ode>
               <torsional>
-                <coefficient>10.0</coefficient>
+                <coefficient>5.0</coefficient>
                 <use_patch_radius>true</use_patch_radius>
                 <patch_radius>0.1</patch_radius>
               </torsional>
             </friction>
             <contact>
               <ode>
-                <max_vel>0.01</max_vel>
+                <max_vel>0.001</max_vel>
                 <min_depth>0.001</min_depth>
               </ode>
             </contact>
@@ -631,16 +631,16 @@
     <model name="fork">
       <static>0</static>
       <link name="link">
-        <inertial>       
-          <pose>-0.01977401808197633 -0.02201816711013321 0.005918857032995112 -1.762477191292373 -1.452167942094402 1.7714988044547613</pose> 
-          <mass>0.0214015033782645</mass>
+        <inertial>
+          <pose>-0.01977401808197633 -0.02201816711013321 0.005918857032995112 0 0 0</pose>
+          <mass>0.10000000000000002</mass>
           <inertia>
-            <ixx>5.8471187752754014e-05</ixx>
-            <ixy>2.715028762869077e-21</ixy>
-            <ixz>1.377505834049414e-22</ixz>
-            <iyy>5.7922964315198465e-05</iyy>
-            <iyz>4.891634548093174e-22</iyz>
-            <izz>9.931472453502577e-07</izz>
+            <ixx>4.8056078700476305e-06</ixx>
+            <ixy>-2.754971141988829e-06</ixy>
+            <ixz>-6.055818558537488e-06</ixz>
+            <iyy>0.00027065509320251023</iyy>
+            <iyz>2.3301725892053482e-07</iyz>
+            <izz>0.000273039547898372</izz>
           </inertia>
         </inertial>
         <collision name="collision">
@@ -653,18 +653,18 @@
           <surface>
             <friction>
               <ode>
-                <mu>10</mu>
-                <mu2>10</mu2>
+                <mu>5</mu>
+                <mu2>5</mu2>
               </ode>
               <torsional>
-                <coefficient>10.0</coefficient>
+                <coefficient>5.0</coefficient>
                 <use_patch_radius>true</use_patch_radius>
                 <patch_radius>0.1</patch_radius>
               </torsional>
             </friction>
             <contact>
               <ode>
-                <max_vel>0.01</max_vel>
+                <max_vel>0.001</max_vel>
                 <min_depth>0.001</min_depth>
               </ode>
             </contact>

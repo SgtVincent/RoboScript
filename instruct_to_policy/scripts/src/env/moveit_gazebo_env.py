@@ -77,12 +77,14 @@ class MoveitGazeboEnv(GazeboEnv):
         # self.arm_group_name = self.config.get('arm_group_name', "panda_arm")
         # self.gripper_group_name = self.config.get('gripper_group_name', "panda_hand")
         # self.manipulator_group_name = self.config.get('manipulator_group_name', "panda_manipulator")
+        # self.reset_joint_values = self.config.get('initial_joint_values', [0.0, -0.7854, 0.0, -2.3562, 0.0, 1.5708, 0.7854])
+
         # ur5 default
         self.arm_group_name = self.config.get('arm_group_name', "ur5_arm")
         self.gripper_group_name = self.config.get('gripper_group_name', "gripper")
         self.manipulator_group_name = self.config.get('manipulator_group_name', "ur5_manipulator")
-
-
+        self.reset_joint_values = self.config.get('initial_joint_values', [3.1416, -1.5447, -1.5447, -1.5794, 1.5794, 0])
+        
         # environment prior knowledge
         # TODO: consider to parse this from external perception model
         self.static_objects = ['table', 'cabinet']
@@ -99,7 +101,7 @@ class MoveitGazeboEnv(GazeboEnv):
         self.lower_limit = np.array([-2.8973, -1.7628, -2.8973, -3.0718, -2.8973, -0.0175, -2.8973])
         # MoveIt! interface
         self.robot = moveit_commander.RobotCommander()
-        self.scene = moveit_commander.PlanningSceneInterface()
+        self.planning_scene = moveit_commander.PlanningSceneInterface()
         
         # NOTE: use xxx_manipulator move_group to make grasp center as end effector link 
         self.move_group = moveit_commander.MoveGroupCommander(self.manipulator_group_name, wait_for_servers=15)
@@ -131,8 +133,6 @@ class MoveitGazeboEnv(GazeboEnv):
         self.move_group.set_goal_position_tolerance(self.goal_position_tolerance)
         self.move_group.set_goal_orientation_tolerance(self.goal_orientation_tolerance)
         self.move_group.set_pose_reference_frame(self.reference_frame)    
-
-        self.reset_joint_values = cfg['env']['initial_joint_values']
         
         # disable collision between gripper and other objects
         # NOTE: currently disable collision in srdf setting file to accelerate system booting 

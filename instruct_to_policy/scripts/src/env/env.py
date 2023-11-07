@@ -37,9 +37,9 @@ class Env:
         raise NotImplementedError("get_3d_bbox() not implemented")
 
     ################# robot contorl interface #################
-    def get_end_effector_pose(self):
-        """ return robot end-effector pose in robot base frame """
-        raise NotImplementedError("get_end_effector_pose() not implemented")
+    def get_gripper_pose(self):
+        """ return robot gripper pose in robot base frame """
+        raise NotImplementedError("get_gripper_pose() not implemented")
 
     def get_joint_values(self):
         """ return robot joint values """

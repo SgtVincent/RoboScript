@@ -17,10 +17,12 @@ class ConfigBase:
         self.max_grasp_num = 5 
         self.volume_type = "scalable"
         self.color_type = "rgb"
-        self.max_gripper_width = 0.08
         
+        # self.max_gripper_width = 0.08 # franka hand 
+        self.max_gripper_width = 0.1 # robotiq 85
         # environment-specific parameters
         self.table_height = 1.02 # height of the table plane
+
 
 class ConfigGIGA(ConfigBase):
     def __init__(self):

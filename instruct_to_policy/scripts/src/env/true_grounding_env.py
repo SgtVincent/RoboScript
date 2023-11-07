@@ -201,7 +201,7 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         else:
             pose = Pose()
             pose.position = self.get_object_center_position(object_name)
-            pose.orientation = Quaternion(0,1,0,0)
+            pose.orientation = Quaternion(1,0,0,0)
             return pose
     
     def parse_gt_drawer_handle_grasp_pose(self, object):

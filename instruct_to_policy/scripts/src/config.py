@@ -16,7 +16,6 @@ cfg_tabletop = {
       'sim': 'gazebo',
       'interface': 'moveit',
       'verbose': False,
-      'initial_joint_values': [0.0, -0.7854, 0.0, -2.3562, 0.0, 1.5708, 0.7854],
       'extra_objects': ["cabinet.drawer0", "cabinet.drawer1", "cabinet.drawer2", "cabinet.drawer3", 
                         "cabinet.handle_0", "cabinet.handle_1", "cabinet.handle_2", "cabinet.handle_3"],
       'sensor': {
@@ -24,7 +23,21 @@ cfg_tabletop = {
         'cameras': ['camera_left', 'camera_right', 'camera_top'],
         'gt_point_cloud': False,
       },
+      # 'moveit_config': {
+      #   'debug': True,
+      #   'planning_time': 15,
+      #   'max_velocity': 0.2,
+      #   'max_acceleration': 0.2,
+      #   'goal_position_tolerance': 0.001,
+      #   'goal_orientation_tolerance': 0.02,
+      #   'refenrence_frame': 'world',
+      #   'cartesian_path': True,
+      #   'initial_joint_values': [0.0, -0.7854, 0.0, -2.3562, 0.0, 1.5708, 0.7854],
+      # },
       'moveit_config': {
+        'arm_group_name': 'ur5_arm',
+        'gripper_group_name': 'gripper',
+        'manipulator_group_name': 'ur5_manipulator',
         'debug': True,
         'planning_time': 15,
         'max_velocity': 0.2,
@@ -33,6 +46,7 @@ cfg_tabletop = {
         'goal_orientation_tolerance': 0.02,
         'refenrence_frame': 'world',
         'cartesian_path': True,
+        'initial_joint_values': [3.1416, -1.5447, -1.5447, -1.5794, 1.5794, 0],
       },
       'metadata_files':[
         os.path.join(package_root, 'data', 'ycb', 'metadata.json'),

@@ -9,13 +9,13 @@
   <arg name="yaw" default="0"/>
 
   <!-- UR5 spawn joint positions -->
-  <arg name="robotiq_85_left_knuckle_joint" default="0.1"/>
+  <arg name="shoulder_pan_joint" default="3.1416"/>
   <arg name="shoulder_lift_joint" default="-1.5447"/>
-  <arg name="shoulder_pan_joint" default="-1.5447"/>
   <arg name="elbow_joint" default="-1.5447"/>
   <arg name="wrist_1_joint" default="-1.5794"/>
   <arg name="wrist_2_joint" default="+1.5794"/>
-  <arg name="wrist_3_joint" default="+1.5794"/>
+  <arg name="wrist_3_joint" default="0"/>
+  <arg name="robotiq_85_left_knuckle_joint" default="0.1"/>
 
   <!-- Gazebo options -->
   <arg name="robot_name" default="ur5" doc="Name of the robot to spawn" />
@@ -24,13 +24,13 @@
   <arg name="verbose" default="false" doc="Should gazebo be started in verbose mode?" />
   <arg name="world_name" default="worlds/empty.world" doc="Gazebo world file"/>
   <arg name="initial_joint_positions" default="
-          -J robotiq_85_left_knuckle_joint $(arg robotiq_85_left_knuckle_joint) 
-          -J shoulder_lift_joint $(arg shoulder_lift_joint) 
           -J shoulder_pan_joint $(arg shoulder_pan_joint) 
+          -J shoulder_lift_joint $(arg shoulder_lift_joint)
           -J elbow_joint $(arg elbow_joint) 
           -J wrist_1_joint $(arg wrist_1_joint) 
           -J wrist_2_joint $(arg wrist_2_joint) 
-          -J wrist_3_joint $(arg wrist_3_joint)" 
+          -J wrist_3_joint $(arg wrist_3_joint)
+          -J robotiq_85_left_knuckle_joint $(arg robotiq_85_left_knuckle_joint)" 
           doc="Initial joint configuration of the robot"/>
 
 

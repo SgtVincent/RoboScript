@@ -32,6 +32,7 @@ class GraspDetectionRemote(GraspDetectionBase):
     def load_model(self):
         # waiting for DetectGrasp service to be ready 
         rospy.wait_for_service(self.service_name)
+        rospy.loginfo("Grasp detection: remote model service ready")
         
     def predict(self, data: Dict)-> Tuple[List[Pose], List[float], List[float]]:
 

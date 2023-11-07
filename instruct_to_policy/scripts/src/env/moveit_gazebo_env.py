@@ -17,7 +17,6 @@ import trimesh
 
 import numpy as np
 from scipy.spatial.transform import Rotation
-import franka_gripper.msg
 from franka_msgs.msg import ErrorRecoveryAction, ErrorRecoveryActionGoal
 import rospy
 
@@ -34,6 +33,7 @@ from src.env.utils import (
 from src.utils import has_keywords
 from src.env.gazebo_env import GazeboEnv
 from src.env.moveit_collision_manager import CollisionManager
+from src.env.moveit_grippers import GripperCommanderGroup
 
 class Grasp(NamedTuple):
     orientation: np.ndarray
@@ -41,53 +41,6 @@ class Grasp(NamedTuple):
     score: float
     width: float
     instance_id: int
-
-# Workaround to use the gripper action client with unified gripper interface
-class GripperCommanderGroup:
-
-    def __init__(self) -> None:    
-
-        self.init_clients()
-        print("Gripper action clients ready")
-
-
-    def init_clients(self):
-        self.gripper_grasp_client = SimpleActionClient(
-            "/franka_gripper/grasp", franka_gripper.msg.GraspAction
-        )       
-        self.gripper_grasp_client.wait_for_server()
-
-        self.gripper_move_client = SimpleActionClient(
-            "/franka_gripper/move", franka_gripper.msg.MoveAction
-        )
-        self.gripper_move_client.wait_for_server()
-
-        self.gripper_stop_client = SimpleActionClient(
-            "/franka_gripper/stop", franka_gripper.msg.StopAction)
-        self.gripper_stop_client.wait_for_server()
-
-
-    def reset(self):
-        self.gripper_stop_client.send_goal_and_wait(franka_gripper.msg.StopGoal())
-        self.init_clients()
-
-
-    def open_gripper(self, width=0.08):
-        goal = franka_gripper.msg.MoveGoal(width=width, speed=0.05)
-        # self.gripper_move_client.send_goal_and_wait(goal, rospy.Duration(3.0))
-        self.gripper_move_client.send_goal(goal)
-        done = self.gripper_move_client.wait_for_result()
-        return done
-
-    def close_gripper(self, width=0.01, speed=0.05, force=50):
-        """Close the gripper."""
-        goal = franka_gripper.msg.GraspGoal(width=width, speed=speed, force=force)
-        goal.epsilon.inner = 0.08
-        goal.epsilon.outer = 0.08
-        # self.gripper_grasp_client.send_goal_and_wait(goal, rospy.Duration(3.0))
-        self.gripper_grasp_client.send_goal(goal)
-        done = self.gripper_grasp_client.wait_for_result()
-        return done
 
 
 class MoveitGazeboEnv(GazeboEnv):
@@ -109,7 +62,6 @@ class MoveitGazeboEnv(GazeboEnv):
         self.sim = cfg['env'].get('sim', "")
         self.verbose = cfg['env'].get('verbose', False)
         self.use_sim = len(self.sim) > 0
-        
         self.config = cfg['env']['moveit_config']
         self.debug = self.config.get('debug', False)
         self.planning_time = self.config.get('planning_time', 15)
@@ -119,6 +71,17 @@ class MoveitGazeboEnv(GazeboEnv):
         self.goal_orientation_tolerance = self.config.get('goal_orientation_tolerance', 0.02)  
         self.reference_frame = self.config.get('reference_frame', self.frame)
         self.cartesian_path = self.config.get('cartesian_path', False)
+
+        # group name 
+        # franka default
+        # self.arm_group_name = self.config.get('arm_group_name', "panda_arm")
+        # self.gripper_group_name = self.config.get('gripper_group_name', "panda_hand")
+        # self.manipulator_group_name = self.config.get('manipulator_group_name', "panda_manipulator")
+        # ur5 default
+        self.arm_group_name = self.config.get('arm_group_name', "ur5_arm")
+        self.gripper_group_name = self.config.get('gripper_group_name', "gripper")
+        self.manipulator_group_name = self.config.get('manipulator_group_name', "ur5_manipulator")
+
 
         # environment prior knowledge
         # TODO: consider to parse this from external perception model
@@ -137,11 +100,14 @@ class MoveitGazeboEnv(GazeboEnv):
         # MoveIt! interface
         self.robot = moveit_commander.RobotCommander()
         self.scene = moveit_commander.PlanningSceneInterface()
-        # NOTE: use panda_manipulator move_group to make grasp center as end effector link 
-        self.move_group = moveit_commander.MoveGroupCommander("panda_manipulator", wait_for_servers=15)
-        # self.move_group = moveit_commander.MoveGroupCommander("panda_arm", wait_for_servers=15)
-        # self.gripper = moveit_commander.MoveGroupCommander("panda_hand", wait_for_servers=15)
-        self.gripper_group = GripperCommanderGroup()
+        
+        # NOTE: use xxx_manipulator move_group to make grasp center as end effector link 
+        self.move_group = moveit_commander.MoveGroupCommander(self.manipulator_group_name, wait_for_servers=15)
+        self.move_group_arm = moveit_commander.MoveGroupCommander(self.arm_group_name, wait_for_servers=15)
+        # NOTE: use actionlib to control gripper for more detailed control instead of moveit commander 
+        # self.move_group_gripper = moveit_commander.MoveGroupCommander(self.gripper_group_name, wait_for_servers=15)
+        self.gripper_group = GripperCommanderGroup.get_instance(self.gripper_group_name)
+        
         # collision manager to toggle collision between objects
         # used when contrained objects are attached to the robot
         # moveit planning cannot understand translational and rotational joints 
@@ -149,9 +115,9 @@ class MoveitGazeboEnv(GazeboEnv):
         
         self.end_effctor_link = self.move_group.get_end_effector_link()
 
-        self.error_recovery_client = SimpleActionClient(
-            "/franka_control/error_recovery", ErrorRecoveryAction
-        )
+        # self.error_recovery_client = SimpleActionClient(
+        #     "/franka_control/error_recovery", ErrorRecoveryAction
+        # )
 
         print("Loading static scene information")
         self.object_names = self.get_obj_names()
@@ -167,12 +133,10 @@ class MoveitGazeboEnv(GazeboEnv):
         self.move_group.set_pose_reference_frame(self.reference_frame)    
 
         self.reset_joint_values = cfg['env']['initial_joint_values']
-
-
-        gripper_collision_frames = ["panda_rightfinger", "panda_leftfinger"]
-
+        
         # disable collision between gripper and other objects
         # NOTE: currently disable collision in srdf setting file to accelerate system booting 
+        # gripper_collision_frames = ["panda_rightfinger", "panda_leftfinger"]
         # self.collision_manager.disable_collisions(gripper_collision_frames)
         # rospy.loginfo(f"Moveit: frames collision turned off: {gripper_collision_frames}")
 
@@ -203,17 +167,18 @@ class MoveitGazeboEnv(GazeboEnv):
 
     def _go(self, move_group):
         if not move_group.go(wait=True):
-            rospy.logwarn("Execution failed! Going to retry with error recovery")
-            self.error_recovery_client.send_goal_and_wait(ErrorRecoveryActionGoal())
-            return move_group.go(wait=True)
+            # rospy.logwarn("Execution failed! Going to retry with error recovery")
+            # self.error_recovery_client.send_goal_and_wait(ErrorRecoveryActionGoal())
+            # return move_group.go(wait=True)
+            return False
         return True
 
     def _execute(self, move_group, plan, reset_err=True):
         if not move_group.execute(plan, wait=True):
-            if reset_err:
-                rospy.logwarn("Execution failed!. Going to retry with error recovery")
-                self.error_recovery_client.send_goal_and_wait(ErrorRecoveryActionGoal())
-                return move_group.execute(plan, wait=True)
+            # if reset_err:
+            #     rospy.logwarn("Execution failed!. Going to retry with error recovery")
+            #     self.error_recovery_client.send_goal_and_wait(ErrorRecoveryActionGoal())
+            #     return move_group.execute(plan, wait=True)
             return False
         return True
 
@@ -221,8 +186,8 @@ class MoveitGazeboEnv(GazeboEnv):
         self,
         orientation,
         position,
-        ik_link_name="panda_hand_tcp",
-        move_group="panda_manipulator",
+        ik_link_name=None,
+        move_group=None,
     ) -> bool:
         """Check if a given pose is reachable for the robot. Return True if it is, False otherwise."""
 
@@ -230,8 +195,8 @@ class MoveitGazeboEnv(GazeboEnv):
         pose_stamped = get_stamped_pose(position, orientation, self.frame)
 
         ik_request = PositionIKRequest()
-        ik_request.group_name = move_group
-        ik_request.ik_link_name = ik_link_name
+        ik_request.group_name = move_group if move_group is not None else self.manipulator_group_name
+        ik_request.ik_link_name = ik_link_name if ik_link_name is not None else self.end_effctor_link
         ik_request.pose_stamped = pose_stamped
         ik_request.robot_state = self.robot.get_current_state()
         ik_request.avoid_collisions = False
@@ -547,7 +512,6 @@ class MoveitGazeboEnv(GazeboEnv):
             print("Moving to grasp pose")
 
         self.move_group.set_pose_target(waypoints[0])
-        self.error_recovery_client.send_goal_and_wait(ErrorRecoveryActionGoal())
         self._go(self.move_group)
         # plan = self.move_group.g/o(wait=True)
         self.move_group.stop()

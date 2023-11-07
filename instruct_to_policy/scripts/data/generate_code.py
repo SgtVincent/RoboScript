@@ -16,7 +16,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # from src.prompt.message_definitions import *
 from src.lmp import *
 # from src.env.pybullet_env import PickPlaceEnv
-from src.env.moveit_gazebo_env import MoveitGazeboEnv
 from src.config import cfg_tabletop
 from src.openai_api_key import OPENAI_API_KEY
 import rospy 

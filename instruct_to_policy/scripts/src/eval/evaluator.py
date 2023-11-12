@@ -46,7 +46,7 @@ class Evaluator(object):
         self.logger.addHandler(fh)
         self.logger.addHandler(ch)
 
-    def init_metrics(self):
+    def init_metrics(self, repeat_times):
         '''
         Initialize the metrics for the evaluation items.
         
@@ -61,10 +61,7 @@ class Evaluator(object):
         }
         '''
         # TODO: how to define metrics 
-        self.metrics = {
-            'grammer_correctness': [],
-            'eval_items_results': []
-        }
+        self.metrics = {}
         
     def get_metrics(self):
         return self.metrics
@@ -90,29 +87,31 @@ class Evaluator(object):
         Run the evaluation for the code snippet.
         '''
         
-        self.init_metrics()
+        self.init_metrics(repeat_times)
         
         # load vars 
         gvars, lvars = prepare_vars(self.env)
         
         for i in range(repeat_times):
             self.reset()
+            exception = 0
             try:
                 self.logger.info("Running code for the {}th time".format(i+1))
                 exec_safe(code_str, gvars, lvars)
             except Exception as e:
                 # also record the traceback
+                exception = 1
                 self.logger.error(f'Error when executing code for {i}-th trial: {e}')
                 self.logger.error(traceback.format_exc())
                 continue
             
-            self.eval_env_state(eval_items)
+            self.eval_env_state(i, eval_items, exception=exception)
             
         # log metrics in the end
         self.logger.info("\n######################## Metrics:\n {} \n###################################".format(self.metrics))
             
 
-    def eval_env_state(self, eval_items: List):
+    def eval_env_state(self, repeat_idx, eval_items: List, exception):
         '''
         Evaluate the environment state according to eval_items.
         
@@ -128,10 +127,17 @@ class Evaluator(object):
         Then it should be executed as: 
         self.check_relation_on(object="apple", receptacle="white_ceramic_plate")
         '''
+        self.metrics[repeat_idx] = {
+            "grammer_correctness": 1-exception,
+            "eval_items_results": [],
+        }
+        
         for eval_item in eval_items:
             eval_func = eval_func = getattr(self, eval_item['function'])
             eval_args = eval_item['args']
-            eval_func(**eval_args)
+            result = int(eval_func(**eval_args))
+            self.metrics[repeat_idx]['eval_items_results'].append(result)
+      
       
     def check_relation_on(self, object_name:str, receptacle_name:str, **kwargs):
         '''
@@ -198,9 +204,10 @@ class Evaluator(object):
             if self.verbose:
                 print(f'Check if {object_name} is standing: {is_standing}')
             
+            return is_standing
+            
         else: 
             raise NotImplementedError(f"Pose description {pose_description} is not implemented")
-        
     
     def check_object_position(self, object_name:str, position_description:str, **kwargs):
         '''

@@ -81,19 +81,19 @@ class FrankaGripperCommanderGroup(GripperCommanderGroup):
 
     def open_gripper(self, width=0.08, **kwargs):
         goal = franka_gripper.msg.MoveGoal(width=width, speed=0.05)
-        # self.gripper_move_client.send_goal_and_wait(goal, rospy.Duration(3.0))
+        # self.gripper_move_client.send_goal_and_wait(goal, rospy.Duration(5.0))
         self.gripper_move_client.send_goal(goal)
-        done = self.gripper_move_client.wait_for_result()
+        done = self.gripper_move_client.wait_for_result(rospy.Duration(5.0))
         return done
 
-    def close_gripper(self, width=0.01, speed=0.05, force=50):
+    def close_gripper(self, width=0.01, speed=0.05, force=10):
         """Close the gripper."""
         goal = franka_gripper.msg.GraspGoal(width=width, speed=speed, force=force)
         goal.epsilon.inner = 0.08
         goal.epsilon.outer = 0.08
-        # self.gripper_grasp_client.send_goal_and_wait(goal, rospy.Duration(3.0))
+        # self.gripper_grasp_client.send_goal_and_wait(goal, rospy.Duration(5.0))
         self.gripper_grasp_client.send_goal(goal)
-        done = self.gripper_grasp_client.wait_for_result()
+        done = self.gripper_grasp_client.wait_for_result(rospy.Duration(5.0))
         return done
     
     

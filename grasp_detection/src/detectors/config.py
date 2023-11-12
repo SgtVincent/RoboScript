@@ -12,9 +12,9 @@ class ConfigBase:
         # grasp detection region of interest (ROI)
         self.resolution = 40
         self.voxel_grid_size = 0.3
-        self.voxel_size = 0.0075
+        self.voxel_size = 0.005
         # maximum number of grasps to return
-        self.max_grasp_num = 5 
+        self.max_grasp_num = 10
         self.volume_type = "scalable"
         self.color_type = "rgb"
         
@@ -46,7 +46,7 @@ class ConfigAnygrasp(ConfigBase):
         self.filter_bbox_3d_margin = 0.15 # in meter
         self.filter_table_plane = False # whether to filter table plane
         
-        self.debug = True # whether to visualize the grasps 
+        self.debug = False # whether to visualize the grasps 
 
         
         

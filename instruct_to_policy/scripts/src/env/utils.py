@@ -102,11 +102,14 @@ def is_collision(bbox1, bbox2):
     # If overlap in all three axes, then the bounding boxes collide
     return overlap_x and overlap_y and overlap_z
 
-def calculate_place_position(object_bbox, receptacle_bbox, obstacle_bbox_list, max_tries=100):
+def calculate_place_position(object_bbox, receptacle_bbox, obstacle_bbox_list, max_tries=100, extra_elevation=0.1):
     """
     Given object bbox, receptacle bbox, and other obstacle objects bboxes, calculate a valid position to place the object.
     The position is calculated as the center of the object bounding box above the receptacle bounding box.
     Each bounding box is [[x_min, y_min, z_min], [x_max, y_max, z_max]]
+    Args:
+        max_tries: maximum number of attempts to find a valid position
+        extra_elevation: extra elevation above the receptacle bounding box
     """
     # Calculate boundaries for x and y within the receptacle
     x_min = receptacle_bbox[0] + (receptacle_bbox[3] - receptacle_bbox[0]) * 0.25
@@ -118,7 +121,7 @@ def calculate_place_position(object_bbox, receptacle_bbox, obstacle_bbox_list, m
     object_size = np.array([object_bbox[3] - object_bbox[0], object_bbox[4] - object_bbox[1], object_bbox[5] - object_bbox[2]])
     
     # Calculate the z position which is constant across all placement attempts
-    z = receptacle_bbox[5] + object_size[2] / 2
+    z = receptacle_bbox[5] + object_size[2] / 2 + extra_elevation
      
     # Initialize the object position
     position = np.array([0, 0, z])

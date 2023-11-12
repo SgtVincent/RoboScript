@@ -155,8 +155,8 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         # get parameters from kwargs
         receptacle_name: str = kwargs.get('receptacle_name', None)
         position: np.ndarray = kwargs.get('position', None)
-        description: str= kwargs.get('description', "gripper current pose") 
-        # assert description in ["gripper canonical pose", "gripper current pose"] # only support canonical pose and current pose for now
+        description: str= kwargs.get('description', "current pose") 
+        assert description in ["canonical pose", "current pose"] # only support canonical pose and current pose for now
         
         # get the bounding box of the object and all other objectss
         object_bbox = self.get_3d_bbox(object_name)
@@ -165,6 +165,8 @@ class TrueGroundingEnv(MoveitGazeboEnv):
             self.get_3d_bbox(obstacle_name) for obstacle_name in object_names 
             if obstacle_name not in [object_name]
         ]
+        
+        pose = Pose()
         
         # If receptacle_name is given, get the receptacle position and bounding box
         if receptacle_name is not None:
@@ -183,11 +185,13 @@ class TrueGroundingEnv(MoveitGazeboEnv):
                 collided_bbox_list = np.array(obstacle_bbox_list)[collision_mask]
                 position[2] = adjust_z(object_bbox, collided_bbox_list)          
             
-        # Now we compose the place pose with the position and orientation
-        pose = Pose()
         pose.position = Point(*position)
-        # remain current orientation
-        pose.orientation = self.get_gripper_pose().orientation
+        if description == "canonical pose":
+            # use canonical orientation
+            pose.orientation = Quaternion(-1,0,0,0)
+        else:
+            # remain current orientation
+            pose.orientation = self.get_gripper_pose().orientation
         
         return pose
 
@@ -201,7 +205,7 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         else:
             pose = Pose()
             pose.position = self.get_object_center_position(object_name)
-            pose.orientation = Quaternion(1,0,0,0)
+            pose.orientation = Quaternion(-1,0,0,0)
             return pose
     
     def parse_gt_drawer_handle_grasp_pose(self, object):

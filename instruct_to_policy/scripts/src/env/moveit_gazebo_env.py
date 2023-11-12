@@ -74,16 +74,16 @@ class MoveitGazeboEnv(GazeboEnv):
 
         # group name 
         # franka default
-        # self.arm_group_name = self.config.get('arm_group_name', "panda_arm")
-        # self.gripper_group_name = self.config.get('gripper_group_name', "panda_hand")
-        # self.manipulator_group_name = self.config.get('manipulator_group_name', "panda_manipulator")
-        # self.reset_joint_values = self.config.get('initial_joint_values', [0.0, -0.7854, 0.0, -2.3562, 0.0, 1.5708, 0.7854])
+        self.arm_group_name = self.config.get('arm_group_name', "panda_arm")
+        self.gripper_group_name = self.config.get('gripper_group_name', "panda_hand")
+        self.manipulator_group_name = self.config.get('manipulator_group_name', "panda_manipulator")
+        self.reset_joint_values = self.config.get('initial_joint_values', [0.0, -0.7854, 0.0, -2.3562, 0.0, 1.5708, 0.7854])
 
         # ur5 default
-        self.arm_group_name = self.config.get('arm_group_name', "ur5_arm")
-        self.gripper_group_name = self.config.get('gripper_group_name', "gripper")
-        self.manipulator_group_name = self.config.get('manipulator_group_name', "ur5_manipulator")
-        self.reset_joint_values = self.config.get('initial_joint_values', [3.1416, -1.5447, -1.5447, -1.5794, 1.5794, 0])
+        # self.arm_group_name = self.config.get('arm_group_name', "ur5_arm")
+        # self.gripper_group_name = self.config.get('gripper_group_name', "gripper")
+        # self.manipulator_group_name = self.config.get('manipulator_group_name', "ur5_manipulator")
+        # self.reset_joint_values = self.config.get('initial_joint_values', [3.1416, -1.5447, -1.5447, -1.5794, 1.5794, 0])
         
         # environment prior knowledge
         # TODO: consider to parse this from external perception model
@@ -245,7 +245,7 @@ class MoveitGazeboEnv(GazeboEnv):
         """Reset the scene to the initial state."""
         self.objects = {}
         if self.use_sim:
-            self.reset_simulation()
+            # self.reset_simulation()
             self.reset_world()
         
         # reset planning scene 
@@ -341,7 +341,7 @@ class MoveitGazeboEnv(GazeboEnv):
 
 
     @_block
-    def close_gripper(self, gripper_group=None, width=0.01, force=100):
+    def close_gripper(self, gripper_group=None, width=0.01, force=10):
         """Close the gripper."""
         if gripper_group is None:
             gripper_group = self.gripper_group

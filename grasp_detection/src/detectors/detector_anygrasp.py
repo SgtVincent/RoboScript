@@ -57,14 +57,15 @@ class DetectorAnygrasp(DetectorBase):
         # transform point cloud to the same coordinate frame as the model
         # the anygrasp model is trained with the x-axis pointing down
         # 
-        trans_mat = np.array([[1,0,0,0],[0,1,0,0],[0,0,-1,0],[0,0,0,1]])
+        # trans_mat = np.array([[1,0,0,0],[0,1,0,0],[0,0,-1,0],[0,0,0,1]])
+        trans_mat = np.array([[1,0,0,0],[0,-1,0,0],[0,0,-1,0],[0,0,0,1]])
         cloud = cloud.transform(trans_mat)
         
         points = np.asarray(cloud.points).astype(np.float32)
         colors = np.asarray(cloud.colors).astype(np.float32)
         # lims: [xmin, xmax, ymin, ymax, zmin, zmax]
-        # lims = [min_bound[0], max_bound[0], min_bound[1], max_bound[1], min_bound[2], max_bound[2]]
-        lims = [min_bound[0], max_bound[0], min_bound[1], max_bound[1], -max_bound[2], -min_bound[2]]
+        # lims = [min_bound[0], max_bound[0], min_bound[1], max_bound[1], -max_bound[2], -min_bound[2]]
+        lims = [min_bound[0], max_bound[0], -max_bound[1], -min_bound[1], -max_bound[2], -min_bound[2]]
         
         
         # get prediction
@@ -106,8 +107,8 @@ class DetectorAnygrasp(DetectorBase):
             # NOTE: the canonical grasp pose in anygrasp is defined as the gripper pointing to +x in the world frame
             # The canonical grasp pose in moveit is defined as the gripper pointing to +z in the world frame
             # Therefore, we need to rotate the canonical grasp pose by 90 degrees around the y-axis to convert it to the moveit convention
-            # rot_any2moveit = np.array([[0,0,1],[0,1,0],[-1,0,0]])
-            rot_any2moveit = np.array([[0,0,1],[0,1,0],[1,0,0]])
+            # rot_any2moveit = np.array([[0,0,1],[0,1,0],[1,0,0]])
+            rot_any2moveit = np.array([[0,0,1],[0,1,0],[-1,0,0]])
             grasp_msg.grasp_pose = Pose()
             grasp_msg.grasp_pose.position = Point(*grasp.translation)
             grasp_msg.grasp_pose.orientation = Quaternion(*R.from_matrix(grasp.rotation_matrix @ rot_any2moveit).as_quat())

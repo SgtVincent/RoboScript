@@ -1,6 +1,7 @@
 import os 
 import sys
 import numpy as np 
+import cv2
 from typing import List, Tuple, Dict
 import open3d as o3d 
 from scipy.spatial.transform import Rotation as R
@@ -47,7 +48,7 @@ class DetectorAnygrasp(DetectorBase):
         self.model = AnyGrasp(self.config)
         self.model.load_net()
 
-    def detect_callback(self, req: DetectGraspsRequest)->DetectGraspsResponse:
+    def detect_callback(self, req: DetectGraspsRequest)->graspnetAPI.GraspGroup:
         """
         Callback function for the ROS service. 
         """
@@ -57,16 +58,22 @@ class DetectorAnygrasp(DetectorBase):
         # transform point cloud to the same coordinate frame as the model
         # the anygrasp model is trained with the x-axis pointing down
         # 
-        trans_mat = np.array([[1,0,0,0],[0,1,0,0],[0,0,-1,0],[0,0,0,1]])
+        # trans_mat = np.array([[1,0,0,0],[0,1,0,0],[0,0,-1,0],[0,0,0,1]])
+        # rotate the point cloud by 180 degrees around the x-axis
+        trans_mat = np.array([[1,0,0,0],[0,-1,0,0],[0,0,-1,0],[0,0,0,1]])
         cloud = cloud.transform(trans_mat)
         
         points = np.asarray(cloud.points).astype(np.float32)
         colors = np.asarray(cloud.colors).astype(np.float32)
         # lims: [xmin, xmax, ymin, ymax, zmin, zmax]
         # lims = [min_bound[0], max_bound[0], min_bound[1], max_bound[1], min_bound[2], max_bound[2]]
-        lims = [min_bound[0], max_bound[0], min_bound[1], max_bound[1], -max_bound[2], -min_bound[2]]
+        lims = [min_bound[0], max_bound[0], -max_bound[1], -min_bound[1], -max_bound[2], -min_bound[2]]
         
-        
+        if self.debug:
+            # create world coordinate frame
+            world_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.1, origin=min_bound)
+            o3d.visualization.draw_geometries([cloud, world_frame])
+
         # get prediction
         ret = self.model.get_grasp(points, colors, lims)
         if len(ret) == 2:
@@ -74,12 +81,6 @@ class DetectorAnygrasp(DetectorBase):
         else:
             # if no valid grasp found, 3-tuple is returned for debugging (not used here)
             print('No Grasp detected by Anygrasp model!')
-            if self.debug:
-                cloud = cloud.transform(trans_mat)
-                # create world coordinate frame
-                world_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.1, origin=min_bound)
-                o3d.visualization.draw_geometries([cloud, world_frame])
-                
             return DetectGraspsResponse(grasps=[])
         
         gg:graspnetAPI.GraspGroup = gg.nms().sort_by_score()
@@ -98,28 +99,28 @@ class DetectorAnygrasp(DetectorBase):
             # o3d.visualization.draw_geometries([grippers[0], cloud, world_frame])
         
         # compose response
-        grasps_msg = []
-        for i, grasp in enumerate(gg):
-            grasp_msg = Grasp()
-            grasp_msg.object_id = "" # not used yet 
+        # grasps_msg = []
+        # for i, grasp in enumerate(gg):
+        #     grasp_msg = Grasp()
+        #     grasp_msg.object_id = "" # not used yet 
             
-            # NOTE: the canonical grasp pose in anygrasp is defined as the gripper pointing to +x in the world frame
-            # The canonical grasp pose in moveit is defined as the gripper pointing to +z in the world frame
-            # Therefore, we need to rotate the canonical grasp pose by 90 degrees around the y-axis to convert it to the moveit convention
-            # rot_any2moveit = np.array([[0,0,1],[0,1,0],[-1,0,0]])
-            rot_any2moveit = np.array([[0,0,1],[0,1,0],[1,0,0]])
-            grasp_msg.grasp_pose = Pose()
-            grasp_msg.grasp_pose.position = Point(*grasp.translation)
-            grasp_msg.grasp_pose.orientation = Quaternion(*R.from_matrix(grasp.rotation_matrix @ rot_any2moveit).as_quat())
+        #     # NOTE: the canonical grasp pose in anygrasp is defined as the gripper pointing to +x in the world frame
+        #     # The canonical grasp pose in moveit is defined as the gripper pointing to +z in the world frame
+        #     # Therefore, we need to rotate the canonical grasp pose by 90 degrees around the y-axis to convert it to the moveit convention
+        #     # rot_any2moveit = np.array([[0,0,1],[0,1,0],[-1,0,0]])
+        #     # rot_any2moveit = np.array([[0,0,1],[0,1,0],[1,0,0]])
+        #     grasp_msg.grasp_pose = Pose()
+        #     grasp_msg.grasp_pose.position = Point(*grasp.translation)
+        #     # grasp_msg.grasp_pose.orientation = Quaternion(*R.from_matrix(grasp.rotation_matrix @ rot_any2moveit).as_quat())
+        #     grasp_msg.grasp_pose.orientation = Quaternion(*R.from_matrix(grasp.rotation_matrix).as_quat())            
+        #     grasp_msg.grasp_score = grasp.score
+        #     grasp_msg.grasp_width = grasp.width
+        #     grasp_msg.grasp_depth = grasp.depth
             
-            grasp_msg.grasp_score = grasp.score
-            grasp_msg.grasp_width = grasp.width
-            grasp_msg.grasp_depth = grasp.depth
-            
-            grasps_msg.append(grasp_msg)
+        #     grasps_msg.append(grasp_msg)
 
-        response = DetectGraspsResponse(grasps=grasps_msg)
-        return response
+        # response = DetectGraspsResponse(grasps=grasps_msg)
+        return gg, min_bound, max_bound
 
     def _preprocess(self, data: Perception)->Tuple[TSDFVolume, np.ndarray]:
         """
@@ -177,14 +178,21 @@ class DetectorAnygrasp(DetectorBase):
             # NOTE: Assume only one detection in single request
             mask=None
             if len(camera_data.detections) > 0:
-                detection:BoundingBox2D = camera_data.detections[0]
+                detection:BoundingBox2D = camera_data.detections[i]
                 bbox = np.array([
                     detection.x_min,
                     detection.y_min,
                     detection.x_max,
                     detection.y_max
                 ])
-                mask = get_mask_from_2D_bbox(bbox, depth) 
+                mask = get_mask_from_2D_bbox(bbox, depth, margin=self.config.filter_bbox_2d_margin) 
+
+                # visualize masked rgb image
+                if self.debug:
+                    # draw 2D bbox
+                    cv2.rectangle(rgb, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (0,255,0), 2)
+                    # save masked rgb image
+                    cv2.imwrite(f"debug_rgb_masked_{i}.png", rgb[:,:,::-1])
 
                 bbox_list.append(bbox)
             else:
@@ -220,11 +228,14 @@ class DetectorAnygrasp(DetectorBase):
                                                 bbox_list,
                                                 intrinsics_list,
                                                 extrinsics_list,
-                                                margin=0)
+                                                margin=5)
             
             min_bound = tight_cloud.get_min_bound()
             max_bound = tight_cloud.get_max_bound()
         
+            # min_bound = cloud.get_min_bound()
+            # max_bound = cloud.get_max_bound()
+
         if self.config.filter_cloud_with_bbox:
             if len(data.bboxes_3d) > 0:
                 # filter the cloud by the 3D bounding box
@@ -234,14 +245,6 @@ class DetectorAnygrasp(DetectorBase):
                     max_bound=max_bound + self.config.filter_bbox_3d_margin
                 )
                 cloud = cloud.crop(bounding_box)
-            else:
-                # if no 3D bbox is provided, use 2D bbox to filter the cloud
-                cloud, mask = open3d_frustum_filter(cloud, 
-                                                    bbox_list,
-                                                    intrinsics_list,
-                                                    extrinsics_list,
-                                                    margin=self.config.filter_bbox_2d_margin)
-            
         
         if self.config.filter_table_plane:
             # filter the cloud by the table plane height

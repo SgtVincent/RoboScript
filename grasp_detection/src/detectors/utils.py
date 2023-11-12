@@ -214,15 +214,22 @@ def get_mask_from_3D_bbox(bbox_center:np.ndarray, bbox_size:np.ndarray, depth_im
     mask[min_y:max_y, min_x:max_x] = 1
     return mask
    
-def get_mask_from_2D_bbox(bbox:np.ndarray, depth_image:np.ndarray)->np.ndarray:
+def get_mask_from_2D_bbox(bbox:np.ndarray, depth_image:np.ndarray, margin=10)->np.ndarray:
     """
     Get 2D mask image of same size as depth image from 2D bounding box
     @param bbox: 2D bounding box in the form of [min_x, min_y, max_x, max_y]
     @param depth_image: depth image of the scene
+    @param margin: margin around the 2D bounding box
     """
-    # create empty mask image and fill in the 2D bounding box with 1 
+    # calculate the 2D bounding box of the 8 corner_pixels
+    min_x = np.max([0, bbox[0] - margin])
+    max_x = np.min([depth_image.shape[1], bbox[2] + margin])
+    min_y = np.max([0, bbox[1] - margin])
+    max_y = np.min([depth_image.shape[0], bbox[3] + margin])
+
+    # create mask image
     mask = np.zeros(depth_image.shape, dtype=np.uint8)
-    mask[bbox[1]:bbox[3], bbox[0]:bbox[2]] = 1
+    mask[min_y:max_y, min_x:max_x] = 1
     return mask
 
 def open3d_frustum_filter(pcl: o3d.geometry.PointCloud, bbox_2d_list: List[np.ndarray], 
@@ -253,7 +260,7 @@ def open3d_frustum_filter(pcl: o3d.geometry.PointCloud, bbox_2d_list: List[np.nd
         mask_list.append(mask)
         
     # combine masks from all cameras
-    mask = np.all(mask_list, axis=0)
+    mask = np.all(np.array(mask_list), axis=0)
     
     # create new point cloud with filtered points
     filtered_pcl = o3d.geometry.PointCloud()
@@ -334,11 +341,60 @@ def data_to_percetion_msg(data: Dict, bridge:CvBridge)->Perception:
         
         # add 2D bounding box if available 
         if "depth_bboxes" in data:
-            bbox = BoundingBox2D()
-            bbox.object_id = ""
-            bbox.x_min, bbox.y_min, bbox.x_max, bbox.y_max = data["depth_bboxes"][i]
-            camera_data.detections.append(bbox)
+            for i in range(len(data["depth_bboxes"])):
+                bbox = data["depth_bboxes"][i]
+                if bbox is not None:
+                    camera_data.detections.append(BoundingBox2D(
+                        x_min=bbox[0],
+                        y_min=bbox[1],
+                        x_max=bbox[2],
+                        y_max=bbox[3],
+                        object_id="object"
+                    ))
+
         
         perception_msg.cameras_data.append(camera_data)
         
     return perception_msg
+
+
+def perform_icp_registration(data: Dict, depth_trunc=1.5, source_camera="camera_top"):
+    '''
+    Perform ICP registration on point clouds from different cameras
+    '''
+    pcd_dict = {}
+    extrinsics_dict = {}
+    for camera_name in data.camera_names:
+        # get rgb/depth images and camera intrinsics
+        rgb_image = data['rgb_image_list'][data.camera_names.index(camera_name)]
+        depth_image = data['depth_image_list'][data.camera_names.index(camera_name)]
+        depth_camera_intrinsic = data['depth_camera_intrinsic_list'][data.camera_names.index(camera_name)]
+        depth_camera_extrinsic = data['depth_camera_extrinsic_list'][data.camera_names.index(camera_name)]
+        depth_camera_extrinsic: Transform
+        # convert rgb/depth images to point cloud
+        rgbd_image = o3d.geometry.RGBDImage.create_from_color_and_depth(
+            o3d.geometry.Image(rgb_image),
+            o3d.geometry.Image(depth_image),
+            depth_scale=1.0,
+            depth_trunc=depth_trunc,
+            convert_rgb_to_intensity=False
+        )
+        pcd = o3d.geometry.PointCloud.create_from_rgbd_image(
+            rgbd_image,
+            depth_camera_intrinsic
+        )
+        # transform point cloud to global frame
+        pcd.transform(depth_camera_extrinsic.as_matrix())
+        pcd_dict[camera_name] = pcd
+
+    # Perform ICP registration
+    source_pcd = pcd_dict[source_camera]
+    for camera_name, target_pcd in pcd_dict.items():
+        if camera_name != source_camera:
+            trans_init = np.asarray(data['depth_camera_extrinsic_list'][data.camera_names.index(camera_name)].as_matrix())
+            reg_p2p = o3d.pipelines.registration.registration_icp(
+                source_pcd, target_pcd, threshold = 0.02, init = trans_init,
+                estimation_method = o3d.pipelines.registration.TransformationEstimationPointToPoint())
+            extrinsics_dict[camera_name] = reg_p2p.transformation
+
+    return extrinsics_dict

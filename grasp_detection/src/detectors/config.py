@@ -12,12 +12,12 @@ class ConfigBase:
         # grasp detection region of interest (ROI)
         self.resolution = 40
         self.voxel_grid_size = 0.3
-        self.voxel_size = 0.0075
+        self.voxel_size = 0.005
         # maximum number of grasps to return
         self.max_grasp_num = 5 
         self.volume_type = "scalable"
         self.color_type = "rgb"
-        self.max_gripper_width = 0.08
+        self.max_gripper_width = 0.12
         
         # environment-specific parameters
         self.table_height = 1.02 # height of the table plane
@@ -40,7 +40,7 @@ class ConfigAnygrasp(ConfigBase):
         # This could lead to no valid grasp 
         self.filter_cloud_with_bbox = True # whether to filter point cloud with 2D or 3D bbox
         # add margin to the 2D and 3D bbox to filter the point cloud, to increase grasp detection range 
-        self.filter_bbox_2d_margin = 5 # in pixel
+        self.filter_bbox_2d_margin = 15 # in pixel
         self.filter_bbox_3d_margin = 0.15 # in meter
         self.filter_table_plane = False # whether to filter table plane
         

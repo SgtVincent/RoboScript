@@ -19,3 +19,16 @@ Note that you also need 3D fusion tools in GIGA repo. If you DO NOT need GIGA, y
 ```bash
 pip install git+https://github.com/SgtVincent/GIGA.git
 ```
+
+## Install AnyGrasp in anygrasp_ws
+
+### Install Anygrasp
+
+### Install Robostack enviornment 
+
+### Recover broken packages 
+
+```bash
+python -m pip install matplotlib --force-reinstall
+mamba install opencv ros-noetic-cv-bridge --force-reinstall
+```

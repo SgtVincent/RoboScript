@@ -1,0 +1,20 @@
+camera_1:
+  name: camera_right
+  serial_number: 141722070059
+  parent_link: tag_3
+  translation: [0.710, -0.742, 0.614]
+  rotation: [0.828, 0.244, -0.225, -0.452]
+
+camera_2:
+  name: camera_left
+  serial_number: 134722070628
+  parent_link: tag_3
+  translation: [-0.560, -0.728, 0.633]
+  rotation: [0.806, -0.318, 0.197, -0.459]
+  
+camera_3:
+  name: camera_top
+  serial_number: 213622078748
+  parent_link: tag_3
+  translation: [-0.032, -0.179, 1.203]
+  rotation: [0.998, -0.033, 0.038, -0.047]

@@ -25,16 +25,22 @@
         <surface>
           <friction>
             <ode>
-              <mu>0.8</mu>
-              <mu2>0.6</mu2>
+              <mu>10.0</mu>
+              <mu2>10.0</mu2>
             </ode>
+            <torsional>
+              <coefficient>10.0</coefficient>
+              <use_patch_radius>true</use_patch_radius>
+              <patch_radius>0.1</patch_radius>
+            </torsional>
           </friction>
           <contact>
             <ode>
               <max_vel>0.001</max_vel>
-              <min_depth>0</min_depth>
+              <min_depth>0.001</min_depth>
             </ode>
           </contact>
+          <bounce/>
         </surface>
       </collision>
       <visual name="visual">

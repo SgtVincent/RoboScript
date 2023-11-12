@@ -8,22 +8,49 @@ import xml.etree.ElementTree as ET
 import xml.dom.minidom as minidom
 import numpy as np
 from argparse import ArgumentParser
-import re
+import json
 import os
 package_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 default_base_world = os.path.join(package_root, "worlds", "table_cabinet_base.world")
+default_ycb_metadata_file = os.path.join(package_root, "data", "ycb", "metadata.json")
+default_google_container_metadata_file = os.path.join(package_root, "data", "google_scanned_object", "container_metadata.json")
+default_google_object_metadata_file = os.path.join(package_root, "data", "google_scanned_object", "object_metadata.json")
+
 
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument('--input_world', type=str, required=True)
     parser.add_argument('--output_world', type=str, required=True)
     parser.add_argument('--base_world', type=str, default=default_base_world)
+    
+    parser.add_argument('--ycb_metadata_file', type=str, default=default_ycb_metadata_file)
+    parser.add_argument('--google_container_metadata_file', type=str, default=default_google_container_metadata_file)
+    parser.add_argument('--google_object_metadata_file', type=str, default=default_google_object_metadata_file)
+
+    
     parser.add_argument('--exclude_models', type=str, nargs='*', 
-                        default=["sun", "table", "ground_plane", "panda", "triple_camera_set"])
+                        default=["sun", "table", "ground_plane", "panda", "triple_camera_set", "cabinet"])
     return parser.parse_args()
 
 if __name__ == '__main__':
     args = parse_args()
+    
+    # Parse metadata files as dictionaries to get mapping from raw model id to model_name 
+    with open(args.ycb_metadata_file, 'r') as f:
+        ycb_metadata = json.load(f)
+    with open(args.google_container_metadata_file, 'r') as f:
+        google_container_metadata = json.load(f)
+    with open(args.google_object_metadata_file, 'r') as f:
+        google_object_metadata = json.load(f)
+    # Get model name from raw model id
+    raw_model_id_to_model_name = {}
+    for model_id, model_info in ycb_metadata['objects'].items():
+        raw_model_id_to_model_name[model_id] = model_info['model_name']
+    for model_id, model_info in google_container_metadata['objects'].items():
+        raw_model_id_to_model_name[model_id] = model_info['model_name']
+    for model_id, model_info in google_object_metadata['objects'].items():
+        raw_model_id_to_model_name[model_id] = model_info['model_name']
+        
     # Parse the input XML file
     tree = ET.parse(args.input_world)
     root = tree.getroot()  
@@ -54,6 +81,9 @@ if __name__ == '__main__':
         name = model.attrib['name']
         if name in args.exclude_models:
             continue
+        # change model name in model tag to model_name
+        if name in raw_model_id_to_model_name:
+            model.attrib['name'] = raw_model_id_to_model_name[name]
         
         # Copy model tag
         out_world_tag.append(model)

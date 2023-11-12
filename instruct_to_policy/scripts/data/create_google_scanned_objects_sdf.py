@@ -17,8 +17,8 @@ if __name__=="__main__":
     # Define folders
     default_models_folder = os.path.join("data", "google_scanned_object", "models")
     default_template_file = os.path.join("data", "google_scanned_object", "template.sdf")
-    default_metadata_file = os.path.join("data", "google_scanned_object", "container_metadata.json")
-    # default_metadata_file = os.path.join("data", "google_scanned_object", "object_metadata.json")
+    # default_metadata_file = os.path.join("data", "google_scanned_object", "container_metadata.json")
+    default_metadata_file = os.path.join("data", "google_scanned_object", "object_metadata.json")
 
     # Parse arguments
     parser = argparse.ArgumentParser(description="Create Gazebo SDF files for Google scanned objects.")
@@ -31,6 +31,10 @@ if __name__=="__main__":
                         help="Folder path of sdf template file (defaults to data/google_scanned_object/template.sdf)")
     parser.add_argument("--metadata-file", type=str, default=default_metadata_file,
                         help="Path to the metadata file (defaults to data/google_scanned_object/container_metadata.json)")
+    parser.add_argument("--default_density", type=float, default=100.0, choices=[100.0, 500.0], 
+                        help="Default density for objects (defaults to 500.0 for container, 100 for object)")
+    parser.add_argument("--min_mass", type=float, default=0.1, choices=[0.1, 1.0],
+                        help="Minimum mass for objects (defaults to 1.0 for container, 0.1 for object)")
 
     parser.add_argument("--use_voxel_volume", action="store_true", default=False)
 
@@ -70,18 +74,12 @@ if __name__=="__main__":
                 mesh = mesh.convex_hull
                 assert mesh.is_watertight
                 
-            # give containers larger density for stability
-            mesh.density = 500.0
+            # Compute mesh mass
+            mesh.density = args.default_density
             # change density according to the object
-            if mesh.mass < 1: # less than 1000g
-                mesh.density = 1000
-            
-            # # give objects smaller density 
-            # mesh.density = 100.0
-            # # change density according to the object
-            # if mesh.mass < 0.1: # less than 100g
-            #     mesh.density = 500.0
-            
+            if mesh.mass < args.min_mass:
+                mesh.density = args.min_mass / mesh.mass * args.default_density
+
             # Mass and moments of inertia
             mass_text = str(mesh.mass)
             tf = mesh.principal_inertia_transform

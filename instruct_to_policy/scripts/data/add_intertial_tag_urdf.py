@@ -12,7 +12,8 @@ def compute_mesh_origin_mass_and_inertia(mesh, mesh_name="", density=10.0):
     mesh.density = density
     mass_origin = mesh.center_mass
     mesh_mass = mesh.mass
-    mesh_inertia = mesh.moment_inertia
+    tf = mesh.principal_inertia_transform
+    mesh_inertia = trimesh.inertia.transform_inertia(tf, mesh.moment_inertia)
     return mass_origin, mesh_mass, mesh_inertia
 
 def as_mesh(scene_or_mesh):

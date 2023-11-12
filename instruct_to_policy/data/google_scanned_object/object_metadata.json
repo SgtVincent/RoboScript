@@ -25,9 +25,29 @@
             "SCHOOL_BUS",
             "Thomas_Friends_Wooden_Railway_Talking_Thomas_z7yi7UFHJRj",
             "Toysmith_Windem_Up_Flippin_Animals_Dog"
+        ],
+        "mug": [
+            "ACE_Coffee_Mug_Kristen_16_oz_cup",
+            "Cole_Hardware_Mug_Classic_Blue",
+            "Room_Essentials_Mug_White_Yellow",
+            "Threshold_Porcelain_Coffee_Mug_All_Over_Bead_White"
         ]
     },
     "objects": {
+        "Threshold_Porcelain_Coffee_Mug_All_Over_Bead_White": {
+            "bbox_size": [
+                0.13074000000000002,
+                0.096522,
+                0.114624
+            ],
+            "bbox_center": [
+                -0.0002570000000000003,
+                -0.0017290000000000014,
+                0.057307
+            ],
+            "model_name": "white_porcelain_mug",
+            "category": "mug"
+        },
         "Perricone_MD_Face_Finishing_Moisturizer": {
             "bbox_size": [
                 0.060762,
@@ -39,7 +59,7 @@
                 0.00013750000000000047,
                 0.036844
             ],
-            "model_name": "green_and_white_box",
+            "model_name": "white_box",
             "category": "box"
         },
         "Android_Figure_Panda": {
@@ -196,6 +216,20 @@
             "model_name": "wood_block",
             "category": "box"
         },
+        "Cole_Hardware_Mug_Classic_Blue": {
+            "bbox_size": [
+                0.16566199999999998,
+                0.12553999999999998,
+                0.094769
+            ],
+            "bbox_center": [
+                -2.1000000000000185e-05,
+                -0.0021730000000000013,
+                0.0473705
+            ],
+            "model_name": "cyan_mug",
+            "category": "mug"
+        },
         "CoQ10": {
             "bbox_size": [
                 0.047395999999999994,
@@ -238,6 +272,20 @@
             "model_name": "Nintendo_Mario_toy_figure",
             "category": "toy"
         },
+        "Room_Essentials_Mug_White_Yellow": {
+            "bbox_size": [
+                0.13683800000000002,
+                0.102191,
+                0.104794
+            ],
+            "bbox_center": [
+                -0.00015499999999999542,
+                -0.0045795,
+                0.052386
+            ],
+            "model_name": "white_and_yellow_mug",
+            "category": "mug"
+        },
         "Hyaluronic_Acid": {
             "bbox_size": [
                 0.054167,
@@ -265,6 +313,20 @@
             ],
             "model_name": "blue_box",
             "category": "box"
+        },
+        "ACE_Coffee_Mug_Kristen_16_oz_cup": {
+            "bbox_size": [
+                0.126322,
+                0.09062400000000001,
+                0.134936
+            ],
+            "bbox_center": [
+                9.20000000000018e-05,
+                -0.0011420000000000007,
+                0.06744
+            ],
+            "model_name": "flourish_red_mug",
+            "category": "mug"
         },
         "Perricone_MD_No_Lipstick_Lipstick": {
             "bbox_size": [

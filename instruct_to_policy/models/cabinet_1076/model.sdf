@@ -4510,7 +4510,7 @@
     </link>
     <joint name='joint_0' type='prismatic'>
       <parent>base_link</parent>
-      <child>drawer3</child>
+      <child>drawer0</child>
       <pose>0 0 0 0 0 0</pose>
       <axis>
         <xyz>0 0 1</xyz>
@@ -4542,7 +4542,7 @@
     </joint>
     <joint name='joint_1' type='prismatic'>
       <parent>base_link</parent>
-      <child>drawer2</child>
+      <child>drawer1</child>
       <pose>0 0 0 0 0 0</pose>
       <axis>
         <xyz>0 0 1</xyz>
@@ -4574,7 +4574,7 @@
     </joint>
     <joint name='joint_2' type='prismatic'>
       <parent>base_link</parent>
-      <child>drawer1</child>
+      <child>drawer2</child>
       <pose>0 0 0 0 0 0</pose>
       <axis>
         <xyz>0 0 1</xyz>
@@ -4606,7 +4606,7 @@
     </joint>
     <joint name='joint_3' type='prismatic'>
       <parent>base_link</parent>
-      <child>drawer0</child>
+      <child>drawer3</child>
       <pose>0 0 0 0 0 0</pose>
       <axis>
         <xyz>0 0 1</xyz>

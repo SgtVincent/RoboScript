@@ -5,9 +5,11 @@ from gazebo_msgs.srv import (
     GetModelState, 
     GetLinkState,
     GetWorldProperties, 
-    GetModelProperties
+    GetModelProperties,
+    SetModelConfiguration,
+    SetModelConfigurationRequest
 )
-from geometry_msgs.msg import Quaternion, Point, Pose 
+from geometry_msgs.msg import Quaternion, Point, Pose
 from .env import Env
 from .gazebo_cameras import GazeboRGBDCameraSet
 from grasp_detection.msg import BoundingBox3DArray, BoundingBox3D
@@ -41,12 +43,51 @@ class GazeboEnv(Env):
         self.camera_set = GazeboRGBDCameraSet(self.sensor_config['cameras'], 
                                               namespace=self.sensor_config['namespace'], 
                                               sub_pcl=self.sensor_config['gt_point_cloud'])
+        
+        # FIXME: This should be in a config file rather than hard code 
+        # NOTE: Hack to reset cabinet joint state, since reset_world does not reset joint state
+        # record cabinet joint states for reset
+        self.cabinet_joint_init_states = {
+            "cabinet::joint_0": 0.0,
+            "cabinet::joint_1": 0.0,
+            "cabinet::joint_2": 0.0,
+            "cabinet::joint_3": 0.0,
+        }
+
 
     def _gt_bbox_callback(self, msg: BoundingBox3DArray):
         """ Callback function for ground truth bounding boxes."""
         self.gazebo_gt_bboxes = msg.bboxes_3d
 
 
+    def reset_gazebo(self):
+        """
+        Reset world state and cabinet joint state.
+        """
+        rospy.wait_for_service(f"/{self.node_name}/reset_world")
+        rospy.wait_for_service(f"/{self.node_name}/reset_simulation")
+        rospy.wait_for_service(f"/{self.node_name}/set_model_configuration")
+        
+        # reset gazebo world state
+        self.reset_world()
+        
+        # reset cabinet joint state
+        self.set_joint_positions('cabinet', list(self.cabinet_joint_init_states.keys()), list(self.cabinet_joint_init_states.values()))
+        
+    
+    def set_joint_positions(self, model_name: str, joint_names: List[str], joint_values: List[float]):
+        """ Set joint positions"""
+
+        set_model_config = rospy.ServiceProxy('/gazebo/set_model_configuration', SetModelConfiguration)
+        config_request = SetModelConfigurationRequest()
+        config_request = SetModelConfigurationRequest()
+        config_request.model_name = model_name
+        # Assuming 'joint_name' is the name of the joint you want to reset
+        config_request.joint_names = joint_names
+        config_request.joint_positions = joint_values
+        
+        set_model_config(config_request)
+        
     def get_obj_name_list(self)-> List[str]:
         """ Get all object names in the world."""
 

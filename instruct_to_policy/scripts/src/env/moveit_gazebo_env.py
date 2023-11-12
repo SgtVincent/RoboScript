@@ -245,8 +245,9 @@ class MoveitGazeboEnv(GazeboEnv):
         """Reset the scene to the initial state."""
         self.objects = {}
         if self.use_sim:
+            self.reset_gazebo()
             # self.reset_simulation()
-            self.reset_world()
+            # self.reset_world()
         
         # reset planning scene 
         # remove all attached objects

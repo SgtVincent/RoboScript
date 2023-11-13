@@ -83,8 +83,8 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         Parse grasp pose for the object. Use ground truth grounding and grasp detection model.
         Args:
             object_name: name of the object
-            preferred_position: np.array, prefered position of the gripper
-            preferred_direction: np.array, prefered direction of the gripper
+            preferred_position: Optional(np.array), prefered position of the gripper
+            preferred_direction: Optional(np.array), prefered direction of the gripper
             description: str, description of the pose
         """
         object_bbox = self.get_3d_bbox(object_name)
@@ -151,6 +151,11 @@ class TrueGroundingEnv(MoveitGazeboEnv):
     def parse_place_pose(self, object_name, **kwargs):
         """
         Parse place pose for the object. Use ground truth grounding and heuristic place position calculation.
+        Args:
+            object_name: str, name of the object
+            receptacle_name: Optional(str), name of the receptacle
+            position: Optional(np.array), position of the place pose
+            description: Optional(str), description of the pose, "canonical pose" or "current pose"
         """
         # get parameters from kwargs
         receptacle_name: str = kwargs.get('receptacle_name', None)
@@ -171,6 +176,9 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         # If receptacle_name is given, get the receptacle position and bounding box
         if receptacle_name is not None:
             receptacle_bbox = self.get_3d_bbox(receptacle_name)
+            # FIXME: for drawer, just hard code the receptacle position x to [max_x-0.2, max_x]
+            if "drawer" in receptacle_name.lower():
+                receptacle_bbox[0] = receptacle_bbox[3] - 0.2
         
         # If position is given, use it directly, otherwise use grounding model to get the receptacle position
         if position is None:

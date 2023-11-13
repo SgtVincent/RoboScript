@@ -45,29 +45,34 @@ def prepare_vars(env):
             ]
         }
     )
-    variable_vars = {
-        k: getattr(env, k)
-        for k in [
-            "parse_question",
-            "get_object_center_position",
-            "get_3d_bbox",
-            "get_obj_name_list",
-            "parse_grasp_pose",
-            "parse_place_pose",
-            "detect_objects",
-            "open_gripper",
-            "close_gripper",
-            "attach_object",
-            "detach_object",
-            "move_to_pose",
-            "get_gripper_pose",
-            "grasp",
-        ]
-    }
-    variable_vars["say"] = lambda msg: print(f"robot says: {msg}")
+    # Add env api to fixed variables
+    fixed_vars.update(
+        {
+            k: getattr(env, k)
+            for k in [
+                "parse_question",
+                "get_3d_bbox",
+                "get_obj_name_list",
+                "parse_grasp_pose",
+                "parse_place_pose",
+                "detect_objects",
+                "get_gripper_pose",
+                "parse_question",
+                "open_gripper",
+                "close_gripper",
+                "attach_object",
+                "detach_object",
+                "move_to_pose",
+                "grasp",
+            ]
+        }
+    )
+    
+    
+    fixed_vars["say"] = lambda msg: print(f"robot says: {msg}")
     
     # add moveit interfaces to variables
-    variable_vars.update(
+    fixed_vars.update(
         {
             k: getattr(env, k)
             for k in [
@@ -76,7 +81,7 @@ def prepare_vars(env):
             ]
         }
     )
-
+    variable_vars = {}
     return fixed_vars, variable_vars
 
 

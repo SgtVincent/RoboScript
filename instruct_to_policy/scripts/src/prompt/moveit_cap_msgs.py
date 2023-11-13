@@ -22,11 +22,11 @@ from utils import parse_question
 
 # Import utility functions for perception
 from perception_utils import (
-    get_object_center_position,  # Returns the position of an object in the world frame
-    get_3d_bbox,                 # Returns the 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array, [x_min, y_min, z_min, x_max, y_max, z_max]
+    get_object_center_position,  # Returns the position of an object in the world frame. Returns: position: np.array [x,y,z]
+    get_3d_bbox,                 # Returns the 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array [x_min, y_min, z_min, x_max, y_max, z_max]
     get_obj_name_list,           # Returns a list of names of objects present in the scene
-    parse_grasp_pose,            # Predict a grasp pose for a specified object. Args: object_name: str. Returns: grasp_pose: Pose
-    parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: str, position: [x,y,z]. Returns: place_pose: Pose
+    parse_grasp_pose,            # Predict a grasp pose for a specified object. Args: object_name: str, preferred_position: Optional(np.array), preferred_direction: Optional(np.array). Returns: grasp_pose: Pose
+    parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: Optional(str), position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
     detect_objects               # Detects objects and update objects states after robot action execution and returns their names as a list.
 )
 
@@ -36,7 +36,7 @@ from motion_utils import (
     detach_object   # Detaches an object from the robot gripper in the planning space. Call this function right after opening the gripper.
     open_gripper    # Open the gripper 
     close_gripper   # Close the gripper
-    move_to_pose    # Move the gripper to pose 
+    move_to_pose    # Move the gripper to pose.
     get_gripper_pose # Get the gripper pose
     grasp           # Executes a grasp motion at the grasp_pose. Args: grasp_pose: Pose
 )
@@ -756,7 +756,8 @@ message_fgen= [
 "role":"system",
 "content": '''
 You are a strict assistant, translating natural language to a python script to define python functions.
-Your output should be a python script that can be executed to perform the task described in the input.
+The chat history provides some examples of how to define functions.
+Your generated content should only contain a single Python function and comments starting with '#'. No questions or common texts.
 '''
 },
 {
@@ -818,6 +819,8 @@ def follow_path(move_group, path_points):
 "content": "# define function: move_in_direction(axis, distance)"
 },
 {
+"role": "assistant",
+"content":
 '''
 def move_in_direction(axis: np.array, distance: float):
     current_pose = get_gripper_pose()

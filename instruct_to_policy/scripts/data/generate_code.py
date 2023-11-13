@@ -53,15 +53,14 @@ def prepare_vars_detached():
 
     """Prepare variables including APIs and objects for LMPs """
 
-    fixed_vars = {"np": np}
-    fixed_vars.update(
-        {name: eval(name) for name in shapely.geometry.__all__ + shapely.affinity.__all__}
-    )
+    fixed_vars = {"np": np, "rospy": rospy}
+    # fixed_vars.update(
+    #     {name: eval(name) for name in shapely.geometry.__all__ + shapely.affinity.__all__}
+    # )
 
     variable_vars = {
         k: None
         for k in [
-            "rospy",
             "move_group",
             "PoseStamped",
             "Pose",
@@ -153,8 +152,8 @@ def parse_args():
                         help="Task queries file")
     parser.add_argument("--output-dir", type=str, default="data/benchmark/generated_code",
                         help="Output directory (defaults to data/code)")
-    parser.add_argument("--max-tokens", type=int, default=2048,
-                        help="Max tokens (defaults to 2048)")
+    parser.add_argument("--max-tokens", type=int, default=4096,
+                        help="Max tokens (defaults to 4096)")
     parser.add_argument("--max-queries", type=int, default=10, 
                         help="Max number of task queries to generate (defaults to 200)")
     os.chdir("/home/junting/franka_ws/src/franka_fisher/instruct_to_policy")
@@ -192,7 +191,7 @@ if __name__ == "__main__":
     variable_vars.update(
         {
             k: LMP(k, cfg_tabletop["lmps"][k], lmp_fgen, fixed_vars, variable_vars)
-            for k in ["parse_obj_name", "parse_question", "transform_shape_pts"]
+            for k in ["parse_obj_name", "parse_question"]
         }
     )
 
@@ -216,7 +215,7 @@ if __name__ == "__main__":
         if i >= args.max_queries:
             break
         try:
-            # remove extra '#' and '\n' in query line
+        # remove extra '#' and '\n' in query line
             task_query = task_query.replace('#', '').replace('\n', '')
 
             print(f"Generating code for task query {i}...")

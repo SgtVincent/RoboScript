@@ -1,6 +1,6 @@
 [
     {
-        "query": "# objects = [table, cabinet, apple, banana, white_ceramic_plate, white_and_pink_box, brown_box, brown_medication_bottle, bleach_cleanser, red_plastic_bowl, mustard_bottle] ;  place all fruits on the table into the white plate.",
+        "query": "# objects = [table, cabinet, apple, banana, white_ceramic_plate, white_and_pink_box, brown_box, brown_medication_bottle, bleach_cleanser, red_plastic_bowl, mustard_bottle] ;  place all fruits on the table into the white plates.",
         "eval_items":[
             {
                 "function": "check_relation_on",
@@ -19,47 +19,39 @@
         ]
     },
     {
-        "query": "# objects = [table, cabinet, apple, banana, white_ceramic_plate, white_and_pink_box, brown_box, brown_medication_bottle, bleach_cleanser, red_plastic_bowl, mustard_bottle] ;  place all standing bottles into the table into the white plate.",
+        "query": "# objects = [table, cabinet, apple, banana, white_ceramic_plate, white_and_pink_box, brown_box, brown_medication_bottle, bleach_cleanser, red_plastic_bowl, mustard_bottle] ;  place all fruits on the table into the red red_plastic_bowl.",
         "eval_items":[
             {
-                "function": "check_relation_on",
+                "function": "check_relation_in",
                 "args": {
-                    "object_name": "bleach_cleanser",
-                    "receptacle_name": "white_ceramic_plate"
+                    "object_name": "apple",
+                    "receptacle_name": "red_plastic_bowl"
                 }
             },
             {
-                "function": "check_relation_on",
+                "function": "check_relation_in",
                 "args": {
-                    "object_name": "brown_medication_bottle",
-                    "receptacle_name": "white_ceramic_plate"
-                }
-            },
-            {
-                "function": "check_relation_on",
-                "args": {
-                    "object_name": "mustard_bottle",
-                    "receptacle_name": "white_ceramic_plate",
-                    "flag_not": 1
+                    "object_name": "banana",
+                    "receptacle_name": "red_plastic_bowl"
                 }
             }
         ]
     },
     {
-        "query": "# objects = [table, cabinet, apple, banana, white_ceramic_plate, white_and_pink_box, brown_box, brown_medication_bottle, bleach_cleanser, red_plastic_bowl, mustard_bottle, cabinet.drawer0, cabinet.drawer1, cabinet.drawer2, cabinet.handle_0, cabinet.handle_1, cabinet.handle_2] ;  open the second top cabinet drawer and place all boxes into it .",
+        "query": "# objects = [table, cabinet, apple, banana, white_ceramic_plate, white_and_pink_box, brown_box, brown_medication_bottle, bleach_cleanser, red_plastic_bowl, mustard_bottle, cabinet.drawer0, cabinet.drawer1, cabinet.drawer2] ;  place all boxes into the top cabinet drawer.",
         "eval_items":[
             {
                 "function": "check_relation_in",
                 "args": {
                     "object_name": "white_and_pink_box",
-                    "receptacle_name": "cabinet.drawer1"
+                    "receptacle_name": "cabinet.drawer0"
                 }
             },
             {
                 "function": "check_relation_in",
                 "args": {
                     "object_name": "brown_box",
-                    "receptacle_name": "cabinet.drawer1"
+                    "receptacle_name": "cabinet.drawer0"
                 }
             }
         ]
@@ -90,7 +82,7 @@
             }
         ]
     },
-    {
+    {         
         "query": "# objects = [table, cabinet, apple, banana, white_ceramic_plate, white_and_pink_box, brown_box, brown_medication_bottle, bleach_cleanser, red_plastic_bowl, mustard_bottle] ;  exchange the position of the apple and the banana on the table.",
         "eval_items":[
             {

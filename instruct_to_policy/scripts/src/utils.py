@@ -1,6 +1,9 @@
 import ast
-import astunparse
+import rospy
 import numpy as np 
+import os 
+import astunparse
+
 from typing import List, Dict, Any, Tuple, Optional
 import geometry_msgs.msg 
 
@@ -26,6 +29,8 @@ def merge_dicts(dicts):
 def prepare_vars(env):
     """Prepare variables including APIs and objects for LMPs """
     fixed_vars = {
+        "os": os,
+        "rospy": rospy,
         "np": np
     }
     # add geometry_msgs to fixed variables

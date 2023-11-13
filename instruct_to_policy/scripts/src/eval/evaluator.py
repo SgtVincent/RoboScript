@@ -46,7 +46,7 @@ class Evaluator(object):
         self.logger.addHandler(fh)
         self.logger.addHandler(ch)
 
-    def init_metrics(self, repeat_times):
+    def init_results_dict(self, query, repeat_times):
         '''
         Initialize the metrics for the evaluation items.
         
@@ -61,10 +61,13 @@ class Evaluator(object):
         }
         '''
         # TODO: how to define metrics 
-        self.metrics = {}
+        self.results = {
+            "query": query,
+            "repeat_times": repeat_times,
+        }
         
-    def get_metrics(self):
-        return self.metrics
+    def get_results(self):
+        return self.results
         
     def reset(self):
         '''
@@ -82,12 +85,12 @@ class Evaluator(object):
             } for obj_name in object_names
         }
 
-    def run_eval(self, code_str: str, eval_items: List, repeat_times:int=1):
+    def run_eval(self, code_str: str, eval_items: List, query="", repeat_times:int=1):
         '''
         Run the evaluation for the code snippet.
         '''
         
-        self.init_metrics(repeat_times)
+        self.init_results_dict(query, repeat_times)
         
         # load vars 
         gvars, lvars = prepare_vars(self.env)
@@ -108,7 +111,7 @@ class Evaluator(object):
             self.eval_env_state(i, eval_items, exception=exception)
             
         # log metrics in the end
-        self.logger.info("\n######################## Metrics:\n {} \n###################################".format(self.metrics))
+        self.logger.info("\n######################## Results:\n {} \n###################################".format(self.results))
             
 
     def eval_env_state(self, repeat_idx, eval_items: List, exception):
@@ -127,7 +130,7 @@ class Evaluator(object):
         Then it should be executed as: 
         self.check_relation_on(object="apple", receptacle="white_ceramic_plate")
         '''
-        self.metrics[repeat_idx] = {
+        self.results[repeat_idx] = {
             "grammer_correctness": 1-exception,
             "eval_items_results": [],
         }
@@ -136,7 +139,7 @@ class Evaluator(object):
             eval_func = eval_func = getattr(self, eval_item['function'])
             eval_args = eval_item['args']
             result = int(eval_func(**eval_args))
-            self.metrics[repeat_idx]['eval_items_results'].append(result)
+            self.results[repeat_idx]['eval_items_results'].append(result)
       
       
     def check_relation_on(self, object_name:str, receptacle_name:str, **kwargs):
@@ -145,6 +148,7 @@ class Evaluator(object):
         '''
         # intersection over object_bbox threshold
         iob_threshold = kwargs.get('iob_threshold', 0.8)
+        flag_not = kwargs.get('flag_not', 0)
         
         # get object and receptacle bounding boxes
         # [x_min, y_min, z_min, x_max, y_max, z_max]
@@ -160,10 +164,16 @@ class Evaluator(object):
         iob = calc_2d_bbox_iob1(object_bbox_xy, receptacle_bbox_xy)
         is_on = is_on and iob > iob_threshold
         
-        if self.verbose:
-            print(f'Check if {object_name} is on {receptacle_name}: {is_on}')
-        
-        return is_on
+        if flag_not:
+            is_not_on = not is_on
+            if self.verbose:
+                print(f'Check if {object_name} is not on {receptacle_name}: {is_not_on}')
+            return is_not_on
+        else:
+            if self.verbose:
+                print(f'Check if {object_name} is on {receptacle_name}: {is_on}')
+            
+            return is_on
          
        
     def check_relation_in(self, object_name:str, receptacle_name:str, **kwargs):
@@ -172,6 +182,7 @@ class Evaluator(object):
         '''
         # intersection over object_bbox threshold
         iob_threshold = kwargs.get('iob_threshold', 0.8)
+        flag_not = kwargs.get('flag_not', 0)
         
         # get object and receptacle bounding boxes
         # [x_min, y_min, z_min, x_max, y_max, z_max]
@@ -182,10 +193,16 @@ class Evaluator(object):
         # - if the object's 3d bbox with the receptacle's 3d bbox has an intersection over the object's 3d bbox larger than a threshold
         is_in = calc_3d_bbox_iob1(object_bbox, receptacle_bbox) > iob_threshold
         
-        if self.verbose:
-            print(f'Check if {object_name} is in {receptacle_name}: {is_in}')
-            
-        return is_in
+        if flag_not:
+            is_not_in = not is_in
+            if self.verbose:
+                print(f'Check if {object_name} is not in {receptacle_name}: {is_not_in}')
+            return is_not_in
+        else:
+            if self.verbose:
+                print(f'Check if {object_name} is in {receptacle_name}: {is_in}')
+                
+            return is_in
         
     
     def check_object_pose(self, object_name:str, pose_description:str, **kwargs):

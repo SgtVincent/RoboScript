@@ -164,7 +164,7 @@ class LMPFGen:
 
         if fix_bugs:
             f_src = openai.Edit.create(
-                model="code-davinci-edit-001",
+                model=self._cfg["model"],
                 input="# " + f_src,
                 temperature=0,
                 instruction="Fix the bug if there is one. Improve readability. Keep same inputs and outputs. Only small changes. No comments.",

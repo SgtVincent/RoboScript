@@ -76,26 +76,28 @@ if __name__ == "__main__":
 
     # filter tasks that are not suitable for the environment
     # filtered_processed_data = filter_tasks(processed_data)
-    # run code for each task
-    task_idx = 0
-    data = processed_data[0]
-    eval_items = eval_items_list[0]['eval_items']
-    query = data['query']
-    code_str = data['code']
-    
-    rospy.loginfo("Running code for query: {}".format(query))
-    rospy.loginfo("Code: \n'''{}\n'''".format(code_str))
-    
+    for task_idx in range(1, len(processed_data)):
+        # run code for each task
+        data = processed_data[task_idx]
+        eval_items_with_query = eval_items_list[task_idx]
+        query = data['query']
+        code_str = data['code']
+        assert query == eval_items_with_query['query'] # sanity check
+        eval_items = eval_items_with_query['eval_items']
         
-    # setup environment and evaluator 
-    env = TrueGroundingEnv(cfg_tabletop) 
-    evaluator = Evaluator(env, log_file=log_file_path ,verbose=True, render=False)
+        rospy.loginfo("Running code for query: {}".format(query))
+        rospy.loginfo("Code: \n'''{}\n'''".format(code_str))
+        
+            
+        # setup environment and evaluator 
+        env = TrueGroundingEnv(cfg_tabletop) 
+        evaluator = Evaluator(env, log_file=log_file_path ,verbose=True, render=False)
 
-    evaluator.run_eval(code_str, eval_items, repeat_times=5)
-    results = evaluator.get_metrics()
-    
-    # append results to eval_result_list 
-    eval_result_list.append(results)
+        evaluator.run_eval(code_str, eval_items, query=query, repeat_times=5)
+        results = evaluator.get_results()
+        
+        # append results to eval_result_list 
+        eval_result_list.append(results)
     
     # write results to file
     with open(result_file_path, 'w') as f:

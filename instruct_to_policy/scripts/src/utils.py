@@ -50,10 +50,13 @@ def prepare_vars(env):
         {
             k: getattr(env, k)
             for k in [
-                "parse_question",
+                "get_object_center_position",
+                "get_object_pose",
                 "get_3d_bbox",
                 "get_obj_name_list",
                 "parse_grasp_pose",
+                "parse_canonical_grasp_pose",
+                "parse_horizontal_handle_grasp_pose",
                 "parse_place_pose",
                 "detect_objects",
                 "get_gripper_pose",

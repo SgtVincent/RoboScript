@@ -10,22 +10,6 @@ from src.config import cfg_tabletop
 import rospy 
 import rospkg
 
-def filter_drawer0(processed_data, mask):
-    """
-    Filter tasks involving interacting with drawer 0, since it is too far from the robot.
-    """
-
-    for i, data in enumerate(processed_data):
-        if mask[i] == 0: # already filtered in previous filters 
-            continue
-        full_query = data['query']
-        instruction = full_query.split(';')[-1]
-        if 'drawer0' in instruction:
-            mask[i] = 0
-            
-    return mask 
-
-
 def filter_tasks(processed_data):
     """
     Filter the tasks that are not suitable for the environment based on hand-crafted rules.
@@ -50,18 +34,23 @@ if __name__ == "__main__":
 
     # Get ROS parameters 
     world_name = rospy.get_param('~world_name', 'world_1_table_sort')
-    processed_file = rospy.get_param('~processed_file', os.path.join(pkg_root, f'data/benchmark/generated_code/processed_{world_name}.json'))
+    code_to_eval = rospy.get_param('~code_to_eval', 'generated_code_gpt3')
+    # code_to_eval = rospy.get_param('~code_to_eval', 'generated_code_gpt4')
+    
+    processed_file = os.path.join(pkg_root, f'data/benchmark/{code_to_eval}/processed_{world_name}.json')
     processed_file_path = os.path.join(pkg_root, processed_file)
-    eval_items_file = rospy.get_param('~eval_items_file', os.path.join(pkg_root, f'data/benchmark/eval_items/{world_name}_eval_items.json'))
+    eval_items_file = os.path.join(pkg_root, f'data/benchmark/eval_items/{world_name}_eval_items.json')
+    
     # log file should be appended with the formatted current time 
     time_str = datetime.now().strftime("%Y%m%d-%H:%M")
     log_file = rospy.get_param('~log_file', f'log/eval_log_{world_name}_{time_str}.log')
     log_file_path = os.path.join(pkg_root, log_file)
     # make log directory if not exist
     os.makedirs(os.path.dirname(log_file_path), exist_ok=True)
+    
     # results file 
     result_file = rospy.get_param('~result_file', 
-                                  os.path.join(pkg_root, f'data/benchmark/code_evaluation/eval_results_{world_name}_{time_str}.json'))
+                                  os.path.join(pkg_root, f'data/benchmark/eval_results/{code_to_eval}/{world_name}_{time_str}.json'))
     result_file_path = os.path.join(pkg_root, result_file)
     # make result directory if not exist
     os.makedirs(os.path.dirname(result_file_path), exist_ok=True)
@@ -76,10 +65,14 @@ if __name__ == "__main__":
 
     # filter tasks that are not suitable for the environment
     # filtered_processed_data = filter_tasks(processed_data)
-    for task_idx in range(1, len(processed_data)):
+    for task_idx in range(0, len(processed_data)):
         # run code for each task
         data = processed_data[task_idx]
         eval_items_with_query = eval_items_list[task_idx]
+        # if data is empty, append empty results to eval_result_list
+        if len(data) == 0:
+            eval_result_list.append({})
+            continue
         query = data['query']
         code_str = data['code']
         assert query == eval_items_with_query['query'] # sanity check
@@ -88,7 +81,6 @@ if __name__ == "__main__":
         rospy.loginfo("Running code for query: {}".format(query))
         rospy.loginfo("Code: \n'''{}\n'''".format(code_str))
         
-            
         # setup environment and evaluator 
         env = TrueGroundingEnv(cfg_tabletop) 
         evaluator = Evaluator(env, log_file=log_file_path ,verbose=True, render=False)

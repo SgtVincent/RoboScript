@@ -1,11 +1,18 @@
 import os 
 # get package root from current file path
 package_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-
-from src.prompt.moveit_cap_msgs import *
 from src.constants import *
+
+# from src.prompt.message_tabletop_ui import message_tabletop_ui
+# from src.prompt.message_tabletop_zero_shot import message_tabletop_ui
+from src.prompt.message_tabletop_few_shot import message_tabletop_ui
+
+# from src.prompt.message_fgen import message_fgen
+from src.prompt.message_fgen_few_shot import message_fgen
+
 from src.prompt.message_parse_question import message_parse_question
-# model_name = 'code-davinci-002' # 'text-davinci-002' # deprecated in 2023
+from src.prompt.message_backup import message_parse_obj_name, message_transform_shape_pts
+
 model_name = 'gpt-3.5-turbo-16k' # recommened replacement for 'code-davinci-002'
 # model_name = 'gpt-4'
 
@@ -69,12 +76,12 @@ cfg_tabletop = {
     'tabletop_ui': {
       'messages': message_tabletop_ui,
       'model': model_name,
-      'max_tokens': 512,
+      'max_tokens': 2048,
       'temperature': 0,
       'query_prefix': '# ',
       'query_suffix': '.',
       # 'stop': ['#', 'objects = ['],
-      'maintain_session': True,
+      'maintain_session': False, # Otherwise model remembers previous history, e.g. defined functions  
       'debug_mode': False,
       'include_context': True,
       'has_return': False,
@@ -94,20 +101,6 @@ cfg_tabletop = {
       'has_return': True,
       'return_val_name': 'ret_val',
     },
-    # 'parse_position': {
-    #   'messages': message_parse_position,
-    #   'model': model_name,
-    #   'max_tokens': 512,
-    #   'temperature': 0,
-    #   'query_prefix': '# ',
-    #   'query_suffix': '.',
-    #   'stop': ['#'],
-    #   'maintain_session': False,
-    #   'debug_mode': False,
-    #   'include_context': True,
-    #   'has_return': True,
-    #   'return_val_name': 'ret_val',
-    # },
     'parse_question': {
       'messages': message_parse_question,
       'model': model_name,

@@ -66,11 +66,13 @@ def prepare_vars_detached():
             "Pose",
             "Point",
             "Quaternion",
-            "parse_question",
             "get_object_center_position",
+            "get_object_pose",
             "get_3d_bbox",
             "get_obj_name_list",
             "parse_grasp_pose",
+            "parse_canonical_grasp_pose",
+            "parse_horizontal_handle_grasp_pose",
             "parse_place_pose",
             "detect_objects",
             "open_gripper",
@@ -117,6 +119,10 @@ def process_raw_output(raw_path, processed_path):
     
     processed_data = []
     for data in raw_data:
+        # if data is empty, append empty dict
+        if len(data) == 0:
+            processed_data.append({})
+            continue 
         context = data['context']
         query = data['query']
         query = context + query
@@ -184,23 +190,6 @@ if __name__ == "__main__":
     # prepare vars including APIs and constants
     fixed_vars, variable_vars = prepare_vars_detached()
 
-    # creating the function-generating LMP
-    lmp_fgen = LMPFGen(cfg_tabletop["lmps"]["fgen"], fixed_vars, variable_vars)
-
-    # creating other low-level LMPs
-    variable_vars.update(
-        {
-            k: LMP(k, cfg_tabletop["lmps"][k], lmp_fgen, fixed_vars, variable_vars)
-            for k in ["parse_obj_name", "parse_question"]
-        }
-    )
-
-    # creating the LMP that deals w/ high-level language commands
-    cfg_tabletop["lmps"]["tabletop_ui"]["debug_mode"] = True
-    lmp_tabletop_ui = LMP(
-        "tabletop_ui", cfg_tabletop["lmps"]["tabletop_ui"], lmp_fgen, fixed_vars, variable_vars,
-    )
-
     # load task queries
     task_queries = load_queries(args.task_queries)
 
@@ -210,24 +199,43 @@ if __name__ == "__main__":
         exit()
 
     exception_log = ""
+    dump_hist_list = []
     # generate one code snippet for each task query
     for i, task_query in enumerate(task_queries):
         if i >= args.max_queries:
             break
+        # if i not in [1, 4]:
+        #     continue
         try:
-        # remove extra '#' and '\n' in query line
+            # remove extra '#' and '\n' in query line
             task_query = task_query.replace('#', '').replace('\n', '')
+
+            # NOTE: 
+            # the benchmark test code generation cabalibity from scratch, so every time should create a new LMP instance
+            # creating the function-generating LMP
+            lmp_fgen = LMPFGen(cfg_tabletop["lmps"]["fgen"], fixed_vars, variable_vars)
+            
+            # creating the LMP that deals w/ high-level language commands
+            cfg_tabletop["lmps"]["tabletop_ui"]["debug_mode"] = True
+            
+            lmp_tabletop_ui = LMP(
+                "tabletop_ui", cfg_tabletop["lmps"]["tabletop_ui"], lmp_fgen, fixed_vars, variable_vars,
+            )
 
             print(f"Generating code for task query {i}...")
             # generate code snippet
             lmp_tabletop_ui(task_query, "")
-            lmp_tabletop_ui.clear_exec_hist()
+            # append dump_hist to list 
+            dump_hist_list.append(lmp_tabletop_ui.dump_hist[-1])
+    
         except Exception as e:
             exception_log += "----------\n"
             exception_log += f"Cannot generate code for task query {i}: {task_query} \n"
             exception_log += f"Exception: {e} \n"
             exception_log += f"Traceback: {traceback.format_exc()} \n"
             exception_log += "----------\n"
+            # add empty history to dump_hist
+            dump_hist_list.append({})
             
     # write exception log to file
     exception_log_file = os.path.basename(args.task_queries).replace('.txt', '_exception_log.txt')
@@ -238,7 +246,8 @@ if __name__ == "__main__":
     # save generated code snippets to json 
     raw_output_file = "raw_" + os.path.basename(args.task_queries).replace('.txt', '.json')
     raw_output_path = os.path.join(args.output_dir, raw_output_file)
-    lmp_tabletop_ui.save_dump_hist(raw_output_path)
+    with open(raw_output_path, "w") as f:
+        json.dump(dump_hist_list, f, indent=4)
 
     # convert raw output json to {query: code} pairs
     # raw_output_file = "raw_" + os.path.basename(args.task_queries).replace('.txt', '.json')

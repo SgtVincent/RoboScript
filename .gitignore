@@ -172,7 +172,7 @@ instruct_to_policy/data/ycb/*_thumbnails/
 # generated data 
 instruct_to_policy/data/table_cabinet_100/
 # currently add benchmark data for better version control
-# instruct_to_policy/data/benchmark/
+instruct_to_policy/data/benchmark/eval_results/
 
 # ./models should be only for testing, release models should be in data/
 instruct_to_policy/models/cabinet_*/

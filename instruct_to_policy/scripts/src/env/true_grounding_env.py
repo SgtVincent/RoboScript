@@ -63,7 +63,8 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         gt_pose = self.get_gt_obj_pose(obj_name)
         if gt_pose is None:
             return None
-        return gt_pose.position
+        # return numpy array 
+        return np.array([gt_pose.position.x, gt_pose.position.y, gt_pose.position.z], dtype=float)
         
     def get_3d_bbox(self, obj_name, **kwargs)->np.array:
         """
@@ -77,6 +78,16 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         bbox = np.array([center[0] - size[0]/2, center[1] - size[1]/2, center[2] - size[2]/2, 
                             center[0] + size[0]/2, center[1] + size[1]/2, center[2] + size[2]/2])
         return bbox
+    
+    def get_object_pose(self, obj_name, **kwargs):
+        """
+        Get the pose of the object in the world frame. 
+        This function uses ground truth model state from gazebo and ignore all other parameters.
+        """
+        gt_pose = self.get_gt_obj_pose(obj_name)
+        if gt_pose is None:
+            return None
+        return gt_pose
     
     def parse_grasp_pose(self, object_name, **kwargs):
         """
@@ -148,7 +159,7 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         
         return pose
 
-    def parse_place_pose(self, object_name, **kwargs):
+    def parse_place_pose(self, object_name, receptacle_name:str=None, **kwargs):
         """
         Parse place pose for the object. Use ground truth grounding and heuristic place position calculation.
         Args:
@@ -158,8 +169,11 @@ class TrueGroundingEnv(MoveitGazeboEnv):
             description: Optional(str), description of the pose, "canonical pose" or "current pose"
         """
         # get parameters from kwargs
-        receptacle_name: str = kwargs.get('receptacle_name', None)
-        position: np.ndarray = kwargs.get('position', None)
+        position = kwargs.get('position', None)
+        if isinstance(position, Point):
+            position = np.array([position.x, position.y, position.z])
+        if isinstance(position, list):
+            position = np.array(position)
         description: str= kwargs.get('description', "current pose") 
         assert description in ["canonical pose", "current pose"] # only support canonical pose and current pose for now
         
@@ -203,48 +217,41 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         
         return pose
 
-    # TODO: implement this failure recovery behavior if needed
-    def parse_pose_default(self, object_name, action="", description=""):
+    def parse_canonical_grasp_pose(self, object_name, description="top"):
         """
-        Default pose parser for the object. Call when all other parsers fail.
+        Parse canonical grasp pose for the object. Use ground truth grounding bounding box 
         """
-        if "drawer" in object_name.lower() or "cabinet" in object_name.lower():
-            return self.parse_gt_drawer_handle_grasp_pose(object_name)
-        else:
-            pose = Pose()
-            pose.position = self.get_object_center_position(object_name)
-            pose.orientation = Quaternion(-1,0,0,0)
-            return pose
-    
-    def parse_gt_drawer_handle_grasp_pose(self, object):
-        """ 
-        Parse ground truth pose for grasping drawer handle.
-        NOTE: Grounding models/ perception models need to handle this function 
-        Currently get the position of the handle by get the handle link position from gazebo. 
-        The orientation is canonical, perpendicular to the cabinet door.
-        """
-        pre_defined_handle_orientation = Quaternion(-0.5, -0.5, 0.5, 0.5)
-        # pre_defined_gripper_tip_offset = 0.1 # x-axis positive direction
-        # get corresponding handle link ID: cabinet.drawer_0 -> cabinet::handle_0
-        if 'drawer' in object.lower():
-            # get drawer index at the end by regex
-            drawer_index = re.findall(r'\d+', object)[-1]
-            handle_link = f"cabinet::handle_{drawer_index}"
-        elif 'cabinet' in object.lower():
-            # use drawer_3 by default if no drawer index is specified
-            handle_link = "cabinet::handle_3"
-        else:
-            raise NotImplementedError(f"Cannot parse handle pose for object {object}")
-
+        object_bbox = self.get_3d_bbox(object_name)
+        object_center = (object_bbox[:3] + object_bbox[3:]) / 2
+        
         pose = Pose()
-        pose.position = self.get_link_pose(handle_link).position 
-        pose.orientation = pre_defined_handle_orientation 
-
+        if description == "top":
+            pose.position = Point(object_center[0], object_center[1], object_bbox[5])
+        elif description == "center":
+            pose.position = Point(object_center[0], object_center[1], object_center[2])
+        else:
+            # by default grasp top 
+            pose.position = Point(object_center[0], object_center[1], object_bbox[5])
+        pose.orientation = Quaternion(-1,0,0,0)
         return pose
-    
-    def parse_question(self, question, **kwargs):
-        """ parse question into a dictionary """
-        raise NotImplementedError("parse_question() not implemented")
+
+    def parse_horizontal_handle_grasp_pose(self, object):
+        """ 
+        Parse horizontal pose for grasping drawer handle. (master pose for cabinet drawer pulling)
+        Currently the position of the handle if the GT bounding box center of handle in gazebo. 
+        The gripper is horizontal and perpendicular to the handle.
+        """
+        pre_defined_handle_orientation = Quaternion(-0.5, -0.5, 0.5, 0.5) # for franka hand 
+        # pre_defined_gripper_tip_offset = 0.1 # x-axis positive direction
+        if 'drawer' in object.lower():
+            object = object.replace('drawer', 'handle_')
+
+        handle_bbox = self.get_3d_bbox(object)
+        handle_center = (handle_bbox[:3] + handle_bbox[3:]) / 2
+        pose = Pose()
+        pose.position = Point(*handle_center)
+        pose.orientation = pre_defined_handle_orientation 
+        return pose
     
     def detect_objects(self, **kwargs):
         # True grounding env does not need to detect objects since it receives ground truth model state from gazebo

@@ -37,12 +37,6 @@ class LMP:
     def clear_exec_hist(self):
         self.exec_hist = ""
 
-    def save_dump_hist(self, dump_file):
-        with open(dump_file, "w") as f:
-            json.dump(self.dump_hist, f, indent=4)
-        # clear dump_hist
-        self.dump_hist = []
-
     def build_messages(self, query, context=""):
         messages = copy.deepcopy(self._base_messages)
 

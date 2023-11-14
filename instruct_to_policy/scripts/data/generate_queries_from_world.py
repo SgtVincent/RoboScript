@@ -13,7 +13,7 @@ import openai
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.prompt.moveit_cap_msgs import message_tabletop_ui as prompt_messages
+from src.prompt.message_tabletop_ui import message_tabletop_ui as prompt_messages
 from src.openai_api_key import OPENAI_API_KEY
 
 

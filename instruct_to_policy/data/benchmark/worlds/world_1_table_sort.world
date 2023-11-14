@@ -251,7 +251,7 @@
         <visual name="visual">
           <geometry>
             <mesh>
-              <scale>1 1 1</scale>
+              <scale>0.8 0.8 0.8</scale>
               <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/models/FemDophilus/meshes/model.obj</uri>
             </mesh>
           </geometry>
@@ -259,22 +259,31 @@
         <collision name="collision_0">
           <geometry>
             <mesh>
-              <scale>1 1 1</scale>
+              <scale>0.8 0.8 0.8</scale>
               <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/models/FemDophilus/meshes/model.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
           <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
             <friction>
+              <ode>
+                <mu>10</mu>
+                <mu2>10</mu2>
+              </ode>
               <torsional>
+                <coefficient>10</coefficient>
+                <use_patch_radius>1</use_patch_radius>
+                <patch_radius>0.1</patch_radius>
                 <ode/>
               </torsional>
-              <ode/>
             </friction>
+            <contact>
+              <ode>
+                <max_vel>0.001</max_vel>
+                <min_depth>0.001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
           </surface>
         </collision>
         <self_collide>0</self_collide>
@@ -300,7 +309,7 @@
         <visual name="visual">
           <geometry>
             <mesh>
-              <scale>1 1 1</scale>
+              <scale>0.8 0.8 0.8</scale>
               <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/models/Perricone_MD_Neuropeptide_Firming_Moisturizer/meshes/model.obj</uri>
             </mesh>
           </geometry>
@@ -308,22 +317,31 @@
         <collision name="collision_0">
           <geometry>
             <mesh>
-              <scale>1 1 1</scale>
+              <scale>0.8 0.8 0.8</scale>
               <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/models/Perricone_MD_Neuropeptide_Firming_Moisturizer/meshes/model.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
           <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
             <friction>
+              <ode>
+                <mu>10</mu>
+                <mu2>10</mu2>
+              </ode>
               <torsional>
+                <coefficient>10</coefficient>
+                <use_patch_radius>1</use_patch_radius>
+                <patch_radius>0.1</patch_radius>
                 <ode/>
               </torsional>
-              <ode/>
             </friction>
+            <contact>
+              <ode>
+                <max_vel>0.001</max_vel>
+                <min_depth>0.001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
           </surface>
         </collision>
         <self_collide>0</self_collide>
@@ -363,16 +381,25 @@
           </geometry>
           <max_contacts>10</max_contacts>
           <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
             <friction>
+              <ode>
+                <mu>10</mu>
+                <mu2>10</mu2>
+              </ode>
               <torsional>
+                <coefficient>10</coefficient>
+                <use_patch_radius>1</use_patch_radius>
+                <patch_radius>0.1</patch_radius>
                 <ode/>
               </torsional>
-              <ode/>
             </friction>
+            <contact>
+              <ode>
+                <max_vel>0.001</max_vel>
+                <min_depth>0.001</min_depth>
+              </ode>
+            </contact>
+            <bounce/>
           </surface>
         </collision>
         <self_collide>0</self_collide>

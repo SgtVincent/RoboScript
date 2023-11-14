@@ -239,7 +239,8 @@ class Evaluator(object):
         
         # get desired position
         if position_description.startswith('start_position:'):
-            start_pose = self.get_start_obj_pose(object_name)
+            start_object_name = position_description.split(':')[1].strip()
+            start_pose = self.get_start_obj_pose(start_object_name)
             desired_position = np.array([start_pose.position.x, start_pose.position.y, start_pose.position.z])
         else:
             desired_position = self.env.get_object_center_position(position_description)

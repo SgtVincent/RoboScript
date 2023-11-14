@@ -19,15 +19,14 @@ from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
 
 # Import utility functions for perception
 from perception_utils import (
-    get_object_center_position,  # Returns the position of an object in the world frame. Returns: position: np.array [x,y,z]
-    get_object_pose              # Returns the pose of an object in the world frame. Returns: pose: Pose
-    get_3d_bbox,                 # Returns the 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array [x_min, y_min, z_min, x_max, y_max, z_max]
+    get_object_center_position,  # Returns the current center position of an object in the world frame. The position will change with interaction. Args: object_name: str. Returns: position: np.array [x,y,z]
+    get_object_pose              # Returns the current pose of an object in the world frame. Args: object_name: str. Returns: pose: Pose
+    get_3d_bbox,                 # Returns the current 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array [x_min, y_min, z_min, x_max, y_max, z_max]
     get_obj_name_list,           # Returns a list of names of objects present in the scene
     parse_grasp_pose,            # Predict a grasp pose for a specified object with graspnet. Args: object_name: str, preferred_position: Optional(np.array) [x,y,z], preferred_direction: Optional(np.array) [vx, vy, vz]. Returns: grasp_pose: Pose
     parse_canonical_grasp_pose   # Predict a canonical (top-down) grasp pose for a specified object. Args: object_name: str, description: Optional(str) in ['top', 'center'], Returns: grasp_pose: Pose
     parse_horizontal_handle_grasp_pose # Predict a grasp pose for a horizontal handle. Args: object_name: str, Returns: grasp_pose: Pose
     parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: Optional(str), position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
-    detect_objects               # Detects objects and update objects states after robot action execution and returns their names as a list.
 )
 
 # Import utility functions for robot motion planning and execution
@@ -44,7 +43,7 @@ from motion_utils import (
 You are encouraged to use above APIs to complete the task.
 Note that you may always need to create your arbitrary functions to help you complete the task, which will be defined by external scripts.
 The table top is in range [-0.5, 0.5] in x-axis and [-0.5, 0.5] in y-axis. The height of the table top is 1.05.
-You may need to select a safe temporary location by shifing in x,y -axis  to ensure that the operating object can be placed without interfering with other items or the robot's movements. 
+You may need to select a safe temporary location as an intermediate state by shifing in x,y -axis  to ensure that the operating object can be placed without interfering with other items or the robot's movements. Note that you also need to record the object's original location before moving it. 
 Note that you are a strict coder, you can not hard code a predefined value, but you need to use api and tools to detect the value.
 Please pay attention to the description and specific requirements of the target object in the task. You may need to write some founctions by yourself to determine whether the requirements are met.
 
@@ -66,8 +65,8 @@ Your generated content should only contain comments starting with '#' and python
 
 # Grasp the object_1
 open_gripper()
-grasp_cake_pose = parse_grasp_pose('object_1')
-grasp(grasp_cake_pose)
+grasp_pose = parse_grasp_pose('object_1')
+grasp(grasp_pose)
 close_gripper()
 attach_object('object_1')
 

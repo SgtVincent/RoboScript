@@ -27,7 +27,6 @@ from perception_utils import (
     parse_canonical_grasp_pose   # Predict a canonical grasp pose for a specified object. Args: object_name: str, description: Optional(str) in ['top', 'center'], Returns: grasp_pose: Pose
     parse_horizontal_handle_grasp_pose # Predict a grasp pose for a horizontal handle. Args: object_name: str, Returns: grasp_pose: Pose
     parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: Optional(str), position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
-    detect_objects               # Detects objects and update objects states after robot action execution and returns their names as a list.
 )
 
 # Import utility functions for robot motion planning and execution

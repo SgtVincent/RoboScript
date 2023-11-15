@@ -47,7 +47,7 @@ from motion_utils import (
 '''
 You are encouraged to use above APIs to complete the task.
 Note that you may always need to create your arbitrary functions to help you complete the task, which will be defined by external scripts.
-The table top is in range [-0.5, 0.5] in x-axis and [-0.5, 0.5] in y-axis. The height of the table top is 1.05.
+The robot working space on table top is in range [-0.5, 0.2] in x-axis and [-0.5, 0.5] in y-axis. The height of the table top is 1.05.
 You may need to select a safe temporary location by shifing in x,y -axis  to ensure that the operating object can be placed without interfering with other items or the robot's movements. 
 Note that you are a strict coder, you can not hard code a predefined value, but you need to use api and tools to detect the value.
 Please pay attention to the description and specific requirements of the target object in the task. You may need to write some founctions by yourself to determine whether the requirements are met.

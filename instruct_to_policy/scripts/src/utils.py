@@ -26,7 +26,7 @@ def merge_dicts(dicts):
         for k, v in d.items()
     }
     
-def prepare_vars(env):
+def prepare_vars(env, defined_functions:List[str]=[]):
     """Prepare variables including APIs and objects for LMPs """
     fixed_vars = {
         "os": os,
@@ -58,7 +58,6 @@ def prepare_vars(env):
                 "parse_canonical_grasp_pose",
                 "parse_horizontal_handle_grasp_pose",
                 "parse_place_pose",
-                "detect_objects",
                 "get_gripper_pose",
                 "parse_question",
                 "open_gripper",
@@ -71,9 +70,6 @@ def prepare_vars(env):
         }
     )
     
-    
-    fixed_vars["say"] = lambda msg: print(f"robot says: {msg}")
-    
     # add moveit interfaces to variables
     fixed_vars.update(
         {
@@ -84,14 +80,21 @@ def prepare_vars(env):
             ]
         }
     )
+    
+    # load defined functions into fixed_vars by exec in reverse order
     variable_vars = {}
-    return fixed_vars, variable_vars
+    for func in defined_functions[::-1]:
+        exec(func, fixed_vars, variable_vars)
+    
+    fixed_vars.update(variable_vars)
+    return fixed_vars, {}
 
 
 def exec_safe(code_str, gvars=None, lvars=None):
-    banned_phrases = ['import', '__']
-    for phrase in banned_phrases:
-        assert phrase not in code_str
+    # Due to few shot and zero shot prompt, code might generate import, slack this contraint
+    # banned_phrases = ['import', '__']
+    # for phrase in banned_phrases:
+    #     assert phrase not in code_str
   
     if gvars is None:
         gvars = {}

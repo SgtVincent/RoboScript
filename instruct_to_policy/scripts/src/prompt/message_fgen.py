@@ -25,7 +25,6 @@ from perception_utils import (
     parse_canonical_grasp_pose   # Predict a canonical grasp pose for a specified object. Args: object_name: str, description: Optional(str) in ['top', 'center'], Returns: grasp_pose: Pose
     parse_horizontal_handle_grasp_pose # Predict a grasp pose for a horizontal handle. Args: object_name: str, Returns: grasp_pose: Pose
     parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: Optional(str), position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
-    detect_objects               # Detects objects and update objects states after robot action execution and returns their names as a list.
 )
 
 # Import utility functions for robot motion planning and execution
@@ -39,7 +38,7 @@ from motion_utils import (
     grasp           # Executes a grasp motion at the grasp_pose. Args: grasp_pose: Pose
 )
 '''
-The table top is in range [-0.5, 0.5] in x-axis and [-0.5, 0.5] in y-axis. The height of the table top is 1.05.
+The robot working space on table top is in range [-0.5, 0.2] in x-axis and [-0.5, 0.5] in y-axis. The height of the table top is 1.05.
 Your generated content should only contain a single Python function and comments starting with '#'. No questions or common texts.
 """
 },

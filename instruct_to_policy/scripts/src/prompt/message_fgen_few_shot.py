@@ -39,8 +39,7 @@ from motion_utils import (
     grasp           # Executes a grasp motion at the grasp_pose. Args: grasp_pose: Pose
 )
 '''
-The coordinate frame of the world/table is defined as follows:
-front: +x, back: -x, left: -y, right: +y, up: +z, down: -z
+The robot working space on table top is in range [-0.5, 0.2] in x-axis and [-0.5, 0.5] in y-axis. The height of the table top is 1.05.
 Your generated content should only contain a single Python function and comments starting with '#'. No questions or common texts.
 """
 },

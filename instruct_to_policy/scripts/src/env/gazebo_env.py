@@ -36,8 +36,8 @@ class GazeboEnv(Env):
         self.get_world_properties = rospy.ServiceProxy(f"/{self.node_name}/get_world_properties", GetWorldProperties)
         self.get_model_properties = rospy.ServiceProxy(f"/{self.node_name}/get_model_properties", GetModelProperties)
 
-        self.robot_names = ["panda", "fr3", "triple_camera_set"]
-        self.environment_names = ["ground_plane"]
+        self.robot_names = ["panda", "fr3", "ur5", "triple_camera_set"]
+        self.environment_names = ["ground_plane", "sun"]
         
         # register camera set
         self.camera_set = GazeboRGBDCameraSet(self.sensor_config['cameras'], 

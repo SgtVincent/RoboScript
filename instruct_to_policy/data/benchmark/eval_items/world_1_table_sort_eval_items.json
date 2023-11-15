@@ -1,6 +1,6 @@
 [
     {
-"query_index": 0,
+        "query_index": 0,
         "query": "# objects = [table, cabinet, apple, banana, white_ceramic_plate, white_and_pink_box, brown_box, brown_medication_bottle, bleach_cleanser, red_plastic_bowl, mustard_bottle] ;  place all fruits on the table into the white plate.",
         "eval_items":[
             {

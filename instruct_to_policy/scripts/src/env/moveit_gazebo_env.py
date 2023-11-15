@@ -342,7 +342,7 @@ class MoveitGazeboEnv(GazeboEnv):
 
 
     @_block
-    def close_gripper(self, gripper_group=None, width=0.01, force=10):
+    def close_gripper(self, gripper_group=None, width=0.01, force=20):
         """Close the gripper."""
         if gripper_group is None:
             gripper_group = self.gripper_group
@@ -501,7 +501,9 @@ class MoveitGazeboEnv(GazeboEnv):
         
         if self.verbose:
             rospy.loginfo("MoveitEnv: Moved to pre-grasp pose")
-        
+
+        self.open_gripper() # poor planning leads to collision between gripper and object, and it closes by force
+
         if not self.tentative_approach:
             # calculate approach pose
             approach_pose = get_pose_msg(

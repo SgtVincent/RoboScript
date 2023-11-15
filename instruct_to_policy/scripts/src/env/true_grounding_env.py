@@ -200,12 +200,12 @@ class TrueGroundingEnv(MoveitGazeboEnv):
             position = calculate_place_position(
                 object_bbox, receptacle_bbox, obstacle_bbox_list, max_tries=100)
         else:
-            # position already given, check if the position is valid, if not, adjust it
+            # position already given, check if the position is valid, if not, adjust it until no collision found 
             collision_mask = np.array([is_collision(object_bbox, obstacle_bbox) for obstacle_bbox in obstacle_bbox_list])
             # adjust the z position if there is collision
             if np.any(collision_mask):
                 collided_bbox_list = np.array(obstacle_bbox_list)[collision_mask]
-                position[2] = adjust_z(object_bbox, collided_bbox_list)          
+                position[2] = adjust_z(object_bbox, collided_bbox_list, extra_elevation=0.1)          
             
         pose.position = Point(*position)
         if description == "canonical pose":

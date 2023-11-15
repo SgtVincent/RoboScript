@@ -74,7 +74,6 @@ def prepare_vars_detached():
             "parse_canonical_grasp_pose",
             "parse_horizontal_handle_grasp_pose",
             "parse_place_pose",
-            "detect_objects",
             "open_gripper",
             "close_gripper",
             "attach_object",
@@ -204,7 +203,7 @@ if __name__ == "__main__":
     for i, task_query in enumerate(task_queries):
         if i >= args.max_queries:
             break
-        # if i not in [1, 4]:
+        # if i not in [1]:
         #     continue
         try:
             # remove extra '#' and '\n' in query line
@@ -252,8 +251,9 @@ if __name__ == "__main__":
     # convert raw output json to {query: code} pairs
     # raw_output_file = "raw_" + os.path.basename(args.task_queries).replace('.txt', '.json')
     # raw_output_path = os.path.join(args.output_dir, raw_output_file)
-    
-    processed_file = "processed_" + os.path.basename(args.task_queries).replace('.txt', '.json')
-    processed_path = os.path.join(args.output_dir, processed_file)
-    process_raw_output(raw_output_path, processed_path)
+
+    # NOTE: not used anymore since defined functions and main body should be executed separately    
+    # processed_file = "processed_" + os.path.basename(args.task_queries).replace('.txt', '.json')
+    # processed_path = os.path.join(args.output_dir, processed_file)
+    # process_raw_output(raw_output_path, processed_path)
 

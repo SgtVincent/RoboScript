@@ -23,9 +23,9 @@ from perception_utils import (
     get_object_pose              # Returns the pose of an object in the world frame. Returns: pose: Pose
     get_3d_bbox,                 # Returns the 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array [x_min, y_min, z_min, x_max, y_max, z_max]
     get_obj_name_list,           # Returns a list of names of objects present in the scene
-    parse_grasp_pose,            # Predict a grasp pose for a specified object. Args: object_name: str, preferred_position: Optional(np.array) [x,y,z], preferred_direction: Optional(np.array) [vx, vy, vz]. Returns: grasp_pose: Pose
-    parse_canonical_grasp_pose   # Predict a canonical grasp pose for a specified object. Args: object_name: str, description: Optional(str) in ['top', 'center'], Returns: grasp_pose: Pose
-    parse_horizontal_handle_grasp_pose # Predict a grasp pose for a horizontal handle. Args: object_name: str, Returns: grasp_pose: Pose
+    parse_adaptive_shape_grasp_pose, # Args: object_name: str, preferred_position: Optional(np.array) [x,y,z], preferred_direction: Optional(np.array) [vx, vy, vz]. Returns: grasp_pose: Pose
+    parse_central_lift_grasp_pose # Args: object_name: str, description: Optional(str) in ['top', 'center'], Returns: grasp_pose: Pose
+    parse_horizontal_grasp_pose # Args: object_name: str, Returns: grasp_pose: Pose
     parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: Optional(str), position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
 )
 
@@ -66,7 +66,7 @@ Your generated content should only contain comments starting with '#' and python
 
 # Grasp the drawer handle
 open_gripper()
-grasp_pose = parse_horizontal_handle_grasp_pose('drawer1_handle')
+grasp_pose = parse_horizontal_grasp_pose('drawer1_handle')
 grasp(grasp_pose)
 close_gripper()
 attach_object('drawer1_handle')
@@ -96,7 +96,7 @@ detach_object('drawer1_handle')
 
 # Grasp the drawer handle
 open_gripper()
-grasp_pose = parse_horizontal_handle_grasp_pose('drawer1_handle')
+grasp_pose = parse_horizontal_grasp_pose('drawer1_handle')
 grasp(grasp_pose)
 close_gripper()
 attach_object('drawer1_handle')
@@ -128,7 +128,7 @@ detach_object('drawer1_handle')
 
 # Grasp the handle of the top drawer
 open_gripper()
-grasp_pose = parse_horizontal_handle_grasp_pose('drawer1_handle')
+grasp_pose = parse_horizontal_grasp_pose('drawer1_handle')
 grasp(grasp_pose)
 close_gripper()
 attach_object('drawer1_handle')
@@ -142,7 +142,7 @@ open_gripper()
 detach_object('drawer1_handle')
 
 # Grasp the red box
-grasp_pose = parse_grasp_pose('red_box')
+grasp_pose = parse_adaptive_shape_grasp_pose('red_box')
 grasp(grasp_pose)
 close_gripper()
 attach_object('red_box')
@@ -175,7 +175,7 @@ detach_object('red_box')
  
 # Grasp the handle of the top drawer
 open_gripper()
-grasp_pose = parse_horizontal_handle_grasp_pose('drawer0_handle')
+grasp_pose = parse_horizontal_grasp_pose('drawer0_handle')
 grasp(grasp_pose)
 close_gripper()
 attach_object('drawer0_handle')
@@ -189,7 +189,7 @@ open_gripper()
 detach_object('drawer0_handle')
 
 # Grasp the knife
-grasp_pose = parse_grasp_pose('knife')
+grasp_pose = parse_adaptive_shape_grasp_pose('knife')
 grasp(grasp_pose)
 close_gripper()
 attach_object('knife')
@@ -218,7 +218,7 @@ detach_object('knife')
 # Step 4: release the door handle 
 
 # Grasp the door handle
-grasp_pose = parse_grasp_pose('door_handle')
+grasp_pose = parse_horizontal_grasp_pose('door_handle')
 grasp(grasp_pose)
 close_gripper()
 attach_object('door_handle')
@@ -263,7 +263,7 @@ for toy_name in toy_names:
 for toy_name in toys_in_basket:
     # Grasp the toy
     open_gripper()
-    grasp_pose = parse_grasp_pose(toy_name)
+    grasp_pose = parse_adaptive_shape_grasp_pose(toy_name)
     grasp(grasp_pose)
     close_gripper()
     attach_object(toy_name)
@@ -292,7 +292,7 @@ for toy_name in toys_in_basket:
 
 # Grasp the bowl
 open_gripper()
-grasp_bowl_pose = parse_grasp_pose(object='bowl', description='a bowl from the high shelf')
+grasp_bowl_pose = parse_adaptive_shape_grasp_pose(object='bowl', description='a bowl from the high shelf')
 grasp(grasp_bowl_pose)
 close_gripper()
 attach_object('bowl')
@@ -322,7 +322,7 @@ detach_object('bowl')
 
 # Grasp the apple
 open_gripper()
-grasp_apple_pose = parse_grasp_pose(object='apple')
+grasp_apple_pose = parse_central_lift_grasp_pose(object='apple')
 grasp(grasp_apple_pose)
 close_gripper()
 attach_object('apple')
@@ -364,7 +364,7 @@ detach_object('apple')
 # Step 10: Move the peach into the fry pan
 
 # Grasp the peach in the plate
-peach_grasp_pose = parse_grasp_pose(object_name='peach')
+peach_grasp_pose = parse_central_lift_grasp_pose(object_name='peach')
 open_gripper()
 grasp(peach_grasp_pose)
 close_gripper()
@@ -383,7 +383,7 @@ rospy.sleep(5)
 detect_objects()
 
 # Grasp the apple in the fry pan
-apple_grasp_pose = parse_grasp_pose(object_name='apple')
+apple_grasp_pose = parse_central_lift_grasp_pose(object_name='apple')
 grasp(apple_grasp_pose)
 close_gripper()
 attach_object('apple')
@@ -401,7 +401,7 @@ rospy.sleep(5)
 detect_objects()
  
 # Grasp the peach on the table
-peach_grasp_pose = parse_grasp_pose(object_name='peach')
+peach_grasp_pose = parse_central_lift_grasp_pose(object_name='peach')
 grasp(peach_grasp_pose)
 close_gripper()
 attach_object('peach')

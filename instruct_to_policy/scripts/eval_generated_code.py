@@ -34,8 +34,13 @@ if __name__ == "__main__":
 
     # Get ROS parameters 
     world_name = rospy.get_param('~world_name', 'world_1_table_sort')
-    code_to_eval = rospy.get_param('~code_to_eval', 'generated_code_gpt3')
+    # code_to_eval = rospy.get_param('~code_to_eval', 'generated_code_gpt3')
+    # code_to_eval = rospy.get_param('~code_to_eval', 'generated_code_gpt3_few_shot')
+    code_to_eval = rospy.get_param('~code_to_eval', 'generated_code_gpt3_few_shot_grasp_preference')
+
     # code_to_eval = rospy.get_param('~code_to_eval', 'generated_code_gpt4')
+    # code_to_eval = rospy.get_param('~code_to_eval', 'generated_code_gpt4_few_shot')
+    # code_to_eval = rospy.get_param('~code_to_eval', 'generated_code_gpt4_few_shot_grasp_preference')
     
     processed_file = os.path.join(pkg_root, f'data/benchmark/{code_to_eval}/processed_{world_name}.json')
     processed_file_path = os.path.join(pkg_root, processed_file)

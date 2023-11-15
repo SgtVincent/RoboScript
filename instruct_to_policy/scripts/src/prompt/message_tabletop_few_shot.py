@@ -23,11 +23,16 @@ from perception_utils import (
     get_object_pose              # Returns the current pose of an object in the world frame. Args: object_name: str. Returns: pose: Pose
     get_3d_bbox,                 # Returns the current 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array [x_min, y_min, z_min, x_max, y_max, z_max]
     get_obj_name_list,           # Returns a list of names of objects present in the scene
-    parse_grasp_pose,            # Predict a grasp pose for a specified object with graspnet. Args: object_name: str, preferred_position: Optional(np.array) [x,y,z], preferred_direction: Optional(np.array) [vx, vy, vz]. Returns: grasp_pose: Pose
-    parse_canonical_grasp_pose   # Predict a canonical (top-down) grasp pose for a specified object. Args: object_name: str, description: Optional(str) in ['top', 'center'], Returns: grasp_pose: Pose
-    parse_horizontal_handle_grasp_pose # Predict a grasp pose for a horizontal handle. Args: object_name: str, Returns: grasp_pose: Pose
+    parse_adaptive_shape_grasp_pose, # Args: object_name: str, preferred_position: Optional(np.array) [x,y,z], preferred_direction: Optional(np.array) [vx, vy, vz]. Returns: grasp_pose: Pose
+    parse_central_lift_grasp_pose # Args: object_name: str, description: Optional(str) in ['top', 'center'], Returns: grasp_pose: Pose
+    parse_horizontal_grasp_pose # Args: object_name: str, Returns: grasp_pose: Pose
     parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: Optional(str), position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
 )
+
+There are three functions for predicting grasp poses, each tailored for different kinds of objects. Note that you need to choose the right grasp function for the object carefully!!!
+1. 'parse_central_lift_grasp_pose': This method involves a vertical lifting action. The gripper closes at the center of the object and is not suitable for elongated objects and is not suitable for the objects with openings, as the gripper's width is really small. It is optimal for handling spherical and cuboid objects without any opening that are not ideal for off-center grasping.
+2. 'parse_horizontal_grasp_pose': This approach is designed for lateral engagement and is ideal for interacting with objects attached to surfaces perpendicular to the tabletop, commonly found in domestic or industrial environments.
+3. 'parse_adaptive_shape_grasp_pose': This function utilizes GraspNet for predictive positioning. This technique is particularly effective for securing objects with unconventional shapes or openings, typical in various everyday scenarios.
 
 # Import utility functions for robot motion planning and execution
 from motion_utils import (
@@ -65,7 +70,7 @@ Your generated content should only contain comments starting with '#' and python
 
 # Grasp the object_1
 open_gripper()
-grasp_pose = parse_grasp_pose('object_1')
+grasp_pose = parse_adaptive_shape_grasp_pose('object_1')
 grasp(grasp_pose)
 close_gripper()
 attach_object('object_1')
@@ -95,7 +100,7 @@ detach_object('object_1')
 
 # Grasp the drawer handle
 open_gripper()
-grasp_pose = parse_horizontal_handle_grasp_pose('drawer1_handle')
+grasp_pose = parse_horizontal_grasp_pose('drawer1_handle')
 grasp(grasp_pose)
 close_gripper()
 attach_object('drawer1_handle')
@@ -124,7 +129,7 @@ detach_object('drawer1_handle')
 # Step 4: release the door handle 
 
 # Grasp the door handle
-grasp_pose = parse_grasp_pose('door_handle')
+grasp_pose = parse_horizontal_grasp_pose('door_handle')
 grasp(grasp_pose)
 close_gripper()
 attach_object('door_handle')
@@ -148,39 +153,39 @@ detach_object('door_handle')
 },
 {# Move an object away from another object
 "role":"user",
-"content": "objects = ['bowl', 'table', 'apple'] \n # move the apple away from the bowl by 0.1m"
+"content": "objects = ['bowl', 'table', 'cup'] \n # move the cup away from the bowl by 0.1m"
 },
 {
 "role":"assistant",
 "content":
 '''
 # Detailed planning:
-# Step 1: Grasp the apple
-# Step 2: Calculate the position to move the apple to
-# Step 3: Move the apple to the calculated position
-# Step 4: Release the apple
+# Step 1: Grasp the cup
+# Step 2: Calculate the position to move the cup to
+# Step 3: Move the cup to the calculated position
+# Step 4: Release the cup
 
-# Grasp the apple
+# Grasp the cup
 open_gripper()
-grasp_apple_pose = parse_grasp_pose(object='apple')
-grasp(grasp_apple_pose)
+grasp_cup_pose = parse_central_lift_grasp_pose(object='cup')
+grasp(grasp_cup_pose)
 close_gripper()
-attach_object('apple')
+attach_object('cup')
 
-# Calculate the position to move the apple to
-apple_position = get_object_center_position('apple')
+# Calculate the position to move the cup to
+cup_position = get_object_center_position('cup')
 bowl_position = get_object_center_position('bowl')
-direction = apple_position - bowl_position
+direction = cup_position - bowl_position
 direction = direction / np.linalg.norm(direction)
-move_position = apple_position + direction * 0.1
+move_position = cup_position + direction * 0.1
 
-# Move the apple to the calculated position
-put_apple_pose = parse_place_pose(object_name='apple', position=move_position)
-move_to_pose(put_apple_pose)
+# Move the cup to the calculated position
+put_cup_pose = parse_place_pose(object_name='cup', position=move_position)
+move_to_pose(put_cup_pose)
  
-# Release the apple
+# Release the cup
 open_gripper()
-detach_object('apple')
+detach_object('cup')
 '''
 }
 ]

@@ -70,11 +70,10 @@ def prepare_vars_detached():
             "get_object_pose",
             "get_3d_bbox",
             "get_obj_name_list",
-            "parse_grasp_pose",
-            "parse_canonical_grasp_pose",
-            "parse_horizontal_handle_grasp_pose",
+            "parse_adaptive_shape_grasp_pose",
+            "parse_central_lift_grasp_pose",
+            "parse_horizontal_grasp_pose",
             "parse_place_pose",
-            "detect_objects",
             "open_gripper",
             "close_gripper",
             "attach_object",
@@ -204,7 +203,7 @@ if __name__ == "__main__":
     for i, task_query in enumerate(task_queries):
         if i >= args.max_queries:
             break
-        # if i not in [1, 4]:
+        # if i not in [4]:
         #     continue
         try:
             # remove extra '#' and '\n' in query line

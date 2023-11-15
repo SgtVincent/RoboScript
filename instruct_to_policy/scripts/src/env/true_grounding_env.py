@@ -89,7 +89,7 @@ class TrueGroundingEnv(MoveitGazeboEnv):
             return None
         return gt_pose
     
-    def parse_grasp_pose(self, object_name, **kwargs):
+    def parse_adaptive_shape_grasp_pose(self, object_name, **kwargs):
         """
         Parse grasp pose for the object. Use ground truth grounding and grasp detection model.
         Args:
@@ -217,16 +217,17 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         
         return pose
 
-    def parse_canonical_grasp_pose(self, object_name, description="top"):
+    def parse_central_lift_grasp_pose(self, object_name, description="top"):
         """
-        Parse canonical grasp pose for the object. Use ground truth grounding bounding box 
+        Parse central lift grasp pose for the object. Use ground truth grounding and heuristic place position calculation.
         """
         object_bbox = self.get_3d_bbox(object_name)
         object_center = (object_bbox[:3] + object_bbox[3:]) / 2
         
         pose = Pose()
+        pre_defined_depth = 0.05 # for franka hand
         if description == "top":
-            pose.position = Point(object_center[0], object_center[1], object_bbox[5])
+            pose.position = Point(object_center[0], object_center[1], object_bbox[5] - pre_defined_depth)
         elif description == "center":
             pose.position = Point(object_center[0], object_center[1], object_center[2])
         else:
@@ -235,22 +236,19 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         pose.orientation = Quaternion(-1,0,0,0)
         return pose
 
-    def parse_horizontal_handle_grasp_pose(self, object):
+    def parse_horizontal_grasp_pose(self, object):
         """ 
         Parse horizontal pose for grasping drawer handle. (master pose for cabinet drawer pulling)
         Currently the position of the handle if the GT bounding box center of handle in gazebo. 
         The gripper is horizontal and perpendicular to the handle.
         """
-        pre_defined_handle_orientation = Quaternion(-0.5, -0.5, 0.5, 0.5) # for franka hand 
-        # pre_defined_gripper_tip_offset = 0.1 # x-axis positive direction
-        if 'drawer' in object.lower():
-            object = object.replace('drawer', 'handle_')
-
+        pre_defined_horizontal_orientation = Quaternion(-0.5, -0.5, 0.5, 0.5) # for franka hand 
+    
         handle_bbox = self.get_3d_bbox(object)
         handle_center = (handle_bbox[:3] + handle_bbox[3:]) / 2
         pose = Pose()
         pose.position = Point(*handle_center)
-        pose.orientation = pre_defined_handle_orientation 
+        pose.orientation = pre_defined_horizontal_orientation 
         return pose
     
     def detect_objects(self, **kwargs):

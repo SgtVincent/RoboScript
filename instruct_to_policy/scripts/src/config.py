@@ -4,8 +4,8 @@ package_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(
 from src.constants import *
 
 # from src.prompt.message_tabletop_ui import message_tabletop_ui
-# from src.prompt.message_tabletop_zero_shot import message_tabletop_ui
 from src.prompt.message_tabletop_few_shot import message_tabletop_ui
+# from src.prompt.message_tabletop_zero_shot import message_tabletop_ui
 
 # from src.prompt.message_fgen import message_fgen
 from src.prompt.message_fgen_few_shot import message_fgen

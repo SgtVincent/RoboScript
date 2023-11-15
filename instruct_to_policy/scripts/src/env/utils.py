@@ -147,7 +147,7 @@ def calculate_place_position(object_bbox, receptacle_bbox, obstacle_bbox_list, m
     return position
 
 
-def adjust_z(object_bbox, collided_bbox_list):
+def adjust_z(object_bbox, collided_bbox_list, extra_elevation=0.1):
     """
     Calculate the new minimum object center z-position for object given its 3D bounding box and a list of collided 3D bounding boxes.
     """
@@ -158,7 +158,7 @@ def adjust_z(object_bbox, collided_bbox_list):
     object_height = object_bbox[5] - object_bbox[2]
 
     # Calculate the new z position for the center of the object's bounding box
-    new_z_center = max_z + object_height / 2
+    new_z_center = max_z + object_height / 2 + extra_elevation
 
     return new_z_center
 

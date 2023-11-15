@@ -85,17 +85,16 @@ class Evaluator(object):
             } for obj_name in object_names
         }
 
-    def run_eval(self, code_str: str, eval_items: List, query="", repeat_times:int=1):
+    def run_eval(self, code_str: str, defined_functions: List[str], eval_items: List, query="", repeat_times:int=1):
         '''
         Run the evaluation for the code snippet.
         '''
-        
         self.init_results_dict(query, repeat_times)
         
-        # load vars 
-        gvars, lvars = prepare_vars(self.env)
-        
         for i in range(repeat_times):
+            # reload vars 
+            gvars, lvars = prepare_vars(self.env, defined_functions)
+            # reset environment
             self.reset()
             exception = 0
             try:

@@ -19,7 +19,7 @@ from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
 
 # Import utility functions for perception
 from perception_utils import (
-    get_object_center_position,  # Returns the current center position of an object in the world frame. The position will change with interaction. Args: object_name: str. Returns: position: np.array [x,y,z]
+    get_object_center_position,  # Returns the current center position of an object in the world frame. The position of an object will change once you move it. Args: object_name: str. Returns: position: np.array [x,y,z]
     get_object_pose              # Returns the current pose of an object in the world frame. Args: object_name: str. Returns: pose: Pose
     get_3d_bbox,                 # Returns the current 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array [x_min, y_min, z_min, x_max, y_max, z_max]
     get_obj_name_list,           # Returns a list of names of objects present in the scene
@@ -36,20 +36,21 @@ There are three functions for predicting grasp poses, each tailored for differen
 
 # Import utility functions for robot motion planning and execution
 from motion_utils import (
-    attach_object,  # Attaches an object to the robot gripper in the planning space. Call this function right after closing the gripper
-    detach_object   # Detaches an object from the robot gripper in the planning space. Call this function right after opening the gripper.
-    open_gripper    # Open the gripper 
-    close_gripper   # Close the gripper
-    move_to_pose    # Move the gripper to pose.
-    get_gripper_pose # Get the gripper pose
+    attach_object,  # Attaches an object to the robot gripper in the planning space. Call this function right after closing the gripper. Args: object_id: str. 
+    detach_object   # Detaches an object from the robot gripper in the planning space. Call this function right after opening the gripper. Args: object_id: str. 
+    open_gripper    # Open the gripper. No args.
+    close_gripper   # Close the gripper. No args.
+    move_to_pose    # Move the gripper to pose. Args: pose: Pose
+    get_gripper_pose # Get the gripper pose. No args. Returns: pose: Pose
     grasp           # Executes a grasp motion at the grasp_pose. Args: grasp_pose: Pose
 )
 '''
 You are encouraged to use above APIs to complete the task.
-Note that you may always need to create your arbitrary functions to help you complete the task, which will be defined by external scripts.
+Note that you may always need to create your arbitrary functions to help you complete the task. Do not generate them since they which will be defined by external scripts.
 The robot working space on table top is in range [-0.5, 0.2] in x-axis and [-0.5, 0.5] in y-axis. The height of the table top is 1.05.
-You may need to select a safe temporary location as an intermediate state by shifing in x,y -axis  to ensure that the operating object can be placed without interfering with other items or the robot's movements. Note that you also need to record the object's original location before moving it. 
-Note that you are a strict coder, you can not hard code a predefined value, but you need to use api and tools to detect the value.
+You may need to select a safe temporary location as an intermediate state by shifing in x,y -axis  to ensure that the operating object can be placed without interfering with other items or the robot's movements. 
+Note that you also need to save the object's original location to variable before moving it for later use.
+Note that you are a strict coder, you can not hard code a predefined value, but you need to use given api or novel tools to detect the value.
 Please pay attention to the description and specific requirements of the target object in the task. You may need to write some founctions by yourself to determine whether the requirements are met.
 
 Your generated content should only contain comments starting with '#' and python code!

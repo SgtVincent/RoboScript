@@ -36,12 +36,12 @@ There are three functions for predicting grasp poses, each tailored for differen
 
 # Import utility functions for robot motion planning and execution
 from motion_utils import (
-    attach_object,  # Attaches an object to the robot gripper in the planning space. Call this function right after closing the gripper
-    detach_object   # Detaches an object from the robot gripper in the planning space. Call this function right after opening the gripper.
-    open_gripper    # Open the gripper 
-    close_gripper   # Close the gripper
-    move_to_pose    # Move the gripper to pose.
-    get_gripper_pose # Get the gripper pose
+    attach_object,  # Attaches an object to the robot gripper in the planning space. Call this function right after closing the gripper. Args: object_id: str. 
+    detach_object   # Detaches an object from the robot gripper in the planning space. Call this function right after opening the gripper. Args: object_id: str. 
+    open_gripper    # Open the gripper. No args.
+    close_gripper   # Close the gripper. No args.
+    move_to_pose    # Move the gripper to pose. Args: pose: Pose
+    get_gripper_pose # Get the gripper pose. No args. Returns: pose: Pose
     grasp           # Executes a grasp motion at the grasp_pose. Args: grasp_pose: Pose
 )
 '''

@@ -184,22 +184,24 @@ class MoveitGazeboEnv(GazeboEnv):
 
     def computeIK(
         self,
-        orientation,
-        position,
+        pose: Pose,
         ik_link_name=None,
         move_group=None,
+        avoid_colllision=True,
     ) -> bool:
         """Check if a given pose is reachable for the robot. Return True if it is, False otherwise."""
 
         # Create a pose to compute IK for
-        pose_stamped = get_stamped_pose(position, orientation, self.frame)
-
+        pose_stamped = PoseStamped()
+        pose_stamped.header.frame_id = "world"
+        pose_stamped.pose = pose
+        
         ik_request = PositionIKRequest()
         ik_request.group_name = move_group if move_group is not None else self.manipulator_group_name
         ik_request.ik_link_name = ik_link_name if ik_link_name is not None else self.end_effctor_link
         ik_request.pose_stamped = pose_stamped
         ik_request.robot_state = self.robot.get_current_state()
-        ik_request.avoid_collisions = False
+        ik_request.avoid_collisions = avoid_colllision
 
         request_value = self.compute_ik(ik_request)
 
@@ -524,9 +526,9 @@ class MoveitGazeboEnv(GazeboEnv):
                     + Rotation.from_quat(orientation).as_matrix() @ (tentative_depth * np.array([0, 0, 1])),
                     orientation,
                 )
-                success = self.move_to_pose(tentative_approach_pose)
+                success = self.computeIK(tentative_approach_pose)
                 if success:
-                    break
+                    self.move_to_pose(tentative_approach_pose)
             if not success:
                 rospy.logwarn("MoveitEnv: Failed to approach to grasp pose")
                 return False

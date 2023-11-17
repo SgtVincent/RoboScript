@@ -58,7 +58,7 @@ Your generated content should only contain comments starting with '#' and python
 },
 {# Pick up object on the table and place it 
 "role":"user",
-"content": "objects = ['object_1', 'container_1', 'table'] \n # pick up object_1 and place it into container_1"
+"content": "objects = ['object_1', 'container_1', 'table'] ; # pick up object_1 and place it into container_1"
 },
 {
 "role": "assistant",
@@ -87,7 +87,7 @@ detach_object('object_1')
 },
 {# Close a Drawer
 "role":"user",
-"content": "objects = ['drawer1', 'table', 'plants'] \n # close the drawer"
+"content": "objects = ['drawer1', 'table', 'plants'] ; # close the drawer"
 },
 {
 "role":"assistant",
@@ -117,7 +117,7 @@ detach_object('drawer1_handle')
 },
 {# Open a Door 
 "role":"user",
-"content": "objects = ['door'] \n # open the door"
+"content": "objects = ['door'] ; # open the door"
 },
 {
 "role":"assistant",
@@ -154,7 +154,7 @@ detach_object('door_handle')
 },
 {# Move an object away from another object
 "role":"user",
-"content": "objects = ['bowl', 'table', 'cup'] \n # move the cup away from the bowl by 0.1m"
+"content": "objects = ['bowl', 'table', 'cup'] ; # move the cup away from the bowl by 0.1m"
 },
 {
 "role":"assistant",
@@ -168,7 +168,7 @@ detach_object('door_handle')
 
 # Grasp the cup
 open_gripper()
-grasp_cup_pose = parse_central_lift_grasp_pose(object='cup')
+grasp_cup_pose = parse_central_lift_grasp_pose(object_name='cup')
 grasp(grasp_cup_pose)
 close_gripper()
 attach_object('cup')

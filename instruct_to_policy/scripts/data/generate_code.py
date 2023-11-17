@@ -207,7 +207,7 @@ if __name__ == "__main__":
         #     continue
         try:
             # remove extra '#' and '\n' in query line
-            task_query = task_query.replace('#', '').replace('\n', '')
+            # task_query = task_query.replace('#', '').replace('\n', '')
 
             # NOTE: 
             # the benchmark test code generation cabalibity from scratch, so every time should create a new LMP instance

@@ -31,7 +31,7 @@ You should generate python code with the answer assigned to 'ret_val' variable.
 },
 {# to the right 
 "role": "user",
-"content": "objects = ['yellow bowl', 'blue block', 'yellow block', 'blue bowl', 'fruit', 'green block', 'black bowl'] \n # is the blue block to the right of the yellow bowl"
+"content": "objects = ['yellow bowl', 'blue block', 'yellow block', 'blue bowl', 'fruit', 'green block', 'black bowl'] ; # is the blue block to the right of the yellow bowl"
 },
 {
 "role": "assistant",
@@ -42,7 +42,7 @@ ret_val = get_object_center_position('blue block')[1] > get_object_center_positi
 },
 {# on
 "role": "user",
-"content": "objects = ['yellow bowl', 'blue block', 'yellow block', 'blue bowl', 'fruit', 'green block', 'black bowl'] \n # is the pink block on the green bowl"
+"content": "objects = ['yellow bowl', 'blue block', 'yellow block', 'blue bowl', 'fruit', 'green block', 'black bowl'] ; # is the pink block on the green bowl"
 },
 {
 "role": "assistant",
@@ -53,7 +53,7 @@ ret_val = get_object_center_position('pink block')[2] > get_object_center_positi
 },
 {# inside
 "role": "user",
-"content": "objects = ['pink block', 'green block', 'pink bowl', 'blue block', 'blue bowl', 'green bowl'] \n # which objects are in the green bowl"
+"content": "objects = ['pink block', 'green block', 'pink bowl', 'blue block', 'blue bowl', 'green bowl'] ; # which objects are in the green bowl"
 },
 {
 "role": "assistant",
@@ -74,7 +74,7 @@ for obj in objects:
 },
 {# same orientation
 "role": "user",
-"content": "objects = ['pink block', 'green block', 'pink bowl', 'blue block', 'blue bowl', 'green bowl'] \n Do blue bowl and green bowl have same orientation?"
+"content": "objects = ['pink block', 'green block', 'pink bowl', 'blue block', 'blue bowl', 'green bowl'] ; Do blue bowl and green bowl have same orientation?"
 },
 {
 "role": "assistant",

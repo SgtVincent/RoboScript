@@ -52,7 +52,7 @@ Your generated content should only contain comments starting with '#' and python
 },
 {# Open a Drawer
 "role":"user",
-"content": "objects = ['drawer1', 'table', 'plants'] \n # open the drawer"
+"content": "objects = ['drawer1', 'table', 'plants'] ; # open the drawer"
 },
 {
 "role":"assistant",
@@ -82,7 +82,7 @@ detach_object('drawer1_handle')
 },
 {# Close a Drawer
 "role":"user",
-"content": "objects = ['drawer1', 'table', 'plants'] \n # close the drawer"
+"content": "objects = ['drawer1', 'table', 'plants'] ; # close the drawer"
 },
 {
 "role":"assistant",
@@ -112,7 +112,7 @@ detach_object('drawer1_handle')
 },
 {# Put object into the drawer
 "role":"user",
-"content": "objects = ['drawer1', 'drawer2', 'table', 'red_box'] \n # put the red box into the top drawer"
+"content": "objects = ['drawer1', 'drawer2', 'table', 'red_box'] ; # put the red box into the top drawer"
 },
 {
 "role":"assistant",
@@ -158,7 +158,7 @@ detach_object('red_box')
 },
 {# Pick object from the drawer
 "role":"user",
-"content": "objects = ['drawer0', 'drawer1', 'table', 'knife', 'plate'] \n # pick the knife from the top drawer and put it on the plate"
+"content": "objects = ['drawer0', 'drawer1', 'table', 'knife', 'plate'] ; # pick the knife from the top drawer and put it on the plate"
 },
 {
 "role":"assistant",
@@ -205,7 +205,7 @@ detach_object('knife')
 },
 {# Open a Door 
 "role":"user",
-"content": "objects = ['door'] \n # open the door"
+"content": "objects = ['door'] ; # open the door"
 },
 {
 "role":"assistant",
@@ -242,7 +242,7 @@ detach_object('door_handle')
 },
 {# Pick all toys in the basket
 "role":"user",
-"content": "objects = ['toy_car', 'toy_train', 'table', 'wood_basket', 'glass'] \n # pick all toys in the basket and put them on the table"
+"content": "objects = ['toy_car', 'toy_train', 'table', 'wood_basket', 'glass'] ; # pick all toys in the basket and put them on the table"
 },
 {
 "role":"assistant",
@@ -279,7 +279,7 @@ for toy_name in toys_in_basket:
 },
 {# Retrieve an item from a high shelf
 "role":"user",
-"content": "objects = ['shelf', 'bowl', 'table'] \n # retrieve a bowl from the high shelf and put it on the table"
+"content": "objects = ['shelf', 'bowl', 'table'] ; # retrieve a bowl from the high shelf and put it on the table"
 },
 {
 "role":"assistant",
@@ -308,7 +308,7 @@ detach_object('bowl')
 },
 {# Move an object away from another object
 "role":"user",
-"content": "objects = ['bowl', 'table', 'apple'] \n # move the apple away from the bowl by 0.1m"
+"content": "objects = ['bowl', 'table', 'apple'] ; # move the apple away from the bowl by 0.1m"
 },
 {
 "role":"assistant",
@@ -345,7 +345,7 @@ detach_object('apple')
 },
 {# Swap objects in the two containers
 "role":"user",
-"content": "objects = ['plate', 'fry_pan', 'table', 'peach', 'apple'] \n # swap the positions of the peach in the plate and the apple in the fry pan"
+"content": "objects = ['plate', 'fry_pan', 'table', 'peach', 'apple'] ; # swap the positions of the peach in the plate and the apple in the fry pan"
 },
 {
 "role":"assistant",

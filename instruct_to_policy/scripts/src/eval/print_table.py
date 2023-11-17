@@ -16,8 +16,10 @@ def parse_args():
     parser.add_argument('--code_to_eval_list', nargs='+', type=str, 
                         default=['generated_code_gpt3', 
                                  'generated_code_gpt3_few_shot', 
+                                 'generated_code_gpt3_few_shot_grasp_preference',
                                  'generated_code_gpt4',
-                                 'generated_code_gpt4_few_shot'
+                                 'generated_code_gpt4_few_shot',
+                                 'generated_code_gpt4_few_shot_grasp_preference'
                                 ])
     # output csv file
     parser.add_argument('--output_csv', type=str, default='results.csv')
@@ -48,6 +50,7 @@ if __name__ == '__main__':
     with open(eval_items_file, 'r') as f:
         query_items_data: List[Dict] = json.load(f)
     queries_dict = {i: query_eval_items['query'] for i, query_eval_items in enumerate(query_items_data)}
+    queries_label_list = [query_eval_items['query_label'] for query_eval_items in query_items_data]
     num_eval_items_list = [len(query_eval_items['eval_items']) for query_eval_items in query_items_data]
     
     # Create a single sdf with multi-index 
@@ -58,8 +61,7 @@ if __name__ == '__main__':
     row_index = pd.MultiIndex.from_product([args.code_to_eval_list, metrics], 
                                            names=['code_to_eval', 'metric'])
     # Create a index for columns
-    queries_index_list = list(range(len(queries_dict)))
-    col_index = pd.Index(queries_index_list, name='query_index')
+    col_index = pd.Index(queries_label_list, name='query_index')
     
     # Create a DataFrame with the multi-index
     df = pd.DataFrame(index=row_index, columns=col_index)
@@ -74,7 +76,7 @@ if __name__ == '__main__':
         # Iterate over the query list 
         for j, query_result in enumerate(data):
             # Each 'query' becomes a column in the DataFrame.
-            query_index = queries_index_list[j]
+            query_label = queries_label_list[j]
             # TODO: get query index from eval_items file 
             # Aggregate the results of the repeated trials
             grammer_correctness_list = []
@@ -93,10 +95,10 @@ if __name__ == '__main__':
                     finished_whole_task_over_repeat_trials.append(np.all(eval_items_results).astype(int))
              
             # Fill the DataFrame with the aggregated results
-            df.loc[(args.code_to_eval_list[i], 'grammer_correctness'), query_index] = np.mean(grammer_correctness_list)
-            df.loc[(args.code_to_eval_list[i], 'finished_steps_ratio'), query_index] = np.mean(finished_steps_over_repeat_trials)
-            df.loc[(args.code_to_eval_list[i], 'finished_whole_task'), query_index] = np.mean(finished_whole_task_over_repeat_trials)
-            
+            df.loc[(args.code_to_eval_list[i], 'grammer_correctness'), query_label] = np.mean(grammer_correctness_list)
+            df.loc[(args.code_to_eval_list[i], 'finished_steps_ratio'), query_label] = np.mean(finished_steps_over_repeat_trials)
+            df.loc[(args.code_to_eval_list[i], 'finished_whole_task'), query_label] = np.mean(finished_whole_task_over_repeat_trials)
+                        
     # Save the DataFrame to a CSV file
     df.to_csv(args.output_csv)
     print(df)

@@ -210,7 +210,7 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         pose.position = Point(*position)
         if description == "canonical pose":
             # use canonical orientation
-            pose.orientation = Quaternion(-1,0,0,0)
+            pose.orientation = Quaternion(-1.0,0.0,0.0,0.0)
         else:
             # remain current orientation
             pose.orientation = self.get_gripper_pose().orientation
@@ -225,7 +225,7 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         object_center = (object_bbox[:3] + object_bbox[3:]) / 2
         
         pose = Pose()
-        pre_defined_depth = 0.05 # for franka hand
+        pre_defined_depth = 0.03 # for franka hand
         if description == "top":
             pose.position = Point(object_center[0], object_center[1], object_bbox[5] - pre_defined_depth)
         elif description == "center":
@@ -233,7 +233,7 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         else:
             # by default grasp top 
             pose.position = Point(object_center[0], object_center[1], object_bbox[5])
-        pose.orientation = Quaternion(-1,0,0,0)
+        pose.orientation = Quaternion(-1.0,0.0,0.0,0.0)
         return pose
 
     def parse_horizontal_grasp_pose(self, object):

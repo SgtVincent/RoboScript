@@ -2,6 +2,7 @@ import numpy as np
 from typing import List, Dict, Tuple
 import traceback
 import logging 
+import time 
 
 from src.env.moveit_gazebo_env import MoveitGazeboEnv
 from src.eval.utils import calc_2d_bbox_iob1, calc_3d_bbox_iob1, check_if_standing
@@ -107,8 +108,10 @@ class Evaluator(object):
                 self.logger.error(traceback.format_exc())
                 continue
             
+            # wait 3 seconds for the world state to change
+            time.sleep(3)
             self.eval_env_state(i, eval_items, exception=exception)
-            
+
         # log metrics in the end
         self.logger.info("\n######################## Results:\n {} \n###################################".format(self.results))
             

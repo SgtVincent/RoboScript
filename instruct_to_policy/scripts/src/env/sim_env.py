@@ -82,7 +82,7 @@ class SimEnv(MoveitGazeboEnv):
         sensor_data = self.get_sensor_data()   
                  
         data = {
-            'depth_bboxes': bbox_2d_list
+            'bbox_2d_list': bbox_2d_list
         }
         data.update(sensor_data)
         

@@ -2,12 +2,13 @@ from typing import List, Dict, Tuple
 import numpy as np
 import scipy.spatial.transform
 import open3d as o3d
-
+from sklearn.cluster import DBSCAN, HDBSCAN
 from cv_bridge import CvBridge
 from grasp_detection.msg import Grasp, Perception, PerceptionSingleCamera, BoundingBox3D, BoundingBox2D
 from geometry_msgs.msg import Pose, Point, Quaternion, Vector3
 from sensor_msgs.msg import Image, CameraInfo
 from std_msgs.msg import Header
+from .scalable_tsdf import ScalableTSDFVolume
 
 class Rotation(scipy.spatial.transform.Rotation):
     @classmethod
@@ -169,6 +170,10 @@ class CameraIntrinsic(object):
         )
         return intrinsic
 
+################################
+# Geometric utils 
+################################
+
 def get_mask_from_3D_bbox(bbox_center:np.ndarray, bbox_size:np.ndarray, depth_image:np.ndarray, 
                           intrinsic:CameraIntrinsic, extrinsic:Transform)->np.ndarray:
     """
@@ -215,6 +220,55 @@ def get_mask_from_2D_bbox(bbox:np.ndarray, depth_image:np.ndarray)->np.ndarray:
     mask[bbox[1]:bbox[3], bbox[0]:bbox[2]] = 1
     return mask
 
+def integrate_point_cloud_in_bbox(intrinsics: List[np.array], extrinsics: List[np.array], depth_images_list: List[np.array], bboxes_2d_list: List[List[np.array]]) -> np.array:
+    '''
+    Utility to integrate point cloud from all cameras with bounding boxes as masks
+    '''
+    tsdf = ScalableTSDFVolume
+    for camera_idx, bboxes_2d in enumerate(bboxes_2d_list):
+        # Create mask image for the current camera
+        mask = np.zeros(depth_images_list[camera_idx].shape, dtype=np.uint8)
+        for bbox in bboxes_2d:
+            mask[bbox[1]:bbox[3], bbox[0]:bbox[2]] = 1
+
+        # Integrate point cloud from all cameras with bounding boxes as masks
+        if camera_idx == 0:
+            integrated_point_cloud = depth_images_list[camera_idx] * mask
+        else:
+            integrated_point_cloud += depth_images_list[camera_idx] * mask
+    
+def project_3d_to_2d(points_3d: np.array, intrinsic: np.array, extrinsic: np.array) -> np.array:
+    # Convert points to homogeneous coordinates
+    points_3d_hom = np.append(points_3d, np.ones((points_3d.shape[0], 1)), axis=1)
+    
+    # Project points to 2D
+    points_2d = intrinsic @ extrinsic @ points_3d_hom.T
+    points_2d /= points_2d[2, :]  # Divide by third coordinate (perspective division)
+    
+    return points_2d[:2, :].T  # Return 2D points in non-homogeneous coordinates
+
+def is_point_in_bbox(point: np.array, bbox: np.array) -> bool:
+    x, y = point
+    x_min, y_min, x_max, y_max = bbox
+    return x_min <= x <= x_max and y_min <= y <= y_max
+
+def check_points_in_bbox(points_2d: np.array, bbox: np.array) -> np.array:
+    xs, ys = points_2d[:, 0], points_2d[:, 1]
+    x_min, y_min, x_max, y_max = bbox
+    return np.logical_and(np.logical_and(x_min <= xs, xs <= x_max), np.logical_and(y_min <= ys, ys <= y_max))
+
+def one_hot_iou(one_hot_vector_1: np.array, one_hot_vector_2: np.array) -> float:
+    """
+    Calculate the IOU between two one-hot vectors
+    """
+    intersection = np.sum(np.logical_and(one_hot_vector_1, one_hot_vector_2))
+    union = np.sum(np.logical_or(one_hot_vector_1, one_hot_vector_2))
+    return intersection / union
+
+#########################
+# Open 3D utils 
+#########################
+
 def open3d_frustum_filter(pcl: o3d.geometry.PointCloud, bbox_2d_list: List[np.ndarray], 
                           camera_intrinsic_list: List[CameraIntrinsic], camera_extrinsic_list: List[Transform]):
     """
@@ -246,7 +300,177 @@ def open3d_frustum_filter(pcl: o3d.geometry.PointCloud, bbox_2d_list: List[np.nd
     filtered_pcl.points = o3d.utility.Vector3dVector(np.asarray(pcl.points)[mask])
     filtered_pcl.colors = o3d.utility.Vector3dVector(np.asarray(pcl.colors)[mask])
     return filtered_pcl, mask
+
+def match_bboxes_clustering(bboxes_2d_list: List[List[np.array]], intrinsics: List[np.array], extrinsics: List[np.array],
+                            pcl: o3d.geometry.PointCloud, downsample=True, downsample_voxel_size=0.02,
+                            min_cluster_size=10, min_samples=10, cluster_eps=0.02) -> List[Tuple[np.array]]:
+    '''
+    Match 2D bounding boxes by clustering 3D points into object instances. Then match the clusters and 2D bounding boxes by projecting 
+    cluster centroids to 2D image planes and checking which centroids are closest to bounding box center.
+    
+    Args: 
+        bboxes_2d_list: List of N lists of 2D bounding boxes in the form of [min_x, min_y, max_x, max_y] under N camera views
+        intrinsics: List of N camera intrinsic parameters
+        extrinsics: List of N scamera extrinsic parameters
+        pcl: Open3D point cloud. The point cloud should be filtered with frustum filters to reduce computation cost! 
+        downsample: Whether to downsample the point cloud before matching bboxes
+        downsample_voxel_size: Voxel size for downsampling the point cloud before matching bboxes
+        min_cluster_size: Minimum number of points that should be considered as a cluster
+        min_samples: Minimum number of points that should be considered as a core point
+        cluster_eps: Maximum distance between two points to be considered as in the same neighborhood
+    Returns:
+        List of tuples of matched 2D bounding boxes index in the form of (view_1_bbox_idx, view_2_bbox_idx, ..., view_N_bbox_idx). If no bbox is matched, its index will be -1.
+    '''
+    # Downsample the point cloud to reduce computation cost if needed
+    if downsample:
+        pcl = pcl.voxel_down_sample(downsample_voxel_size)
+    num_views = len(bboxes_2d_list)
+    
+    # cluster pcl points into 
+    points_3d = np.asarray(pcl.points)
+    clustering = DBSCAN(eps=cluster_eps, min_samples=min_samples).fit(points_3d)
+    cluster_labels = clustering.labels_
+    cluster_labels_unique = np.unique(cluster_labels)
+    num_clusters = len(cluster_labels_unique)
+    cluster_centroids = [
+        np.mean(points_3d[cluster_labels == cluster_label], axis=0) for cluster_label in cluster_labels_unique
+    ]
+    # Project 3D cluster centroids to 2D image planes for each camera
+    # NOTE: there will be invalid 2d points that are outside of the image plane, fill them with out in next step
+    # For each cluster, collect its corresponding 2D bounding box
+    matched_bboxes_idx_tuple_list = []
+    for idx, cluster_centroid in enumerate(cluster_centroids):
+        # get the corresponding bounding box for each view by projecting the cluster centroid to 2D image plane
+        matched_bboxes_idx_tuple = [-1 for _ in range(num_views)]
+        for view_idx, (intrinsic, extrinsic) in enumerate(zip(intrinsics, extrinsics)):
+            # project 3D cluster centroid to 2D image plane
+            cluster_centroid_2d = project_3d_to_2d(cluster_centroid[np.newaxis, :], intrinsic, extrinsic)
+            cluster_centroid_2d = cluster_centroid_2d.squeeze()
+            # find the closest bounding box to the projected cluster centroid
+            min_dist = float('inf')
+            min_dist_bbox_idx = -1
+            for bbox_idx, bbox in enumerate(bboxes_2d_list[view_idx]):
+                bbox_center = np.array([(bbox[0]+bbox[2])/2, (bbox[1]+bbox[3])/2])
+                dist = np.linalg.norm(cluster_centroid_2d - bbox_center)
+                if dist < min_dist:
+                    min_dist = dist
+                    min_dist_bbox_idx = bbox_idx
+            # update the matched_bboxes_idx_tuple
+            matched_bboxes_idx_tuple[view_idx] = min_dist_bbox_idx
+        # append the matched_bboxes_idx_tuple to the matched_bboxes_idx_tuple_list
+        matched_bboxes_idx_tuple_list.append(tuple(matched_bboxes_idx_tuple))
+    return matched_bboxes_idx_tuple_list
+            
+def match_bboxes_points_matching(bboxes_2d_list: List[List[np.array]], intrinsics: List[np.array], extrinsics: List[np.array], 
+                 pcl: o3d.geometry.PointCloud, downsample=True, downsample_voxel_size=0.02,
+                 min_match_th=0.1) -> List[Tuple[np.array]]:
+    '''
+    Match 2D bounding boxes by projecting 3D points to 2D image planes and checking which points are inside the bounding boxes.
+    The match between two 2D bounding boxes is evaluated by the one-hot IOU between the one-hot vectors of all 2D points that are inside the bounding boxes.
+    
+    Args: 
+        bboxes_2d_list: List of N lists of 2D bounding boxes in the form of [min_x, min_y, max_x, max_y] under N camera views
+        intrinsics: List of N camera intrinsic parameters
+        extrinsics: List of N scamera extrinsic parameters
+        pcl: Open3D point cloud. The point cloud should be filtered with frustum filters to reduce computation cost! 
+        downsample: Whether to downsample the point cloud before matching bboxes
+        downsample_voxel_size: Voxel size for downsampling the point cloud before matching bboxes
+        min_match_th: Minimum one-hot IOU threshold that should be considered as a match
+    Return:
+        List of tuples of matched 2D bounding boxes index in the form of (view_1_bbox_idx, view_2_bbox_idx, ..., view_N_bbox_idx). If no bbox is matched, its index will be -1.
+    
+    Algorithm:
+    - (Optional) Downsample the point cloud to reduce computation cost if needed
+    - Project 3D points to 2D image planes for each camera
+    - For each 2D bounding box, collect one-hot vector of all 2D points that are inside the bounding box
+    - For each pair of views:
+        - Calculate the one-hot IOU between one-hot vectors of all 2D bounding boxes across different camera views
+        - Match 2D bounding boxes across different camera views by comparing one-hot vectors
+    
+    Side notes: The overall matching problem can be defined as
+    Given a graph G={V,E}. The vertices are separated into N sets of exclusive vertices. Compute a set of edges connecting vertices to multiple connected components so that:
+    - Each connected component contains at most one vertice from a set. In other words, any connected component should not have two or more vertices from a same vertice set. 
+    - The total sum of edges scores should be maximized.
+    which is a NP-hard problem. 
+    So we use a greedy algorithm to solve this problem.
+    '''
+    # Downsample the point cloud to reduce computation cost if needed
+    if downsample:
+        pcl = pcl.voxel_down_sample(downsample_voxel_size)
+    num_views = len(bboxes_2d_list)
+    
+    # Project 3D points to 2D image planes for each camera
+    # NOTE: there will be invalid 2d points that are outside of the image plane, fill them with out in next step
+    points_2d_list = []
+    for intrinsic, extrinsic in zip(intrinsics, extrinsics):
+        points_2d = project_3d_to_2d(np.asarray(pcl.points), intrinsic, extrinsic)
+        points_2d_list.append(points_2d)
+    
+    # For each 2D bounding box, collect one-hot vector of all 2D points that are inside the bounding box
+    one_hot_vectors_list = []
+    for view_idx, bboxes_2d in enumerate(bboxes_2d_list): # for each view 
+        points_2d = points_2d_list[view_idx]
+        one_hot_vectors = []
+        # for each bbox in the view
+        for bbox in bboxes_2d: 
+            # get one-hot vector of all 2D points that are inside the bounding box
+            mask = check_points_in_bbox(points_2d, bbox)
+            one_hot_vector = mask.astype(np.int32)
+            one_hot_vectors.append(one_hot_vector)  
+        one_hot_vectors_list.append(one_hot_vectors)    
+    
+    # Match 2D bounding boxes across different camera views by one-hot vector IOU
+    # NOTE: The overall matching problem is a NP-hard problem. So we use a greedy algorithm to solve this problem.
+    # For each view, we greedily match the bbox with the highest matching score. 
+    # One bbox can only be matched once.
+    # Then we remove the matched bbox and repeat the process until all bboxes are matched.
+    matched_bboxes_idx_tuple_list = []
+    used_bbox_idx_list = [[] for _ in range(num_views)]
+    for view_idx in range(num_views): # main loop for each view   
+        # get one-hot vectors of all bboxes in this view
+        one_hot_vectors = one_hot_vectors_list[view_idx]
+        # loop over all bboxes in this view 
+        for bbox_idx in range(len(one_hot_vectors)):
+            # if this bbox is already matched, skip it
+            if bbox_idx in used_bbox_idx_list[view_idx]:
+                continue
+            # else, get the one-hot vector of this bbox and initialize the matched bbox index tuple
+            one_hot_to_match = one_hot_vectors[bbox_idx] 
+            matched_bboxes_idx_tuple = [-1 for _ in range(num_views)]
+            matched_bboxes_idx_tuple[view_idx] = bbox_idx 
+            
+            # look for the best match for each of rest of the views
+            # iterate over other views
+            for other_view_idx in range(view_idx+1, num_views): 
         
+                # match 2D bounding boxes across different camera views by selecting the bbox with the highest one-hot IOU
+                # NOTE: this is a greedy algorithm, which is not guaranteed to find the optimal solution
+                other_view_one_hot_vectors = one_hot_vectors_list[other_view_idx]
+                best_match_bbox_idx = -1
+                best_match_score = 0
+                for other_view_bbox_idx, other_view_one_hot_vector in enumerate(other_view_one_hot_vectors):
+                    if other_view_bbox_idx not in used_bbox_idx_list[other_view_idx]: # check if the bbox is already matched
+                        # calculate one-hot IOU
+                        match_score = one_hot_iou(one_hot_to_match, other_view_one_hot_vector)
+                        # if the match score is higher than the current best match score and min_match_th, update the best match
+                        if match_score > best_match_score and match_score > min_match_th:
+                            best_match_score = match_score
+                            best_match_bbox_idx = other_view_bbox_idx
+
+                # if a match is found, update the matched_bboxes_idx_tuple and used_bbox_idx_list
+                if best_match_bbox_idx != -1:
+                    matched_bboxes_idx_tuple[other_view_idx] = best_match_bbox_idx
+                    used_bbox_idx_list[other_view_idx].append(best_match_bbox_idx)
+            
+            # append the matched_bboxes_idx_tuple to the matched_bboxes_idx_tuple_list
+            matched_bboxes_idx_tuple_list.append(tuple(matched_bboxes_idx_tuple))
+            
+    return matched_bboxes_idx_tuple_list
+
+#########################
+# Data utils 
+#########################
+       
 def data_to_percetion_msg(data: Dict, bridge:CvBridge)->Perception:        
     """
     # TODO: expand to multiple detections data if needed 
@@ -261,7 +485,7 @@ def data_to_percetion_msg(data: Dict, bridge:CvBridge)->Perception:
         'depth_camera_intrinsic_list': [],
         'depth_camera_frame_list': [],
         'depth_camera_extrinsic_list': [],
-        'depth_bboxes':[],
+        'bbox_2d_list':[],
         'bbox_3d':{
             'center': [],
             'size': [],
@@ -318,10 +542,10 @@ def data_to_percetion_msg(data: Dict, bridge:CvBridge)->Perception:
         )
         
         # add 2D bounding box if available 
-        if "depth_bboxes" in data:
+        if "bbox_2d_list" in data:
             bbox = BoundingBox2D()
             bbox.object_id = ""
-            bbox.x_min, bbox.y_min, bbox.x_max, bbox.y_max = data["depth_bboxes"][i]
+            bbox.x_min, bbox.y_min, bbox.x_max, bbox.y_max = data["bbox_2d_list"][i]
             camera_data.detections.append(bbox)
         
         perception_msg.cameras_data.append(camera_data)
@@ -341,7 +565,7 @@ def camera_on_sphere(origin, radius, theta, phi):
         
             
     
-        
+
         
             
     

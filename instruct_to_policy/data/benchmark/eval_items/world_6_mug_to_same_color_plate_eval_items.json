@@ -1,0 +1,15 @@
+[
+    {
+        "query_label": "simple_4",
+        "query": "# objects = [table, cabinet, green_plant_plate, white_ceramic_plate, red_plant_saucer, white_porcelain_mug] ; # move the white mug into a container with same color.",
+        "eval_items": [
+            {
+                "function": "check_relation_on",
+                "args": {
+                    "object_name": "white_porcelain_mug",
+                    "receptacle_name": "white_ceramic_plate"
+                }
+            }
+        ]
+    }
+]

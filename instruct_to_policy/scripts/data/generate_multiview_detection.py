@@ -15,7 +15,6 @@ import rospkg
 # add ./scritps directory to path
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'data')
 
 # from src.env.simple_grounding_env import SimpleGroundingEnv
 from src.env.gazebo_env import GazeboEnv
@@ -201,7 +200,6 @@ def save_dataset(env: GazeboEnv, object_names: List[str], world_name: str, outpu
     
     save_image_with_bbox(rgb_images, annot_dict, world_name, output_dir)
     
-
 def launch_gazebo_world(world_name: str):
     """
     Start the gazebo world with the given world name with roslauch.
@@ -231,8 +229,7 @@ def parse_args():
     Parse the arguments of the program.
     """
     parser = argparse.ArgumentParser()
-    # parser.add_argument("--world_name", type=str, default="table_cabinet_1")
-    parser.add_argument("--world_name", type=str, default="table_0")
+    parser.add_argument("--world_name", type=str, default="table_cabinet_0")
     parser.add_argument(
         "--include_filters",
         type=str,
@@ -244,27 +241,17 @@ def parse_args():
         "--exclude_filters",
         type=str,
         nargs="*",
-        default=[],
+        default=["table", "cabinent"],
         help="List of object classes to exclude from the dataset.",
     )
     parser.add_argument(
         "--output_dir",
         type=str,
-        # default="multiview_detection",
-        default="low_container_multiview_detection",
+        default="./data/multiview_detection",
         help="Output directory for saving the dataset.",
-    )
-    parser.add_argument(
-        "--metadata_dir",
-        type=str,
-        # default="world_metadata",
-        default="world_low_container_metadata",
-        help="Directory for saving world metadata.",
     )
     
     args, unknown_args = parser.parse_known_args()
-    args.output_dir = os.path.join(data_dir, args.output_dir)   
-    args.metadata_dir = os.path.join(data_dir, args.metadata_dir)
 
     print(
         "Generating multiview detection dataset... Please make sure that the script is executed from the instruct_to_policy pacakge root folder."
@@ -281,12 +268,7 @@ if __name__ == "__main__":
     args = parse_args()
     rospy.init_node("multiview_gen", log_level=rospy.DEBUG)
     
-    # launch gazebo world
-    # NOTE: roslaunch python API somehow does not work for urdf_spawn 
-    # launch = launch_gazebo_world(args.world_name) 
-    
     # wait for gazebo environment to be ready and static
-    # wait for 
     rospy.sleep(3) 
     
     # initialize the environment and interface to gazebo
@@ -296,16 +278,7 @@ if __name__ == "__main__":
     # env = SimpleGroundingEnv(cfg_tabletop)
     # moveit interface is not needed for this script
     env = GazeboEnv(config)
-    
-    # load world metadata to get objects to collect detection 
-    object_names = [] 
-    metadata_file = os.path.join(args.metadata_dir, args.world_name + '.json')
-    with open(metadata_file, 'r') as f:
-        metadata = json.load(f)
-        for object_id, object_info in metadata.items():
-            # TODO: consider if we need data for drawer detection 
-            if object_info['type'] not in ["env", "robot", "cabinet", "drawer"]:
-                object_names.append(object_info['name'])
+    object_names = env.get_obj_name_list()
     
     if len(args.include_filters) > 0:
         object_names.extend(args.include_filters)

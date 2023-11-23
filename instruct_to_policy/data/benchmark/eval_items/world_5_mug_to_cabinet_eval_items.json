@@ -1,0 +1,22 @@
+[
+    {
+        "query_label": "simple_3",
+        "query": "# objects = [table, cabinet, apple, sugar_box, basket_with_fabric_liner] ; # clear the table by moving all table objects into the basket.",
+        "eval_items": [
+            {
+                "function": "check_relation_in",
+                "args": {
+                    "object_name": "apple",
+                    "receptacle_name": "basket_with_fabric_liner"
+                }
+            },
+            {
+                "function": "check_relation_in",
+                "args": {
+                    "object_name": "sugar_box",
+                    "receptacle_name": "basket_with_fabric_liner"
+                }
+            }
+        ]   
+    }
+]

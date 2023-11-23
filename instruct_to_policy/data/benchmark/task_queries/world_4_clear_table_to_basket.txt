@@ -1,0 +1,1 @@
+objects = [table, cabinet, apple, sugar_box, basket_with_fabric_liner] ; # clear the table by moving all table objects into the basket

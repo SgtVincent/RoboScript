@@ -27,12 +27,13 @@ kill_descendant_processes() {
 
 # run the collect_multiview_dataset function in a subshell
 collect_multiview_dataset() {
-  world_name=$1
-  echo "Collecting multiview dataset for $world_name"
+  world_path=$1
+  out_dir=$2
+  echo "Collecting multiview dataset for $world_path"
 
   # Launch the Gazebo world
   roslaunch instruct_to_policy run_panda_moveit_gazebo.launch \
-    world:=$(rospack find instruct_to_policy)/worlds/$world_name.world \
+    world:=$world_path \
     moveit_rviz:=false \
     gazebo_gui:=false &
 
@@ -40,13 +41,16 @@ collect_multiview_dataset() {
   sleep 15
 
   # Run the generate_multiview_detection.py node to collect the dataset
-  timeout 30 python scripts/data/generate_multiview_detection.py --world_name $world_name
+  world_file=$(basename $world_path)
+  world_name="${world_file%.*}"
+  timeout 30 python scripts/data/generate_multiview_detection.py --world_name $world_name --output_dir $out_dir
   sleep 5
 }
 
-world_name=$1
+world_path=$1
+out_dir=$2
 
-collect_multiview_dataset $world_name
+collect_multiview_dataset $world_path $out_dir
 
 # clean up any remaining gazebo instances
 kill_descendant_processes $$

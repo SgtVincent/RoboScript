@@ -7,9 +7,21 @@ function cleanup {
 }
 
 # run the collect_multiview_dataset function for table_cabinet_[0-100]
-for i in {25..30}
-do
-  bash scripts/bash/run_single_multiview_detection.sh table_cabinet_$i
+# for i in {25..30}
+# do
+#   bash scripts/bash/run_single_multiview_detection.sh table_cabinet_$i
+#   sleep 5
+# done
+
+world_dir=$(rospack find instruct_to_policy)/data/benchmark/worlds
+out_dir=$(rospack find instruct_to_policy)/data/benchmark/multiview_detection
+
+# for all the worlds under data/benchmark/worlds
+for world in $(ls $world_dir)
+do 
+  # get full path to world
+  world_path=$(realpath $world_dir/$world)
+  bash scripts/bash/run_single_multiview_detection.sh $world_path $out_dir
   sleep 5
 done
 

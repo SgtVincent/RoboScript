@@ -10,7 +10,7 @@
       <real_time_factor>1</real_time_factor>
       <real_time_update_rate>1000</real_time_update_rate>
       <constraints>
-        <cfm>0.1</cfm>
+        <cfm>0.2</cfm>
         <erp>0.2</erp>
         <contact_max_correcting_vel>10s</contact_max_correcting_vel>
         <contact_surface_layer>0.0001</contact_surface_layer>
@@ -47,25 +47,25 @@
       <scale>1 1 1</scale>
       <static>0</static>
     </include>
-    <model name="flourish_red_mug">
+    <model name="white_ceramic_plate">
       <link name="link">
         <inertial>
-          <pose>-0.009436 -0.000451 0.073172 -0.057589 0.006822 -1.53196</pose>
-          <mass>0.831239</mass>
+          <pose>0.000739 -0.000608 0.02065 -1.42426 -1.56062 -0.46156</pose>
+          <mass>1.10835</mass>
           <inertia>
-            <ixx>0.0017364</ixx>
-            <ixy>3.82548e-20</ixy>
-            <ixz>-2.5554e-19</ixz>
-            <iyy>0.00147112</iyy>
-            <iyz>1.18774e-20</iyz>
-            <izz>0.000913084</izz>
+            <ixx>0.0113984</ixx>
+            <ixy>3.32198e-19</ixy>
+            <ixz>-4.89477e-18</ixz>
+            <iyy>0.00582673</iyy>
+            <iyz>-8.42587e-19</iyz>
+            <izz>0.00579885</izz>
           </inertia>
         </inertial>
         <collision name="collision">
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>model://ACE_Coffee_Mug_Kristen_16_oz_cup/meshes/model.obj</uri>
+              <uri>model://Threshold_Dinner_Plate_Square_Rim_White_Porcelain/meshes/model.obj</uri>
             </mesh>
           </geometry>
           <surface>
@@ -95,7 +95,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>model://ACE_Coffee_Mug_Kristen_16_oz_cup/meshes/model.obj</uri>
+              <uri>model://Threshold_Dinner_Plate_Square_Rim_White_Porcelain/meshes/model.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -103,27 +103,27 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.423392 -0.351537 1.01435 -0.002769 0.013526 -1.70265</pose>
+      <pose>-0.214824 -0.298031 1.01399 -0.001015 -0.010022 -0.002522</pose>
     </model>
-    <model name="white_porcelain_mug">
+    <model name="turquoise_salad_plate">
       <link name="link">
         <inertial>
-          <pose>0.00993 -0.001884 0.062737 -2.92273 0.010142 1.56594</pose>
-          <mass>0.819375</mass>
+          <pose>-0.000148 -0.000286 0.015893 -1.03366 -1.55582 -3.02214</pose>
+          <mass>0.737997</mass>
           <inertia>
-            <ixx>0.00139136</ixx>
-            <ixy>-5.59477e-20</ixy>
-            <ixz>-1.72271e-19</ixz>
-            <iyy>0.0011431</iyy>
-            <iyz>-6.81539e-20</iyz>
-            <izz>0.00103823</izz>
+            <ixx>0.00351612</ixx>
+            <ixy>-2.61719e-20</ixy>
+            <ixz>-1.54902e-18</ixz>
+            <iyy>0.00179842</iyy>
+            <iyz>-5.34565e-19</iyz>
+            <izz>0.00179558</izz>
           </inertia>
         </inertial>
         <collision name="collision">
           <geometry>
             <mesh>
-              <scale>1 1 1</scale>
-              <uri>model://Threshold_Porcelain_Coffee_Mug_All_Over_Bead_White/meshes/model.obj</uri>
+              <uri>model://Room_Essentials_Salad_Plate_Turquoise/meshes/model.obj</uri>
+              <scale>1.34255 1.34255 1.34255</scale>
             </mesh>
           </geometry>
           <surface>
@@ -152,8 +152,8 @@
         <visual name="visual">
           <geometry>
             <mesh>
-              <scale>1 1 1</scale>
-              <uri>model://Threshold_Porcelain_Coffee_Mug_All_Over_Bead_White/meshes/model.obj</uri>
+              <uri>model://Room_Essentials_Salad_Plate_Turquoise/meshes/model.obj</uri>
+              <scale>1.34255 1.34255 1.34255</scale>
             </mesh>
           </geometry>
         </visual>
@@ -161,37 +161,38 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.1625 0.126825 1.05055 1.47305 -0.531975 0.481096</pose>
+      <pose>-0.202483 0.288656 1.01386 -0.00028 0.014246 -0.000124</pose>
     </model>
-    <model name="white_and_yellow_mug">
+    <model name="lemon">
+      <static>0</static>
       <link name="link">
         <inertial>
-          <pose>-0.007717 -0.002383 0.058497 -1.45337 -0.001127 1.7736</pose>
-          <mass>0.763839</mass>
+          <pose>-0.010808 0.020966 0.026215 -1.54673 0.631601 2.29445</pose>
+          <mass>0.0488225</mass>
           <inertia>
-            <ixx>0.00127557</ixx>
-            <ixy>3.19495e-20</ixy>
-            <ixz>-9.23748e-20</ixz>
-            <iyy>0.00103971</iyy>
-            <iyz>-5.8051e-21</iyz>
-            <izz>0.000945218</izz>
+            <ixx>1.73872e-05</ixx>
+            <ixy>1.20196e-21</ixy>
+            <ixz>3.03017e-21</ixz>
+            <iyy>1.73031e-05</iyy>
+            <iyz>-1.84858e-21</iyz>
+            <izz>1.40169e-05</izz>
           </inertia>
         </inertial>
         <collision name="collision">
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>model://Room_Essentials_Mug_White_Yellow/meshes/model.obj</uri>
+              <uri>model://014_lemon/google_16k/textured.obj</uri>
             </mesh>
           </geometry>
           <surface>
             <friction>
               <ode>
-                <mu>10</mu>
-                <mu2>10</mu2>
+                <mu>5</mu>
+                <mu2>5</mu2>
               </ode>
               <torsional>
-                <coefficient>10</coefficient>
+                <coefficient>5</coefficient>
                 <use_patch_radius>1</use_patch_radius>
                 <patch_radius>0.1</patch_radius>
                 <ode/>
@@ -211,28 +212,34 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>model://Room_Essentials_Mug_White_Yellow/meshes/model.obj</uri>
+              <uri>model://014_lemon/google_16k/textured.obj</uri>
             </mesh>
           </geometry>
+          <material>
+            <script>
+              <uri>model://014_lemon/lemon.material</uri>
+              <name>lemon</name>
+            </script>
+          </material>
         </visual>
         <self_collide>0</self_collide>
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.384991 0.398243 1.04422 1.3819 0.643316 0.804689</pose>
+      <pose>-0.248367 0.285174 1.01871 -0.030116 -0.059031 0.002079</pose>
     </model>
     <model name="cyan_mug">
       <link name="link">
         <inertial>
           <pose>-0.012344 -0.001511 0.052247 -3.10219 -1.49034 -3.09397</pose>
-          <mass>1.16108</mass>
+          <mass>0.116108</mass>
           <inertia>
-            <ixx>0.00252252</ixx>
-            <ixy>4.42736e-20</ixy>
-            <ixz>-9.07827e-20</ixz>
-            <iyy>0.00222876</iyy>
-            <iyz>-1.53694e-19</iyz>
-            <izz>0.00170992</izz>
+            <ixx>0.000252252</ixx>
+            <ixy>-2.95001e-20</ixy>
+            <ixz>4.56604e-21</ixz>
+            <iyy>0.000222876</iyy>
+            <iyz>2.43404e-21</iyz>
+            <izz>0.000170992</izz>
           </inertia>
         </inertial>
         <collision name="collision">
@@ -277,123 +284,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.211795 -0.127282 1.01427 -0.002405 0.014401 -0.001957</pose>
-    </model>
-    <model name="red_plant_saucer">
-      <link name="link">
-        <inertial>
-          <pose>0.000204 9.5e-05 0.01769 2.73169 -1.55791 -2.96585</pose>
-          <mass>0.829604</mass>
-          <inertia>
-            <ixx>0.00375128</ixx>
-            <ixy>-5.97931e-19</ixy>
-            <ixz>7.96735e-20</ixz>
-            <iyy>0.00194109</iyy>
-            <iyz>-1.97026e-19</iyz>
-            <izz>0.00193974</izz>
-          </inertia>
-        </inertial>
-        <collision name="collision">
-          <geometry>
-            <mesh>
-              <uri>model://Ecoforms_Plant_Saucer_SQ8COR/meshes/model.obj</uri>
-              <scale>1.50819 1.50819 1.50819</scale>
-            </mesh>
-          </geometry>
-          <surface>
-            <friction>
-              <ode>
-                <mu>10</mu>
-                <mu2>10</mu2>
-              </ode>
-              <torsional>
-                <coefficient>10</coefficient>
-                <use_patch_radius>1</use_patch_radius>
-                <patch_radius>0.1</patch_radius>
-                <ode/>
-              </torsional>
-            </friction>
-            <contact>
-              <ode>
-                <max_vel>0.001</max_vel>
-                <min_depth>0.001</min_depth>
-              </ode>
-            </contact>
-            <bounce/>
-          </surface>
-          <max_contacts>10</max_contacts>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <mesh>
-              <uri>model://Ecoforms_Plant_Saucer_SQ8COR/meshes/model.obj</uri>
-              <scale>1.50819 1.50819 1.50819</scale>
-            </mesh>
-          </geometry>
-        </visual>
-        <self_collide>0</self_collide>
-        <enable_wind>0</enable_wind>
-        <kinematic>0</kinematic>
-      </link>
-      <pose>0.099051 -0.309114 1.01369 0.001538 0.010658 -0.013042</pose>
-    </model>
-    <model name="rectangle_porcelain_tray">
-      <link name="link">
-        <inertial>
-          <pose>6.2e-05 2.6e-05 0.019005 -1.47849 1.5549 0.091162</pose>
-          <mass>1.34763</mass>
-          <inertia>
-            <ixx>0.0119175</ixx>
-            <ixy>1.04834e-19</ixy>
-            <ixz>-1.75175e-18</ixz>
-            <iyy>0.00960053</iyy>
-            <iyz>-2.86049e-20</iyz>
-            <izz>0.00254275</izz>
-          </inertia>
-        </inertial>
-        <collision name="collision">
-          <geometry>
-            <mesh>
-              <uri>model://Threshold_Tray_Rectangle_Porcelain/meshes/model.obj</uri>
-              <scale>1.30806 1.30806 1.30806</scale>
-            </mesh>
-          </geometry>
-          <surface>
-            <friction>
-              <ode>
-                <mu>10</mu>
-                <mu2>10</mu2>
-              </ode>
-              <torsional>
-                <coefficient>10</coefficient>
-                <use_patch_radius>1</use_patch_radius>
-                <patch_radius>0.1</patch_radius>
-                <ode/>
-              </torsional>
-            </friction>
-            <contact>
-              <ode>
-                <max_vel>0.001</max_vel>
-                <min_depth>0.001</min_depth>
-              </ode>
-            </contact>
-            <bounce/>
-          </surface>
-          <max_contacts>10</max_contacts>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <mesh>
-              <uri>model://Threshold_Tray_Rectangle_Porcelain/meshes/model.obj</uri>
-              <scale>1.30806 1.30806 1.30806</scale>
-            </mesh>
-          </geometry>
-        </visual>
-        <self_collide>0</self_collide>
-        <enable_wind>0</enable_wind>
-        <kinematic>0</kinematic>
-      </link>
-      <pose>0.008671 0.349327 1.01356 0.000636 0.010145 -1.59262</pose>
+      <pose>-0.16048 0.012921 1.01424 -0.001167 0.006945 -0.004331</pose>
     </model>
   </world>
 </sdf>

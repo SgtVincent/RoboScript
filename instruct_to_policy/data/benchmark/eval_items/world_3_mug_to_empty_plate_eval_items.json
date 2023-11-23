@@ -1,0 +1,16 @@
+[
+    {
+        "query_label": "simple_1",
+        "query": "# objects = [table, cabinet, white_ceramic_plate, turquoise_salad_plate, lemon, cyan_mug] ; # place the cyan mug into an empty plate, you need to find empty plate by checking if there is any object in the plate with spatial relation.",
+        "eval_items": [
+            {
+                "function": "check_relation_on",
+                "args": {
+                    "object_name": "cyan_mug",
+                    "receptacle_name": "white_ceramic_plate"
+                }
+            }
+        ]
+    
+    }
+]

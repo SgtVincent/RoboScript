@@ -81,7 +81,7 @@ class SceneManager:
             rgb = data['rgb_image_list'][i]
             depth = data['depth_image_list'][i]
             detections = data['detections_list'][i]
-            bbox_2d_list = detections['bbox_2d_list']
+            bbox_2d_list = list(detections.values())
             
             # NOTE: assume the depth has been aligned with rgb
             assert rgb.shape[0] == depth.shape[0] and rgb.shape[1] == depth.shape[1]

@@ -2,8 +2,6 @@ import numpy as np
 import open3d as o3d
 from typing import Tuple, List, Dict
 
-from .utils import Transform
-
 class ScalableTSDFVolume(object):
     """Integration of multiple depth images using a TSDF."""
 

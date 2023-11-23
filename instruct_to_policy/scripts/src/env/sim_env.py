@@ -77,7 +77,8 @@ class SimEnv(MoveitGazeboEnv):
         preferred_direction:np.array = kwargs.get('preferred_direction', None)
         description:str = kwargs.get('description', None)
         
-        bbox_2d_list = self.groudning_model.get_3d_bbox(object_name)
+        # TODO: implement the method 
+        bbox_2d_list = self.scene.get_object_bboxes_2d(object_name)
         
         sensor_data = self.get_sensor_data()   
                  

@@ -1,7 +1,12 @@
 from typing import List, Dict, Tuple
 import numpy as np
+import os
 import scipy.spatial.transform
+from scipy.spatial.transform import Rotation as R
 import open3d as o3d
+import json
+import cv2
+from matplotlib import pyplot as plt
 from sklearn.cluster import DBSCAN, HDBSCAN
 from cv_bridge import CvBridge
 from grasp_detection.msg import Grasp, Perception, PerceptionSingleCamera, BoundingBox3D, BoundingBox2D
@@ -237,15 +242,19 @@ def integrate_point_cloud_in_bbox(intrinsics: List[np.array], extrinsics: List[n
         else:
             integrated_point_cloud += depth_images_list[camera_idx] * mask
     
-def project_3d_to_2d(points_3d: np.array, intrinsic: np.array, extrinsic: np.array) -> np.array:
-    # Convert points to homogeneous coordinates
-    points_3d_hom = np.append(points_3d, np.ones((points_3d.shape[0], 1)), axis=1)
-    
-    # Project points to 2D
-    points_2d = intrinsic @ extrinsic @ points_3d_hom.T
-    points_2d /= points_2d[2, :]  # Divide by third coordinate (perspective division)
-    
-    return points_2d[:2, :].T  # Return 2D points in non-homogeneous coordinates
+def project_3d_to_2d(points_3d: np.array, intrinsic: CameraIntrinsic, extrinsic: Transform) -> np.array:
+    """
+    Project 3D points to 2D image plane
+    @param points_3d: 3D points in the form of (N, 3)
+    @param intrinsic: camera intrinsic parameters
+    @param extrinsic: camera extrinsic parameters
+    @return: 2D points in the form of (N, 2)
+    """
+    points_3d_cam = extrinsic.transform_point(points_3d)
+    K = intrinsic.K 
+    points_2d = K.dot(points_3d_cam.T).T
+    points_2d = points_2d[:, :2] / points_2d[:, 2:]
+    return points_2d
 
 def is_point_in_bbox(point: np.array, bbox: np.array) -> bool:
     x, y = point
@@ -302,11 +311,11 @@ def open3d_frustum_filter(pcl: o3d.geometry.PointCloud, bbox_2d_list: List[np.nd
     return filtered_pcl, mask
 
 def match_bboxes_clustering(bboxes_2d_list: List[List[np.array]], intrinsics: List[np.array], extrinsics: List[np.array],
-                            pcl: o3d.geometry.PointCloud, downsample=True, downsample_voxel_size=0.02,
-                            min_cluster_size=10, min_samples=10, cluster_eps=0.02) -> List[Tuple[np.array]]:
+                            pcl: o3d.geometry.PointCloud, downsample=False, downsample_voxel_size=0.02,
+                            min_samples=10, cluster_eps=0.02, debug_visualize=False) -> List[Tuple[np.array]]:
     '''
-    Match 2D bounding boxes by clustering 3D points into object instances. Then match the clusters and 2D bounding boxes by projecting 
-    cluster centroids to 2D image planes and checking which centroids are closest to bounding box center.
+    Match 2D bounding boxes by 1) clustering 3D points into object instances. 2)Then match the clusters and 2D bounding boxes by projecting 
+    3D points to 2D image planes and checking which cluster has the most points inside the bounding boxes.
     
     Args: 
         bboxes_2d_list: List of N lists of 2D bounding boxes in the form of [min_x, min_y, max_x, max_y] under N camera views
@@ -332,38 +341,48 @@ def match_bboxes_clustering(bboxes_2d_list: List[List[np.array]], intrinsics: Li
     cluster_labels = clustering.labels_
     cluster_labels_unique = np.unique(cluster_labels)
     num_clusters = len(cluster_labels_unique)
-    cluster_centroids = [
-        np.mean(points_3d[cluster_labels == cluster_label], axis=0) for cluster_label in cluster_labels_unique
-    ]
-    # Project 3D cluster centroids to 2D image planes for each camera
-    # NOTE: there will be invalid 2d points that are outside of the image plane, fill them with out in next step
-    # For each cluster, collect its corresponding 2D bounding box
+    
+    # visualize the clustering result
+    if debug_visualize:
+        colors = plt.get_cmap("tab20")(cluster_labels_unique)
+        colors[cluster_labels_unique == -1] = [0, 0, 0, 1]
+        pcl.colors = o3d.utility.Vector3dVector(colors[:, :3])
+        o3d.visualization.draw_geometries([pcl])
+    
+    # Project all points into the 2D bounding boxes and find the most appearing cluster label
     matched_bboxes_idx_tuple_list = []
-    for idx, cluster_centroid in enumerate(cluster_centroids):
-        # get the corresponding bounding box for each view by projecting the cluster centroid to 2D image plane
+    for view_idx, (intrinsic, extrinsic, bboxes) in enumerate(zip(intrinsics, extrinsics, bboxes_2d_list)):
+        # project all points into the 2D bounding box
+        projected_points = project_3d_to_2d(points_3d, intrinsic, extrinsic)
+        
+        # count the occurrences of each cluster label within the bounding box
+        cluster_counts = np.zeros(num_clusters)
+        for bbox in bboxes:
+            mask = check_points_in_bbox(projected_points, bbox)
+            bbox_cluster_labels = cluster_labels[mask]
+            unique_labels, label_counts = np.unique(bbox_cluster_labels, return_counts=True)
+            cluster_counts[unique_labels] += label_counts
+        
+        # find the most appearing cluster label
+        max_count_label = np.argmax(cluster_counts)
+        
+        # assign the bounding box to the cluster with the most appearing label
         matched_bboxes_idx_tuple = [-1 for _ in range(num_views)]
-        for view_idx, (intrinsic, extrinsic) in enumerate(zip(intrinsics, extrinsics)):
-            # project 3D cluster centroid to 2D image plane
-            cluster_centroid_2d = project_3d_to_2d(cluster_centroid[np.newaxis, :], intrinsic, extrinsic)
-            cluster_centroid_2d = cluster_centroid_2d.squeeze()
-            # find the closest bounding box to the projected cluster centroid
-            min_dist = float('inf')
-            min_dist_bbox_idx = -1
-            for bbox_idx, bbox in enumerate(bboxes_2d_list[view_idx]):
-                bbox_center = np.array([(bbox[0]+bbox[2])/2, (bbox[1]+bbox[3])/2])
-                dist = np.linalg.norm(cluster_centroid_2d - bbox_center)
-                if dist < min_dist:
-                    min_dist = dist
-                    min_dist_bbox_idx = bbox_idx
-            # update the matched_bboxes_idx_tuple
-            matched_bboxes_idx_tuple[view_idx] = min_dist_bbox_idx
+        for bbox_idx, bbox in enumerate(bboxes):
+            mask = check_points_in_bbox(projected_points, bbox)
+            bbox_cluster_labels = cluster_labels[mask]
+            if max_count_label in bbox_cluster_labels:
+                matched_bboxes_idx_tuple[view_idx] = bbox_idx
+                break
+        
         # append the matched_bboxes_idx_tuple to the matched_bboxes_idx_tuple_list
         matched_bboxes_idx_tuple_list.append(tuple(matched_bboxes_idx_tuple))
+    
     return matched_bboxes_idx_tuple_list
             
 def match_bboxes_points_matching(bboxes_2d_list: List[List[np.array]], intrinsics: List[np.array], extrinsics: List[np.array], 
                  pcl: o3d.geometry.PointCloud, downsample=True, downsample_voxel_size=0.02,
-                 min_match_th=0.1) -> List[Tuple[np.array]]:
+                 min_match_th=0.1, debug_visualize=False) -> List[Tuple[np.array]]:
     '''
     Match 2D bounding boxes by projecting 3D points to 2D image planes and checking which points are inside the bounding boxes.
     The match between two 2D bounding boxes is evaluated by the one-hot IOU between the one-hot vectors of all 2D points that are inside the bounding boxes.
@@ -485,7 +504,9 @@ def data_to_percetion_msg(data: Dict, bridge:CvBridge)->Perception:
         'depth_camera_intrinsic_list': [],
         'depth_camera_frame_list': [],
         'depth_camera_extrinsic_list': [],
-        'bbox_2d_list':[],
+        'detections_list':[
+            {'<object_id>': <2d bounding box>}, # Dictionary of 2D bounding boxes in the form of [min_x, min_y, max_x, max_y]
+        ],
         'bbox_3d':{
             'center': [],
             'size': [],
@@ -542,10 +563,12 @@ def data_to_percetion_msg(data: Dict, bridge:CvBridge)->Perception:
         )
         
         # add 2D bounding box if available 
-        if "bbox_2d_list" in data:
+        if "detections_list" in data:
+            # only add the first detection for each view for now
             bbox = BoundingBox2D()
             bbox.object_id = ""
-            bbox.x_min, bbox.y_min, bbox.x_max, bbox.y_max = data["bbox_2d_list"][i]
+            detections = data["detections_list"][i]
+            bbox.x_min, bbox.y_min, bbox.x_max, bbox.y_max = detections[list(detections.keys())[0]]
             camera_data.detections.append(bbox)
         
         perception_msg.cameras_data.append(camera_data)
@@ -562,10 +585,193 @@ def camera_on_sphere(origin, radius, theta, phi):
     up = np.array([0.0, 0.0, 1.0])  # this breaks when looking straight down
     return Transform.look_at(eye, target, up) * origin.inverse()
 
-        
-            
+def load_data_from_multiview_detection(data_dir, world_name, exclude_keywords=[]): 
+    """
+    Load data from multiview detection dataset
     
+    Args:
+        data_dir: path to the dataset
+        world_name: name of the world
+        exclude_keywords: list of keywords to exclude from the dataset
+    Returns:
+        data: Dictionary of all data.
+        data = {
+            'camera_names': [],
+            'rgb_image_list': [],
+            'rgb_camera_intrinsic_list': [],
+            'rgb_camera_frame_list': [],
+            'rgb_camera_extrinsic_list': [],
+            'depth_image_list': [],
+            'depth_camera_intrinsic_list': [],
+            'depth_camera_frame_list': [],
+            'depth_camera_extrinsic_list': [],
+            'detections_list':[
+                {'<object_id>': <2d bounding box>}, # Dictionary of 2D bounding boxes in the form of [min_x, min_y, max_x, max_y]
+            ],
+        }    
+    """
+    # define data paths
+    annot_file = os.path.join(data_dir, 'annotations', f"{world_name}.json")
+    rgb_dir = os.path.join(data_dir, 'rgb_images')
+    depth_dir = os.path.join(data_dir, 'depth_images')
+    # return lists
+    instriinsics_list = []
+    extrinsics_list = []
+    detections_list = []
+    rgb_image_list = []
+    depth_image_list = []
+    # load camera info and detections from annotations
+    with open(annot_file, 'r') as f:
+        detections_data = json.load(f)
+        camera_names = list(detections_data.keys())
+            
+    for camera_name in camera_names:
+        # load camera intrinsic
+        intrinsic = CameraIntrinsic(
+            detections_data[camera_name]['camera_info']['width'],
+            detections_data[camera_name]['camera_info']['height'],
+            detections_data[camera_name]['camera_info']['K'][0],
+            detections_data[camera_name]['camera_info']['K'][4],
+            detections_data[camera_name]['camera_info']['K'][2],
+            detections_data[camera_name]['camera_info']['K'][5],
+        )
+        instriinsics_list.append(intrinsic)
 
+        # load camera extrinsic
+        quat = detections_data[camera_name]['camera_info']['rotation']
+        trans = detections_data[camera_name]['camera_info']['translation']
+        extrinsic = Transform(
+            rotation=R.from_quat(quat),
+            translation=np.array(trans)
+        )
+        extrinsics_list.append(extrinsic)
+
+        # load 2D bounding boxes
+        detections = {}
+        for label, bbox in detections_data[camera_name]['detections'].items():
+            # skip object with certain key words and empty detections
+            if any([kw in label for kw in exclude_keywords]) or len(bbox) == 0:
+                continue
+            detections[label] = bbox
+        detections_list.append(detections)
         
+        # load images
+        # rgb image
+        rgb_image = cv2.imread(os.path.join(rgb_dir, world_name + '_' + camera_name + '.png'), cv2.IMREAD_COLOR)[..., ::-1].copy()
+        rgb_image_list.append(rgb_image)
+        
+        # depth image
+        depth_image = cv2.imread(os.path.join(depth_dir, world_name + '_' + camera_name + '.png'), cv2.IMREAD_UNCHANGED)
+        # convert 16UC1 to 32FC1 
+        depth_image = depth_image.astype(np.float32) / 1000.0
+        depth_image_list.append(depth_image)
+        
+    # put data into dictionary
+    data = {
+        'camera_names': camera_names,
+        'rgb_image_list': rgb_image_list,
+        'rgb_camera_intrinsic_list': instriinsics_list,
+        'rgb_camera_frame_list': ['world' for _ in range(len(camera_names))], # always use world frame
+        'rgb_camera_extrinsic_list': extrinsics_list,
+        'depth_image_list': depth_image_list,
+        'depth_camera_intrinsic_list': instriinsics_list,
+        'depth_camera_frame_list': ['world' for _ in range(len(camera_names))], # always use world frame
+        'depth_camera_extrinsic_list': extrinsics_list,
+        'detections_list': detections_list,
+    }
+    return data
+
+################################
+#  Visualization utils
+################################
+
+def draw_bboxes_2d(rgb_image: np.ndarray, bboxes_2d: List[np.ndarray], color=(0, 255, 0), thickness=5) -> np.ndarray:
+    """
+    Draw 2D bounding boxes on the rgb image
+
+    Args:
+        rgb_image (np.ndarray): RGB image.
+        bboxes_2d (List[np.ndarray]): List of 2D bounding boxes in the form of [min_x, min_y, max_x, max_y].
+        color (tuple, optional): Bounding box color. Defaults to (0, 255, 0).
+        thickness (int, optional): Bounding box thickness. Defaults to 2.
+        
+    Returns:
+        np.ndarray: RGB image with bounding boxes.
+    """
+    for bbox in bboxes_2d:
+        cv2.rectangle(rgb_image, (bbox[0], bbox[1]), (bbox[2], bbox[3]), color=color, thickness=thickness)
+    return rgb_image
+
+import matplotlib.pyplot as plt
+
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+from typing import List, Tuple
+
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+from typing import List, Tuple
+
+def draw_multiview_bbox_matches(rgb_image_list: List[np.ndarray], bboxes_2d_list: List[List[np.ndarray]], 
+                                matched_bboxes_idx_tuple_list: List[Tuple[np.array]], thickness=5) -> np.ndarray:
+    """
+    Draw all 2D bounding box matches across different camera views.
+    Place all RGB images from top to bottom.
+    For each tuple of matched bounding boxes across different views, draw them with the same color. Different tuples will have different colors.
+    Then draw lines between the matched bounding boxes between top-to-bottom images.
+    
+    Args:
+        rgb_image_list (List[np.ndarray]): List of RGB images.
+        bboxes_2d_list (List[List[np.ndarray]]): List of lists of 2D bounding boxes in the form of [min_x, min_y, max_x, max_y].
+        matched_bboxes_idx_tuple_list (List[Tuple[np.array]]): List of tuples of matched 2D bounding box indices in the form of (view_1_bbox_idx, view_2_bbox_idx, ..., view_N_bbox_idx). If no bbox is matched, its index will be -1.
+        thickness (int): Bounding box thickness.
+        
+    Returns:
+        np.ndarray: RGB image with bounding boxes.
+    """
+    num_views = len(rgb_image_list)
+    max_width = max([rgb_image.shape[1] for rgb_image in rgb_image_list])
+    total_height = sum([rgb_image.shape[0] for rgb_image in rgb_image_list])
+    canvas = np.zeros((total_height, max_width, 3), dtype=np.uint8)
+    
+    offset = 0
+    # first draw all RGB images
+    for view_idx, rgb_image in enumerate(rgb_image_list):
+        # place all RGB images from top to bottom on the canvas
+        canvas[offset:offset+rgb_image.shape[0], :rgb_image.shape[1]] = rgb_image
+        offset += rgb_image.shape[0]
+        
+    offset = 0
+    # draw matched bounding boxes and lines
+    for view_idx, rgb_image in enumerate(rgb_image_list):
+        cmap = plt.cm.get_cmap('tab20')  # Choose a colormap
+        for match_idx, matched_bboxes_idx_tuple in enumerate(matched_bboxes_idx_tuple_list):
+            # select color for this match
+            color = (np.array(cmap(match_idx % 20)[:3]) * 255).astype(int).tolist()
+            if matched_bboxes_idx_tuple[view_idx] != -1:
+                # draw bounding box
+                bbox_2d = bboxes_2d_list[view_idx][matched_bboxes_idx_tuple[view_idx]].copy()  # Make a copy of the bounding box before modifying it
+                bbox_2d[1] += offset
+                bbox_2d[3] += offset
+                cv2.rectangle(canvas, (bbox_2d[0], bbox_2d[1]), (bbox_2d[2], bbox_2d[3]), color=color, thickness=thickness)
+                
+                # draw line between matched bounding boxes
+                if view_idx < num_views - 1 and matched_bboxes_idx_tuple[view_idx+1] != -1:
+                    next_bbox_2d = bboxes_2d_list[view_idx+1][matched_bboxes_idx_tuple[view_idx+1]].copy()  # Make a copy of the bounding box before modifying it
+                    next_bbox_2d[1] += offset + rgb_image.shape[0]  # Add offset for the next image
+                    next_bbox_2d[3] += offset + rgb_image.shape[0]  # Add offset for the next image
+
+                    # change the start point of the line to the middle of the current bounding box
+                    start_point = ((bbox_2d[0] + bbox_2d[2]) // 2, bbox_2d[3])
+                    # change the end point of the line to the middle of the next bounding box
+                    end_point = ((next_bbox_2d[0] + next_bbox_2d[2]) // 2, next_bbox_2d[1])
+
+                    cv2.line(canvas, start_point, end_point, color=color, thickness=thickness)
+        offset += rgb_image.shape[0]
+
+    return canvas
+
             
     

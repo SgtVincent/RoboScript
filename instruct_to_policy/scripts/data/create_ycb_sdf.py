@@ -2,25 +2,13 @@ import os
 import trimesh
 import argparse
 import numpy as np
-
 """
 Creates Gazebo compatible SDF files from downloaded YCB data.
 
-This looks through all the YCB objects you have downloaded in a particular 
+This looks through all the YCB objects that have google_16k meshes in a particular 
 folder, and creates Gazebo compatible SDF files from a set of templates.
-
-If the object has google_16k meshes downloaded, it will use those; else, it
-will use the tsdf meshes which are of lower quality. 
-
-We recommend ensuring that you've enabled `google_16k` as one of the file 
-types to download in the `download_ycb_dataset.py` script.
-
-Sebastian Castro 2020-2021
 """
 
-# Define folders
-default_ycb_folder = os.path.join("models", "ycb")
-default_template_folder = os.path.join("templates", "ycb")
 
 if __name__=="__main__":
 
@@ -30,22 +18,25 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser(description="YCB Model Importer")
     parser.add_argument("--downsample-ratio", type=float, default=1,
                         help="Mesh vertex downsample ratio (set to 1 to leave meshes as they are)")
-    parser.add_argument("--template-folder", type=str, default=default_template_folder,
-                        help="Location of YCB models (defaults to ./templates/ycb)")
-    parser.add_argument("--ycb-folder", type=str, default=default_ycb_folder,
-                        help="Location of YCB models (defaults to ./models/ycb)")
+    parser.add_argument("--ycb-folder", type=str, default='./data/ycb',
+                        help="Location of YCB models (defaults to ./data/ycb)")
+    parser.add_argument("--model-folder", type=str, default='./data/ycb/models',
+                        help="Location of YCB models (defaults to ./data/ycb/models)")
+    parser.add_argument("--use-coacd", action="store_true", default=False,
+                        help="Use CoACD-processed meshes")
+    parser.add_argument("--coacd_threshold", type=float, default=0.02,
+                        help="CoACD threshold (defaults to 0.02)")
 
     args = parser.parse_args()
-
+    args.use_coacd = True # ycb objects are poorly meshed, need to use coacd to get better physics simulation results
+    
     # Get the list of all downloaded mesh folders
-    folder_names = os.listdir(args.ycb_folder)
-    # folder_names = ["027_skillet"]
-
+    folder_names = os.listdir(args.model_folder)
 
     # Get the template files to copy over
-    config_template_file = os.path.join(args.template_folder, "model.config")
-    model_template_file = os.path.join(args.template_folder, "template.sdf")
-    material_template_file = os.path.join(args.template_folder, "template.material")
+    config_template_file = os.path.join(args.ycb_folder, "model.config")
+    model_template_file = os.path.join(args.ycb_folder, "template.sdf")
+    material_template_file = os.path.join(args.ycb_folder, "template.material")
     with open(config_template_file,"r") as f:
         config_template_text = f.read()
     with open(model_template_file,"r") as f:
@@ -62,19 +53,25 @@ if __name__=="__main__":
                 # Extract model name and folder
                 model_long = folder
                 model_short = folder[4:]
-                model_folder = os.path.join(args.ycb_folder, model_long)
+                model_folder = os.path.join(args.model_folder, model_long)
 
                 # Check if there are Google meshes; else use the TSDF folder
                 if "google_16k" in os.listdir(model_folder):
                     mesh_type = "google_16k"
                 else:
-                    mesh_type = "tsdf"
+                    continue
 
                 # Extract key data from the mesh
                 if mesh_type == "google_16k":
-                    mesh_file = os.path.join(model_folder, "google_16k", "textured.obj")
-                elif mesh_type == "tsdf":
-                    mesh_file = os.path.join(model_folder, "tsdf", "textured.obj")
+                    if args.use_coacd:
+                        mesh_file = os.path.join(model_folder, "google_16k", f"textured_coacd_{args.coacd_threshold}.obj")
+                        collision_mesh_text = os.path.join(model_long, "google_16k", f"textured_coacd_{args.coacd_threshold}.obj")
+                    else:
+                        mesh_file = os.path.join(model_folder, "google_16k", "textured.obj")
+                        collision_mesh_text = os.path.join(model_long, "google_16k", "textured.obj")
+                else:
+                    continue
+
                 mesh = trimesh.load(mesh_file)
                 # If mesh is not water tight, use its convex hull instead
                 if not mesh.is_watertight:
@@ -100,18 +97,6 @@ if __name__=="__main__":
                 com_text = com_text.replace("]", "")
                 com_text = com_text.replace(",", "")
                 
-                # Create a downsampled mesh file with a subset of vertices and faces
-                if args.downsample_ratio < 1:
-                    mesh_pts = mesh.vertices.shape[0]
-                    num_pts = int(mesh_pts * args.downsample_ratio)
-                    (_, face_idx) = mesh.sample(num_pts, True)
-                    downsampled_mesh = mesh.submesh((face_idx,), append=True)
-                    with open(os.path.join(model_folder, "downsampled.obj"), "w") as f:
-                        downsampled_mesh.export(f, "obj")
-                    collision_mesh_text = model_long + "/downsampled.obj"
-                else:
-                    collision_mesh_text = model_long + "/" + mesh_type + "/textured.obj"
-
                 # Copy and modify the model configuration file template
                 config_text = config_template_text.replace("$MODEL_SHORT", model_short)
                 with open(os.path.join(model_folder, "model.config"), "w") as f:
@@ -136,8 +121,7 @@ if __name__=="__main__":
                 # Copy and modify the material file template
                 if mesh_type == "google_16k":
                     texture_file = "texture_map.png"
-                elif mesh_type == "tsdf":
-                    texture_file = "textured.png"
+
                 material_text = material_template_text.replace("$MODEL_SHORT", model_short)
                 material_text = material_text.replace("$MODEL_LONG", model_long)
                 material_text = material_text.replace("$MESH_TYPE", mesh_type)

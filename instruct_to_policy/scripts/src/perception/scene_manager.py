@@ -164,11 +164,11 @@ class SceneManager:
         pcl = self.scene_tsdf_masked.get_cloud()
         for object_name, bbox_2d_list in self.object_2d_bbox_dict.items():
             # get point clouds of the object by filtering the points inside the 2D bounding boxes
-            obj_pcl = open3d_frustum_filter(
+            obj_pcl, _ = open3d_frustum_filter(
                 pcl=pcl,
                 bbox_2d_list=bbox_2d_list,
-                intrinsics=data['depth_camera_intrinsic_list'],
-                extrinsics=data['depth_camera_extrinsic_list']
+                camera_intrinsic_list=data['depth_camera_intrinsic_list'],
+                camera_extrinsic_list=data['depth_camera_extrinsic_list']
             )
             
             # fit 3D bounding box and convert it to [x_min, y_min, z_min, x_max, y_max, z_max] format
@@ -227,4 +227,30 @@ class SceneManager:
         Get the 3D bounding box of the object in the world frame.
         '''
         return self.bbox_3d_dict[object_name]
+        
+    def visualize_3d_bboxes(self, show_masked_tsdf=False, show_full_tsdf=True):
+        '''
+        Visualize the 3D bounding boxes and point cloud in the scene with open3d.
+        '''
+        vis_list = []
+        # add 3D bounding boxes 
+        for obj_name in self.object_names:
+            bbox_3d = self.bbox_3d_dict[obj_name]
+            # create a axis-aligned bounding box 
+            bbox = o3d.geometry.AxisAlignedBoundingBox(
+                min_bound=np.array(bbox_3d[:3]),
+                max_bound=np.array(bbox_3d[3:])
+            )
+            vis_list.append(bbox)
+            
+        if show_masked_tsdf:
+            vis_list.append(self.scene_tsdf_masked.get_mesh())
+            
+        if show_full_tsdf:
+            vis_list.append(self.scene_tsdf_full.get_mesh())
+        
+        # visualize the scene
+        o3d.visualization.draw_geometries(vis_list)
+        
+        
         

@@ -14,7 +14,7 @@ from src.perception.utils import (
     Transform,
     load_data_from_multiview_detection,
     match_bboxes_clustering,
-    match_bboxes_points_matching,
+    match_bboxes_points_overlapping,
     draw_multiview_bbox_matches
 )
 
@@ -167,7 +167,7 @@ def test_match_bboxes_points_matching(test_data):
     gt_match_tuple_list = get_gt_match_tuple_list(bboxes_labels_list)
 
     # Call the function with the inputs
-    result = match_bboxes_points_matching(
+    result = match_bboxes_points_overlapping(
         bboxes_2d_list=bboxes_2d_list,
         intrinsics=data['depth_camera_intrinsic_list'],
         extrinsics=data['depth_camera_extrinsic_list'],

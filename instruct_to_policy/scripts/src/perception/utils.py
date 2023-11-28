@@ -291,6 +291,9 @@ def open3d_frustum_filter(pcl: o3d.geometry.PointCloud, bbox_2d_list: List[np.nd
     mask_list = []
     
     for bbox, intrinsic, extrinsic in zip(bbox_2d_list, camera_intrinsic_list, camera_extrinsic_list):
+        if len(bbox) == 0:
+            # if the bbox is empty, skip it
+            continue
         # project 3D points onto 2D image plane 
         points = extrinsic.transform_point(pcl.points)
         K = intrinsic.K 
@@ -380,7 +383,7 @@ def match_bboxes_clustering(bboxes_2d_list: List[List[np.array]], intrinsics: Li
     
     return matched_bboxes_idx_tuple_list
             
-def match_bboxes_points_matching(bboxes_2d_list: List[List[np.array]], intrinsics: List[np.array], extrinsics: List[np.array], 
+def match_bboxes_points_overlapping(bboxes_2d_list: List[List[np.array]], intrinsics: List[np.array], extrinsics: List[np.array], 
                  pcl: o3d.geometry.PointCloud, downsample=True, downsample_voxel_size=0.02,
                  min_match_th=0.1, debug_visualize=False) -> List[Tuple[np.array]]:
     '''
@@ -505,12 +508,11 @@ def data_to_percetion_msg(data: Dict, bridge:CvBridge)->Perception:
         'depth_camera_frame_list': [],
         'depth_camera_extrinsic_list': [],
         'detections_list':[
-            {'<object_id>': <2d bounding box>}, # Dictionary of 2D bounding boxes in the form of [min_x, min_y, max_x, max_y]
+            {'<object_id>': [min_x, min_y, max_x, max_y]},
         ],
-        'bbox_3d':{
-            'center': [],
-            'size': [],
-        },
+        'bboxes_3d_dict': {
+            '<object_id>': {'center': [x, y, z], 'size': [x, y, z]}
+        }
     }
     """
 
@@ -518,16 +520,19 @@ def data_to_percetion_msg(data: Dict, bridge:CvBridge)->Perception:
         header = Header(frame_id="world"),
     )
     
-    if "bbox_3d" in data:
-        if len(data["bbox_3d"]["center"]) > 0:
+    if 'bboxes_3d_dict' in data:
+        if len(data['bboxes_3d_dict']) > 0:
+            perception_msg.bboxes_3d = []
             # currently only axis-aligned bounding box is supported
-            perception_msg.bboxes_3d = [BoundingBox3D(
-                center = Pose(
-                    position = Point(*data["bbox_3d"]["center"]),
-                    orientation = Quaternion(0, 0, 0, 1)
-                ),
-                size = Vector3(*data["bbox_3d"]["size"])
-            )]
+            for object_id, bbox_3d in data['bboxes_3d_dict'].items():
+                perception_msg.bboxes_3d.append(BoundingBox3D(
+                    object_id = object_id,
+                    center = Pose(
+                        position = Point(*bbox_3d['center']),
+                        orientation = Quaternion(0, 0, 0, 1)
+                    ),
+                    size = Vector3(*bbox_3d['size'])
+                ))
     
     # fill camera data 
     for i, name in enumerate(data['camera_names']):
@@ -564,13 +569,14 @@ def data_to_percetion_msg(data: Dict, bridge:CvBridge)->Perception:
         
         # add 2D bounding box if available 
         if "detections_list" in data:
-            # only add the first detection for each view for now
-            bbox = BoundingBox2D()
-            bbox.object_id = ""
+            camera_data.detections = []
             detections = data["detections_list"][i]
-            bbox.x_min, bbox.y_min, bbox.x_max, bbox.y_max = detections[list(detections.keys())[0]]
-            camera_data.detections.append(bbox)
-        
+            for object_id, bbox_2d in detections.items():
+                camera_data.detections.append(BoundingBox2D(
+                    object_id = object_id,
+                    bbox = bbox_2d
+                ))
+            
         perception_msg.cameras_data.append(camera_data)
         
     return perception_msg

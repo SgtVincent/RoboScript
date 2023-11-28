@@ -252,7 +252,7 @@
           <geometry>
             <mesh>
               <scale>0.8 0.8 0.8</scale>
-              <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/models/FemDophilus/meshes/model.obj</uri>
+              <uri>model://FemDophilus/meshes/model.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -260,7 +260,7 @@
           <geometry>
             <mesh>
               <scale>0.8 0.8 0.8</scale>
-              <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/models/FemDophilus/meshes/model.obj</uri>
+              <uri>model://FemDophilus/meshes/model.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -310,7 +310,7 @@
           <geometry>
             <mesh>
               <scale>0.8 0.8 0.8</scale>
-              <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/models/Perricone_MD_Neuropeptide_Firming_Moisturizer/meshes/model.obj</uri>
+              <uri>model://Perricone_MD_Neuropeptide_Firming_Moisturizer/meshes/model.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -318,7 +318,7 @@
           <geometry>
             <mesh>
               <scale>0.8 0.8 0.8</scale>
-              <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/models/Perricone_MD_Neuropeptide_Firming_Moisturizer/meshes/model.obj</uri>
+              <uri>model://Perricone_MD_Neuropeptide_Firming_Moisturizer/meshes/model.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -368,7 +368,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/models/Germanium_GE132/meshes/model.obj</uri>
+              <uri>model://Germanium_GE132/meshes/model.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -376,7 +376,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/junting/franka_ws/src/franka_fisher/instruct_to_policy/data/google_scanned_object/models/Germanium_GE132/meshes/model.obj</uri>
+              <uri>model://Germanium_GE132/meshes/model.obj</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>

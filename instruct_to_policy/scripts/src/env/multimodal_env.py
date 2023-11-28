@@ -12,7 +12,7 @@ from src.grounding_model import GroundingBase, GroundingEmbodiedGPT
 from src.env.utils import calculate_place_position, is_collision, adjust_z, pose_msg_to_matrix
 from src.perception.scene_manager import SceneManager
 
-class SimEnv(MoveitGazeboEnv):
+class MultiModalEnv(MoveitGazeboEnv):
     """
     Simple grounding environment to use gazebo GT model state as observation, and GIGA for grasp pose prediction.
     """
@@ -49,8 +49,7 @@ class SimEnv(MoveitGazeboEnv):
         Get the position of the object in the world frame. 
         This function uses ground truth model state from gazebo and ignore all other parameters.
         """
-        # TODO: Get the position of the object from perception model or find another way to get the position
-        pass
+        return self.scene.get_object_center_position(obj_name)
 
         
     def get_3d_bbox(self, obj_name, **kwargs)->np.array:
@@ -61,8 +60,7 @@ class SimEnv(MoveitGazeboEnv):
         Returns:
             bbox: np.ndarray, [x_min, y_min, z_min, x_max, y_max, z_max]
         """
-        # TODO: Get the bounding box of the object from perception model 
-        pass
+        return self.scene.get_3d_bbox(obj_name)
     
     def parse_grasp_pose(self, object_name, **kwargs):
         """
@@ -77,13 +75,10 @@ class SimEnv(MoveitGazeboEnv):
         preferred_direction:np.array = kwargs.get('preferred_direction', None)
         description:str = kwargs.get('description', None)
         
-        # TODO: implement the method 
-        bbox_2d_list = self.scene.get_object_bboxes_2d(object_name)
-        
         sensor_data = self.get_sensor_data()   
-                 
+        object_2d_bbox_list = self.scene.get_object_2d_bbox_list(object_name)
         data = {
-            'bbox_2d_list': bbox_2d_list
+            'bbox_2d_list': object_2d_bbox_list
         }
         data.update(sensor_data)
         

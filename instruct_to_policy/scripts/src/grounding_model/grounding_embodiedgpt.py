@@ -72,7 +72,7 @@ class GroundingEmbodiedGPT(GroundingBase):
         resp_text = self._parse_response(resp, option="text")
         return resp_text
         
-    def query_detections_dict(self, **kwargs) -> List[List[float]]:
+    def query_2d_bbox_list(self, **kwargs) -> List[List[float]]:
         """
         This function should take in input and return query.
         

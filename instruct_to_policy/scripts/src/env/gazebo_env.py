@@ -88,7 +88,7 @@ class GazeboEnv(Env):
         
         set_model_config(config_request)
         
-    def get_obj_name_list(self)-> List[str]:
+    def get_gazebo_model_names(self)-> List[str]:
         """ Get all object names in the world."""
 
         objects = [
@@ -105,7 +105,7 @@ class GazeboEnv(Env):
         # name matching: gazebo model name is different from the name in the world, 
         # but obj_name should be a substring of the gazebo model name
         
-        gazebo_model_names = self.get_obj_name_list()
+        gazebo_model_names = self.get_gazebo_model_names()
         for gazebo_model_name in gazebo_model_names:
             if obj_name in gazebo_model_name.lower():
                 obj_name = gazebo_model_name

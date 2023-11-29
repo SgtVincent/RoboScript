@@ -78,11 +78,11 @@ class Evaluator(object):
         self.logger.info("Resetting environment for the {}th time".format(self._reset_counter))
         
         self.env.reset()
-        object_names = self.env.get_obj_name_list()
+        object_names = self.env.get_gazebo_model_names()
         self.env_start_state = {
             obj_name: {
                 'pose': self.env.get_gt_obj_pose(obj_name),
-                'bbox': self.env.get_3d_bbox(obj_name),
+                'bbox': self.env.get_gt_bbox(obj_name),
             } for obj_name in object_names
         }
 

@@ -30,8 +30,9 @@ class SceneManager:
         self.camera_intrinsics = []
         self.camera_extrinsics = []
         self.object_names = []
-        self.object_2d_bbox_dict = {}
-        self.bbox_3d_dict = {}
+        self.category_to_object_name_dict = {}
+        self.object_2d_bbox_dict: Dict[str, List] = {}
+        self.bbox_3d_dict: Dict[str, List] = {}
         
         # full tsdf volume
         self.scene_tsdf_full= ScalableTSDFVolume( 
@@ -119,6 +120,10 @@ class SceneManager:
             - object_2d_bbox_dict: dictionary of 2D bounding boxes for each object
         This function first match the 2D bounding boxes with the points projection overlapping ratio,
         then unify the matched bounding box names under different camera views.
+        NOTE: 
+        The raw detections will have label format '<object_category>_<instance_id>', e.g. mug_0, apple_1, etc.
+        When matching the bounding boxes, we only consider the object category, e.g. mug, apple, etc.
+        Then we assign new instance id to each matched bounding box tuple.
         '''
         bboxes_2d_list = [
             list(detections.values()) for detections in data['detections_list']
@@ -140,13 +145,13 @@ class SceneManager:
             min_match_th=self.bbox_min_match_th,
         )
         
-        # unify the matched bounding box names under different camera views
-        bboxes_name_list = self.unify_bbox_names(bboxes_match_tuple_list, bboxes_labels_list)
+        # unify the matched bounding box names of a same object instance under different camera views,
+        # and update self.object_names, self.category_to_object_name_dict
+        self.unify_bbox_names(bboxes_match_tuple_list, bboxes_labels_list)
         
         # update object names and 2D bounding boxes
-        self.object_names = bboxes_name_list
         self.object_2d_bbox_dict = {}
-        for bbox_name, match_idx_tuple in zip(bboxes_name_list, bboxes_match_tuple_list):
+        for bbox_name, match_idx_tuple in zip(self.object_names, bboxes_match_tuple_list):
             self.object_2d_bbox_dict[bbox_name] = []
             for i, idx in enumerate(match_idx_tuple):
                 # idx -1 means no match, append empty bounding box 
@@ -181,30 +186,44 @@ class SceneManager:
 
     def unify_bbox_names(self, bboxes_match_tuple_list: List[Tuple[int]], bboxes_labels_list: List[List[str]])-> List[Tuple[str, str]]:
         '''
-        Unify the matched bounding box names under different camera views.
-        NOTE: the consistency of multi-view detection labels should be garanteed by the grounding model. 
-        This function only asserts the consistency of the matched bounding box names.
+        Unify the matched bounding box names of a same object instance under different camera views and update self.object_names, self.category_to_object_name_dict
+        Rename the object instance with max-voted category and instance id. 
+        Each bbox_label is in the format of '<object_category>_<instance_id>', e.g. mug_0, apple_1, etc.
         '''
-        bboxes_name_list = []
+        object_name_list = []
+        categories_to_name = {} 
+        # Each touple of bboxes belongs to the same object instance
         for match_idx_tuple in bboxes_match_tuple_list:
-            name_set = set()
+            match_categories = []
+    
             for i, idx in enumerate(match_idx_tuple):
                 # idx -1 means no match, so we skip it
                 if idx != -1:
-                    name_set.add(bboxes_labels_list[i][idx])
-            assert len(name_set) == 1, "The matched bounding box names are not consistent!, got names: {}".format(name_set)
-            bboxes_name_list.append(name_set.pop())
+                    bbox_label = bboxes_labels_list[i][idx]
+                    # split the category and instance id by last '_'
+                    category, instance_id = bbox_label.rsplit('_', 1)
+                    match_categories.append(category)
+            # get max voted category
+            max_voted_category = max(match_categories, key=match_categories.count)
+            
+            # create object name and add it to the category_to_name dict
+            if max_voted_category not in categories_to_name:
+                categories_to_name[max_voted_category] = []
+            object_name = max_voted_category + '_' + str(len(categories_to_name[max_voted_category]))
+            categories_to_name[max_voted_category].append(object_name)
+            object_name_list.append(object_name)
+            
+        # update self.object_names, self.category_to_object_name_dict
+        self.object_names = object_name_list
+        self.category_to_object_name_dict = categories_to_name
         
-        return bboxes_name_list
-        
-    
-    def get_object_names(self):
+    def get_object_names(self)->str:
         '''
         Get the list of object names in the scene.
         '''
         return self.object_names
         
-    def get_object_center_position(self, obj_name):
+    def get_object_center_position(self, obj_name)->ArrayLike:
         '''
         Get the position of the object in the world frame. 
         This function uses ground truth model state from gazebo and ignore all other parameters.
@@ -216,13 +235,35 @@ class SceneManager:
             (obj_bbox_3d[2] + obj_bbox_3d[5]) / 2,
         ])
             
-    def get_object_2d_bbox_list(self, object_name):
+    def get_object_mesh(self, object_name):
+        '''
+        Get object mesh by cropping mesh with the 3D bounding box of the object.
+        '''
+        object_bbox = self.bbox_3d_dict[object_name]
+        bbox_center = np.array([
+            (object_bbox[0] + object_bbox[3]) / 2,
+            (object_bbox[1] + object_bbox[4]) / 2,
+            (object_bbox[2] + object_bbox[5]) / 2,
+        ])
+        bbox_size = np.array([
+            object_bbox[3] - object_bbox[0],
+            object_bbox[4] - object_bbox[1],
+            object_bbox[5] - object_bbox[2],
+        ])
+        object_mesh = self.scene_tsdf_masked.crop_mesh(
+            crop_center=bbox_center,
+            crop_size=bbox_size,
+        )             
+            
+        return object_mesh
+            
+    def get_object_2d_bbox_list(self, object_name)->List[List]:
         '''
         Get the list of 2D bounding boxes of the object in different camera views.
         '''
         return self.object_2d_bbox_dict[object_name]
             
-    def get_3d_bbox(self, object_name):
+    def get_3d_bbox(self, object_name)->List:
         '''
         Get the 3D bounding box of the object in the world frame.
         '''

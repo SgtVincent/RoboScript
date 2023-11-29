@@ -278,7 +278,7 @@ if __name__ == "__main__":
     # env = SimpleGroundingEnv(cfg_tabletop)
     # moveit interface is not needed for this script
     env = GazeboEnv(config)
-    object_names = env.get_obj_name_list()
+    object_names = env.get_gazebo_model_names()
     
     if len(args.include_filters) > 0:
         object_names.extend(args.include_filters)

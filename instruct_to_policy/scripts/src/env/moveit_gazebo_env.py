@@ -28,7 +28,6 @@ from moveit_msgs.srv import GetPositionIK
 from src.env.utils import (
     get_pose_msg, 
     get_stamped_pose,
-    load_model_into_moveit
 )
 from src.utils import has_keywords
 from src.env.gazebo_env import GazeboEnv
@@ -61,6 +60,7 @@ class MoveitGazeboEnv(GazeboEnv):
         self.sim = cfg['env'].get('sim', "")
         self.verbose = cfg['env'].get('verbose', False)
         self.use_sim = len(self.sim) > 0
+        self.external_perception = cfg['env'].get('external_perception', False)
         self.config = cfg['env']['moveit_config']
         self.debug = self.config.get('debug', False)
         self.planning_time = self.config.get('planning_time', 15)
@@ -121,11 +121,12 @@ class MoveitGazeboEnv(GazeboEnv):
         #     "/franka_control/error_recovery", ErrorRecoveryAction
         # )
 
-        print("Loading static scene information")
-        self.object_names = self.get_obj_name_list()
-        self.load_scene()
+        # print("Loading static scene information")
+        # self.object_names = self.get_gazebo_model_names()
+        # TODO: load perceived object meshes/ representations into moveit planning scene
+        
+        
         # TODO: moveit configurations should be set inside the config file 
-
         # Set parameters in move_group
         self.move_group.set_planning_time(self.planning_time)
         self.move_group.set_max_velocity_scaling_factor(self.max_velocity)
@@ -217,27 +218,18 @@ class MoveitGazeboEnv(GazeboEnv):
         else:
             return False
 
-    def register_object(
-        self, mesh: trimesh.Trimesh, object_id: int, position: List[float] = [0, 0, 0]
-    ):
+    def register_object_mesh(
+            self, mesh: trimesh.Trimesh, object_id: int, position: List[float] = [0, 0, 0]
+        ):
         """Adds a given mesh to the scene and registers it as an object."""
-
-        # File to export the mesh to."wall"
+        # Moveit planning scene API loads mesh from file only
+        # TODO: try to add mesh by composing CollisionObject message and send it over ROS 
         f = "/tmp/mesh_inst_{}.obj".format(object_id)
-        if self.ignore_coll_check:
-            position[-1] = 5
-        # TODO, Add simplification of mesh here?
         mesh.export(f)
-
-        # Register objects internally.
-        self.objects[object_id] = {
-            "file": f,
-            "active": True,
-            "position": position,
-        }
-        print("Registering mesh for fraem", self.frame)
+            
+        print("Registering mesh for frame", self.frame)
         self.planning_scene.add_mesh(
-            f"inst_{object_id}",
+            object_id,
             get_stamped_pose(position, [0, 0, 0, 1], self.frame),
             f,
             size=(1, 1, 1),
@@ -254,46 +246,15 @@ class MoveitGazeboEnv(GazeboEnv):
         # reset planning scene 
         # remove all attached objects
         self.planning_scene.remove_attached_object()
-        
+        if not self.use_sim:
+            # remove all objects in planning scene
+            self.planning_scene.remove_world_object()
+
         # reset visualization marker if debug is enabledss
         if self.debug:              
             self.start_state_pub.publish(self.robot.get_current_state())  
             self.goal_state_pub.publish(self.robot.get_current_state())
             rospy.sleep(1)
-        
-        self.load_scene()
-
-    def load_gazebo_world_into_moveit(self, 
-                                    gazebo_models_dir="",
-                                    gazebo_models_filter=["panda", "fr3"],
-                                    load_dynamic=True):
-        """
-        TODO: Deprecated. A gazebo plugin will publish the models in the world into moveit planning scene
-        """
-        # change the models path accordingly
-        if gazebo_models_dir == "":
-            gazebo_models_dir = os.path.join(
-                rospkg.RosPack().get_path("instruct_to_policy"), "models"
-            )
-
-        for model in self.object_names:
-            if model not in gazebo_models_filter:
-                sdf_path = os.path.join(gazebo_models_dir, model, "model.sdf")
-                pose = self.get_model_state(model, "world").pose
-                properties = self.get_model_properties(model)
-                if properties.is_static or load_dynamic:
-                    load_model_into_moveit(sdf_path, pose, self.planning_scene, model, link_name="link")
-
-        
-    def load_scene(self):
-        """Load the scene in the MoveIt! planning scene."""
-        if self.use_sim:
-
-            for name in self.object_names:
-                self.objects[name] = {}
-                    
-        else:
-            raise NotImplementedError("Only simulation is supported for now.")
 
     def publish_goal_to_marker(self, goal_pose: Pose):
         """Publish the current goal to the interactive marker for debug visualization."""
@@ -402,51 +363,31 @@ class MoveitGazeboEnv(GazeboEnv):
         return plan
 
     @_block
-    def add_object_to_scene(self, object_id):
-        """Add an object to the moveit planning scene."""
-        if object_id is not None and object_id in self.objects:
-            pass
-
-            # currently do noting 
-            # collision_dict = self.get_object_collision(object_id)
-            # TODO: finish this part after the collision detection is done
-
-            # touch_links = self.robot.get_link_names(group="panda_hand")
-            # self.scene.add_mesh(
-            #     object_id,
-            #     get_stamped_pose(self.objects[object_id]["position"], [0, 0, 0, 1], self.frame),
-            #     self.objects[object_id]["file"],
-            #     size=(1, 1, 1),
-            # )
-        else:
-            if self.verbose:
-                print(f"Moveit: object {object_id} not found in environment.")
-
-    @_block
     def attach_object(self, object_id, link=None):
         """Attach an object to the robot gripper"""
-
+        # TODO: need to clean & refactor this function
         if link is None:
             link = self.end_effctor_link
 
         # DO NOT add furniture into moveit planning scene since they are static
-        if object_id in self.objects and not has_keywords(object_id, self.static_objects):
-            
-            # NOTE: since the object name in moveit planning scene is different from the object name in gazebo with Gazebo plugin
-            # we need to convert the object name to the name in moveit planning scene
-            # e.g. 'apple' in gazebo -> 'apple.link' in moveit planning scene
-            moveit_object_names = self.planning_scene.get_known_object_names()
-            
-            for moveit_object_name in moveit_object_names:
-                if object_id in moveit_object_name:
-                    self.objects[object_id]["attach_name"] = moveit_object_name
-                    self.move_group.attach_object(moveit_object_name, link) 
-                    if self.verbose:
-                        rospy.loginfo(f"Moveit: attached object object {object_id} to {link}")
-                    return True
-            
-            rospy.logerr(f"Moveit: object {object_id} not found in moveit planning scene. Planning scene objects: {moveit_object_names}")
+        if has_keywords(object_id, self.static_objects):
+            rospy.logdebug(f"Moveit: object {object_id} is static. Skip attaching to robot")
             return False
+            
+        # NOTE: since the object name in moveit planning scene is different from the object name in gazebo with Gazebo plugin
+        # we need to convert the object name to the name in moveit planning scene
+        # e.g. 'apple' in gazebo -> 'apple.link' in moveit planning scene
+        moveit_object_names = self.planning_scene.get_known_object_names()
+        
+        for moveit_object_name in moveit_object_names:
+            if object_id in moveit_object_name:
+                self.objects[object_id]["attach_name"] = moveit_object_name
+                self.move_group.attach_object(moveit_object_name, link) 
+                if self.verbose:
+                    rospy.loginfo(f"Moveit: attached object object {object_id} to {link}")
+                return True
+        
+        rospy.logerr(f"Moveit: object {object_id} not found in moveit planning scene. Planning scene objects: {moveit_object_names}")
         return False
 
 

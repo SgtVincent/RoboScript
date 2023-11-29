@@ -44,20 +44,6 @@ cfg_tabletop = {
         'cartesian_path': True,
         'initial_joint_values': [0.0, -0.7854, 0.0, -2.3562, 0.0, 1.5708, 0.7854],
       },
-      # 'moveit_config': {
-      #   'arm_group_name': 'ur5_arm',
-      #   'gripper_group_name': 'gripper',
-      #   'manipulator_group_name': 'ur5_manipulator',
-      #   'debug': True,
-      #   'planning_time': 15,
-      #   'max_velocity': 0.2,
-      #   'max_acceleration': 0.2,
-      #   'goal_position_tolerance': 0.001,
-      #   'goal_orientation_tolerance': 0.02,
-      #   'refenrence_frame': 'world',
-      #   'cartesian_path': True,
-      #   'initial_joint_values': [3.1416, -1.5447, -1.5447, -1.5794, 1.5794, 0],
-      # },
       'metadata_files':[
         os.path.join(package_root, 'data', 'ycb', 'metadata.json'),
         os.path.join(package_root, 'data', 'google_scanned_object', 'object_metadata.json'),
@@ -71,6 +57,10 @@ cfg_tabletop = {
       },
       'visualize': False,
       'verbose': False,
+  },
+  'grounding_model': {
+    'model_name': 'glip',
+    'model_args': {}
   },
   'lmps': {
     'tabletop_ui': {

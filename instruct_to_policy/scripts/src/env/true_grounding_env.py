@@ -54,6 +54,13 @@ class TrueGroundingEnv(MoveitGazeboEnv):
                         'bbox_size': v['bbox_size'],
                         'bbox_center': v['bbox_center'],
                     }
+      
+      
+    def get_obj_name_list(self) -> List[str]:
+        """
+        Get objects names from gazebo API.
+        """
+        return self.get_gazebo_model_names()
         
     def get_object_center_position(self, obj_name, **kwargs):
         """
@@ -109,11 +116,9 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         # get visual input from perception model
         sensor_data = self.get_sensor_data()
             
-        # TODO: a model should be able to predict pose for different actions
         data = {
-            'bbox_3d':{
-                'center': bbox_center,
-                'size': bbox_size,
+            'bboxes_3d_dict':{
+                object_name:{'center': bbox_center, 'size': bbox_size}
             }
         }
         data.update(sensor_data)
@@ -179,7 +184,7 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         
         # get the bounding box of the object and all other objectss
         object_bbox = self.get_3d_bbox(object_name)
-        object_names = self.get_obj_name_list()
+        object_names = self.get_gazebo_model_names()
         obstacle_bbox_list = [
             self.get_3d_bbox(obstacle_name) for obstacle_name in object_names 
             if obstacle_name not in [object_name]
@@ -255,27 +260,3 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         # True grounding env does not need to detect objects since it receives ground truth model state from gazebo
         pass
     
-    def get_lying_objects(self, objects=[], **kwargs):
-        """
-        Get the list of objects that are lying on the table by their ground truth pose.
-        """
-        if len(objects) == 0:
-            objects = self.get_obj_name_list()
-
-        # judge if the object is lying on the table by its ground truth pose:
-        # calculate the angle between the object's z-axis and the table normal
-        angle_threnshold = 60 * np.pi / 180 # 60 degree
-        table_normal = np.array([0, 0, 1])
-        lying_objects = []
-        for object in objects:
-            object_gt_pose = self.get_gt_obj_pose(object)
-            if object_gt_pose is not None:
-                object_rotation = pose_msg_to_matrix(object_gt_pose)[:3, :3]
-                object_z_axis = object_rotation[:, 2] / np.linalg.norm(object_rotation[:, 2])
-                # compute the angle between the object's z-axis and the table normal
-                angle = np.arccos(np.dot(object_z_axis, table_normal))
-
-                if angle < angle_threnshold:
-                    lying_objects.append(object)
-                
-        return lying_objects

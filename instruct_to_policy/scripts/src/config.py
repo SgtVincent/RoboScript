@@ -34,6 +34,7 @@ cfg_tabletop = {
         'arm_group_name': 'panda_arm',
         'gripper_group_name': 'panda_hand',
         'manipulator_group_name': 'panda_manipulator',
+        'use_gt_perception': False,
         'debug': True,
         'planning_time': 15,
         'max_velocity': 0.2,

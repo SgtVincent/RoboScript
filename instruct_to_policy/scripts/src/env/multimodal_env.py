@@ -9,7 +9,14 @@ from .moveit_gazebo_env import MoveitGazeboEnv
 from src.grasp_detection import GraspDetectionBase, GraspDetectionRemote
 from src.grounding_model import create_grounding_model, GroundingBase
 # from src.grasp_detection.utils import Grasp
-from src.env.utils import calculate_place_position, is_collision, adjust_z, pose_msg_to_matrix
+from src.env.utils import (
+    calculate_place_position, 
+    is_collision, 
+    adjust_z, 
+    pose_msg_to_matrix, 
+    create_collision_object_from_open3d_mesh
+)
+
 from src.perception.scene_manager import SceneManager
 
 class MultiModalEnv(MoveitGazeboEnv):
@@ -18,7 +25,7 @@ class MultiModalEnv(MoveitGazeboEnv):
     """
     def __init__(self, cfg) -> None:
         super().__init__(cfg)
-        self.external_perception = True # Enable moveit planning scene name mapping
+        self.use_gt_perception = False 
         self.object_metadata_files = cfg["env"]["metadata_files"]
         self.grasp_config = cfg["grasp_detection"]
         self.grasp_method = self.grasp_config["method"] # ["heuristic", "model"]

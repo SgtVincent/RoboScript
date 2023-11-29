@@ -17,6 +17,8 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <arg name="verbose" default="false" />
   <arg name="camera_set" default="true"/>
   <arg name="camera_model" default="$(find realsense_gazebo_plugin)/urdf/triple_d435_cameras.urdf.xacro"/>
+  <arg name="use_gt_planning_scene" default="true" />
+  <arg name="use_gt_bounding_box" default="true" />
 
   <!-- Image pipeline options -->
   <arg name="align_depth_to_rgb" default="true" />
@@ -41,6 +43,8 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
     <arg name="headless" value="$(eval not arg('gazebo_gui'))" />
     <arg name="use_gripper" default="$(arg load_gripper)" />
     <arg name="controller" default="$(arg transmission)_joint_trajectory_controller" />
+    <arg name="use_gt_planning_scene" default="$(arg use_gt_planning_scene)" />
+    <arg name="use_gt_bounding_box" default="$(arg use_gt_bounding_box)" />
   </include>
 
   <!-- Launch the camera set -->

@@ -22,10 +22,15 @@ class SceneManager:
         self.tsdf_color_type = kwargs.get('tsdf_color_type', "rgb")
         self.tsdf_trunc_ratio = kwargs.get('tsdf_trunc_ratio', 4.0)
         self.tsdf_max_depth = kwargs.get('tsdf_max_depth', 3.0)
-        
+
         self.bbox_min_match_th = kwargs.get('bbox_min_match_th', 0.1)
         self.bbox_match_downsample_voxel_size = 4 * self.tsdf_voxel_size
-                 
+        self.bbox_drop_base_margin = kwargs.get('bbox_drop_base_margin', True)  
+        self.bbox_base_margin = kwargs.get('bbox_base_margin', 0.01)
+        
+        if not self.bbox_drop_base_margin:
+            self.bbox_base_margin = 0.0
+        
         self.camera_names = []
         self.camera_intrinsics = []
         self.camera_extrinsics = []
@@ -180,7 +185,7 @@ class SceneManager:
             aabb = obj_pcl.get_axis_aligned_bounding_box()
             
             self.bbox_3d_dict[object_name] = [
-                aabb.min_bound[0], aabb.min_bound[1], aabb.min_bound[2],
+                aabb.min_bound[0], aabb.min_bound[1], aabb.min_bound[2] + self.bbox_base_margin,
                 aabb.max_bound[0], aabb.max_bound[1], aabb.max_bound[2],
             ]
 
@@ -263,11 +268,11 @@ class SceneManager:
         '''
         return self.object_2d_bbox_dict[object_name]
             
-    def get_3d_bbox(self, object_name)->List:
+    def get_3d_bbox(self, object_name)->ArrayLike:
         '''
         Get the 3D bounding box of the object in the world frame.
         '''
-        return self.bbox_3d_dict[object_name]
+        return np.array(self.bbox_3d_dict[object_name])
         
     def visualize_3d_bboxes(self, show_masked_tsdf=False, show_full_tsdf=True):
         '''

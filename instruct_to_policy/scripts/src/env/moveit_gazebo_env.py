@@ -12,9 +12,7 @@ import rospkg
 
 import moveit_commander
 from geometry_msgs.msg import Pose, PoseStamped
-
-import trimesh
-
+import open3d as o3d 
 import numpy as np
 from scipy.spatial.transform import Rotation
 from franka_msgs.msg import ErrorRecoveryAction, ErrorRecoveryActionGoal
@@ -28,6 +26,7 @@ from moveit_msgs.srv import GetPositionIK
 from src.env.utils import (
     get_pose_msg, 
     get_stamped_pose,
+    create_collision_object_from_open3d_mesh
 )
 from src.utils import has_keywords
 from src.env.gazebo_env import GazeboEnv
@@ -60,9 +59,11 @@ class MoveitGazeboEnv(GazeboEnv):
         self.sim = cfg['env'].get('sim', "")
         self.verbose = cfg['env'].get('verbose', False)
         self.use_sim = len(self.sim) > 0
-        self.external_perception = cfg['env'].get('external_perception', False)
         self.config = cfg['env']['moveit_config']
+        
+        # moveit config 
         self.debug = self.config.get('debug', False)
+        self.use_gt_perception = cfg['env'].get('use_gt_perception', True)
         self.planning_time = self.config.get('planning_time', 15)
         self.max_velocity = self.config.get('max_velocity', 0.2) 
         self.max_acceleration = self.config.get('max_acceleration', 0.2)
@@ -219,21 +220,21 @@ class MoveitGazeboEnv(GazeboEnv):
             return False
 
     def register_object_mesh(
-            self, mesh: trimesh.Trimesh, object_id: int, position: List[float] = [0, 0, 0]
+            self, mesh: o3d.geometry.TriangleMesh, object_id: int, position: List[float] = [0, 0, 0]
         ):
         """Adds a given mesh to the scene and registers it as an object."""
-        # Moveit planning scene API loads mesh from file only
-        # TODO: try to add mesh by composing CollisionObject message and send it over ROS 
-        f = "/tmp/mesh_inst_{}.obj".format(object_id)
-        mesh.export(f)
-            
-        print("Registering mesh for frame", self.frame)
-        self.planning_scene.add_mesh(
-            object_id,
-            get_stamped_pose(position, [0, 0, 0, 1], self.frame),
-            f,
-            size=(1, 1, 1),
+        pose_stamped = get_stamped_pose(
+            position=position,
+            orientation=[0, 0, 0, 1],
+            frame_id=self.reference_frame,
+        )  
+        co = create_collision_object_from_open3d_mesh(
+            name=object_id, 
+            pose_stamped=pose_stamped,
+            triangle_mesh=mesh
         )
+        self.planning_scene.add_object(co)
+        print(f"Added object {object_id} to planning scene")
 
     def reset_scene(self):
         """Reset the scene to the initial state."""
@@ -246,8 +247,8 @@ class MoveitGazeboEnv(GazeboEnv):
         # reset planning scene 
         # remove all attached objects
         self.planning_scene.remove_attached_object()
-        if not self.use_sim:
-            # remove all objects in planning scene
+        if not self.use_gt_perception:
+            # remove all objects in planning scene from external perception 
             self.planning_scene.remove_world_object()
 
         # reset visualization marker if debug is enabledss

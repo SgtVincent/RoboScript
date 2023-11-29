@@ -2,13 +2,14 @@ from typing import List, Optional, Union, Tuple
 import numpy as np
 import numpy.random as random
 from scipy.spatial.transform import Rotation as R
-
-import xml.etree.ElementTree as ElementTree
+import open3d as o3d
 from moveit_commander import PlanningSceneInterface
 
-import rospy
-import rospkg
 from geometry_msgs.msg import Pose, PoseStamped
+from geometry_msgs.msg import Point
+from moveit_msgs.msg import CollisionObject
+from shape_msgs.msg import Mesh, MeshTriangle
+from std_msgs.msg import Header
 
 
 ################## ROS utils ###################
@@ -164,3 +165,29 @@ def adjust_z(object_bbox, collided_bbox_list, extra_elevation=0.1):
 
 
 #################### MoveIt utils ####################
+
+
+def create_collision_object_from_open3d_mesh(name:str, pose_stamped: PoseStamped, triangle_mesh: o3d.geometry.TriangleMesh, scale=(1, 1, 1)):
+    # create collision object 
+    co = CollisionObject()
+    co.operation = CollisionObject.ADD
+    co.id = name
+    co.header = Header(frame_id=pose_stamped.header.frame_id)
+    co.pose = pose_stamped.pose
+
+    # fill mesh message with vertices and triangles
+    mesh = Mesh()
+    for triangle in triangle_mesh.triangles:
+        mesh_triangle = MeshTriangle()
+        mesh_triangle.vertex_indices = [triangle[0], triangle[1], triangle[2]]
+        mesh.triangles.append(mesh_triangle)
+
+    for vertex in triangle_mesh.vertices:
+        point = Point()
+        point.x = vertex[0] * scale[0]
+        point.y = vertex[1] * scale[1]
+        point.z = vertex[2] * scale[2]
+        mesh.vertices.append(point)
+
+    co.meshes = [mesh]
+    return co

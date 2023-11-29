@@ -4,6 +4,8 @@
   <xacro:include filename="$(find franka_description)/robots/common/franka_robot.xacro"/>
 
   <xacro:arg name="arm_id" default="panda" />
+  <xacro:arg name="use_gt_planning_scene" default="true" />
+  <xacro:arg name="use_gt_bounding_box" default="true" />
 
   <xacro:franka_robot arm_id="$(arg arm_id)"
                       joint_limits="${xacro.load_yaml('$(find franka_description)/robots/panda/joint_limits.yaml')}">
@@ -66,28 +68,31 @@
   </gazebo>
   
   <!-- gazebo plugin to publish models to moveit planning scene -->
-  <!-- problem remains: wrong position, FIXME later -->
   <gazebo>
     <!-- plugin to publish GT world state to moveit planning scene -->
-    <plugin filename="libgazebo_ros_moveit_planning_scene.so" name="gazebo_ros_moveit_planning_scene">
-      <topicName>/planning_scene</topicName>
-      <updatePeriod>3.0</updatePeriod>
-    </plugin>
+    <xacro:if value="$(arg use_gt_planning_scene)">
+      <plugin filename="libgazebo_ros_moveit_planning_scene.so" name="gazebo_ros_moveit_planning_scene">
+        <topicName>/planning_scene</topicName>
+        <updatePeriod>3.0</updatePeriod>
+      </plugin>
+    </xacro:if>
     
     <!-- plugin to publish GT 3D bounding boxes to env node -->
-    <plugin filename="libgazebo_ros_bbox_3d_plugin.so " name="gazebo_ros_bbox_3d_plugin">
-      <updatePeriod>1.0</updatePeriod>
-      <links_to_publish>
-        <link>cabinet::drawer0</link>
-        <link>cabinet::drawer1</link>
-        <link>cabinet::drawer2</link>
-        <link>cabinet::drawer3</link>
-        <link>cabinet::handle_0</link>
-        <link>cabinet::handle_1</link>
-        <link>cabinet::handle_2</link>
-        <link>cabinet::handle_3</link>
-      </links_to_publish>
-    </plugin>
+    <xacro:if value="$(arg use_gt_bounding_box)">
+      <plugin filename="libgazebo_ros_bbox_3d_plugin.so" name="gazebo_ros_bbox_3d_plugin">
+        <updatePeriod>1.0</updatePeriod>
+        <links_to_publish>
+          <link>cabinet::drawer0</link>
+          <link>cabinet::drawer1</link>
+          <link>cabinet::drawer2</link>
+          <link>cabinet::drawer3</link>
+          <link>cabinet::handle_0</link>
+          <link>cabinet::handle_1</link>
+          <link>cabinet::handle_2</link>
+          <link>cabinet::handle_3</link>
+        </links_to_publish>
+      </plugin>
+    </xacro:if>
   </gazebo>
 
 </robot>

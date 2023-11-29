@@ -17,6 +17,8 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <!-- Image pipeline options -->
   <arg name="align_depth_to_rgb" default="true" />
   <arg name="publish_pointcloud" default="false" />
+  <arg name="use_gt_planning_scene" default="true" />
+  <arg name="use_gt_bounding_box" default="true" />
 
   <!-- Environment variables for loading local artifacts -->
   <env name="GAZEBO_MODEL_PATH" value="$(find instruct_to_policy)/data/ycb/models:$(find instruct_to_policy)/data/google_scanned_object/models:$(find instruct_to_policy)/models:$(optenv GAZEBO_MODEL_PATH)"/>
@@ -34,6 +36,9 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <!-- Launch Gazebo and spawn the robot -->
   <include file="$(find instruct_to_policy)/launch/ur5_gazebo.launch" pass_all_args="true">
     <arg name="world_name" value="$(arg world)"/>
+    <arg name="use_gt_planning_scene" default="$(arg use_gt_planning_scene)" />
+    <arg name="use_gt_bounding_box" default="$(arg use_gt_bounding_box)" />
+
   </include>
 
   <!-- Launch the camera set -->
@@ -48,5 +53,6 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
     <!-- robot_description is loaded by gazebo.launch, to enable Gazebo features -->
     <arg name="load_robot_description" value="false" />
     <arg name="moveit_controller_manager" value="ros_control" />
+    
   </include>
 </launch>

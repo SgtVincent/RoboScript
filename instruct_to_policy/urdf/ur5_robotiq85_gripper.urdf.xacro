@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <robot name="ur5" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+  <xacro:arg name="use_gt_planning_scene" default="true" />
+  <xacro:arg name="use_gt_bounding_box" default="true" />
+
   <xacro:include filename="$(find ur_description)/urdf/ur5_joint_limited_robot.urdf.xacro" />
   <xacro:include filename="$(find robotiq_description)/urdf/robotiq_85_gripper.urdf.xacro" />
   
@@ -36,23 +39,32 @@
     </gripper>
   </gazebo>
   
+  <!-- gazebo plugin to publish models to moveit planning scene -->
   <gazebo>
     <!-- plugin to publish GT world state to moveit planning scene -->
-    <plugin filename="libgazebo_ros_moveit_planning_scene.so" name="gazebo_ros_moveit_planning_scene">
-      <topicName>/planning_scene</topicName>
-      <updatePeriod>3.0</updatePeriod>
-    </plugin>
+    <xacro:if value="$(arg use_gt_planning_scene)">
+      <plugin filename="libgazebo_ros_moveit_planning_scene.so" name="gazebo_ros_moveit_planning_scene">
+        <topicName>/planning_scene</topicName>
+        <updatePeriod>3.0</updatePeriod>
+      </plugin>
+    </xacro:if>
     
     <!-- plugin to publish GT 3D bounding boxes to env node -->
-    <plugin filename="libgazebo_ros_bbox_3d_plugin.so " name="gazebo_ros_bbox_3d_plugin">
-      <updatePeriod>1.0</updatePeriod>
-      <links_to_publish>
-        <link>cabinet::drawer0</link>
-        <link>cabinet::drawer1</link>
-        <link>cabinet::drawer2</link>
-        <link>cabinet::drawer3</link>
-      </links_to_publish>
-    </plugin>
+    <xacro:if value="$(arg use_gt_bounding_box)">
+      <plugin filename="libgazebo_ros_bbox_3d_plugin.so" name="gazebo_ros_bbox_3d_plugin">
+        <updatePeriod>1.0</updatePeriod>
+        <links_to_publish>
+          <link>cabinet::drawer0</link>
+          <link>cabinet::drawer1</link>
+          <link>cabinet::drawer2</link>
+          <link>cabinet::drawer3</link>
+          <link>cabinet::handle_0</link>
+          <link>cabinet::handle_1</link>
+          <link>cabinet::handle_2</link>
+          <link>cabinet::handle_3</link>
+        </links_to_publish>
+      </plugin>
+    </xacro:if>
   </gazebo>
 
 </robot>

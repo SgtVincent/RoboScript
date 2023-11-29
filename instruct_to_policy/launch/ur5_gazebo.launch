@@ -23,6 +23,9 @@
   <arg name="paused" default="false" doc="Start Gazebo paused"/>
   <arg name="verbose" default="false" doc="Should gazebo be started in verbose mode?" />
   <arg name="world_name" default="worlds/empty.world" doc="Gazebo world file"/>
+  <arg name="use_gt_planning_scene" default="true" />
+  <arg name="use_gt_bounding_box" default="true" />
+
   <arg name="initial_joint_positions" default="
           -J shoulder_pan_joint $(arg shoulder_pan_joint) 
           -J shoulder_lift_joint $(arg shoulder_lift_joint)
@@ -44,7 +47,10 @@
   <param name="robot_description" 
     command="xacro  $(find instruct_to_policy)/urdf/ur5_robotiq85_gripper.urdf.xacro
           xyz:='$(arg x) $(arg y) $(arg z)' 
-          rpy:='$(arg roll) $(arg pitch) $(arg yaw)'"/>
+          rpy:='$(arg roll) $(arg pitch) $(arg yaw)'
+          use_gt_planning_scene:=$(arg use_gt_planning_scene)
+          use_gt_bounding_box:=$(arg use_gt_bounding_box)
+          "/>
 
   <!-- Unpause the simulation after loading the robot model -->
   <arg name="unpause" value="$(eval '' if arg('paused') else '-unpause')" />

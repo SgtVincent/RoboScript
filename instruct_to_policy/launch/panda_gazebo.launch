@@ -10,6 +10,8 @@
   <arg name="world"       default="worlds/empty.world" doc="Filename to a SDF World for gazebo to use" />
   <arg name="rviz"        default="false" doc="Should RVIz be launched?" />
   <arg name="verbose"     default="false" doc="Should gazebo be started in verbose mode?" />
+  <arg name="use_gt_planning_scene" default="true" />
+  <arg name="use_gt_bounding_box" default="true" />
 
   <!-- Robot Customization -->
   <arg name="arm_id"      default="panda" doc="Name of the panda robot to spawn" />
@@ -51,6 +53,8 @@
           arm_id:=$(arg arm_id) 
           xyz:='$(arg x) $(arg y) $(arg z)' 
           rpy:='$(arg roll) $(arg pitch) $(arg yaw)'
+          use_gt_planning_scene:=$(arg use_gt_planning_scene)
+          use_gt_bounding_box:=$(arg use_gt_bounding_box)
           $(arg xacro_args)">
   </param>
 

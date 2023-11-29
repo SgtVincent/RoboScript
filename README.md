@@ -11,7 +11,7 @@ The whole package runs on ROS 1 Noetic. You can either install ROS directly with
 The components needed for this project:
 - Franka ROS: Integration of [libfranka](https://frankaemika.github.io/docs/libfranka.html) and [ROS control](https://wiki.ros.org/ros_control), which provides low-level connection/ low-level control to Franka robots.
 - [MoveIt](https://ros-planning.github.io/moveit_tutorials/doc/getting_started/getting_started.html): Full-stack library for robot mobile manipulation: planning, manipulation, perception, kinematics, control. 
-- Code As Policies dependencies.
+- code generation dependencies.
 
 ### Download and Install mamba (Recommended)
 You should download the mamba package manager to install the dependencies. Mamba is a faster version of conda, which is used to install the C++/python/ROS dependencies in this project.
@@ -144,10 +144,10 @@ Solution: `numpy` downgrade to `<1.24`
 
 If you had some link failures during catkin make, please add the corresponding libraries to `target_link_libraries()` in the cmake file of moveit_tutorials (depending on the OS). 
 
-### Install Code as policies dependencies:
+### Install code generation dependencies:
 ```bash
-# code as policies dependencies
-pip install numpy scipy shapely astunparse pygments openai imageio==2.4.1 imageio-ffmpeg moviepy
+# code generation dependencies
+pip install numpy=1.23 scipy shapely astunparse pygments openai open3d imageio==2.4.1 imageio-ffmpeg moviepy
 ```
 
 ### (Optional) Install Development Tools

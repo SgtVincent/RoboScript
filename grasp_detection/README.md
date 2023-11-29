@@ -3,8 +3,21 @@
 This package contains the grasp detection node for the Franka robot with two-finger gripper. The node should runs `DetectGrasps`  service and publishes the detected grasp pose in the world frame.
 
 General notes:
+For a specific/custom grasp model, please create a new ROS conda environment to avoid python dependencies conflicts.
+We recommend creating your conda env with:
 
-- We **DISABLED** gripper finger collision in moveit configuration. So that moveit api would ignore the collision between objects to grasp and grippers fingers. The reason is that, we consider this collision part of the job grasp detection model should handle. 
+```bash
+mamba create -n grasp_env_<model> python=3.9.16
+mamba activate grasp_env_<model>
+conda config --env --add channels conda-forge
+conda config --env --add channels robostack-staging
+conda config --env --remove channels defaults
+mamba install ros-noetic-desktop
+
+...
+# install other dependencies
+...
+```
 
 ## Install GIGA
 

@@ -30,6 +30,8 @@ Recommend to use [Robostack](https://robostack.github.io/GettingStarted.html) to
 
 Assuming you have installed conda and mamba in your computer. Create a new environment with conda-forge and robostack channels:
 
+**Special tip for CHINESE users: Make sure you have full access to Internet or enable proxy. Conda mirrors will NOT work. You need to access robostack channel to install ros packages.** 
+
 ```bash
 mamba create -n ros_env
 mamba activate ros_env
@@ -54,8 +56,8 @@ Install common tools and dependency pacakges:
 mamba deactivate
 mamba activate ros_env
 
-# Install ros-noetic common dev tools
-mamba install compilers cxx-compiler cmake pkg-config make ninja colcon-common-extensions catkin_tools boost-cpp ros-noetic-ros-numpy
+# Install ros-noetic common dev tools and pin gcc/g++ version
+mamba install gcc=9.5.0 gxx=9.5.0 compilers cxx-compiler cmake pkg-config make ninja colcon-common-extensions catkin_tools boost-cpp ros-noetic-ros-numpy
 
 # Install ros gazebo packages
 mamba install ros-noetic-gazebo-ros-pkgs

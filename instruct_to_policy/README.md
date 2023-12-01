@@ -32,14 +32,14 @@ you can refer to script [generate_code.py](./scripts/data/generate_code.py) to c
 Launch all gazebo and moveit services/plugins you need for the task:
 
 ```bash
-roslaunch instruct_to_policy run_pandan_moveit_gazebo.launch world:=$(rospack find instruct_to_policy)/data/benchmark/worlds/world_1_table_sort.world
+roslaunch instruct_to_policy run_panda_moveit_gazebo.launch world:=$(rospack find instruct_to_policy)/data/benchmark/worlds/world_1_table_sort.world
 # or roslaunch instruct_to_policy run_ur5_moveit_gazebo.launch world:=$(rospack find instruct_to_policy)/data/benchmark/worlds/world_1_table_sort.world
 ```
 
 By default, this launch file enables gazebo to publish ground truth object bounding boxes to moveit planning scene and environment. If you are evaluating the multi-modal pipeline with robot perception pipeline enabled, you should disable this feature by setting `use_gt_planning_scene:=false` in the launch file:
     
 ```bash
-roslaunch instruct_to_policy run_pandan_moveit_gazebo.launch world:=$(rospack find instruct_to_policy)/data/benchmark/worlds/world_1_table_sort.world use_gt_planning_scene:=false
+roslaunch instruct_to_policy run_panda_moveit_gazebo.launch world:=$(rospack find instruct_to_policy)/data/benchmark/worlds/world_1_table_sort.world use_gt_planning_scene:=false
 ```
 
 Also, our environment waits until all required services are ready. e.g. The environment by defaults waits for grasp detection service to be ready. You should launch this service in grasp detection environment. Please refer to the [grasp_detection](../grasp_detection/README.md) package for more details. The case is similar for grounding model and other services dependant on your task. 

@@ -1,5 +1,8 @@
 # Instruct_to_policy Module
- 
+
+Modules and pipeline: 
+![Modules and Pipeline](../images/pipeline.png)
+
 ## Data pre-process
 
 You can download the processed data for evaluation from [ADD_LINK_HERE](#).

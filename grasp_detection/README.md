@@ -7,18 +7,13 @@ For a specific/custom grasp model, please create a new ROS conda environment to 
 We recommend creating your conda env with:
 
 ```bash
-mamba create -n grasp_env_<model> python=3.9.16
+mamba create -n grasp_env_<model> python=3.9
 mamba activate grasp_env_<model>
 conda config --env --add channels conda-forge
 conda config --env --add channels robostack-staging
 conda config --env --remove channels defaults
 ```
 
-Note that you also need some geometric & perception tools in GIGA repo. If you DO NOT need GIGA, you can run the following command to install the tools ONLY without GIGA network installation:
-
-```bash
-pip install git+https://github.com/SgtVincent/GIGA.git
-```
 ### Install grasp detection models 
 
 Before you install full ros dependencies, we recommend you install the grasp detection models first.
@@ -40,7 +35,7 @@ Please follow the [Installation](src/detectors/anygrasp_sdk/README.md) to instal
 
 ```bash
 # Install ros-noetic into the environment (ROS1)
-mamba install ros-noetic-desktop-full compilers cxx-compiler cmake pkg-config make ninja colcon-common-extensions catkin_tools boost-cpp
+mamba install ros-noetic-desktop-full compilers cxx-compiler cmake pkg-config make ninja colcon-common-extensions catkin_tools
 ```
 
 ### Create a separate catkin workspace
@@ -61,6 +56,12 @@ ln -s /path/to/catkin_ws/src/grasp_detection /path/to/grasp_<model>_ws/src/grasp
 
 # Build the catkin workspace
 catkin build
+```
+
+Note that you also need some geometric & perception tools in GIGA repo. If you DO NOT need GIGA, you can run the following command to install the tools ONLY without GIGA network installation:
+
+```bash
+pip install git+https://github.com/SgtVincent/GIGA.git
 ```
 
 ## Run

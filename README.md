@@ -99,7 +99,7 @@ catkin build
 ### Install code generation dependencies:
 ```bash
 # code generation dependencies
-pip install numpy=1.23 scipy shapely astunparse pygments openai open3d imageio==2.4.1 imageio-ffmpeg moviepy
+pip install numpy==1.23 astunparse scipy shapely astunparse pygments openai open3d imageio==2.4.1 imageio-ffmpeg moviepy
 ```
 
 

@@ -1,0 +1,10 @@
+<launch>
+    <arg name="world_name" default="world_2_pick_and_place" />
+    <arg name="code_to_eval" default="generated_code_gpt3_few_shot_grasp_preference" />
+
+    <node name="eval_code" pkg="instruct_to_policy" type="eval_generated_code.py" output="screen">
+        <param name="world_name" value="$(arg world_name)" />
+        <param name="code_to_eval" value="$(arg code_to_eval)" />
+    </node>
+
+</launch>

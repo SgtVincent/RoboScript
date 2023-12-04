@@ -106,6 +106,8 @@ pip install numpy==1.23 astunparse scipy shapely astunparse pygments openai open
 
 ### Dev tools and tests builds
 
+You can **skip this section** if you are not developing this project.
+
 Please refer to [dev_builds.md](dev_builds.md) for more details.
 
 
@@ -142,6 +144,21 @@ Solution: `numpy` downgrade to `<1.24`
 
 If you had some link failures during catkin make, please add the corresponding libraries to `target_link_libraries()` in the cmake file of moveit_tutorials (depending on the OS). 
 
+## Test the environment installation
+
+Before proceeding to the next step, please make sure you have the ROS+Gazebo+Moveit environment ready. You can test the environment with the following command:
+
+```bash
+# make sure you have activated the ros environment
+mamba activate ros_env
+cd /path/to/catkin_ws
+source devel/setup.bash
+
+# launch the gazebo environment
+roslaunch instruct_to_policy run_panda_moveit_gazebo.launch verbose:=true
+```
+
+You will see the Gazebo and Moveit rviz window pop up. You can test the robot controller by moving the robot arm in rviz.
 
 ## Build grasp detection package in a separate workspace
 
@@ -153,10 +170,13 @@ TODO: add instructions for grounding models package
 
 ## Data preparation
 
-Please download the preprocessed data from [ADD_LINK_HERE](#).
+Please download the preprocessed data from:
+
+[Baidu Cloud](https://pan.baidu.com/s/1RFtRa8DKPcVd5jP6b_g57A?pwd=7yxv)
+
+[Google Drive]()
 
 Please refer to [data](instruct_to_policy/data.md) for more details.
-
 
 ## Run
 

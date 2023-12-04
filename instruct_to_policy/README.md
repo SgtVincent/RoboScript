@@ -7,8 +7,17 @@ Modules and pipeline:
 
 You can download the processed data for evaluation from [ADD_LINK_HERE](#).
 
-
 You can also refer to the [data document](./data.md)s more details about the data generation process to process your custom data.
+
+## Inetractive Demo with JupyterRos (Optional)
+
+You might need some hack to install jupyter ros with ipython kernel aware of ros workspace. Please refer to [Installation](https://jupyter-ros.readthedocs.io/en/latest/user_installation.html) and [Troubleshooting](https://jupyter-ros.readthedocs.io/en/latest/user_troubleshooting.html) for more details. 
+
+Until Dec. 2023, jupyter-ros is still under active development and you might always refer to its github issues for any problems. Skip this section if you don't need to run the interactive demo or you have much trouble installing jupyter-ros.
+
+There are two demos demonstrating how to use [true_grounding_env.py](./scripts/src/env/true_grounding_env.py) and [multimodal_env.py](./scripts/src/env/multimodal_env.py) in [simple_env_interface.ipynb](./scripts/simple_env_interface.ipynb) and [example_multimodal_pipeline.ipynb](./scripts/example_multimodal_pipeline.ipynb) respectively.
+
+**Read through the notebooks would also help you understand the pipeline and the modules.**
 
 ## Code Generation and Evaluation
 

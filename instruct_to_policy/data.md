@@ -2,38 +2,34 @@
 
 ## Download preprocessed models
 
-You can download data from [here](.).
-
-Unzip and place the processed gazebo sdf models under the `data` folder. The `data` folder should have the following structure:
+Once you download a `data.zip` file, please follow the following steps to unzip and place the processed models under the [data](./data) folder.The `data` folder should have the following structure:
 
 ```
 data
-|── generated_code
-|   ├── code_data.md
-|   ├── processed_table_cabinet_0.json
-|   ├── ...
-|   ├── raw_table_cabinet_0.json
-|   ├── ...
+|── benchmark
+|   ├── eval_items
+|   ├── task_queries
+|   ├── worlds
+|   ├── generated_code_xxxx <not included in git>
 ├── google_scanned_object
 |   ├── models
 |   │   ├── 5_HTP
 |   │   ├── AllergenFree_JarroDophilus
 |   │   ├── Android_Figure_Panda
 |   │   ├── ...
-├── task_queries
-│   ├── table_cabinet_0.txt
-│   ├── ...
-├── world_metadata
-│   ├── table_cabinet_0.json
-│   ├── ...
 ├── ycb
 │   ├── models
 │   │   ├── 001_chips_can
 │   │   ├── 002_master_chef_can
 │   │   ├── ...
 ```
+Make sure the `models` folder is properly placed under the `google_scanned_object` and `ycb` folder, when all object models inside. 
+
+Now you can go back to [instruct_to_policy](../instruct_to_policy/README.md) package to run the pipeline.
 
 ## Data generation from scratch 
+
+You **DO NOT** need to read the sections below if you have downloaded the preprocessed data and you **DO NOT** need to test on your custom data.
 
 The following sections describe our pipeline about how to generate the data from scratch. This gives you a high-level overview of the data generation process and how different sections are connected.
 

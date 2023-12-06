@@ -7,7 +7,12 @@ To minimize the sim-to-real gap in code generation for robotics control, the who
 
 ## Installation
 
-The whole package runs on ROS 1 Noetic. You can either install ROS directly with apt or inside conda environment with Robostack. It is a known issue that native ROS 1 environment is not compatible with conda environment, so Robostack is recommended to use for ROS setup.
+**Please read the notes below carefully before installing anything:**
+
+
+The whole package runs on ROS 1 Noetic. You are recommended to use [Robostack](https://robostack.github.io/GettingStarted.html) to install & run ROS inside conda environment since you  need multiple conda environments for different models. It is a well-known issue that native ROS 1 environment is not compatible with conda environment, so Robostack is here to help. You can anyway install original ROS packages in your system as written in the official [ROS installation guide](http://wiki.ros.org/noetic/Installation/Ubuntu). Though DO NOT source the ROS environment (or comment out it in your .bashrc if you already setup one) in your terminal when you are using Robostack. Warnings from Robostack installation guide: 
+
+![Robostack Warning](./images/robostack_warning.png)
 
 The components needed for this project:
 - Franka ROS: Integration of [libfranka](https://frankaemika.github.io/docs/libfranka.html) and [ROS control](https://wiki.ros.org/ros_control), which provides low-level connection/ low-level control to Franka robots.
@@ -26,8 +31,6 @@ For the fresh install, see [Fresh Insall](https://mamba.readthedocs.io/en/latest
 If you do want to keep using your installed conda environment, please refer to [Existing conda install (not recommended)](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html#existing-conda-install-not-recommended) in the official document. You might need to resolve environment conflicts manually.
 
 ### Install ROS environment with Robostack
-
-Recommend to use [Robostack](https://robostack.github.io/GettingStarted.html) to install ros libraries inside a virtual environment.
 
 Assuming you have installed conda and mamba in your computer. Create a new environment with conda-forge and robostack channels:
 

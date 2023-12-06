@@ -414,7 +414,7 @@ class MoveitGazeboEnv(GazeboEnv):
         pose: Pose,
         pre_grasp_approach=0.1,
         depth=0.03,
-        tentative_depth=[0.03, 0.01, -0.01],
+        tentative_depth_list=[0.03, 0.01, -0.01],
     ):
         """Executes a grasp at a given pose with given orientation.
         It first moves to a pre-grasp pose, then approaches the grasp pose.
@@ -464,7 +464,7 @@ class MoveitGazeboEnv(GazeboEnv):
                 return False
         else:
             # calculate tentative approach pose
-            for tentative_depth in tentative_depth:
+            for tentative_depth in tentative_depth_list:
                 tentative_approach_pose = get_pose_msg(
                     position
                     + Rotation.from_quat(orientation).as_matrix() @ (tentative_depth * np.array([0, 0, 1])),
@@ -473,6 +473,8 @@ class MoveitGazeboEnv(GazeboEnv):
                 success = self.computeIK(tentative_approach_pose)
                 if success:
                     self.move_to_pose(tentative_approach_pose)
+                    break
+            
             if not success:
                 rospy.logwarn("MoveitEnv: Failed to approach to grasp pose")
                 return False

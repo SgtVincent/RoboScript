@@ -1,6 +1,7 @@
 import os 
 from typing import List, Tuple, Dict
 import numpy as np
+from grasp_detection.msg import Grasp
 
 class GraspDetectionBase(object):
     """
@@ -14,9 +15,5 @@ class GraspDetectionBase(object):
     def load_model(self):
         raise NotImplementedError
 
-    def predict(self, data: Dict):
-        raise NotImplementedError
-
-    def predict_batch(self, images):
-        # Note: Do we really need this batch prediction function? 
+    def predict(self, data: Dict)-> List[Grasp]:
         raise NotImplementedError

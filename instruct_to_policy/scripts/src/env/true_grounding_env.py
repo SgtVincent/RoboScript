@@ -125,7 +125,10 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         data.update(sensor_data)
         
         # call grasp detection service
-        pose_list, width_list, score_list = self.grasp_model.predict(data)
+        grasp_candidates = self.grasp_model.predict(data)
+        pose_list = [grasp.grasp_pose for grasp in grasp_candidates]
+        width_list = [grasp.grasp_width for grasp in grasp_candidates]
+        score_list = [grasp.grasp_score for grasp in grasp_candidates]
     
         rank = []
         if preferred_position is not None:

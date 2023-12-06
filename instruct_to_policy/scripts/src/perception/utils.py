@@ -9,7 +9,7 @@ import cv2
 from matplotlib import pyplot as plt
 from sklearn.cluster import DBSCAN, HDBSCAN
 from cv_bridge import CvBridge
-from grasp_detection.msg import Grasp, Perception, PerceptionSingleCamera, BoundingBox3D, BoundingBox2D
+from grasp_detection.msg import Perception, PerceptionSingleCamera, BoundingBox3D, BoundingBox2D
 from geometry_msgs.msg import Pose, Point, Quaternion, Vector3
 from sensor_msgs.msg import Image, CameraInfo
 from std_msgs.msg import Header

@@ -241,16 +241,18 @@ class MoveitGazeboEnv(GazeboEnv):
         self.objects = {}
         if self.use_sim:
             self.reset_gazebo()
-            # self.reset_simulation()
-            # self.reset_world()
         
         # reset planning scene 
         # remove all attached objects
         self.planning_scene.remove_attached_object()
-        if not self.use_gt_perception:
+        if self.use_gt_perception:
+            # load GT object names from gazebo
+            for object_name in self.get_gazebo_model_names():
+                self.objects[object_name] = {}
+        else: 
             # remove all objects in planning scene from external perception 
             self.planning_scene.remove_world_object()
-
+        
         # reset visualization marker if debug is enabledss
         if self.debug:              
             self.start_state_pub.publish(self.robot.get_current_state())  

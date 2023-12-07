@@ -10,3 +10,6 @@
 [submodule "moveit_configs/ur5_package"]
 	path = moveit_configs/ur5_package
 	url = https://github.com/ClangWU/ur5_package.git
+[submodule "grasp_detection/src/detectors/GIGA"]
+	path = grasp_detection/src/detectors/GIGA
+	url = https://github.com/SgtVincent/GIGA.git

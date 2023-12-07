@@ -3,6 +3,8 @@
     <arg name="model_name" default="anygrasp" />
     <arg name="service_name" default="/detect_grasps" />
 
+    <!-- Add $CONDA_PREFIX/lib to LD_LIBRARY_PATH -->
+    <env name="LD_LIBRARY_PATH" value="$(optenv LD_LIBRARY_PATH):$(env CONDA_PREFIX)/lib" />
     
     <node name="grasp_detection_node" pkg="grasp_detection" type="run_node.py" output="screen">
     <!-- model_name = rospy.get_param('~model_name', 'anygrasp')  -->

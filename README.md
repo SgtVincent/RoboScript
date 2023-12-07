@@ -11,18 +11,26 @@ The whole package runs on ROS 1 Noetic. You can either install ROS directly with
 The components needed for this project:
 - Franka ROS: Integration of [libfranka](https://frankaemika.github.io/docs/libfranka.html) and [ROS control](https://wiki.ros.org/ros_control), which provides low-level connection/ low-level control to Franka robots.
 - [MoveIt](https://ros-planning.github.io/moveit_tutorials/doc/getting_started/getting_started.html): Full-stack library for robot mobile manipulation: planning, manipulation, perception, kinematics, control. 
-- Code As Policies dependencies.
+- Code generation dependencies.
+- (Optional) any your custom model dependencies.
 
-### Download and Install mamba (Recommended)
+### Download and Install mamba
+
 You should download the mamba package manager to install the dependencies. Mamba is a faster version of conda, which is used to install the C++/python/ROS dependencies in this project.
 
-Please also disable your previously installed (if any, comment out the conda init scritps in ~/.bashrc or ~/.zshrc) conda environment and initialize the conda environment with `conda init` with mamba installation. See [miniforge](https://github.com/conda-forge/miniforge#mambaforge) for download and initialization.
+There are two ways you can install mamba: 1) Fresh install with miniforge 2) Existing conda install (not recommended)
 
-### Install ROS environment with Robostack (Recommended)
+For the fresh install, see [Fresh Insall](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html#fresh-install-recommended). If you have previously installed conda environment, please disable it by commentting out the conda init scritps in ~/.bashrc or ~/.zshrc. See [miniforge](https://github.com/conda-forge/miniforge#mambaforge) for download and initialization.
+
+If you do want to keep using your installed conda environment, please refer to [Existing conda install (not recommended)](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html#existing-conda-install-not-recommended) in the official document. You might need to resolve environment conflicts manually.
+
+### Install ROS environment with Robostack
 
 Recommend to use [Robostack](https://robostack.github.io/GettingStarted.html) to install ros libraries inside a virtual environment.
 
 Assuming you have installed conda and mamba in your computer. Create a new environment with conda-forge and robostack channels:
+
+**Special tip for CHINESE users: Make sure you have full access to Internet or enable proxy. Conda mirrors will NOT work. You need to access robostack channel to install ros packages.** 
 
 ```bash
 mamba create -n ros_env
@@ -48,14 +56,22 @@ Install common tools and dependency pacakges:
 mamba deactivate
 mamba activate ros_env
 
-# Install ros-noetic common dev tools
-mamba install compilers cxx-compiler cmake pkg-config make ninja colcon-common-extensions catkin_tools boost-cpp ros-noetic-ros-numpy
+# Install ros-noetic common dev tools and pin gcc/g++ version
+mamba install gcc=9.5.0 gxx=9.5.0 compilers cxx-compiler cmake pkg-config make ninja colcon-common-extensions catkin_tools boost-cpp ros-noetic-ros-numpy
 
 # Install ros gazebo packages
-mamba install ros-noetic-gazebo-ros
+mamba install ros-noetic-gazebo-ros-pkgs
 
 # Install realsense ros packages and image processing packages
 mamba install ros-noetic-realsense2-camera ros-noetic-realsense2-description ros-noetic-librealsense2 ros-noetic-image-pipeline
+
+# Install MoveIt ROS Packages
+mamba install ros-noetic-moveit=1.11 ros-noetic-geometric-shapes=0.7.3
+
+# Install Franka ROS Packages
+mamba install ros-noetic-franka-ros
+
+# Until Nov 2023, there is no pre-built packages in robostack for universal robots, so we need to build from source later
 ```
 
 ### Prepare your catkin workspace 
@@ -72,43 +88,24 @@ git clone --recurse-submodules https://github.com/SgtVincent/llm-manipulation-be
 ```
 
 
-### Install MoveIt ROS Packages
-
-Install MoveIt from Robostack Prebuilt Binaries
+### Build the catkin packages
 
 ```bash
-mamba install ros-noetic-moveit 
+cd /path/to/catkin_ws
+catkin build
 ```
 
-#### Test with moveit_tutorials (Optional)
 
-**You are recommended to skip this part if you only need to run the pipeline and have no trouble running moveit**
-
-To test the installation, follow the official instructions in official tutorials [Build your Catkin Workspace](https://ros-planning.github.io/moveit_tutorials/doc/getting_started/getting_started.html#create-a-catkin-workspace) to run the tutorial packages. 
-
-```
-# You might also need other dependecies for moveit_tutorials package
-# please install the dependencies with: 
-rosdep install -y --from-paths . --ignore-src --rosdistro noetic
-```
-
-Note: `moveit_tuorials` depends on QT5, which further depends on opengl libraries.
+### Install code generation dependencies:
 ```bash
-sudo apt install mesa-common-dev libglu1-mesa-dev freeglut3 freeglut3-dev 
+# code generation dependencies
+pip install numpy==1.23 astunparse scipy shapely astunparse pygments openai open3d imageio==2.4.1 imageio-ffmpeg moviepy
 ```
 
-### Install Franka ROS
 
-<!-- If you **ONLY** need to run the pipeline on the real panda robot, you can install Franka ROS Packages from Robostack prebuilt binaries: -->
-```bash 
-mamba install ros-noetic-franka-ros
-```
-<!-- **However**, if you want to test the pipeline of the franka robot in gazebo simulation, you need to build the franka ros packages from source, following the tutorials on [Gazebo Simulation Integration](https://ros-planning.github.io/moveit_tutorials/doc/gazebo_simulation/gazebo_simulation.html?highlight=gazebo#gazebo-simulation-integration). -->
+### Dev tools and tests builds
 
-
-<!-- ### Install GIGA grasp detection package
-
-Please refer to the [GIGA](./GIGA/) package for installation instructions.  -->
+Please refer to [dev_builds.md](dev_builds.md) for more details.
 
 
 ### Troubleshooting 
@@ -144,76 +141,22 @@ Solution: `numpy` downgrade to `<1.24`
 
 If you had some link failures during catkin make, please add the corresponding libraries to `target_link_libraries()` in the cmake file of moveit_tutorials (depending on the OS). 
 
-### Install Code as policies dependencies:
-```bash
-# code as policies dependencies
-pip install numpy scipy shapely astunparse pygments openai imageio==2.4.1 imageio-ffmpeg moviepy
-```
 
-### (Optional) Install Development Tools
+## Build grasp detection package in a separate workspace
 
-#### Jupyter-ROS
-[Jupyter-ROS](https://github.com/RoboStack/jupyter-ros) is a set of ROS tools to run in jupyter notebook
-with interactive command & visualization. It is not required for the pipeline, but it is useful for debugging and visualization with jupyter. 
+Please refer to [grasp_detection](grasp_detection/README.md) package for more details.
 
-```bash
-# install dependencies inside the mamba environment
-mamba install jupyter bqplot pyyaml ipywidgets ipycanvas
-# install jupyter-ros
-mamba install jupyter-ros -c robostack
-```
-Then you need to create a ros kernel, which has loaded catkin_ws environments, from the official [instructions](https://jupyter-ros.readthedocs.io/en/latest/user_troubleshooting.html).
+## Build grounding models pacakge in a separate workspace
 
+TODO: add instructions for grounding models package
 
-### Build the catkin packages
+## Data preparation
 
-```bash
-cd /path/to/catkin_ws
-catkin build
-```
+Please download the preprocessed data from [ADD_LINK_HERE](#).
 
-
-## Data process
-
-### Convert urdf.xacro to sdf
-
-```bash
-# urdf.xacro -> urdf
-rosrun xacro xacro <model_name>.urdf.xacro > <model_name>.cabinet_0.urdf
-# urdf -> sdf
-gz sdf -p <model_name>.urdf > <model_name>.sdf
-```
-
-
+Please refer to [data](instruct_to_policy/data.md) for more details.
 
 
 ## Run
 
-Make sure you have activated the ROS environment and catkin workspace:
-```bash
-mamba activate <your_ros_env>
-cd /path/to/catkin_ws
-source devel/setup.bash
-```
-
-### Demo of code generation for Pick and Place with MoveIt
-
-First, you need to launch the gazebo simulation and moveit nodes with the following command:
-```bash
-roslaunch instruct_to_policy run_panda_moveit_gazebo.launch 
-```
-
-Then, you can run the code generation demo script by roslauch:
-```bash
-roslaunch instruct_to_policy run_cap.launch 
-```
-
-### Gazebo plugins (deprecated)
-
-**No longer used.**
-
-Our locally-built plugins are in `/path/to/catkin_ws/devel/lib`. To load it in gazebo, you should specify the LD_LIBRARY_PATH to the directory of the plugin. 
-
-```bash
-e.g. export LD_LIBRARY_PATH=/path/to/catkin_ws/devel/lib
-```
+Please refer to [instruct_to_policy](instruct_to_policy/README.md) package for more details.

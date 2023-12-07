@@ -4,7 +4,6 @@ This script is used to generate the code for the robot arm manipulation.
 The code is generated with OpenAI API (gpt-3.5-turbo) chat completion.
 """
 
-#!/usr/bin/env python3
 import os 
 import traceback
 import numpy as np

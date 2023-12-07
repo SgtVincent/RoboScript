@@ -63,7 +63,7 @@ class MultiModalEnv(MoveitGazeboEnv):
         # call detection pipeline
         sensor_data = self.get_sensor_data()
         detections_list = self.grounding_model.query_2d_bbox_list(
-            sensor_data=self.get_sensor_data(),
+            sensor_data=sensor_data,
             object_list=object_list
         )
         # update scene 
@@ -279,6 +279,9 @@ class MultiModalEnv(MoveitGazeboEnv):
         for object_name in self.get_obj_name_list():
             object_mesh = self.scene.get_object_mesh(object_name)
             self.register_object_mesh(object_mesh, object_name)
+            if object_name not in self.objects:
+                self.objects[object_name] = {}
+                
     
 
     

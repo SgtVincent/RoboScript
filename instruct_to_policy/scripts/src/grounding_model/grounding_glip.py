@@ -64,8 +64,10 @@ class GroundingGLIP(GroundingBase):
         """
         Since the model is on remote server, we need to wait for the model to be ready.
         """
-        glip_checkpoint = "src/grounding_model/det_models/glip_large.pth"
+        glip_checkpoint = "src/grounding_model/det_models/glip_large_model.pth"
         glip_config_file = "src/grounding_model/glip/configs/glip_Swin_L.yaml"
+        # glip_checkpoint = "src/grounding_model/det_models/glip_tiny_model_o365_goldg_cc_sbu.pth"
+        # glip_config_file = "src/grounding_model/glip/configs/glip_Swin_T_O365_GoldG.yaml"
         cfg.local_rank = 0
         cfg.num_gpus = 1
         cfg.merge_from_file(glip_config_file)
@@ -74,7 +76,7 @@ class GroundingGLIP(GroundingBase):
         self.glip_demo = GLIPDemo(
                             cfg,
                             min_image_size=800,
-                            confidence_threshold=0.5,
+                            confidence_threshold=0.6,
                             show_mask_heatmaps=False
                         )
         
@@ -83,10 +85,13 @@ class GroundingGLIP(GroundingBase):
         labels=[]
         for object in text_prompt:
             scores, boxes, names = self.glip_demo.inference_on_image(image, object)
+            print(boxes, names)
             if len(boxes)>0:
-                bboxes.append(boxes.tolist()[0])
-                labels=labels+names
-                # draw output image
+                for i in range(len(boxes)):
+                    bboxes.append([int(x) for x in boxes.tolist()[i]])
+                    #bboxes.append((boxes.tolist()[0]))
+                    labels.append(names[i])
+                    # draw output image
             if show:
                 plt.figure(figsize=(10, 10))
                 plt.imshow(image)
@@ -94,6 +99,7 @@ class GroundingGLIP(GroundingBase):
                 plt.axis('off')
         mapping = {}
         id_counter = {}
+        # print(bboxes, labels)
         for bbox, name in zip(bboxes, labels):
             if name in id_counter:
                 id_counter[name] += 1
@@ -106,7 +112,8 @@ class GroundingGLIP(GroundingBase):
         
         return mapping
     
-    def query_2d_bbox_list(self,image_list,object_list,show=False):
+    def query_2d_bbox_list(self, sensor_data, object_list, show=False):
+        image_list = sensor_data['rgb_image_list']
         bbox_list=[]
         for image in image_list:
             bbox_list.append(self.parse_2d_bbox(image,object_list,show))

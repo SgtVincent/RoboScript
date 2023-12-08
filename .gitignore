@@ -186,7 +186,5 @@ instruct_to_policy/data/world_low_container_metadata/
 instruct_to_policy/data/low_container_multiview_detection/
 instruct_to_policy/worlds_low_container/
 
-
-
-
-instruct_to_policy/scripts/src/grounding_model/det_models/glip_large.pth
+# detection model checkpoints
+instruct_to_policy/scripts/src/grounding_model/det_models

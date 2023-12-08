@@ -1,4 +1,4 @@
-accelerate==0.18.0
+accelerate==0.20.3
 addict
 albumentations
 basicsr
@@ -23,3 +23,6 @@ torchmetrics
 webdataset
 yapf
 inflect
+nltk
+transformers
+pycocotools

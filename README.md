@@ -70,7 +70,7 @@ mamba install ros-noetic-gazebo-ros-pkgs
 mamba install ros-noetic-realsense2-camera ros-noetic-realsense2-description ros-noetic-librealsense2 ros-noetic-image-pipeline
 
 # Install MoveIt ROS Packages
-mamba install ros-noetic-moveit=1.11 ros-noetic-geometric-shapes=0.7.3
+mamba install ros-noetic-moveit=1.1.11 ros-noetic-geometric-shapes=0.7.3
 
 # Install Franka ROS Packages
 mamba install ros-noetic-franka-ros
@@ -169,7 +169,9 @@ Please refer to [grasp_detection](grasp_detection/README.md) package for more de
 
 ## Build grounding models pacakge in a separate workspace
 
-TODO: add instructions for grounding models package
+TODO: move the grounding model to a separate ros package. 
+
+Please refer to [grounding_model](instruct_to_policy/scripts/src/grounding_model/README.md) package for more details.
 
 ## Data preparation
 

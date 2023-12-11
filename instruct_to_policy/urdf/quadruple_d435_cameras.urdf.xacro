@@ -30,6 +30,12 @@
     <origin xyz="-0.5 0 3.4" rpy="0 1.57 0"/>
   </xacro:sensor_d435>
 
+  <!-- top front camera -->
+  <xacro:sensor_d435 parent="base_link" name="camera_top_front" topics_ns="camera_top_front" use_nominal_extrinsics="$(arg use_nominal_extrinsics)" add_plug="$(arg add_plug)" use_mesh="$(arg use_mesh)" publish_pointcloud="$(arg publish_pointcloud)">
+    <origin xyz="0.15 0 3.3" rpy="0 1.0 -3.14"/>
+  </xacro:sensor_d435>
+
+
   <gazebo> 
     <!-- plugin to publish GT 3D bounding boxes to env node -->
     <plugin filename="libgazebo_ros_bbox_3d_plugin.so " name="gazebo_ros_bbox_3d_plugin">

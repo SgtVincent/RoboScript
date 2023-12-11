@@ -43,7 +43,29 @@
             <remap from="depth_registered/points" to="depth/color/points"/>
         </node>
     </group>
+
     <group ns="camera_right">
+        <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" />
+        <node pkg="nodelet" type="nodelet" name="nodelet_register" args="load depth_image_proc/register nodelet_manager" output="screen">
+            <remap from="rgb/camera_info" to="color/camera_info"/>
+            <remap from="depth/camera_info" to="depth/camera_info"/>
+            <remap from="depth/image_rect" to="depth/image_raw"/>
+            <remap from="depth_registered/camera_info" to="aligned_depth/camera_info"/>
+            <remap from="depth_registered/image_rect" to="aligned_depth/image_raw"/>
+            <param name="queue_size" value="5"/>
+            <param name="fill_upsampling_holes" value="true"/>
+        </node>
+
+        <node pkg="nodelet" type="nodelet" name="nodelet_xyzrgb" if="$(arg publish_pointcloud)" args="load depth_image_proc/point_cloud_xyzrgb nodelet_manager">
+            <remap from="rgb/image_rect_color" to="color/image_raw"/>
+            <remap from="rgb/camera_info" to="color/camera_info"/>
+            <remap from="depth_registered/camera_info" to="aligned_depth/camera_info"/>
+            <remap from="depth_registered/image_rect" to="aligned_depth/image_raw"/>
+            <remap from="depth_registered/points" to="depth/color/points"/>
+        </node>
+    </group>
+
+    <group ns="camera_top_front">
         <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" />
         <node pkg="nodelet" type="nodelet" name="nodelet_register" args="load depth_image_proc/register nodelet_manager" output="screen">
             <remap from="rgb/camera_info" to="color/camera_info"/>

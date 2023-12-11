@@ -18,60 +18,6 @@ DEFAULT_GRIPPER_APPROACH_VECTOR = np.array([0, 0, 1])
 DEFAULT_GRIPPER_OPEN_DIRECTION = np.array([0, 1, 0])
 DEFAULT_GRIPPER_PLANE_NORMAL = np.array([1, 0, 0])
 
-def select_grasp_pose_parallel_to_table_surface(grasp_candidates: List[Grasp], table_normal: np.array, 
-                                                gripper_plane_normal=DEFAULT_GRIPPER_PLANE_NORMAL)->Grasp:
-    """
-    Selects a grasp pose parallel to the table surface from a list of grasp candidates.
-    In other words, the gripper plane normal in world frame is parallel to the table normal.
-
-    Args:
-        grasp_candidates (List[Grasp]): List of grasp candidates.
-        table_normal (np.array): Normal vector of the table surface.
-        gripper_plane_normal (np.array): Normal vector of the gripper plane in the gripper frame. Defaults to DEFAULT_GRIPPER_PLANE_NORMAL.
-    
-    Returns:
-        Grasp: Selected grasp pose parallel to the table surface.
-    """
-    selected_grasp = None
-    max_dot_product = -np.inf
-
-    for grasp in grasp_candidates:
-        gripper_plane_normal_world = np.dot(grasp.pose.orientation, gripper_plane_normal)
-        dot_product = np.dot(gripper_plane_normal_world, table_normal)
-
-        if dot_product > max_dot_product:
-            max_dot_product = dot_product
-            selected_grasp = grasp
-
-    return selected_grasp
-
-def select_grasp_pose_perpendicular_to_table_surface(grasp_candidates: List[Grasp], table_normal: np.array, 
-                                                     gripper_plane_normal=DEFAULT_GRIPPER_PLANE_NORMAL)->Grasp:
-    """
-    Selects a grasp pose perpendicular to the table surface from a list of grasp candidates.
-    In other words, the gripper plane normal in world frame is perpendicular to the table normal.
-
-    Args:
-        grasp_candidates (List[Grasp]): List of grasp candidates.
-        table_normal (np.array): Normal vector of the table surface.
-        gripper_plane_normal (np.array): Normal vector of the gripper plane in the gripper frame. Defaults to np.array([1, 0, 0]).
-
-    Returns:
-        Grasp: Selected grasp pose perpendicular to the table surface.
-    """
-    selected_grasp = None
-    min_dot_product = np.inf
-
-    for grasp in grasp_candidates:
-        gripper_plane_normal_world = np.dot(grasp.pose.orientation, gripper_plane_normal)
-        dot_product = np.dot(gripper_plane_normal_world, table_normal)
-
-        if dot_product < min_dot_product:
-            min_dot_product = dot_product
-            selected_grasp = grasp
-
-    return selected_grasp
-
 def select_grasp_pose_perpendicular_to_axis(grasp_candidates: List[Grasp], axis: np.array, 
                                             gripper_approach_vector=DEFAULT_GRIPPER_APPROACH_VECTOR)-> Grasp:
     """
@@ -125,3 +71,35 @@ def select_grasp_pose_parallel_to_axis(grasp_candidates: List[Grasp], axis: np.a
             selected_grasp = grasp
             
     return selected_grasp
+
+def select_grasp_pose_parallel_to_table_surface(grasp_candidates: List[Grasp], table_normal: np.array, 
+                                                gripper_plane_normal=DEFAULT_GRIPPER_PLANE_NORMAL)->Grasp:
+    """
+    Selects a grasp pose parallel to the table surface from a list of grasp candidates.
+    In other words, the gripper plane normal in world frame is parallel to the table normal.
+
+    Args:
+        grasp_candidates (List[Grasp]): List of grasp candidates.
+        table_normal (np.array): Normal vector of the table surface.
+        gripper_plane_normal (np.array): Normal vector of the gripper plane in the gripper frame. Defaults to DEFAULT_GRIPPER_PLANE_NORMAL.
+    
+    Returns:
+        Grasp: Selected grasp pose parallel to the table surface.
+    """
+    return select_grasp_pose_parallel_to_axis(grasp_candidates, table_normal, gripper_plane_normal)
+
+
+def select_grasp_pose_perpendicular_to_table_surface(grasp_candidates: List[Grasp], table_normal: np.array, 
+                                                     gripper_approach_vector=DEFAULT_GRIPPER_APPROACH_VECTOR)->Grasp:
+    """
+    Selects a grasp pose perpendicular to the table surface from a list of grasp candidates.
+    In other words, the gripper approach vector in world frame is parallel to the table normal.
+    Args:
+        grasp_candidates (List[Grasp]): List of grasp candidates.
+        table_normal (np.array): Normal vector of the table surface.
+        gripper_plane_normal (np.array): Normal vector of the gripper plane in the gripper frame. Defaults to np.array([1, 0, 0]).
+
+    Returns:
+        Grasp: Selected grasp pose perpendicular to the table surface.
+    """
+    return select_grasp_pose_parallel_to_axis(grasp_candidates, table_normal, gripper_approach_vector)

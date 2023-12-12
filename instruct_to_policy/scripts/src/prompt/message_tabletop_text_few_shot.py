@@ -1,4 +1,4 @@
-message_tabletop_ui = [
+message_tabletop_text = [
 {
 "role":"system",
 "content": """
@@ -19,13 +19,13 @@ from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
 
 # Import utility functions for perception
 from perception_utils import (
-    get_object_center_position,  # Returns the current center position of an object in the world frame. The position of an object will change once you move it. Args: object_name: str. Returns: position: np.array [x,y,z]
-    get_object_pose              # Returns the current pose of an object in the world frame. Args: object_name: str. Returns: pose: Pose
-    get_3d_bbox,                 # Returns the current 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array [x_min, y_min, z_min, x_max, y_max, z_max]
+    get_object_center_position,  # Returns the position of an object in the world frame. Returns: position: np.array [x,y,z]
+    get_object_pose,              # Returns the pose of an object in the world frame. Returns: pose: Pose
+    get_3d_bbox,                 # Returns the 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array [x_min, y_min, z_min, x_max, y_max, z_max]
     get_obj_name_list,           # Returns a list of names of objects present in the scene
     parse_adaptive_shape_grasp_pose, # Args: object_name: str, preferred_position: Optional(np.array) [x,y,z], preferred_direction: Optional(np.array) [vx, vy, vz]. Returns: grasp_pose: Pose
-    parse_central_lift_grasp_pose # Args: object_name: str, description: Optional(str) in ['top', 'center'], Returns: grasp_pose: Pose
-    parse_horizontal_grasp_pose # Args: object_name: str, Returns: grasp_pose: Pose
+    parse_central_lift_grasp_pose, # Args: object_name: str, description: Optional(str) in ['top', 'center'], Returns: grasp_pose: Pose
+    parse_horizontal_grasp_pose, # Args: object_name: str, Returns: grasp_pose: Pose
     parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: Optional(str), position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
 )
 
@@ -37,12 +37,12 @@ There are three functions for predicting grasp poses, each tailored for differen
 # Import utility functions for robot motion planning and execution
 from motion_utils import (
     attach_object,  # Attaches an object to the robot gripper in the planning space. Call this function right after closing the gripper. Args: object_id: str. 
-    detach_object   # Detaches an object from the robot gripper in the planning space. Call this function right after opening the gripper. Args: object_id: str. 
-    open_gripper    # Open the gripper. No args.
-    close_gripper   # Close the gripper. No args.
-    move_to_pose    # Move the gripper to pose. Args: pose: Pose
-    get_gripper_pose # Get the gripper pose. No args. Returns: pose: Pose
-    grasp           # Executes a grasp motion at the grasp_pose. Args: grasp_pose: Pose
+    detach_object,   # Detaches an object from the robot gripper in the planning space. Call this function right after opening the gripper. Args: object_id: str. 
+    open_gripper,    # Open the gripper. No args.
+    close_gripper,   # Close the gripper. No args.
+    move_to_pose,    # Move the gripper to pose. Args: pose: Pose
+    get_gripper_pose, # Get the gripper pose. No args. Returns: pose: Pose
+    grasp,           # Executes a grasp motion at the grasp_pose. Args: grasp_pose: Pose
 )
 '''
 You are encouraged to use above APIs to complete the task.

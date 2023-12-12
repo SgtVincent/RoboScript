@@ -3,9 +3,9 @@ import os
 package_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from src.constants import *
 
-# from src.prompt.message_tabletop_ui import message_tabletop_ui
-from src.prompt.message_tabletop_few_shot import message_tabletop_ui
-# from src.prompt.message_tabletop_zero_shot import message_tabletop_ui
+# from src.prompt.message_tabletop_text import message_tabletop_text
+from src.prompt.message_tabletop_text_few_shot import message_tabletop_text
+# from src.prompt.message_tabletop_zero_shot import message_tabletop_text
 
 # from src.prompt.message_fgen import message_fgen
 from src.prompt.message_fgen_few_shot import message_fgen
@@ -65,7 +65,7 @@ cfg_tabletop = {
   },
   'lmps': {
     'tabletop_ui': {
-      'messages': message_tabletop_ui,
+      'messages': message_tabletop_text,
       'model': model_name,
       'max_tokens': 2048,
       'temperature': 0,

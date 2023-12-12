@@ -174,12 +174,13 @@ instruct_to_policy/data/table_cabinet_100/
 instruct_to_policy/data/benchmark/eval_results/
 instruct_to_policy/data/benchmark/generated_code*/
 instruct_to_policy/data/**/multiview_detection/
+*.pcd
 
 # ./models should be only for testing, release models should be in data/
 instruct_to_policy/models/cabinet_*/
 instruct_to_policy/models/bottle_*/
 instruct_to_policy/models/pot_*/
-
+instruct_to_policy/models/drawer_45290
 
 # temporary/test data; random stuff
 instruct_to_policy/data/world_low_container_metadata/

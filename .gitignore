@@ -180,7 +180,7 @@ instruct_to_policy/data/**/multiview_detection/
 instruct_to_policy/models/cabinet_*/
 instruct_to_policy/models/bottle_*/
 instruct_to_policy/models/pot_*/
-
+instruct_to_policy/models/drawer_45290
 
 # temporary/test data; random stuff
 instruct_to_policy/data/world_low_container_metadata/

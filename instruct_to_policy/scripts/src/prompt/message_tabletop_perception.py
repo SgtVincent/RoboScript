@@ -1,4 +1,4 @@
-message_tabletop_ui = [
+message_tabletop_perception = [
 {
 "role":"system",
 "content": """
@@ -20,24 +20,30 @@ from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
 # Import utility functions for perception
 from perception_utils import (
     get_object_center_position,  # Returns the position of an object in the world frame. Returns: position: np.array [x,y,z]
-    get_object_pose              # Returns the pose of an object in the world frame. Returns: pose: Pose
+    get_object_pose,              # Returns the pose of an object in the world frame. Returns: pose: Pose
     get_3d_bbox,                 # Returns the 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array [x_min, y_min, z_min, x_max, y_max, z_max]
     get_obj_name_list,           # Returns a list of names of objects present in the scene
     parse_adaptive_shape_grasp_pose, # Args: object_name: str, preferred_position: Optional(np.array) [x,y,z], preferred_direction: Optional(np.array) [vx, vy, vz]. Returns: grasp_pose: Pose
-    parse_central_lift_grasp_pose # Args: object_name: str, description: Optional(str) in ['top', 'center'], Returns: grasp_pose: Pose
-    parse_horizontal_grasp_pose # Args: object_name: str, Returns: grasp_pose: Pose
+    parse_central_lift_grasp_pose, # Args: object_name: str, description: Optional(str) in ['top', 'center'], Returns: grasp_pose: Pose
+    parse_horizontal_grasp_pose, # Args: object_name: str, Returns: grasp_pose: Pose
     parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: Optional(str), position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
+    detect_objects,              # Detect and update task-specific objects' status in the environment. Call this function before interaction with environment objects. Args: object_list: Optional(List[str]), objects to detect.
 )
+
+There are three functions for predicting grasp poses, each tailored for different kinds of objects. Note that you need to choose the right grasp function for the object carefully!!!
+1. 'parse_central_lift_grasp_pose': This method involves a vertical lifting action. The gripper closes at the center of the object and is not suitable for elongated objects and is not suitable for the objects with openings, as the gripper's width is really small. It is optimal for handling spherical and cuboid objects without any opening that are not ideal for off-center grasping.
+2. 'parse_horizontal_grasp_pose': This approach is designed for lateral engagement and is ideal for interacting with objects attached to surfaces perpendicular to the tabletop, commonly found in domestic or industrial environments.
+3. 'parse_adaptive_shape_grasp_pose': This function utilizes GraspNet for predictive positioning. This technique is particularly effective for securing objects with unconventional shapes or openings, typical in various everyday scenarios.
 
 # Import utility functions for robot motion planning and execution
 from motion_utils import (
     attach_object,  # Attaches an object to the robot gripper in the planning space. Call this function right after closing the gripper. Args: object_id: str. 
-    detach_object   # Detaches an object from the robot gripper in the planning space. Call this function right after opening the gripper. Args: object_id: str. 
-    open_gripper    # Open the gripper. No args.
-    close_gripper   # Close the gripper. No args.
-    move_to_pose    # Move the gripper to pose. Args: pose: Pose
-    get_gripper_pose # Get the gripper pose. No args. Returns: pose: Pose
-    grasp           # Executes a grasp motion at the grasp_pose. Args: grasp_pose: Pose
+    detach_object,   # Detaches an object from the robot gripper in the planning space. Call this function right after opening the gripper. Args: object_id: str. 
+    open_gripper,    # Open the gripper. No args.
+    close_gripper,   # Close the gripper. No args.
+    move_to_pose,    # Move the gripper to pose. Args: pose: Pose
+    get_gripper_pose, # Get the gripper pose. No args. Returns: pose: Pose
+    grasp,           # Executes a grasp motion at the grasp_pose. Args: grasp_pose: Pose
 )
 '''
 You are encouraged to use above APIs to complete the task.
@@ -50,19 +56,59 @@ Please pay attention to the description and specific requirements of the target 
 Your generated content should only contain comments starting with '#' and python code!
 """
 },
+{# Pick up object on the table and place it 
+"role":"user",
+"content": "objects = ['object_1', 'container_1', 'object_random', 'container_random', 'table'] ; # pick up object_1 and place it into container_1"
+},
+{
+"role": "assistant",
+"content": 
+'''
+# Detailed planning:
+# Step 0: Reason task-specific objects
+# Step 1: Grasp the object_1
+# Step 2: Move the object_1 to the container_1
+# Step 3: Release the object_1
+
+
+# Reason task-specific objects
+objects = ['object_1', 'container_1', 'table']
+detect_objects(object_list=objects)
+
+# Grasp the object_1
+open_gripper()
+grasp_pose = parse_adaptive_shape_grasp_pose('object_1')
+grasp(grasp_pose)
+close_gripper()
+attach_object('object_1')
+
+# Move the cake to the container_1
+parse_place_pose(object_name='object_1', receptacle_name='container_1')
+move_to_pose(place_pose)
+
+# Release the object_1
+open_gripper()
+detach_object('object_1')
+'''  
+},
 {# Open a Drawer
 "role":"user",
-"content": "objects = ['drawer1', 'table', 'plants'] ; # open the drawer"
+"content": "objects = ['cabinet', 'drawer1', 'table', 'plants'] ; # open the drawer"
 },
 {
 "role":"assistant",
 "content":
 '''
 # Detailed planning: 
+# Step 0: Reason task-specific objects
 # Step 1: Grasp the drawer handle 
 # Step 2: Pull the drawer handle, move in +x direction 
 # Step 3: Release the gripper from drawer handle 
 
+
+# Reason task-specific objects
+objects = ['cabinet', 'drawer1', 'drawer1_handle']
+detect_objects(object_list=objects)
 
 # Grasp the drawer handle
 open_gripper()
@@ -82,17 +128,22 @@ detach_object('drawer1_handle')
 },
 {# Close a Drawer
 "role":"user",
-"content": "objects = ['drawer1', 'table', 'plants'] ; # close the drawer"
+"content": "objects = ['cabinet', 'drawer1', 'table', 'plants'] ; # close the drawer"
 },
 {
 "role":"assistant",
 "content":
 '''
 # Detailed planning:
+# Step 0: Reason task-specific objects
 # Step 1: Grasp the drawer handle
 # Step 2: Push the drawer handle, move in -x direction
 # Step 3: Release the gripper from drawer handle
 
+
+# Reason task-specific objects
+objects = ['cabinet', 'drawer1', 'drawer1_handle']
+detect_objects(object_list=objects)
 
 # Grasp the drawer handle
 open_gripper()
@@ -119,12 +170,18 @@ detach_object('drawer1_handle')
 "content":
 '''
 # Detailed planning:
+# Step 0: Reason task-specific objects
 # Step 1: Grasp the handle of the top drawer
 # Step 2: Pull the handle of the top drawer, move in +x direction
 # Step 3: Release the handle of the top drawer 
 # Step 4: Grasp the red box
 # Step 5: Move the red box into the drawer
 # Step 6: Release the red box
+
+
+# Reason task-specific objects
+objects = ['drawer1', 'drawer2', 'drawer1_handle', 'red_box']
+detect_objects(object_list=objects)
 
 # Grasp the handle of the top drawer
 open_gripper()
@@ -165,6 +222,7 @@ detach_object('red_box')
 "content":
 '''
 # Detailed planning:
+# Step 0: Reason task-specific objects
 # Step 1: Grasp the handle of the top drawer
 # Step 2: Pull the handle of the top drawer, move in +x direction
 # Step 3: Release the handle of the top drawer
@@ -172,7 +230,11 @@ detach_object('red_box')
 # Step 5: Move the knife to the plate
 # Step 6: Release the knife
 
- 
+
+# Reason task-specific objects
+objects = ['drawer0', 'drawer1', 'drawer0_handle', 'knife', 'plate']
+detect_objects(object_list=objects)
+
 # Grasp the handle of the top drawer
 open_gripper()
 grasp_pose = parse_horizontal_grasp_pose('drawer0_handle')
@@ -183,7 +245,7 @@ attach_object('drawer0_handle')
 # Pull the handle of the top drawer, move in +x direction
 direction = np.array([1, 0, 0]) # (x, y, z)
 move_in_direction(direction, distance=0.2)
- 
+
 # Release the handle of the top drawer
 open_gripper()
 detach_object('drawer0_handle')
@@ -212,10 +274,16 @@ detach_object('knife')
 "content":
 '''
 # Detailed planning: 
+# Step 0: Reason task-specific objects
 # Step 1: Grasp the door handle 
 # Step 2: Pull the door handle downwards with an arc path of small radius by 30 degrees
 # Step 3: pull the door horizontally with an arc path of large radius by 60 degrees
 # Step 4: release the door handle 
+
+
+# Reason task-specific objects
+objects = ['door', 'door_handle']
+detect_objects(object_list=objects)
 
 # Grasp the door handle
 grasp_pose = parse_horizontal_grasp_pose('door_handle')
@@ -249,9 +317,15 @@ detach_object('door_handle')
 "content":
 '''
 # Detailed planning:
+# Step 0: Reason task-specific objects
 # Step 1: Check which toys are in the basket
 # Step 2: For each toy in the basket, grasp it and put it on the table
- 
+
+
+# Reason task-specific objects
+objects = ['toy_car', 'toy_train', 'table', 'wood_basket']
+detect_objects(object_list=objects)
+
 # Check which toys are in the basket
 toy_names = ['toy_car', 'toy_train']
 toys_in_basket = []
@@ -286,9 +360,15 @@ for toy_name in toys_in_basket:
 "content":
 '''
 # Detailed planning:
+# Step 0: Reason task-specific objects
 # Step 1: Grasp the bowl 
 # Step 2: Move the bowl to the table
 # Step 3: Release the bowl
+
+
+# Reason task-specific objects
+objects = ['shelf', 'bowl', 'table']
+detect_objects(object_list=objects)
 
 # Grasp the bowl
 open_gripper()
@@ -308,17 +388,23 @@ detach_object('bowl')
 },
 {# Move an object away from another object
 "role":"user",
-"content": "objects = ['bowl', 'table', 'apple'] ; # move the apple away from the bowl by 0.1m"
+"content": "objects = ['bowl', 'table', 'apple', 'shelve', 'plants'] ; # move the apple away from the bowl by 0.1m"
 },
 {
 "role":"assistant",
 "content":
 '''
 # Detailed planning:
+# Step 0: Reason task-specific objects
 # Step 1: Grasp the apple
 # Step 2: Calculate the position to move the apple to
 # Step 3: Move the apple to the calculated position
 # Step 4: Release the apple
+
+
+# Reason task-specific objects
+objects = ['bowl', 'table', 'apple']
+detect_objects(object_list=objects)
 
 # Grasp the apple
 open_gripper()
@@ -345,13 +431,14 @@ detach_object('apple')
 },
 {# Swap objects in the two containers
 "role":"user",
-"content": "objects = ['plate', 'fry_pan', 'table', 'peach', 'apple'] ; # swap the positions of the peach in the plate and the apple in the fry pan"
+"content": "objects = ['plate', 'fry_pan', 'table', 'peach', 'apple', 'wood_block', 'wine_glass'] ; # swap the positions of the peach in the plate and the apple in the fry pan"
 },
 {
 "role":"assistant",
 "content":
 '''
 # Detailed planning:
+# Step 0: Reason task-specific objects
 # Step 1: Grasp the peach in the plate
 # Step 2: Move the peach onto the table
 # Step 3: Release the peach 
@@ -362,6 +449,11 @@ detach_object('apple')
 # Step 8: Wait for environment to be static and detect objects new states
 # Step 9: Grasp the peach on the table
 # Step 10: Move the peach into the fry pan
+
+
+# Reason task-specific objects
+objects = ['plate', 'fry_pan', 'table', 'peach', 'apple']
+detect_objects(object_list=objects)
 
 # Grasp the peach in the plate
 peach_grasp_pose = parse_central_lift_grasp_pose(object_name='peach')

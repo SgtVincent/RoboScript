@@ -27,8 +27,8 @@ cfg_tabletop = {
                         "cabinet.handle_0", "cabinet.handle_1", "cabinet.handle_2", "cabinet.handle_3"],
       'sensor': {
         'namespace': '', # empty namespace by default 
-        # 'cameras': ['camera_left', 'camera_right', 'camera_top'],
-        'cameras': ['camera_left', 'camera_right', 'camera_top', 'camera_top_front'],
+        'cameras': ['camera_left', 'camera_right', 'camera_top'],
+        # 'cameras': ['camera_left', 'camera_right', 'camera_top', 'camera_top_front'],
         'gt_point_cloud': False,
       },
       'moveit_config': {

@@ -6,7 +6,8 @@ from shapely.geometry import *
 from shapely.affinity import *
 from geometry_msgs.msg import Quaternion, Pose, Point
 from grasp_detection.msg import Grasp 
-from src.env.utils import get_axis_aligned_bbox, pose_msg_to_matrix, calculate_place_position, is_collision, adjust_z
+from src.grasp_detection.utils import select_grasp_by_preference
+from src.env.utils import calculate_place_position, is_collision, adjust_z
 
 class Env:
     """Wrapper for the environment grounding capabilities.
@@ -87,23 +88,18 @@ class Env:
         """ parse question into a dictionary """
         raise NotImplementedError("parse_question() not implemented")
     
-    ################ parse pose tools ############################## 
+    ################ parse pose tools ##############################
     def parse_adaptive_shape_grasp_pose(self, object_name, **kwargs)->Pose:
         """
         Parse grasp pose for the object. Use ground truth grounding and grasp detection model.
         Args:
             object_name: name of the object
-            preferred_position: Optional(np.array), prefered position of the gripper
-            preferred_direction: Optional(np.array), prefered direction of the gripper
+            preferred_position: Optional(np.ndarray), prefered gripper tip point position 
+            preferred_approach_direction: Optional(np.ndarray), prefered gripper approach direction
+            preferred_plane_normal: Optional(np.ndarray), prefered gripper plane normal direction  
             description: str, description of the pose
         """
-        object_bbox = self.get_3d_bbox(object_name)
-        preferred_position: np.array = kwargs.get('preferred_position', None)
-        preferred_direction:np.array = kwargs.get('preferred_direction', None)
-        weight_grasp_score:float = kwargs.get('weight_grasp_score', 0.1)
-        weight_preference_position:float = kwargs.get('weight_distance', 0.2)
-        weight_preference_direction:float = kwargs.get('weight_cos_similarity', 0.7)
-        
+        object_bbox = self.get_3d_bbox(object_name)    
         description:str = kwargs.get('description', None)
         
         # get visual input from perception model
@@ -129,64 +125,13 @@ class Env:
         data.update(sensor_data)
         
         # call grasp detection service
-        grasp_candidates = self.grasp_model.predict(data)
-        pose_list = [grasp.grasp_pose for grasp in grasp_candidates]
-        width_list = [grasp.grasp_width for grasp in grasp_candidates]
-        score_list = [grasp.grasp_score for grasp in grasp_candidates]
-    
-        # rank = []
-        rank_score = []
-        if preferred_position is not None:
-            # if preferred_position is given, choose the grasp pose closest to the prefered position
-            position_list = np.array([np.array([p.position.x, p.position.y, p.position.z]) for p in pose_list])
-            distance = np.linalg.norm(position_list - preferred_position, axis=1)
-            # the larger distance, the smaller score and larger rank
-            distance_rank_idx = np.argsort(distance)
-            distance_rank = np.zeros(len(distance), dtype=int)
-            distance_rank[distance_rank_idx] = np.arange(len(distance))
-            distance_rank_score = np.copy(distance_rank[::-1])
-            # rank.append(distance_rank)
-            rank_score.append(distance_rank_score)
-        else: 
-            rank_score.append(np.zeros(len(score_list), dtype=int))
-            
-        if preferred_direction is not None:
-            # if preferred_direction is given, choose the grasp pose with z-axis closest to the prefered direction
-            rotation_list = np.array([pose_msg_to_matrix(p)[:3, :3] for p in pose_list])
-            z_axis_list = rotation_list[:, :, 2]
-            z_axis_list = z_axis_list / np.linalg.norm(z_axis_list, axis=1, keepdims=True)
-            preferred_direction = preferred_direction / np.linalg.norm(preferred_direction)
-            cos_similarity = np.sum(z_axis_list * preferred_direction, axis=1)
-            cos_similarity_rank_idx = np.argsort(cos_similarity)[::-1]
-            cos_similarity_rank = np.zeros(len(cos_similarity), dtype=int)
-            cos_similarity_rank[cos_similarity_rank_idx] = np.arange(len(cos_similarity))
-            cos_similarity_rank_score = np.copy(cos_similarity_rank[::-1])
-            # rank.append(cos_similarity_rank)
-            rank_score.append(cos_similarity_rank_score)
-        else:
-            rank_score.append(np.zeros(len(score_list), dtype=int))
-                  
-        # sort by score 
-        score_rank_idx = np.argsort(score_list)[::-1]
-        score_rank = np.zeros(len(score_list), dtype=int)
-        score_rank[score_rank_idx] = np.arange(len(score_list))
-        grasp_rank_score = np.copy(score_rank[::-1])
-        # rank.append(score_rank)
-        rank_score.append(grasp_rank_score)
-        
+        grasp_candidates: List[Grasp] = self.grasp_model.predict(data)
 
-        # get the best grasp based on all the ranks, the grasp with the lowest rank sum is the best grasps
-        # rank = np.array(rank)
-        # rank_sum = np.sum(rank, axis=0)
-        # best_grasp_idx = np.argmin(rank_sum)
-        rank_score = np.array(rank_score)
-        rank_score_weighted_sum = np.sum(rank_score * np.array([[weight_preference_position], [weight_preference_direction], [weight_grasp_score]]), axis=0)
-        best_grasp_idx = np.argmax(rank_score_weighted_sum)        
-
-        pose = pose_list[best_grasp_idx]
-        width = width_list[best_grasp_idx]
+        # select grasp by preference
+        best_grasp_idx, _ = select_grasp_by_preference(grasp_candidates, **kwargs)
+        best_grasp_pose = grasp_candidates[best_grasp_idx].grasp_pose
         
-        return pose
+        return best_grasp_pose
 
     def parse_place_pose(self, object_name, receptacle_name:str=None, **kwargs)->Pose:
         """

@@ -65,7 +65,7 @@
         </node>
     </group>
 
-    <group ns="camera_top_front">
+    <!-- <group ns="camera_top_front">
         <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" />
         <node pkg="nodelet" type="nodelet" name="nodelet_register" args="load depth_image_proc/register nodelet_manager" output="screen">
             <remap from="rgb/camera_info" to="color/camera_info"/>
@@ -84,6 +84,6 @@
             <remap from="depth_registered/image_rect" to="aligned_depth/image_raw"/>
             <remap from="depth_registered/points" to="depth/color/points"/>
         </node>
-    </group>
+    </group> -->
 
 </launch> 

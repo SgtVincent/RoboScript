@@ -82,6 +82,15 @@ class Env:
         """
         raise NotImplementedError("get_3d_bbox() not implemented")
     
+    def get_joint_axes(self, joint_names: List[str])->List[np.ndarray]:
+        """
+        Get the joint axes for the given list of joint names.
+        Args:
+            joint_names: List of joint names.
+        Returns:
+            joints_axes: List of joint axes.
+        """
+        raise NotImplementedError("get_joint_axes() not implemented")
     
     ################ multimodal grounding interface ################
     def parse_question(self, question, **kwargs):

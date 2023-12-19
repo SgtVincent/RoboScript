@@ -1,48 +1,23 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(instruct_to_policy)
+project(joint_prediction)
 
-# Check for c++11 / c++0x support
-# include(CheckCXXCompilerFlag)
-# CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-# CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-# if(COMPILER_SUPPORTS_CXX11)
-#     set(CMAKE_CXX_FLAGS "-std=c++11")
-# elseif(COMPILER_SUPPORTS_CXX0X)
-#     set(CMAKE_CXX_FLAGS "-std=c++0x")
-# else()
-#     message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
-# endif()
-
-# CHECK_CXX_COMPILER_FLAG("-std=c++17" COMPILER_SUPPORTS_CXX17)
-# if(COMPILER_SUPPORTS_CXX17)
-set (CMAKE_CXX_STANDARD 17)
-add_compile_options(-std=c++17)
-
-# else()
-#     message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++17 support. Please use a different C++ compiler.")
-# endif()
+## Compile as C++11, supported in ROS Kinetic and newer
+# add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  catkin
+  message_generation
   roscpp
   rospy
   std_msgs
-  geometry_msgs 
-  gazebo_ros
-  gazebo_msgs
-  moveit_msgs
-  grasp_detection 
-  joint_prediction
+  geometry_msgs
 )
 
 ## System dependencies are found with CMake's conventions
-# Fix local environment issue, please remove/change it with your local setup
-# set(Boost_ROOT "/home/junting/mambaforge-pypy3/envs/franka")
-find_package(Boost REQUIRED COMPONENTS filesystem thread)
-find_package(gazebo REQUIRED)
+# find_package(Boost REQUIRED COMPONENTS system)
+
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -81,11 +56,11 @@ find_package(gazebo REQUIRED)
 # )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+  FILES
+  GazeboGetJointsAxes.srv
+  # GetJointsAxes.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -95,10 +70,11 @@ find_package(gazebo REQUIRED)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+  geometry_msgs#   std_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -130,10 +106,10 @@ find_package(gazebo REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
- INCLUDE_DIRS include 
-#  LIBRARIES instruct_to_policy
-CATKIN_DEPENDS roscpp std_msgs geometry_msgs gazebo_ros grasp_detection joint_prediction
-#  DEPENDS system_lib 
+#  INCLUDE_DIRS include
+#  LIBRARIES joint_prediction
+ CATKIN_DEPENDS geometry_msgs message_generation roscpp rospy std_msgs
+#  DEPENDS system_lib
 )
 
 ###########
@@ -142,21 +118,15 @@ CATKIN_DEPENDS roscpp std_msgs geometry_msgs gazebo_ros grasp_detection joint_pr
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-
-
-
 include_directories(
-  include
+# include
   ${catkin_INCLUDE_DIRS}
-  ${Boost_INCLUDE_DIRS} 
-  ${GAZEBO_INCLUDE_DIRS}
-
 )
 
-# Declare a C++ library
-add_library( gazebo_ros_moveit_planning_scene src/gazebo_plugins/gazebo_ros_moveit_planning_scene.cpp)
-add_library( gazebo_ros_bbox_3d_plugin src/gazebo_plugins/gazebo_ros_bbox_3d_plugin.cpp)
-add_library( gazebo_ros_joint_axis_service src/gazebo_plugins/gazebo_ros_joint_axis_service.cpp)
+## Declare a C++ library
+# add_library(${PROJECT_NAME}
+#   src/${PROJECT_NAME}/joint_prediction.cpp
+# )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -166,7 +136,7 @@ add_library( gazebo_ros_joint_axis_service src/gazebo_plugins/gazebo_ros_joint_a
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/instruct_to_policy_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/joint_prediction_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -179,23 +149,9 @@ add_library( gazebo_ros_joint_axis_service src/gazebo_plugins/gazebo_ros_joint_a
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries( gazebo_ros_moveit_planning_scene
-  ${GAZEBO_LIBRARIES}
-  ${Boost_LIBRARIES}
-  ${catkin_LIBRARIES}
-)
-
-target_link_libraries( gazebo_ros_bbox_3d_plugin
-  ${GAZEBO_LIBRARIES}
-  ${Boost_LIBRARIES}
-  ${catkin_LIBRARIES}
-)
-
-target_link_libraries( gazebo_ros_joint_axis_service
-  ${GAZEBO_LIBRARIES}
-  ${Boost_LIBRARIES}
-  ${catkin_LIBRARIES}
-)
+# target_link_libraries(${PROJECT_NAME}_node
+#   ${catkin_LIBRARIES}
+# )
 
 #############
 ## Install ##
@@ -244,7 +200,7 @@ target_link_libraries( gazebo_ros_joint_axis_service
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_instruct_to_policy.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_joint_prediction.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

@@ -3,13 +3,7 @@
  * Junting Chen, Oct 2023
  */
 
-#include <ros/ros.h>
-#include <gazebo/gazebo.hh>
-#include <gazebo/physics/physics.hh>
-#include <gazebo/common/common.hh>
-#include <grasp_detection/BoundingBox3DArray.h>
-#include <grasp_detection/BoundingBox3D.h>
-#include <gazebo_plugins/gazebo_ros_bbox_3d_plugin.h>
+#include<gazebo_plugins/gazebo_ros_bbox_3d_plugin.h>
 
 namespace gazebo {
   

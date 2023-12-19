@@ -1,0 +1,5 @@
+# list of joint names  
+std_msgs/String[] joint_names
+---
+# list of joints axes 
+geometry_msgs/Vector3[] joints_axes

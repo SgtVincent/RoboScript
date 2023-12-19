@@ -5,6 +5,8 @@
 #include <geometry_msgs/Pose.h>
 
 #include <ros/ros.h>
+#include <gazebo/gazebo.hh>
+#include <gazebo/common/common.hh>
 #include <gazebo/physics/physics.hh>
 #include <gazebo/transport/TransportTypes.hh>
 #include <gazebo/common/Plugin.hh>
@@ -13,8 +15,11 @@
 #include <ignition/math/AxisAlignedBox.hh>
 #include <ignition/math/Vector3.hh>
 #include <ignition/transport/Node.hh>
-
 #include <std_srvs/Empty.h>
+
+#include <grasp_detection/BoundingBox3DArray.h>
+#include <grasp_detection/BoundingBox3D.h>
+
 
 namespace gazebo
 {

@@ -3,6 +3,7 @@
 
   <xacro:arg name="use_gt_planning_scene" default="true" />
   <xacro:arg name="use_gt_bounding_box" default="true" />
+  <xacro:arg name="enable_gt_joint_axis" default="true" />
 
   <xacro:include filename="$(find ur_description)/urdf/ur5_joint_limited_robot.urdf.xacro" />
   <xacro:include filename="$(find robotiq_description)/urdf/robotiq_85_gripper.urdf.xacro" />
@@ -65,6 +66,14 @@
         </links_to_publish>
       </plugin>
     </xacro:if>
+
+    <!-- plugin to host service for ground truth joint axis query -->
+    <xacro:if value="$(arg enable_gt_joint_axis)">
+      <plugin filename="libgazebo_ros_joint_axis_service.so" name="gazebo_ros_joint_axis_service">
+        <NodeName>gazebo_ros_joint_axis_service</NodeName>  
+      </plugin>
+    </xacro:if>
+
   </gazebo>
 
 </robot>

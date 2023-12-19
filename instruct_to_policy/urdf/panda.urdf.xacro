@@ -6,6 +6,7 @@
   <xacro:arg name="arm_id" default="panda" />
   <xacro:arg name="use_gt_planning_scene" default="true" />
   <xacro:arg name="use_gt_bounding_box" default="true" />
+  <xacro:arg name="enable_gt_joint_axis" default="true" />
 
   <xacro:franka_robot arm_id="$(arg arm_id)"
                       joint_limits="${xacro.load_yaml('$(find franka_description)/robots/panda/joint_limits.yaml')}">
@@ -93,6 +94,15 @@
         </links_to_publish>
       </plugin>
     </xacro:if>
+
+    <!-- plugin to host service for ground truth joint axis query -->
+    <xacro:if value="$(arg enable_gt_joint_axis)">
+      <plugin filename="libgazebo_ros_joint_axis_service.so" name="gazebo_ros_joint_axis_service">
+        <NodeName>gazebo_ros_joint_axis_service</NodeName>  
+      </plugin>
+    </xacro:if>
+
+
   </gazebo>
 
 </robot>

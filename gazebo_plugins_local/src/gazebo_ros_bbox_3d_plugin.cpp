@@ -45,12 +45,6 @@ namespace gazebo
         {
             // read a vector of strings from links_to_publish sdf element
             sdf::ElementPtr sdf_links_to_publish = _sdf->GetElement("links_to_publish");
-            // <links_to_publish>
-            //   <link>cabinet::drawer0</link>
-            //   <link>cabinet::drawer1</link>
-            //   <link>cabinet::drawer2</link>
-            //   <link>cabinet::drawer3</link>
-            // </links_to_publish>
             // read all child elements
             sdf::ElementPtr sdf_link = sdf_links_to_publish->GetFirstElement();
             while (sdf_link)
@@ -60,6 +54,8 @@ namespace gazebo
                 // get next child element
                 sdf_link = sdf_link->GetNextElement();
             }
+            ROS_INFO_NAMED("BoundingBoxPlugin", "publishing bounding box for links: %s",
+                           boost::algorithm::join(this->links_to_publish_, ", ").c_str());
         }
 
         // Make sure the ROS node for Gazebo has already been initialized

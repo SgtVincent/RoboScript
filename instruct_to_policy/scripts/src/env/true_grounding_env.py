@@ -152,10 +152,10 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         closest_axis_dist = float('inf')
         for joint_axis in joints_axes:
             joint_position = np.array(joint_axis["joint_position"])
-            joint_axis = np.array(joint_axis["joint_axis"])
+            joint_axis_vector = np.array(joint_axis["joint_axis"])
             
             # compute the distance between the point and the line
-            dist = np.linalg.norm(np.cross(joint_axis, position - joint_position)) / np.linalg.norm(joint_axis)
+            dist = np.linalg.norm(np.cross(joint_axis_vector, position - joint_position)) / np.linalg.norm(joint_axis_vector)
             if dist < closest_axis_dist:
                 closest_axis_dist = dist
                 closest_axis = joint_axis

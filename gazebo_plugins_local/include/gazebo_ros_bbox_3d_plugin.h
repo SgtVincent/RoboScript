@@ -2,7 +2,7 @@
 #define GAZEBO_ROS_BBOX_3D_PLUGIN_H
 
 #include <string>
-#include <geometry_msgs/Pose.h>
+#include <boost/algorithm/string.hpp>
 
 #include <ros/ros.h>
 #include <gazebo/gazebo.hh>
@@ -16,6 +16,7 @@
 #include <ignition/math/Vector3.hh>
 #include <ignition/transport/Node.hh>
 #include <std_srvs/Empty.h>
+#include <geometry_msgs/Pose.h>
 #include <grasp_detection/BoundingBox3DArray.h>
 #include <grasp_detection/BoundingBox3D.h>
 

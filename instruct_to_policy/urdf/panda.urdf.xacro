@@ -81,7 +81,6 @@
     <!-- plugin to publish GT 3D bounding boxes to env node -->
     <xacro:if value="$(arg use_gt_bounding_box)">
       <plugin filename="libgazebo_ros_bbox_3d_plugin.so" name="gazebo_ros_bbox_3d_plugin">
-        <updatePeriod>1.0</updatePeriod>
         <links_to_publish>
           <link>cabinet::drawer0</link>
           <link>cabinet::drawer1</link>

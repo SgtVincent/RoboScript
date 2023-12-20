@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>instruct_to_policy</name>
+  <name>gazebo_plugins_local</name>
   <version>0.0.0</version>
-  <description>The instruct_to_policy package</description>
+  <description>The gazebo_plugins package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -13,13 +13,13 @@
   <!-- One license tag required, multiple allowed, one license per tag -->
   <!-- Commonly used license strings: -->
   <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
-  <license>MIT</license>
+  <license>TODO</license>
 
 
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/instruct_to_policy</url> -->
+  <!-- <url type="website">http://wiki.ros.org/gazebo_plugins_local</url> -->
 
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->
@@ -28,15 +28,14 @@
   <!-- <author email="jane.doe@example.com">Jane Doe</author> -->
 
 
-  <!-- The *depend tags are used to specify dependencies -->
-  <!-- Dependencies can be catkin packages or system dependencies -->
-  <!-- Examples: -->
-  <!-- Use depend as a shortcut for packages that are both build and exec dependencies -->
   <depend>message_generation</depend>
   <depend>gazebo_ros</depend>
   <depend>geometry_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>moveit_msgs</depend>
+  <!-- local dependent packages -->
+  <depend>grasp_detection</depend>
+  <depend>joint_prediction</depend>
   <depend>panda_moveit_config</depend>
 
   <!-- Use build_depend for packages you need at compile time: -->
@@ -63,16 +62,11 @@
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>message_runtime</exec_depend>
 
-  <!-- local dependent packages -->
-  <depend>grasp_detection</depend>
-  <depend>joint_prediction</depend>
-  <depend>realsense_gazebo_plugin</depend>
-  <depend>gazebo_plugins_local</depend>
-
-
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- Other tools can request additional information be placed here -->
+    <!-- needed by custom gazebo ros plugins -->
+    <gazebo_ros plugin_path="${prefix}/../../lib" gazebo_media_path="${prefix}" />
 
   </export>
 </package>

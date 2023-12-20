@@ -1,4 +1,5 @@
 from typing import List, Tuple, Dict
+import copy
 import rospy 
 from std_srvs.srv import Empty
 from gazebo_msgs.srv import (
@@ -12,7 +13,10 @@ from gazebo_msgs.srv import (
 from geometry_msgs.msg import Quaternion, Point, Pose
 from .env import Env
 from .gazebo_cameras import GazeboRGBDCameraSet
+from gazebo_plugins_local.srv import GazeboGetBoundingBoxes
 from grasp_detection.msg import BoundingBox3DArray, BoundingBox3D
+
+
 
 class GazeboEnv(Env):
     """ Class to interface with Gazebo."""
@@ -24,8 +28,6 @@ class GazeboEnv(Env):
         self.extra_objects = cfg['env'].get('extra_objects', [])
         self.sensor_config = cfg['env']['sensor']
         
-        # subscribe to object 3D bounding boxes
-        self.gt_bbox_sub = rospy.Subscriber(f"/gazebo_ros_bbox_3d_plugin/bounding_boxes_3d", BoundingBox3DArray, self._gt_bbox_callback)
         self.gazebo_gt_bboxes:List[BoundingBox3D] = None
         
         # services of gazebo
@@ -35,6 +37,7 @@ class GazeboEnv(Env):
         self.get_link_state = rospy.ServiceProxy(f"/{self.node_name}/get_link_state", GetLinkState)
         self.get_world_properties = rospy.ServiceProxy(f"/{self.node_name}/get_world_properties", GetWorldProperties)
         self.get_model_properties = rospy.ServiceProxy(f"/{self.node_name}/get_model_properties", GetModelProperties)
+        self.get_bounding_boxes = rospy.ServiceProxy(f"/{self.node_name}/get_bounding_boxes", GazeboGetBoundingBoxes)
 
         self.robot_names = ["panda", "fr3", "ur5"]
         self.environment_names = ["ground_plane", "sun", "triple_camera_set"]
@@ -53,11 +56,6 @@ class GazeboEnv(Env):
             "cabinet::joint_2": 0.0,
             "cabinet::joint_3": 0.0,
         }
-
-
-    def _gt_bbox_callback(self, msg: BoundingBox3DArray):
-        """ Callback function for ground truth bounding boxes."""
-        self.gazebo_gt_bboxes = msg.bboxes_3d
 
 
     def reset_gazebo(self):
@@ -127,9 +125,8 @@ class GazeboEnv(Env):
     
     def get_gt_bbox(self, obj_name)->Tuple[List, List]:
         """ Get object bounding box."""
-        while self.gazebo_gt_bboxes is None:
-            rospy.logdebug("gazebo_env: Waiting for ground truth bounding boxes")
-            rospy.sleep(0.5)
+        
+        self.gazebo_gt_bboxes:List[BoundingBox3D] = self.get_bounding_boxes().bboxes_3d
             
         # gt bbox of drawer or handle: need to convert to link name
         if 'cabinet.drawer' in obj_name or 'cabinet.handle' in obj_name:
@@ -143,8 +140,6 @@ class GazeboEnv(Env):
             
         rospy.logwarn(f"Query object {obj_name} has no ground truth bounding box in gazebo")
         return None, None
-        
-        
     
     def get_sensor_data(self):
         return self.camera_set.get_latest_data()

@@ -10,7 +10,7 @@ import astunparse
 from shapely.geometry import *
 from shapely.affinity import *
 import openai
-from openai import APIConnectionError, RateLimitError
+from openai.error import APIConnectionError, RateLimitError
 
 from src.utils import *
 from src.constants import *

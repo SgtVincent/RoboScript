@@ -30,7 +30,7 @@
 
 #include <gazebo/common/common.hh>
 
-#include <gazebo_plugins/gazebo_ros_moveit_planning_scene.h>
+#include "gazebo_ros_moveit_planning_scene.h"
 
 namespace gazebo
 {

@@ -9,8 +9,9 @@
 #include <gazebo/physics/physics.hh>
 #include <gazebo/physics/Joint.hh>
 #include <gazebo/common/common.hh>
-#include <gazebo_plugins/gazebo_ros_joint_axis_service.h>
-#include <joint_prediction/GazeboGetJointsAxes.h>
+#include <joint_prediction/JointAxis.h>
+
+#include "gazebo_plugins_local/GazeboGetJointsAxes.h"
 
 namespace gazebo
 {
@@ -25,12 +26,12 @@ namespace gazebo
         virtual void Load(gazebo::physics::ModelPtr model, sdf::ElementPtr sdf);
 
     private:
-        bool getJointAxisCallback(joint_prediction::GazeboGetJointsAxes::Request &req, joint_prediction::GazeboGetJointsAxes::Response &res);
+        bool getJointAxisCallback(gazebo_plugins_local::GazeboGetJointsAxes::Request &req, gazebo_plugins_local::GazeboGetJointsAxes::Response &res);
 
         // Pointer to the gazebo world.
-        private: physics::WorldPtr world_;
+        physics::WorldPtr world_;
         // Pointer to the model
-        gazebo::physics::ModelPtr model_;
+        physics::ModelPtr model_;
         // Node name
         std::string node_name_;
         // ROS Nodehandle

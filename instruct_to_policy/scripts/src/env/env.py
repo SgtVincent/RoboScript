@@ -26,6 +26,10 @@ class Env:
         self._max_xy = np.array(self._cfg["env"]["coords"]["top_right"])
         self._table_z = self._cfg["env"]["coords"]["table_z"]
         self._range_xy = self._max_xy - self._min_xy
+        
+        self.grasp_model = None
+        self.grounding_model = None
+        self.joint_prediction_model = None
 
     def get_obj_name_list(self)-> List[str]:
         raise NotImplementedError("get_obj_name_list() not implemented")
@@ -82,7 +86,7 @@ class Env:
         """
         raise NotImplementedError("get_3d_bbox() not implemented")
     
-    def get_joint_axes(self, joint_names: List[str])->List[np.ndarray]:
+    def get_object_joints_axes(self, obj_name: str)->List:
         """
         Get the joint axes for the given list of joint names.
         Args:
@@ -91,6 +95,18 @@ class Env:
             joints_axes: List of joint axes.
         """
         raise NotImplementedError("get_joint_axes() not implemented")
+    
+    def get_object_joint_axis(self, obj_name: str, position: np.ndarray, type="any")->Dict:
+        """
+        Get the joint axis closest to the given axis.
+        Args:
+            obj_name: name of the object
+            position: np.ndarray, select the joint closest to this position
+            type: str, allowed type of the joint, "any", "revolute", "prismatic"
+        Returns:
+            closest_axis: the closest joint axis
+        """
+        raise NotImplementedError("get_object_joint_axis() not implemented")
     
     ################ multimodal grounding interface ################
     def parse_question(self, question, **kwargs):

@@ -35,12 +35,13 @@ There are three functions for predicting grasp poses, each tailored for differen
 # Import utility functions for robot motion planning and execution
 from motion_utils import (
     attach_object,  # Attaches an object to the robot gripper in the planning space. Call this function right after closing the gripper
-    detach_object   # Detaches an object from the robot gripper in the planning space. Call this function right after opening the gripper.
-    open_gripper    # Open the gripper 
-    close_gripper   # Close the gripper
-    move_to_pose    # Move the gripper to pose.
-    get_gripper_pose # Get the gripper pose
-    grasp           # Executes a grasp motion at the grasp_pose. Args: grasp_pose: Pose
+    detach_object,   # Detaches an object from the robot gripper in the planning space. Call this function right after opening the gripper.
+    open_gripper,    # Open the gripper 
+    close_gripper,   # Close the gripper
+    move_to_pose,    # Move the gripper to pose. Args: pose: Pose
+    follow_path,     # Move the gripper to follow a path of poses. Args: path: List[Pose]
+    get_gripper_pose, # Get the gripper pose
+    grasp,            # Executes a grasp motion at the grasp_pose. Args: grasp_pose: Pose
 )
 '''
 The robot working space on table top is in range [-0.5, 0.2] in x-axis and [-0.5, 0.5] in y-axis. The height of the table top is 1.05.

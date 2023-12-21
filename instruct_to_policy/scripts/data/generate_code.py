@@ -78,6 +78,7 @@ def prepare_vars_detached():
             "attach_object",
             "detach_object",
             "move_to_pose",
+            "follow_path",
             "get_gripper_pose",
             "grasp",
         ]

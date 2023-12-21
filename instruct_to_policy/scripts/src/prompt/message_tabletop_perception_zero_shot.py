@@ -23,17 +23,17 @@ from perception_utils import (
     get_object_pose,              # Returns the pose of an object in the world frame. Returns: pose: Pose
     get_3d_bbox,                 # Returns the 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array [x_min, y_min, z_min, x_max, y_max, z_max]
     get_obj_name_list,           # Returns a list of names of objects present in the scene
-    parse_adaptive_shape_grasp_pose, # Args: object_name: str, preferred_position: Optional(np.array) [x,y,z], preferred_direction: Optional(np.array) [vx, vy, vz]. Returns: grasp_pose: Pose
-    parse_central_lift_grasp_pose, # Args: object_name: str, description: Optional(str) in ['top', 'center'], Returns: grasp_pose: Pose
-    parse_horizontal_grasp_pose, # Args: object_name: str, Returns: grasp_pose: Pose
+    parse_adaptive_shape_grasp_pose, # Parse adaptive grasp pose for objects. Args: object_name: str, preferred_position: Optional(np.ndarray); preferred gripper tip point position; preferred_approach_direction: Optional(np.ndarray), preferred gripper approach direction; preferred_plane_normal: Optional(np.ndarray), preferred gripper plane normal direction. Returns: grasp_pose: Pose
+    parse_central_lift_grasp_pose, # This method involves a vertical lifting action. The gripper closes at the center of the object and is not suitable for elongated objects and is not suitable for the objects with openings, as the gripper's width is really small. It is optimal for handling spherical and cuboid objects without any opening that are not ideal for off-center grasping. Args: object_name: str, description: Optional(str) in ['top', 'center'], Returns: grasp_pose: Pose
     parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: Optional(str), position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
     detect_objects,              # Detect and update task-specific objects' status in the environment. Call this function before interaction with environment objects. Args: object_list: Optional(List[str]), objects to detect.
+    get_object_joint_info,       # Get the joint info of an object closest to a given position. Args: obj_name: str, name of the object; position: np.ndarray, select the joint closest to this position; type: str, allowed type of the joint, choice in ["any", "revolute", "prismatic"]. Returns: joint_info: dict, joint info of the object. {"joint_position":[x,y,z],"joint_axis":[rx,ry,rz],"type":str}
 )
 
-There are three functions for predicting grasp poses, each tailored for different kinds of objects. Note that you need to choose the right grasp function for the object carefully!!!
-1. 'parse_central_lift_grasp_pose': This method involves a vertical lifting action. The gripper closes at the center of the object and is not suitable for elongated objects and is not suitable for the objects with openings, as the gripper's width is really small. It is optimal for handling spherical and cuboid objects without any opening that are not ideal for off-center grasping.
-2. 'parse_horizontal_grasp_pose': This approach is designed for lateral engagement and is ideal for interacting with objects attached to surfaces perpendicular to the tabletop, commonly found in domestic or industrial environments.
-3. 'parse_adaptive_shape_grasp_pose': This function utilizes GraspNet for predictive positioning. This technique is particularly effective for securing objects with unconventional shapes or openings, typical in various everyday scenarios.
+There are three preferences for function parse_adaptive_shape_grasp_pose(). Note that you need to choose the right preferences for different tasks and objects.
+preferred_position: Optional(np.ndarray), preferred gripper tip point position. 
+preferred_approach_direction: Optional(np.ndarray), preferred gripper approach direction.
+preferred_plane_normal: Optional(np.ndarray), preferred gripper plane normal direction. This preference selects the grasp pose so that the gripper is parallel to the plane defined by the normal. It also means the gripper grasping at an axis with perpendicular pose to the axis. 
 
 # Import utility functions for robot motion planning and execution
 from motion_utils import (
@@ -42,6 +42,7 @@ from motion_utils import (
     open_gripper,    # Open the gripper. No args.
     close_gripper,   # Close the gripper. No args.
     move_to_pose,    # Move the gripper to pose. Args: pose: Pose
+    follow_path     # Move the gripper to follow a path of poses. Args: path: List[Pose]
     get_gripper_pose, # Get the gripper pose. No args. Returns: pose: Pose
     grasp,           # Executes a grasp motion at the grasp_pose. Args: grasp_pose: Pose
 )

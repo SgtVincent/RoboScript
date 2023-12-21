@@ -23,17 +23,17 @@ from perception_utils import (
     get_object_pose,              # Returns the pose of an object in the world frame. Returns: pose: Pose
     get_3d_bbox,                 # Returns the 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array [x_min, y_min, z_min, x_max, y_max, z_max]
     get_obj_name_list,           # Returns a list of names of objects present in the scene
-    parse_adaptive_shape_grasp_pose, # Args: object_name: str, preferred_position: Optional(np.array) [x,y,z], preferred_direction: Optional(np.array) [vx, vy, vz]. Returns: grasp_pose: Pose
-    parse_central_lift_grasp_pose, # Args: object_name: str, description: Optional(str) in ['top', 'center'], Returns: grasp_pose: Pose
-    parse_horizontal_grasp_pose, # Args: object_name: str, Returns: grasp_pose: Pose
+    parse_adaptive_shape_grasp_pose, # Parse adaptive grasp pose for objects. Args: object_name: str, preferred_position: Optional(np.ndarray); preferred gripper tip point position; preferred_approach_direction: Optional(np.ndarray), preferred gripper approach direction; preferred_plane_normal: Optional(np.ndarray), preferred gripper plane normal direction. Returns: grasp_pose: Pose
+    parse_central_lift_grasp_pose, # This method involves a vertical lifting action. The gripper closes at the center of the object and is not suitable for elongated objects and is not suitable for the objects with openings, as the gripper's width is really small. It is optimal for handling spherical and cuboid objects without any opening that are not ideal for off-center grasping. Args: object_name: str, description: Optional(str) in ['top', 'center'], Returns: grasp_pose: Pose
     parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: Optional(str), position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
     detect_objects,              # Detect and update task-specific objects' status in the environment. Call this function before interaction with environment objects. Args: object_list: Optional(List[str]), objects to detect.
+    get_object_joint_info,       # Get the joint info of an object closest to a given position. Args: obj_name: str, name of the object; position: np.ndarray, select the joint closest to this position; type: str, allowed type of the joint, choice in ["any", "revolute", "prismatic"]. Returns: joint_info: dict, joint info of the object. {"joint_position":[x,y,z],"joint_axis":[rx,ry,rz],"type":str}
 )
 
-There are three functions for predicting grasp poses, each tailored for different kinds of objects. Note that you need to choose the right grasp function for the object carefully!!!
-1. 'parse_central_lift_grasp_pose': This method involves a vertical lifting action. The gripper closes at the center of the object and is not suitable for elongated objects and is not suitable for the objects with openings, as the gripper's width is really small. It is optimal for handling spherical and cuboid objects without any opening that are not ideal for off-center grasping.
-2. 'parse_horizontal_grasp_pose': This approach is designed for lateral engagement and is ideal for interacting with objects attached to surfaces perpendicular to the tabletop, commonly found in domestic or industrial environments.
-3. 'parse_adaptive_shape_grasp_pose': This function utilizes GraspNet for predictive positioning. This technique is particularly effective for securing objects with unconventional shapes or openings, typical in various everyday scenarios.
+There are three preferences for function parse_adaptive_shape_grasp_pose(). Note that you need to choose the right preferences for different tasks and objects.
+preferred_position: Optional(np.ndarray), preferred gripper tip point position. 
+preferred_approach_direction: Optional(np.ndarray), preferred gripper approach direction.
+preferred_plane_normal: Optional(np.ndarray), preferred gripper plane normal direction. This preference selects the grasp pose so that the gripper is parallel to the plane defined by the normal. It also means the gripper grasping at an axis with perpendicular pose to the axis. 
 
 # Import utility functions for robot motion planning and execution
 from motion_utils import (
@@ -564,5 +564,90 @@ open_gripper()
 detach_object('peach')
 '''
 },
+{# Pick up an object with preferrence of position and approach direction
+"role":"user",
+"content": "objects = ['bowl', 'table', 'apple', 'plate', 'plants', 'standing_pink_box, lying_banana'] ; # move fruits and boxes into the plate, table is in xy-plane with z-axis pointing upward"
+},
+{
+"role":"assistant",
+"content":
+'''
+# Detailed planning:
+# Step 0: Reason task-specific objects
+# Step 1: Grasp the apple. Use parse_center_lift_grasp_pose() since the apple is a spherical object.
+# Step 2: Move the apple to the plate
+# Step 3: Release the apple
+# Step 4: Wait for environment to be static and detect objects new states
+# Step 5: Grasp the standing pink box. Use parse_adaptive_shape_grasp_pose() with preferences. The standing pink box has axis aligned with table surface normal.
+# Step 6: Move the standing pink box to the plate
+# Step 7: Release the standing pink box
+# Step 8: Wait for environment to be static and detect objects new states
+# Step 9: Grasp the lying banana. Use parse_adaptive_shape_grasp_pose() with preferences. The lying banana has axis on the table surface, so approach direction of the gripper should be aligned with table surface normal.
+# Step 10: Move the lying banana to the plate
+# Step 11: Release the lying banana
+
+
+# Reason task-specific objects
+objects = ['table', 'apple', 'plate', 'standing_pink_box', 'lying_banana']
+detect_objects(object_list=objects)
+
+# Grasp the apple. Use parse_center_lift_grasp_pose() since the apple is a spherical object.
+open_gripper()
+grasp_apple_pose = parse_central_lift_grasp_pose(object='apple')
+grasp(grasp_apple_pose)
+close_gripper()
+attach_object('apple')
+
+# Move the apple to the plate
+put_apple_pose = parse_place_pose(object_name='apple', receptacle_name='plate')
+move_to_pose(put_apple_pose)
+
+# Release the apple
+open_gripper()
+detach_object('apple')
+
+# Wait for environment to be static and detect objects new states
+rospy.sleep(3)
+detect_objects(object_list=objects)
+
+# Grasp the standing pink box. Use parse_adaptive_shape_grasp_pose() with preferences. The standing pink box has long-axis aligned with table surface normal.
+open_gripper()
+table_normal = np.array([0,0,1])
+grasp_box_pose = parse_adaptive_shape_grasp_pose(object_name='standing_pink_box', preferred_position=get_object_center_position('standing_pink_box'), preferred_plane_normal=table_normal)
+grasp(grasp_box_pose)
+close_gripper()
+attach_object('standing_pink_box')
+grasp(grasp_box_pose)
+close_gripper()
+
+# Move the standing pink box to the plate
+put_box_pose = parse_place_pose(object_name='standing_pink_box', receptacle_name='plate')
+move_to_pose(put_box_pose)
+
+# Release the standing pink box
+open_gripper()
+detach_object('standing_pink_box')
+
+# Wait for environment to be static and detect objects new states
+rospy.sleep(3)
+detect_objects(object_list=objects)
+
+# Grasp the lying banana. Use parse_adaptive_shape_grasp_pose() with preferences. The lying banana has long-axis on the table surface, so approach direction of the gripper should be aligned with table surface normal.
+open_gripper()
+table_normal = np.array([0,0,1])
+grasp_banana_pose = parse_adaptive_shape_grasp_pose(object_name='lying_banana', preferred_position=get_object_center_position('lying_banana'), preferred_approach_direction=table_normal)
+grasp(grasp_banana_pose)
+close_gripper()
+attach_object('lying_banana')
+
+# Move the lying banana to the plate
+put_banana_pose = parse_place_pose(object_name='lying_banana', receptacle_name='plate')
+move_to_pose(put_banana_pose)
+
+# Release the lying banana
+open_gripper()
+detach_object('lying_banana')
+'''
+}
 ]
 

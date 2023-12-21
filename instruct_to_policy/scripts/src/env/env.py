@@ -55,6 +55,10 @@ class Env:
         """ move robot end-effector to pose """
         raise NotImplementedError("move_to_pose() not implemented")
 
+    def follow_path(self, path):
+        """ follow a path """
+        raise NotImplementedError("follow_path() not implemented")
+
     def grasp(self, pose):
         """ grasp object at pose """
         raise NotImplementedError("grasp() not implemented")
@@ -96,7 +100,7 @@ class Env:
         """
         raise NotImplementedError("get_joint_axes() not implemented")
     
-    def get_object_joint_axis(self, obj_name: str, position: np.ndarray, type="any")->Dict:
+    def get_object_joint_info(self, obj_name: str, position: np.ndarray, type="any")->Dict:
         """
         Get the joint axis closest to the given axis.
         Args:
@@ -106,7 +110,7 @@ class Env:
         Returns:
             closest_axis: the closest joint axis
         """
-        raise NotImplementedError("get_object_joint_axis() not implemented")
+        raise NotImplementedError("get_object_joint_info() not implemented")
     
     ################ multimodal grounding interface ################
     def parse_question(self, question, **kwargs):

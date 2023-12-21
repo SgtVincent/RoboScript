@@ -65,6 +65,7 @@ def prepare_vars(env, defined_functions:List[str]=[]):
                 "attach_object",
                 "detach_object",
                 "move_to_pose",
+                "follow_path",
                 "grasp",
             ]
         }

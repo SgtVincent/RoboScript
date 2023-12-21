@@ -29,13 +29,14 @@ from perception_utils import (
 
 # Import utility functions for robot motion planning and execution
 from motion_utils import (
-    attach_object,  # Attaches an object to the robot gripper in the planning space. Call this function right after closing the gripper
-    detach_object   # Detaches an object from the robot gripper in the planning space. Call this function right after opening the gripper.
-    open_gripper    # Open the gripper 
-    close_gripper   # Close the gripper
-    move_to_pose    # Move the gripper to pose.
-    get_gripper_pose # Get the gripper pose
-    grasp           # Executes a grasp motion at the grasp_pose. Args: grasp_pose: Pose
+    attach_object,   # Attaches an object to the robot gripper in the planning space. Call this function right after closing the gripper
+    detach_object,   # Detaches an object from the robot gripper in the planning space. Call this function right after opening the gripper.
+    open_gripper,    # Open the gripper 
+    close_gripper,   # Close the gripper
+    move_to_pose,    # Move the gripper to pose. Args: pose: Pose
+    follow_path,     # Move the gripper to follow a path of poses. Args: path: List[Pose]
+    get_gripper_pose, # Get the gripper pose
+    grasp,            # Executes a grasp motion at the grasp_pose. Args: grasp_pose: Pose
 )
 '''
 The robot working space on table top is in range [-0.5, 0.2] in x-axis and [-0.5, 0.5] in y-axis. The height of the table top is 1.05.
@@ -59,37 +60,60 @@ def pick_and_place(object_name, pick_pose, place_pose):
     detach_object(object_name)
 '''
 },
-{# generate_arc_path(current_pose, center, radius, n, angle)
+{# generate_arc_path_around_joint(current_pose, joint_axis, joint_position, n, angle)
 "role":"user",
-"content": "# define function: generate_arc_path(current_pose, center, radius=0.5, n=20, angle=30)"
+"content": "# define function: generate_arc_path_around_joint(current_pose, joint_axis, joint_position, n=20, angle=30)"
 },
 {
 "role":"assistant",
 "content": 
 '''
-def generate_arc_path(current_pose, center, radius, n, angle):
-    waypoints = []
-    for i in range(n):
-        waypoint = Pose()
-        waypoint.position.x = center[0] + radius * np.cos(angle / n * i)
-        waypoint.position.y = center[1] + radius * np.sin(angle / n * i)
-        waypoint.position.z = center[2]
-        waypoint.orientation = current_pose.orientation
-        waypoints.append(waypoint)
-    return waypoints
-'''
-},
-{# follow_path(move_group, path_points)
-"role":"user",
-"content": "# define function: follow_path(move_group, path_points)"
-},
-{
-"role":"assistant",
-"content":
-'''
-def follow_path(move_group, path_points):
-    (plan, fraction) = move_group.compute_cartesian_path(path_points, 0.01, 0.0)
-    move_group.execute(plan, wait=True)
+def generate_arc_path_around_joint(current_pose, joint_axis, joint_position, n, angle):
+    """
+    Generate an arc path around a joint in space using ROS geometry_msgs.msg.Pose.
+
+    :param current_pose: geometry_msgs.msg.Pose, the current pose of the end effector
+    :param joint_axis: np.ndarray, a 3D unit vector representing the joint's axis
+    :param joint_position: np.ndarray, the 3D position of the joint in space
+    :param n: int, the number of intermediate poses to generate along the arc
+    :param angle: float, the total angle of the arc in degrees
+    :return: List[geometry_msgs.msg.Pose], a list of Pose messages representing the arc path
+    """
+    
+    # Convert angle from degrees to radians
+    angle_rad = np.deg2rad(angle)
+    
+    # Calculate the step angle for each intermediate pose
+    step_angle = angle_rad / n
+
+    # Generate the arc path
+    arc_path = []
+    for i in range(n + 1):
+        # Calculate the rotation for the current step
+        rotation = R.from_rotvec(joint_axis * step_angle * i)
+        
+        # Calculate the new position by applying the rotation to the vector from the joint to the current position
+        position_vector = np.array([current_pose.position.x, current_pose.position.y, current_pose.position.z]) - joint_position
+        new_position_vector = joint_position + rotation.apply(position_vector)
+        
+        # Calculate the new orientation by applying the rotation to the current orientation
+        current_orientation = R.from_quat([current_pose.orientation.x,
+                                           current_pose.orientation.y,
+                                           current_pose.orientation.z,
+                                           current_pose.orientation.w])
+        new_orientation = rotation * current_orientation
+        
+        # Create a new Pose message for the current step
+        new_pose_msg = geometry_msgs.msg.Pose()
+        new_pose_msg.position = geometry_msgs.msg.Point(x=new_position_vector[0], y=new_position_vector[1], z=new_position_vector[2])
+        new_orientation_quat = new_orientation.as_quat()
+        new_pose_msg.orientation = geometry_msgs.msg.Quaternion(x=new_orientation_quat[0],
+                                                                y=new_orientation_quat[1],
+                                                                z=new_orientation_quat[2],
+                                                                w=new_orientation_quat[3])
+        arc_path.append(new_pose_msg)
+    
+    return arc_path
 '''
 },
 {# move_in_direction(axis, distance)

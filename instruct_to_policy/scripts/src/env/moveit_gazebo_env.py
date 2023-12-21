@@ -355,6 +355,15 @@ class MoveitGazeboEnv(GazeboEnv):
         return success
 
     @_block
+    def follow_path(self, path, group=None, step_size=0.01, jump_threshold=0.0, avoid_collisions=True):
+        """Execute a given plan."""
+        if group is None:
+            group = self.move_group
+        
+        (plan, fraction) = group.compute_cartesian_path(path, step_size, jump_threshold, avoid_collisions=avoid_collisions)
+        return self._execute(group, plan)
+        
+    @_block
     def move_joints_to(self, joint_values, group=None):
         """Move the robot to a given joint configuration."""
         if group is None:

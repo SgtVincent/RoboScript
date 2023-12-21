@@ -109,7 +109,7 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         pass
     
     
-    def get_object_joint_axis(self, obj_name: str, position: np.ndarray, type="any")->Dict:
+    def get_object_joint_info(self, obj_name: str, position: np.ndarray, type="any")->Dict:
         """
         Get the joint axis closest to the given axis.
         Args:
@@ -138,7 +138,7 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         elif type in ["revolute", "prismatic"]:
             joint_types = [type]
         else:
-            raise ValueError("Error in get_object_joint_axis: Invalid type: {}".format(type))
+            raise ValueError("Error in get_object_joint_info: Invalid type: {}".format(type))
         
         # get joints axes from joint prediction model
         data = {

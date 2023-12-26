@@ -1,4 +1,4 @@
-message_tabletop_text = [
+message_tabletop_text_few_shot = [
 {
 "role":"system",
 "content": """

@@ -1,4 +1,4 @@
-message_tabletop_perception = [
+message_tabletop_perception_few_shot = [
 {
 "role":"system",
 "content": """

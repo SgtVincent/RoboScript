@@ -6,7 +6,7 @@ from geometry_msgs.msg import Quaternion, Pose, Point
 
 from grasp_detection.msg import Grasp
 from .moveit_gazebo_env import MoveitGazeboEnv
-from src.grasp_detection import GraspDetectionBase, GraspDetectionRemote
+from src.grasp_detection import create_grasp_model, GraspDetectionBase, GraspDetectionRemote
 from src.grounding_model import create_grounding_model, GroundingBase
 from src.env.utils import (
     calculate_place_position, 
@@ -25,10 +25,7 @@ class MultiModalEnv(MoveitGazeboEnv):
     def __init__(self, cfg) -> None:
         super().__init__(cfg)
         self.use_gt_perception = False 
-        self.object_metadata_files = cfg["env"]["metadata_files"]
         self.grasp_config = cfg["grasp_detection"]
-        self.grasp_method = self.grasp_config["method"] # ["heuristic", "model"]
-        
         self.grounding_config = cfg["grounding_model"]
         # use glip as default baseline 
         self.grounding_model_name = self.grounding_config.get("model_name", "glip")
@@ -46,12 +43,9 @@ class MultiModalEnv(MoveitGazeboEnv):
         """
         Initialze all models needed for the environment: grounding, grasp detection, etc.
         """
-        if self.grasp_method in ["model"]:
-            grasp_model_config = self.grasp_config["model_params"]
-            self.grasp_model = GraspDetectionRemote(grasp_model_config)
-            self.grasp_model.load_model()
-        
+    
         self.grounding_model = create_grounding_model(self.grounding_model_name, **self.grounding_model_args)
+        self.grasp_model = create_grasp_model(self.grasp_config)
 
     def detect_objects(self, **kwargs):
         """

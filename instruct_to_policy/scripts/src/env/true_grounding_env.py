@@ -7,7 +7,7 @@ import re
 from .moveit_gazebo_env import MoveitGazeboEnv
 from src.grasp_detection import GraspDetectionBase, GraspDetectionRemote
 from src.joint_prediction import JointPredictionGT 
-
+from src.grasp_detection import create_grasp_model, GraspDetectionBase, GraspDetectionRemote
 
 class TrueGroundingEnv(MoveitGazeboEnv):
     """
@@ -16,49 +16,24 @@ class TrueGroundingEnv(MoveitGazeboEnv):
     def __init__(self, cfg) -> None:
         super().__init__(cfg)
         self.use_gt_perception = True
-        self.object_metadata_files = cfg["env"]["metadata_files"]
         self.grasp_config = cfg["grasp_detection"]
-        self.grasp_method = self.grasp_config["method"] # ["heuristic", "model"]
         
         self.grasp_model = None
         self.groudning_model = None 
         self.joint_prediction_model = None
-        
-        self.object_info = {}
 
         self._init_models()
-        # self._load_gt_object_info()
     
     def _init_models(self):
         """
         Initialze all models needed for the environment: grounding, grasp detection, etc.
         """
-        if self.grasp_method in ["model"]:
-            grasp_model_config = self.grasp_config["model_params"]
-            self.grasp_model = GraspDetectionRemote(grasp_model_config)
-            self.grasp_model.load_model()
+        # initialize grasp detection model
+        self.grasp_model = create_grasp_model(self.grasp_config)
             
         # for true grounding env, always use ground truth joint prediction model
         self.joint_prediction_model = JointPredictionGT()
         
-    
-    def _load_gt_object_info(self):
-        """
-        Load the ground truth object information from object metadata files 
-        TODO: deprecated, remove this function when cleaning up the code
-        """
-        self.object_info = {}
-        for file in self.object_metadata_files:
-            with open(file, 'r') as f:
-                metadata = json.load(f)
-                for k, v in metadata["objects"].items():
-                    object_name = v['model_name']
-                    self.object_info[object_name] = {
-                        'bbox_size': v['bbox_size'],
-                        'bbox_center': v['bbox_center'],
-                    }
-      
-      
     def get_obj_name_list(self) -> List[str]:
         """
         Get objects names from gazebo API.

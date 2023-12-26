@@ -1,4 +1,4 @@
-message_fgen= [
+message_fgen_few_shot = [
 {
 "role":"system",
 "content": """

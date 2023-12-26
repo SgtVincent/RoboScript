@@ -10,7 +10,8 @@ from moviepy.editor import ImageSequenceClip
 from src.lmp import *
 # from src.env.pybullet_env import PickPlaceEnv
 from src.env.moveit_gazebo_env import MoveitGazeboEnv
-from src.config import cfg_tabletop
+from src.configs.config import load_config
+cfg_tabletop = load_config("perception_few_shot_gpt_3.5.yaml")
 from src.openai_api_key import OPENAI_API_KEY
 import rospy 
 openai.api_key = OPENAI_API_KEY

@@ -1,4 +1,4 @@
-message_tabletop_text = [
+message_tabletop_text_zero_shot = [
 {
 "role":"system",
 "content": """

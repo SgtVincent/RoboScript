@@ -66,7 +66,11 @@
 
   <!-- Spawn the Gazebo ROS controllers -->
   <node name="gazebo_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="joint_state_controller" />
-
+  
+  <!-- publish world to robot base frame transform -->
+  <node name="tf_pub_world_to_robot_base" pkg="tf2_ros" type="static_transform_publisher" 
+      args="$(arg x) $(arg y) $(arg z) $(arg roll) $(arg pitch) $(arg yaw) world ur5_base_link" />
+      
   <!-- Given the published joint states, publish tf for the robot links -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
   <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" respawn="true" output="screen" /> -->

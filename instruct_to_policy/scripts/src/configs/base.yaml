@@ -17,6 +17,7 @@ env:
     cameras: [camera_left, camera_right, camera_top]
     gt_point_cloud: false
   moveit_config:
+    arm_base_link: panda_link0
     arm_group_name: panda_arm
     gripper_group_name: panda_hand
     manipulator_group_name: panda_manipulator

@@ -26,7 +26,7 @@ from perception_utils import (
     parse_adaptive_shape_grasp_pose, # Parse adaptive grasp pose for objects. Args: object_name: str, preferred_position: Optional(np.ndarray); preferred gripper tip point position; preferred_approach_direction: Optional(np.ndarray), preferred gripper approach direction; preferred_plane_normal: Optional(np.ndarray), preferred gripper plane normal direction. Returns: grasp_pose: Pose
     parse_central_lift_grasp_pose, # This method involves a vertical lifting action. The gripper closes at the center of the object and is not suitable for elongated objects and is not suitable for the objects with openings, as the gripper's width is really small. It is optimal for handling spherical and cuboid objects without any opening that are not ideal for off-center grasping. Args: object_name: str, description: Optional(str) in ['top', 'center'], Returns: grasp_pose: Pose
     parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: Optional(str), position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
-    detect_objects,              # Detect and update task-specific objects' status in the environment. Call this function before interaction with environment objects. Args: object_list: Optional(List[str]), objects to detect.
+    detect_objects,              # Detect and update task-relevant objects' status in the environment. Call this function before interaction with environment objects. Args: object_list: Optional(List[str]), objects to detect.
     get_object_joint_info,       # Get the joint info of an object closest to a given position. Args: obj_name: str, name of the object; position: np.ndarray, select the joint closest to this position; type: str, allowed type of the joint, choice in ["any", "revolute", "prismatic"]. Returns: joint_info: dict, joint info of the object. {"joint_position":[x,y,z],"joint_axis":[rx,ry,rz],"type":str}
 )
 
@@ -66,13 +66,13 @@ Your generated content should only contain comments starting with '#' and python
 "content": 
 '''
 # Detailed planning:
-# Step 0: Reason task-specific objects
+# Step 0: Reason task-relevant objects
 # Step 1: Grasp the object_1
 # Step 2: Move the object_1 to the container_1
 # Step 3: Release the object_1
 
 
-# Reason task-specific objects
+# Reason task-relevant objects
 objects = ['object_1', 'container_1', 'table']
 detect_objects(object_list=objects)
 
@@ -94,31 +94,42 @@ detach_object('object_1')
 },
 {# Open a Drawer
 "role":"user",
-"content": "objects = ['cabinet', 'drawer1', 'table', 'plants'] ; # open the drawer"
+"content": "objects = ['cabinet', 'drawer', 'handle', 'table', 'plants'] ; # open the first-top drawer"
 },
 {
 "role":"assistant",
 "content":
 '''
 # Detailed planning: 
-# Step 0: Reason task-specific objects
-# Step 1: Get the drawer to be opened and its handle position
-# Step 2: Get the drawer prismatic joint closest to the handle position
-# Step 3: Grasp the drawer handle with position and joint axis preferences
-# Step 4: Pull the drawer handle, move in prismatic joint axis direction
-# Step 5: Release the gripper from drawer handle 
+# Step 0: Reason task-relevant object, drawer and its handle, and detect objects 
+# Step 1: Get the first-top drawer to be opened and all candidates of its handle position
+# Step 2: Select the first handle as the target handle
+# Step 3: Get the drawer prismatic joint closest to the handle position
+# Step 4: Grasp the drawer handle with position and joint axis preferences
+# Step 5: Pull the drawer handle, move in prismatic joint axis direction
+# Step 6: Release the gripper from drawer handle 
 
-# Reason task-specific objects
-objects = ['cabinet', 'drawer1', 'drawer1_handle']
+
+# Reason task-relevant objects, drawer and its handle, and detect objects
+objects = ['drawer','handle']
 detect_objects(object_list=objects)
 
-# Get the drawer to be opened and its handle position
-drawer_name = 'drawer1'
-drawer_handle_name = 'drawer1_handle'
+# Get the first-top drawer to be opened and all candidates of its handle position
+drawer_postion=get_object_center_position("drawer_0")
+x_min,y_min,z_min,x_max,y_max,z_max=get_3d_bbox("drawer_0")
+detected_objects=get_obj_name_list()
+handles= [name for name in detected_objects if 'handle' in name]
+drawer_handles=[]
+for handle_name in handles:
+  if get_object_center_position(handle_name)[2]>z_min and get_object_center_position(handle_name)[2]<z_max:
+    drawer_handles.append(handle_name)
+
+# Select the first handle as the target handle
+drawer_handle_name=drawer_handles[0]
 drawer_handle_position = get_object_center_position(drawer_handle_name)
 
 # Get the drawer prismatic joint closest to the handle position
-drawer_joint_info = get_object_joint_info(obj_name=drawer_name, position=drawer_handle_position, type="prismatic")
+drawer_joint_info = get_object_joint_info(obj_name='drawer', position=drawer_handle_position, type="prismatic")
 drawer_joint_position = drawer_joint_info["joint_position"]
 drawer_joint_axis = drawer_joint_info["joint_axis"]
 
@@ -140,28 +151,39 @@ detach_object(drawer_handle_name)
 },
 {# Close a Drawer
 "role":"user",
-"content": "objects = ['cabinet', 'drawer1', 'table', 'plants'] ; # close the drawer"
+"content": "objects = ['cabinet', 'drawer', 'handle', 'table', 'plants'] ; # close the first-top drawer"
 },
 {
 "role":"assistant",
 "content":
 '''
 # Detailed planning:
-# Step 0: Reason task-specific objects
-# Step 1: Get the drawer to be closed and its handle position
-# Step 2: Get the drawer prismatic joint closest to the handle position
-# Step 3: Grasp the drawer handle with position and joint axis preferences
-# Step 4: Push the drawer handle, move in -prismatic joint axis direction
-# Step 5: Release the gripper from drawer handle
+# Step 0: Reason task-relevant object, drawer and its handle, and detect objects 
+# Step 1: Get the first-top drawer to be opened and all candidates of its handle position
+# Step 3: Select the first handle as the target handle
+# Step 4: Get the drawer prismatic joint closest to the handle position
+# Step 5: Grasp the drawer handle with position and joint axis preferences
+# Step 6: Push the drawer handle, move in -prismatic joint axis direction
+# Step 7: Release the gripper from drawer handle
 
 
-# Reason task-specific objects
-objects = ['cabinet', 'drawer1', 'drawer1_handle']
+# Reason task-relevant objects, drawer and its handle, and detect objects
+objects = ['drawer','handle']
 detect_objects(object_list=objects)
 
-# Get the drawer to be closed and its handle position
-drawer_name = 'drawer1'
-drawer_handle_name = 'drawer1_handle'
+# Get the first-top drawer to be opened and all candidates of its handle position
+drawer_postion=get_object_center_position("drawer_0")
+x_min,y_min,z_min,x_max,y_max,z_max=get_3d_bbox("drawer_0")
+detected_objects=get_obj_name_list()
+handles= [name for name in detected_objects if 'handle' in name]
+drawer_handles=[]
+for handle_name in handles:
+    if get_object_center_position(handle_name)[2]>z_min and get_object_center_position(handle_name)[2]<z_max:
+        drawer_handles.append(handle_name)
+    
+# Select the first handle as the target handle
+drawer_handle_name=drawer_handles[0]
+drawer_handle_position = get_object_center_position(drawer_handle_name)
 
 # Get the drawer prismatic joint closest to the handle position
 drawer_handle_position = get_object_center_position(drawer_handle_name)
@@ -187,35 +209,45 @@ detach_object(drawer_handle_name)
 },
 {# Put object into the drawer
 "role":"user",
-"content": "objects = ['drawer1', 'drawer2', 'table', 'red_box'] ; # put the red box into the top drawer"
+"content": "objects = ['cabinet', 'drawer', 'table', 'red_box'] ; # put the red box into the first-top drawer"
 },
 {
 "role":"assistant",
 "content":
 '''
-# Detailed planning:
-# Step 0: Reason task-specific objects
-# Step 1: Get the drawer to be opened and its handle position
-# Step 2: Get the drawer prismatic joint closest to the handle position
-# Step 3: Grasp the drawer handle with position and joint axis preferences
-# Step 4: Pull the drawer handle, move in prismatic joint axis direction
-# Step 5: Release the gripper from drawer handle
+# Detailed planning: 
+# Step 0: Reason task-relevant object, and detect objects 
+# Step 1: Get the first-top drawer to be opened and all candidates of its handle position
+# Step 2: Select the first handle as the target handle
+# Step 3: Get the drawer prismatic joint closest to the handle position
+# Step 4: Grasp the drawer handle with position and joint axis preferences
+# Step 5: Pull the drawer handle, move in prismatic joint axis direction
+# Step 6: Release the gripper from drawer handle 
 # Step 6: Grasp the red box
 # Step 7: Move the red box to the drawer
 # Step 8: Release the red box
 
 
-# Reason task-specific objects
-objects = ['drawer1', 'drawer2', 'table', 'red_box']
+# Reason task-relevant objects, and detect objects
+objects = ['drawer','handle', 'red_box']
 detect_objects(object_list=objects)
 
-# Get the drawer to be opened and its handle position
-drawer_name = 'drawer1'
-drawer_handle_name = 'drawer1_handle'
+# Get the first-top drawer to be opened and all candidates of its handle position
+drawer_postion=get_object_center_position("drawer_0")
+x_min,y_min,z_min,x_max,y_max,z_max=get_3d_bbox("drawer_0")
+detected_objects=get_obj_name_list()
+handles= [name for name in detected_objects if 'handle' in name]
+drawer_handles=[]
+for handle_name in handles:
+  if get_object_center_position(handle_name)[2]>z_min and get_object_center_position(handle_name)[2]<z_max:
+    drawer_handles.append(handle_name)
+
+# Select the first handle as the target handle
+drawer_handle_name=drawer_handles[0]
 drawer_handle_position = get_object_center_position(drawer_handle_name)
 
 # Get the drawer prismatic joint closest to the handle position
-drawer_joint_info = get_object_joint_info(obj_name=drawer_name, position=drawer_handle_position, type="prismatic")
+drawer_joint_info = get_object_joint_info(obj_name='drawer', position=drawer_handle_position, type="prismatic")
 drawer_joint_position = drawer_joint_info["joint_position"]
 drawer_joint_axis = drawer_joint_info["joint_axis"]
 
@@ -229,90 +261,25 @@ attach_object(drawer_handle_name)
 # Pull the drawer handle, move in prismatic joint axis direction
 direction = drawer_joint_axis
 move_in_direction(direction, distance=0.2)
- 
+
 # Release the drawer
 open_gripper()
 detach_object(drawer_handle_name)
 
 # Grasp the red box
 open_gripper()
-grasp_pose = parse_adaptive_shape_grasp_pose('red_box')
+grasp_pose = parse_adaptive_shape_grasp_pose('red_box_0')
 grasp(grasp_pose)
 close_gripper()
-attach_object('red_box')
+attach_object('red_box_0')
 
 # Move the red box to the drawer
-place_pose = parse_place_pose('red_box', 'drawer1')
+place_pose = parse_place_pose('red_box_0', 'drawer_0')
 move_to_pose(place_pose)
 
 # Release the red box
 open_gripper()
-detach_object('red_box')
-'''
-},
-{# Pick object from the drawer
-"role":"user",
-"content": "objects = ['drawer0', 'drawer1', 'table', 'knife', 'plate'] ; # pick the knife from the top drawer and put it on the plate"
-},
-{
-"role":"assistant",
-"content":
-'''
-# Detailed planning:
-# Step 0: Reason task-specific objects
-# Step 1: Get the drawer to be opened and its handle position
-# Step 2: Get the drawer prismatic joint closest to the handle position
-# Step 3: Grasp the drawer handle with position and joint axis preferences
-# Step 4: Pull the drawer handle, move in prismatic joint axis direction
-# Step 5: Release the gripper from drawer handle
-# Step 6: Grasp the knife
-# Step 7: Move the knife to the plate
-# Step 8: Release the knife
-
-
-# Reason task-specific objects
-objects = ['drawer0', 'drawer1', 'table', 'knife', 'plate']
-detect_objects(object_list=objects)
-
-# Get the drawer to be opened and its handle position
-drawer_name = 'drawer1'
-drawer_handle_name = 'drawer1_handle'
-drawer_handle_position = get_object_center_position(drawer_handle_name)
-
-# Get the drawer prismatic joint closest to the handle position
-drawer_joint_info = get_object_joint_info(obj_name=drawer_name, position=drawer_handle_position, type="prismatic")
-drawer_joint_position = drawer_joint_info["joint_position"]
-drawer_joint_axis = drawer_joint_info["joint_axis"]
-
-# Grasp the drawer handle with position and joint axis preferences
-open_gripper()
-grasp_pose = parse_adaptive_shape_grasp_pose(object_name=drawer_handle_name, preferred_position=drawer_handle_position, preferred_approach_direction=drawer_joint_axis)
-grasp(grasp_pose)
-close_gripper()
-attach_object(drawer_handle_name)
-
-# Pull the drawer handle, move in prismatic joint axis direction
-direction = drawer_joint_axis
-move_in_direction(direction, distance=0.2)
-
-# Release the drawer
-open_gripper()
-detach_object(drawer_handle_name)
-
-# Grasp the knife
-open_gripper()
-grasp_pose = parse_adaptive_shape_grasp_pose('knife')
-grasp(grasp_pose)
-close_gripper()
-attach_object('knife')
-
-# Move the knife to the plate
-place_pose = parse_place_pose('knife', 'plate')
-move_to_pose(place_pose)
-
-# Release the knife
-open_gripper()
-detach_object('knife')
+detach_object('red_box_0')
 '''
 },
 {# Open a Door 
@@ -324,24 +291,31 @@ detach_object('knife')
 "content":
 '''
 # Detailed planning: 
-# Step 0: Reason task-specific objects
-# Step 1: Get the door to be opened and its handle position
+# Step 0: Reason task-relevant objects, and detect objects
+# Step 1: Get the door to be opened and its closest handle position
 # Step 2: Get the door revolute joint closest to the handle position
 # Step 3: Grasp the door handle with position and joint axis preferences
 # Step 4: Generate a rotational motion plan around the revolute joint 
 # Step 5: Move the gripper along the motion plan
 # Step 6: Release the gripper from door handle
-# Reason task-specific objects
 
 
+# Reason task-relevant objects, and detect objects
 objects = ['door', 'door_handle']
 detect_objects(object_list=objects)
 
-# Get the door to be opened and its handle position
-door_name = 'door'
-handle_name = 'door_handle'
-handle_position = get_object_center_position(handle_name)
-
+# Get the door to be opened and its closest handle position
+door_position=get_object_center_position("door_0")
+x_min,y_min,z_min,x_max,y_max,z_max=get_3d_bbox("door_0")
+detected_objects=get_obj_name_list()
+handles= [name for name in detected_objects if 'handle' in name]
+hanle_distances=[]
+for handle_name in handles:
+    handle_position=get_object_center_position(handle_name)
+    hanle_distances.append(np.linalg.norm(handle_position-door_position))
+door_handle_name=handles[np.argmin(hanle_distances)]
+handle_position=get_object_center_position(door_handle_name)
+    
 # Get the door revolute joint closest to the handle position
 door_joint_info = get_object_joint_info(obj_name=door_name, position=handle_position, type="revolute")
 door_joint_position = door_joint_info["joint_position"]
@@ -374,12 +348,12 @@ detach_object(handle_name)
 "content":
 '''
 # Detailed planning:
-# Step 0: Reason task-specific objects
+# Step 0: Reason task-relevant objects
 # Step 1: Check which toys are in the basket
 # Step 2: For each toy in the basket, grasp it and put it on the table
 
 
-# Reason task-specific objects
+# Reason task-relevant objects
 objects = ['toy_car', 'toy_train', 'table', 'wood_basket']
 detect_objects(object_list=objects)
 
@@ -417,13 +391,13 @@ for toy_name in toys_in_basket:
 "content":
 '''
 # Detailed planning:
-# Step 0: Reason task-specific objects
+# Step 0: Reason task-relevant objects
 # Step 1: Grasp the bowl 
 # Step 2: Move the bowl to the table
 # Step 3: Release the bowl
 
 
-# Reason task-specific objects
+# Reason task-relevant objects
 objects = ['shelf', 'bowl', 'table']
 detect_objects(object_list=objects)
 
@@ -452,14 +426,14 @@ detach_object('bowl')
 "content":
 '''
 # Detailed planning:
-# Step 0: Reason task-specific objects
+# Step 0: Reason task-relevant objects
 # Step 1: Grasp the apple
 # Step 2: Calculate the position to move the apple to
 # Step 3: Move the apple to the calculated position
 # Step 4: Release the apple
 
 
-# Reason task-specific objects
+# Reason task-relevant objects
 objects = ['bowl', 'table', 'apple']
 detect_objects(object_list=objects)
 
@@ -495,7 +469,7 @@ detach_object('apple')
 "content":
 '''
 # Detailed planning:
-# Step 0: Reason task-specific objects
+# Step 0: Reason task-relevant objects
 # Step 1: Grasp the peach in the plate
 # Step 2: Move the peach onto the table
 # Step 3: Release the peach 
@@ -508,7 +482,7 @@ detach_object('apple')
 # Step 10: Move the peach into the fry pan
 
 
-# Reason task-specific objects
+# Reason task-relevant objects
 objects = ['plate', 'fry_pan', 'table', 'peach', 'apple']
 detect_objects(object_list=objects)
 
@@ -573,7 +547,7 @@ detach_object('peach')
 "content":
 '''
 # Detailed planning:
-# Step 0: Reason task-specific objects
+# Step 0: Reason task-relevant objects
 # Step 1: Grasp the apple. Use parse_center_lift_grasp_pose() since the apple is a spherical object.
 # Step 2: Move the apple to the plate
 # Step 3: Release the apple
@@ -587,7 +561,7 @@ detach_object('peach')
 # Step 11: Release the lying banana
 
 
-# Reason task-specific objects
+# Reason task-relevant objects
 objects = ['table', 'apple', 'plate', 'standing_pink_box', 'lying_banana']
 detect_objects(object_list=objects)
 

@@ -28,6 +28,7 @@ from perception_utils import (
     parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: Optional(str), position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
     detect_objects,              # Detect and update task-relevant objects' status in the environment. Call this function before interaction with environment objects. Args: object_list: Optional(List[str]), objects to detect.
     get_object_joint_info,       # Get the joint info of an object closest to a given position. Args: obj_name: str, name of the object; position: np.ndarray, select the joint closest to this position; type: str, allowed type of the joint, choice in ["any", "revolute", "prismatic"]. Returns: joint_info: dict, joint info of the object. {"joint_position":[x,y,z],"joint_axis":[rx,ry,rz],"type":str}
+    get_plane_normal,            # Get the plane normal of an object closest to the given position. Args: obj_name: name of the object position: np.ndarray, select the plane closest to this position. Returns: np.ndarray, normal vector [x,y,z]
 )
 
 There are three preferences for function parse_adaptive_shape_grasp_pose(). Note that you need to choose the right preferences for different tasks and objects.
@@ -42,7 +43,7 @@ from motion_utils import (
     open_gripper,    # Open the gripper. No args.
     close_gripper,   # Close the gripper. No args.
     move_to_pose,    # Move the gripper to pose. Args: pose: Pose
-    follow_path      # Move the gripper to follow a path of poses. Args: path: List[Pose]
+    follow_path,     # Move the gripper to follow a path of poses. Args: path: List[Pose]
     get_gripper_pose, # Get the gripper pose. No args. Returns: pose: Pose
     grasp,           # Executes a grasp motion at the grasp_pose. Args: grasp_pose: Pose
 )
@@ -294,10 +295,11 @@ detach_object('red_box_0')
 # Step 0: Reason task-relevant objects, and detect objects
 # Step 1: Get the door to be opened and its closest handle position
 # Step 2: Get the door revolute joint closest to the handle position
-# Step 3: Grasp the door handle with position and joint axis preferences
-# Step 4: Generate a rotational motion plan around the revolute joint 
-# Step 5: Move the gripper along the motion plan
-# Step 6: Release the gripper from door handle
+# Step 3: Get the door plane normal closest to the handle position
+# Step 4: Grasp the door handle with position and approach preferences: grasp at the center of the handle, approach from the door plane normal
+# Step 5: Generate a rotational motion plan around the revolute joint 
+# Step 6: Move the gripper along the motion plan
+# Step 7: Release the gripper from door handle
 
 
 # Reason task-relevant objects, and detect objects
@@ -321,9 +323,12 @@ door_joint_info = get_object_joint_info(obj_name=door_name, position=handle_posi
 door_joint_position = door_joint_info["joint_position"]
 door_joint_axis = door_joint_info["joint_axis"]
 
-# Grasp the door handle with position and joint axis preferences
+# Get the door plane normal closest to the handle position
+door_plane_normal = get_plane_normal(obj_name=door_name, position=handle_position)
+
+# Grasp the door handle with position and approach preferences: grasp at the center of the handle, approach from the door plane normal
 open_gripper()
-grasp_pose = parse_adaptive_shape_grasp_pose(object_name=handle_name, preferred_position=handle_position, preferred_approach_direction=door_joint_axis)
+grasp_pose = parse_adaptive_shape_grasp_pose(object_name=door_handle_name, preferred_position=handle_position, preferred_approach_direction=door_plane_normal)
 grasp(grasp_pose)
 close_gripper()
 attach_object(handle_name)

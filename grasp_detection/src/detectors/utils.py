@@ -249,9 +249,13 @@ def open3d_frustum_filter(pcl: o3d.geometry.PointCloud, bbox_2d_list: List[np.nd
         pixels = (points[:, :2] / points[:, 2:]).astype(np.int32) # (x,y) pixel coordinates
         
         # check if projected pixels are within 2D bounding box
-        mask = np.all(np.logical_and(pixels >= bbox[:2] - margin, pixels <= bbox[2:] + margin), axis=1)
+        # mask = np.all(np.logical_and(pixels >= bbox[:2] - margin, pixels <= bbox[2:] + margin), axis=1)
+        # mask = np.all(bbox[pixels]==True, axis=1)
+        mask = (bbox[pixels] == True)
+        print('mask', mask.shape)
+        # mask_list.append(mask)
         mask_list.append(mask)
-        
+
     # combine masks from all cameras
     mask = np.all(mask_list, axis=0)
     

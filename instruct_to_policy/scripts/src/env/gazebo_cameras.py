@@ -27,28 +27,27 @@ class GazeboRGBDCamera:
         
         # subscribe to camera topics
         self.rgb_image_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/color/image_raw", Image, self.rgb_image_callback)
-        if use_aligned_depth:
-            self.depth_image_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/aligned_depth/image_raw", Image, self.depth_image_callback)
-        else:
-            self.depth_image_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/depth/image_raw", Image, self.depth_image_callback)
+        self.depth_image_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/depth/image_raw", Image, self.depth_image_callback)
+
         self.rgb_camera_info_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/color/camera_info", CameraInfo, self.rgb_camera_info_callback)
-        
-        if use_aligned_depth:
-            self.depth_camera_info_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/aligned_depth/camera_info", CameraInfo, self.depth_camera_info_callback)
-        else:
-            self.depth_camera_info_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/depth/camera_info", CameraInfo, self.depth_camera_info_callback)
-        
+        self.depth_camera_info_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/depth/camera_info", CameraInfo, self.depth_camera_info_callback)
+       
         # point cloud subscriber 
         self.sub_pcl = None
         if sub_pcl:
             self.pcl_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/depth/color/points", PointCloud2, self.pcl_callback)
 
 
+        self.difference = None
+
         self.bridge = CvBridge()
         # buffer for data synchronization
         self.rgb_buffer = deque(maxlen=buffer_size)
         self.depth_buffer = deque(maxlen=buffer_size)
         self.pcl_buffer = deque(maxlen=buffer_size)
+
+        # self.tf_buffer = tf2_ros.Buffer()
+        # self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
 
         # get camera info from ros
         self._init_with_camera_info()
@@ -95,6 +94,9 @@ class GazeboRGBDCamera:
 
     def rgb_image_callback(self, data):
         try:
+            # if self.difference == None:
+            #     self.difference = data.header.stamp - rospy.Time.now()
+            # data.header.stamp = data.header.stamp - self.difference
             # save all raw data for synchronization and processing
             self.rgb_buffer.append(data)
         except CvBridgeError as e:
@@ -102,6 +104,9 @@ class GazeboRGBDCamera:
     
     def depth_image_callback(self, data):
         try:
+            # if self.difference == None:
+            #     self.difference = data.header.stamp - rospy.Time.now()
+            # data.header.stamp = data.header.stamp - self.difference
             # save all raw data for synchronization and processing
             self.depth_buffer.append(data)
         except CvBridgeError as e:
@@ -203,7 +208,6 @@ class GazeboRGBDCameraSet:
         # _, first_rgb_frame, _, _ = self.cameras[self.cameras_list[0]].get_camera_instrinsics_and_frames()
         # self.tf_listener.waitForTransform("world", first_rgb_frame, rospy.Time(), rospy.Duration(4.0))
 
-
     def query_extrinsic(self, time:genpy.Time, camera_frame:str, source_frame:str="world")->Transform:
         """
         Query extrinsic transform from camera to target frame
@@ -242,12 +246,14 @@ class GazeboRGBDCameraSet:
         """
         # first get min timestamp within all lastest timestamps from cameras
         timestamp_list = []
-        for camera_name in self.cameras_list:
+        for camera_idx, camera_name in enumerate(self.cameras_list):
             rgb_timestamp, depth_timestamp = self.cameras[camera_name].get_last_timestamp()
             if rgb_timestamp is None or depth_timestamp is None:
                 rospy.logwarn(f"{camera_name}: No data received yet!")
                 return None, None
             else:
+                rgb_timestamp = rgb_timestamp
+                depth_timestamp = depth_timestamp
                 timestamp_list.append(rgb_timestamp)
                 timestamp_list.append(depth_timestamp)
         timestamp = min(timestamp_list)
@@ -285,6 +291,8 @@ class GazeboRGBDCameraSet:
                 data['depth_camera_frame_list'].append(depth_camera_frame)
 
                 # query extrinsic transform from camera to world
+                print('-------------------------------------rgb_camera_frame------------------------------------', rgb_camera_frame)
+                print('-------------------------------------time_stamp------------------------------------', timestamp, rospy.Time.now().to_sec())
                 rgb_camera_extrinsic = self.query_extrinsic(timestamp, rgb_camera_frame)
                 depth_camera_extrinsic = self.query_extrinsic(timestamp, depth_camera_frame)
                 data['rgb_camera_extrinsic_list'].append(rgb_camera_extrinsic)

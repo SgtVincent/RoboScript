@@ -21,6 +21,7 @@ from src.config import cfg_tabletop
 from src.openai_api_key import OPENAI_API_KEY
 import rospy 
 
+
 def load_queries(task_queries_file):
     """
     Load task queries from txt file. The first line is the world context, and the rest are task queries line by line:
@@ -45,6 +46,8 @@ def load_queries(task_queries_file):
             query = match.group('query')
             task_query = context + "; #" + query
             task_queries.append(task_query)
+
+    print('---------------------task_queries---------------------', task_queries)
 
     return task_queries
 
@@ -79,6 +82,15 @@ def prepare_vars_detached():
             "detach_object",
             "move_to_pose",
             "get_gripper_pose",
+            "detect_objects",
+            "detect_objects_with_moving",
+            "check",
+            "move_in_direction",
+            "figure_direction",
+            "follow_path",
+            "get_object_joint_info",
+            "generate_arc_path_around_joint",
+            "parse_vertical_grasp_pose",
             "grasp",
         ]
     }
@@ -160,7 +172,7 @@ def parse_args():
                         help="Max tokens (defaults to 4096)")
     parser.add_argument("--max-queries", type=int, default=10, 
                         help="Max number of task queries to generate (defaults to 200)")
-    os.chdir("/home/junting/franka_ws/src/franka_fisher/instruct_to_policy")
+    os.chdir("/home/cuite/data/franka_gazebo_ws/src/llm-manipulation-bench/instruct_to_policy")
     
     args, unknown_args = parser.parse_known_args()
 

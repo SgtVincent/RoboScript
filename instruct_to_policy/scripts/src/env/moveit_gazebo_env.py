@@ -23,6 +23,8 @@ from actionlib import SimpleActionClient, GoalStatus
 from moveit_msgs.msg import PositionIKRequest, RobotState
 from moveit_msgs.srv import GetPositionIK
 
+from geometry_msgs.msg import WrenchStamped
+
 from src.env.utils import (
     get_pose_msg, 
     get_stamped_pose,
@@ -32,6 +34,8 @@ from src.utils import has_keywords
 from src.env.gazebo_env import GazeboEnv
 from src.env.moveit_collision_manager import CollisionManager
 from src.env.moveit_grippers import GripperCommanderGroup
+
+import time
 
 class Grasp(NamedTuple):
     orientation: np.ndarray
@@ -71,7 +75,9 @@ class MoveitGazeboEnv(GazeboEnv):
         self.goal_orientation_tolerance = self.config.get('goal_orientation_tolerance', 0.02)  
         self.reference_frame = self.config.get('reference_frame', self.frame)
         self.cartesian_path = self.config.get('cartesian_path', False)
-        self.tentative_approach = self.config.get('tentative_approach', True)
+        self.tentative_approach = self.config.get('tentative_approach', False)
+
+        print('self.tentative_approach', self.tentative_approach)
 
         # group name 
         # franka default
@@ -93,6 +99,10 @@ class MoveitGazeboEnv(GazeboEnv):
         self.ignore_coll_check = False
         self.wait_at_grasp_pose = False
         self.wait_at_place_pose = False
+
+        # CGY
+        self.grasp_object_name = None
+        self.force_judge = False
 
         # Service to compute IK
         self.compute_ik = rospy.ServiceProxy("/compute_ik", GetPositionIK)
@@ -176,12 +186,17 @@ class MoveitGazeboEnv(GazeboEnv):
         return True
 
     def _execute(self, move_group, plan, reset_err=True):
-        if not move_group.execute(plan, wait=True):
+        rospy.loginfo("Executing")
+        success = move_group.execute(plan, wait=True)
+        if not success:
             # if reset_err:
             #     rospy.logwarn("Execution failed!. Going to retry with error recovery")
             #     self.error_recovery_client.send_goal_and_wait(ErrorRecoveryActionGoal())
             #     return move_group.execute(plan, wait=True)
             return False
+        rospy.loginfo(f"{success}")
+        rospy.loginfo("Done")
+
         return True
 
     def computeIK(
@@ -316,22 +331,21 @@ class MoveitGazeboEnv(GazeboEnv):
 
 
     @_block
-    def move_to_pose(self, pose: Pose, group:moveit_commander.MoveGroupCommander=None):
+    def move_to_pose(self, pose: Pose, group:moveit_commander.MoveGroupCommander=None, only_cartesian = False):
         """Move the robot to a given pose with given orientation."""
+        print("------------------move_to_pose-----------------------")
         # TODO: add recovery behavior to decrease gripper width and try plan again
-        
+
         if group is None:
             group = self.move_group
-            
-        # publish debug goal pose to rviz
         if self.debug:
             self.publish_goal_to_marker(pose)
-            
+           
         plan_success = False
         # first try to plan with cartesian path if enabled
         if self.cartesian_path:
-            (plan, fraction) = group.compute_cartesian_path([pose], 0.02, 0.0)
-            if fraction > 0.9:
+            (plan, fraction) = self.move_group.compute_cartesian_path([pose], 0.001, 0.0,avoid_collisions = True)
+            if fraction > 0.2:
                 plan_success = True
             else:
                 rospy.logwarn(f"MoveitEnv: Could not plan cartesian_path to target pose \n{pose}.\n Plan accuracy: {fraction}")
@@ -339,19 +353,24 @@ class MoveitGazeboEnv(GazeboEnv):
 
         # if cartesian path is disabled or failed, try to replan non-cartesian path
         if not self.cartesian_path or not plan_success:
-            group.set_pose_target(pose)
+            self.move_group.set_pose_target(pose)
             # API change for move_group.plan()
             # return: (success flag : boolean, trajectory message : RobotTrajectory, planning time : float, error code : MoveitErrorCodes)
-            plan_success, plan, _, _ = group.plan()
+            plan_success, plan, _, _ = self.move_group.plan()
             if not plan_success:
                 rospy.logwarn(f"MoveitEnv: Could not plan to target pose \n{pose}")
                  
         if not plan_success:
             return False
         
-        success = self._execute(group, plan)
-        group.stop()
-        group.clear_pose_targets()
+        ################Zhou Tianxing1220
+   
+        ################Zhou Tianxing1220
+        if plan_success:
+            print('----------------execute------------------------')
+            success = self._execute(self.move_group, plan)
+            self.move_group.stop()
+            self.move_group.clear_pose_targets()
         return success
 
     @_block
@@ -359,19 +378,30 @@ class MoveitGazeboEnv(GazeboEnv):
         """Move the robot to a given joint configuration."""
         if group is None:
             group = self.move_group
+        group.set_max_velocity_scaling_factor(0.3) # 0.3       
+
         group.set_joint_value_target(joint_values)
         plan = self._go(group)
         group.stop()
         group.clear_pose_targets()
         return plan
+    
+    # def franka_state_callback(self,data):
+    #     self.x_force = data.wrench.force.x
+    #     self.y_force = data.wrench.force.y
+    #     self.z_force = data.wrench.force.z
+    #     rospy.INFO(f"--------------------------{self.x_force}")
+         
 
     @_block
     def attach_object(self, object_id, link=None):
         """Attach an object to the robot gripper"""
         # TODO: need to clean & refactor this function
+        print("attach")
         if link is None:
             link = self.end_effctor_link
 
+        print("0")
         # DO NOT add furniture into moveit planning scene since they are static
         if has_keywords(object_id, self.static_objects):
             rospy.logdebug(f"Moveit: object {object_id} is static. Skip attaching to robot")
@@ -381,15 +411,17 @@ class MoveitGazeboEnv(GazeboEnv):
         # we need to convert the object name to the name in moveit planning scene
         # e.g. 'apple' in gazebo -> 'apple.link' in moveit planning scene
         moveit_object_names = self.planning_scene.get_known_object_names()
-        
+        print("1")
         for moveit_object_name in moveit_object_names:
             if object_id in moveit_object_name:
+                print("2")
                 self.objects[object_id]["attach_name"] = moveit_object_name
                 self.move_group.attach_object(moveit_object_name, link) 
+                rospy.loginfo(f"Moveit: attached object object {object_id} to {link}")
                 if self.verbose:
+                    print("Moveit: attached object ",object_id)
                     rospy.loginfo(f"Moveit: attached object object {object_id} to {link}")
                 return True
-        
         rospy.logerr(f"Moveit: object {object_id} not found in moveit planning scene. Planning scene objects: {moveit_object_names}")
         return False
 
@@ -407,12 +439,85 @@ class MoveitGazeboEnv(GazeboEnv):
             if self.verbose:
                 rospy.logerr(f"Moveit: failed to detach object {object_id}")
 
+    def cartesian_path_with_force(self, approach_pose, fraction_threshold=0.2, force_threshold=20, time_threshold=5, singular_threshold=None, return_f_direction=False, avoid_collision=True, rtol=1e-2, atol=1e-3):
+        result = -2 # -2 plan failed, -1: force over threshold, 0 force error, 1 success, 
+        rospy.Subscriber("/franka_state_controller/F_ext", WrenchStamped, self.franka_state_callback)
+        time.sleep(1)
+        repeat = True
+        COUNT_THRESHOLD = 2
+        count = 0
+        while repeat and count < COUNT_THRESHOLD:
+            force_direction = None
+            repeat = False
+            flag_follow = True
+            print('calculating the planning to the target pose')
+            (plan, fraction) = self.move_group.compute_cartesian_path([approach_pose], 0.02, 0.0, avoid_collision)
+            if fraction > fraction_threshold:
+                plan_success = True
+            else:
+                rospy.logwarn(f"MoveitEnv: Could not plan cartesian_path to target pose \n{approach_pose}.\n Plan accuracy: {fraction}")
+                plan_success = False
+                result = -2
+
+            if plan_success:
+                self.move_group.execute(plan, wait=False)
+                start_time = time.time()
+                while not rospy.is_shutdown() and (flag_follow):
+                    current_time = time.time()
+                    force_vector = np.array([self.current_force_x, self.current_force_y, self.current_force_z])
+                    force_magnitude = np.linalg.norm(force_vector)
+                    force_direction = force_vector / force_magnitude if force_magnitude != 0 else np.zeros_like(force_vector)
+                    current_position = self.move_group.get_current_pose().pose.position 
+                    current_pos_array = np.array([current_position.x, current_position.y, current_position.z])
+                    waypoint_pos_array = np.array([approach_pose.position.x, approach_pose.position.y, approach_pose.position.z])
+                    if force_magnitude > force_threshold:
+                        print("Detected force exceeding the threshold")
+                        result = -1
+                        flag_follow = False
+                    elif np.allclose(current_pos_array, waypoint_pos_array, rtol=rtol, atol=atol):
+                        print("Reached the target position")
+                        result = 1
+                        flag_follow = False
+                    elif self.current_force_x == 0 and self.current_force_y  == 0 and self.current_force_z == 0:
+                        print("Detected singular value")
+                        if singular_threshold != None:
+                            current_waypoint_distance = np.linalg.norm(current_pos_array - waypoint_pos_array)
+                            if current_waypoint_distance < singular_threshold:
+                                result = 0
+                                flag_follow = False    
+                        else:
+                            result = 0
+                            flag_follow = False 
+                    elif current_time - start_time > time_threshold:
+                        print("Over time, repeat")
+                        count += 1
+                        flag_follow = False
+                        repeat = True
+                self.move_group.stop()
+                self.move_group.clear_pose_targets()
+        if return_f_direction:
+            return result, force_direction
+        else:
+            return result
+    
+    def cartesian_path_without_force(self, approach_pose, fraction_threshold=0.2, avoid_collision=True):
+        (plan, fraction) = self.move_group.compute_cartesian_path([approach_pose], 0.02, 0.0, avoid_collision)
+        if fraction > fraction_threshold:
+            plan_success = True
+            self.move_group.execute(plan, wait=True)
+            self.move_group.stop()
+            self.move_group.clear_pose_targets()
+        else:
+            rospy.logwarn(f"MoveitEnv: Could not plan cartesian_path to target pose \n{approach_pose}.\n Plan accuracy: {fraction}")
+            plan_success = False
+        return plan_success
+
 
     @_block
     def grasp(
         self,
         pose: Pose,
-        pre_grasp_approach=0.1,
+        pre_grasp_approach=0.2,
         depth=0.03,
         tentative_depth_list=[0.03, 0.01, -0.01],
     ):
@@ -427,12 +532,12 @@ class MoveitGazeboEnv(GazeboEnv):
         NOTE: for anygrasp and the offset between gripper tip and grasp center is 0.02, depth = 0.05 - 0.02 = 0.03
         # TODO: should add pre_grasp_approach and depth to the robot-specifig config file
         """
+        FORCE_THRESHOLD = 20
 
-        position = np.array([pose.position.x, pose.position.y, pose.position.z])
+        position = np.array([pose.position.x-0.02, pose.position.y, pose.position.z])#Zhou Tianxing
         orientation = np.array(
             [pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w]
         )
-
         # calculate pre-grasp pose 
         pre_grasp_pose = get_pose_msg(
             position
@@ -448,7 +553,9 @@ class MoveitGazeboEnv(GazeboEnv):
         if self.verbose:
             rospy.loginfo("MoveitEnv: Moved to pre-grasp pose")
 
-        self.open_gripper() # poor planning leads to collision between gripper and object, and it closes by force
+        # self.open_gripper() # poor planning leads to collision between gripper and object, and it closes by force
+
+        rospy.loginfo('--------------------------pre grasp------------------------------')
 
         if not self.tentative_approach:
             # calculate approach pose
@@ -457,11 +564,13 @@ class MoveitGazeboEnv(GazeboEnv):
                 + Rotation.from_quat(orientation).as_matrix() @ (depth * np.array([0, 0, 1])),
                 orientation,
             )
-            success = self.move_to_pose(approach_pose)
-        
-            if not success:
-                rospy.logwarn("MoveitEnv: Failed to approach to grasp pose")
-                return False
+            if self.force_judge:
+                print('cartesian_path_with_force')
+                self.cartesian_path_with_force(approach_pose, singular_threshold=0.10, force_threshold=FORCE_THRESHOLD)
+                self.force_judge = False 
+            else:
+                print('cartesian_path_without_force')
+                self.cartesian_path_without_force(approach_pose)
         else:
             # calculate tentative approach pose
             for tentative_depth in tentative_depth_list:
@@ -477,17 +586,25 @@ class MoveitGazeboEnv(GazeboEnv):
             
             if not success:
                 rospy.logwarn("MoveitEnv: Failed to approach to grasp pose")
-                return False
-            
+                return False            
         
         if self.verbose:
             rospy.loginfo("MoveitEnv: Approached to grasp pose")
 
         if self.wait_at_grasp_pose:
             import time
-            time.sleep(5)
-        
+            time.sleep(2)  
+
         return True
+        
+    # def franka_state_callback(self,data,**kwargs):
+    #     x_force = data.wrench.force.x
+    #     y_force = data.wrench.force.y
+    #     z_force = data.wrench.force.z
+    #     # rospy.loginfo("Current axis force,%f,%f,%f", x_force,y_force,z_force)
+    #     self.current_force_x = x_force
+    #     self.current_force_y = y_force
+    #     self.current_force_z = z_force
 
     @_block
     def place(self, pose: Pose, width=0.025, lift_height=0.1, dryrun=False):
@@ -528,3 +645,4 @@ class MoveitGazeboEnv(GazeboEnv):
             self.open_gripper()
 
         return True
+    

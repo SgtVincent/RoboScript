@@ -151,8 +151,8 @@ class GraspExecutor:
         print("Loading static scene information")
         self.load_scene(load_wall=self.load_wall)
         self.group.set_planning_time(15)
-        self.group.set_max_velocity_scaling_factor(0.15)
-        self.group.set_max_acceleration_scaling_factor(0.15)
+        self.group.set_max_velocity_scaling_factor(0.1) # 0.15
+        self.group.set_max_acceleration_scaling_factor(0.1) # 0.15
         
         self.drop_off_pose = drop_off_pose if drop_off_pose is not None else [-0.6861938888210998, -1.0922074558700297, -0.596633734874051, -2.397880921082069, -0.5792871115412288, 1.3971697680950166, -1.9250296761749517]
         self.reset_pose = reset_pose if reset_pose is not None else [-0.41784432355234147, 0.49401059360515726, -0.6039398761251251, -1.1411382317488874, 0.7870978311647195, 1.1255037510962724, -1.456606710367404]
@@ -180,6 +180,13 @@ class GraspExecutor:
     @_block
     def move_to_pose(self, position: List[float], orientation: List[float] = None):
         """Move the robot to a given pose with given orientation."""
+        print("-----------------------back--------------")
+        # pose_goal = [-0.001209562553452295, -0.7798870970324466, -0.0025529672049247384, -2.3749749452691327, -0.0031800321414839528, 1.5748067867097109, 0.7786260150587473]
+        # self.group.set_pose_target(pose_goal)
+        # # # `go()` returns a boolean indicating whether the planning and execution was successful.
+        # success = self.group.go(wait=True)
+        # # Calling `stop()` ensures that there is no residual movement
+        self.group.stop()
         orientation = orientation if orientation is not None else [0, 0, 0, 1]
         pose = get_stamped_pose(position, orientation, self.frame)
         self.group.set_pose_target(pose)
@@ -271,9 +278,8 @@ class GraspExecutor:
             dryrun: If true, the robot will not call the action to close the gripper (not available in simulation).
             verbose: If true, the robot will print information about the grasp.
         """
-
-        self.group.set_max_velocity_scaling_factor(0.2)
-        self.group.set_max_acceleration_scaling_factor(0.2)
+        self.group.set_max_velocity_scaling_factor(0.1) # 0.2
+        self.group.set_max_acceleration_scaling_factor(0.1) # 0.2
         self.group.set_goal_position_tolerance(0.001)
         self.group.set_goal_orientation_tolerance(0.02)
         self.group.set_pose_reference_frame(self.frame)
@@ -283,15 +289,15 @@ class GraspExecutor:
 
         self.group.set_pose_target(waypoints[0])
 
-        # (plan, fraction) = self.group.compute_cartesian_path(waypoints, 0.02, 0.0)
-        # if fraction < 1:
-        #     print("Could not plan to pre-grasp pose. Plan accuracy", fraction)
-        #     return False
+        (plan, fraction) = self.group.compute_cartesian_path(waypoints, 0.001, 0.0, avoid_collisions = avoid_collisions)
+        if fraction < 0.5:
+            print("Could not plan to pre-grasp pose. Plan accuracy", fraction)
+            return False
         
         if verbose:
             print("Moving to pre-grasp pose")
 
-        # self._execute(self.group, plan)
+        self._execute(self.group, plan)
         plan = self._go(self.group)
         self.group.stop()
         self.group.clear_pose_targets()
@@ -308,10 +314,10 @@ class GraspExecutor:
             self.objects[object_id]["active"] = False
             
         waypoints = [get_pose_msg(position, orientation)]
-        # (plan, fraction) = self.group.compute_cartesian_path(waypoints, 0.003, 0.001, True)
-        # if fraction < 0.7:
-        #     print("Could not plan to pre-grasp pose. Plan Accuracy", fraction)
-        #     return False
+        (plan, fraction) = self.group.compute_cartesian_path(waypoints, 0.003, 0.001, True)
+        if fraction < 0.5:
+            print("Could not plan to pre-grasp pose. Plan Accuracy", fraction)
+            return False
     
         if verbose:
             print("Moving to grasp pose")
@@ -319,7 +325,7 @@ class GraspExecutor:
         self.group.set_pose_target(waypoints[0])
         self.error_recovery_client.send_goal_and_wait(ErrorRecoveryActionGoal())
         self._go(self.group)
-        # plan = self.group.g/o(wait=True)
+        # plan = self.group.go(wait=True)
         self.group.stop()
         self.group.clear_pose_targets()
         if not plan:
@@ -328,7 +334,7 @@ class GraspExecutor:
         
         if self.wait_at_grasp_pose:
             import time     
-            time.sleep(5)
+            time.sleep(1)
 
         if not dryrun:
             if verbose:
@@ -372,7 +378,7 @@ class GraspExecutor:
         self.open_gripper()
         self.reset()
         
-        return True
+        return pre_grasp_pose
 
 
 if __name__ == "__main__":

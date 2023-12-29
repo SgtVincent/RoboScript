@@ -101,6 +101,7 @@ def follow_path(move_group, path_points):
 "content":
 '''
 def move_in_direction(axis: np.array, distance: float):
+    print("___________move_in_direction_____________")
     current_pose = get_gripper_pose()
     target_pose = Pose()
     normalized_axis = np.array(axis) / np.linalg.norm(axis)

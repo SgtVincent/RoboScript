@@ -86,7 +86,7 @@ class Evaluator(object):
             } for obj_name in object_names
         }
 
-    def run_eval(self, code_str: str, defined_functions: List[str], eval_items: List, query="", repeat_times:int=1):
+    def run_eval(self, code_str: str, defined_functions: List[str], eval_items: List=None, query="", repeat_times:int=1):
         '''
         Run the evaluation for the code snippet.
         '''
@@ -109,8 +109,37 @@ class Evaluator(object):
                 continue
             
             # wait 3 seconds for the world state to change
-            time.sleep(3)
-            self.eval_env_state(i, eval_items, exception=exception)
+            if eval_items != None:
+                time.sleep(3)
+                self.eval_env_state(i, eval_items, exception=exception)
+
+        # log metrics in the end
+        self.logger.info("\n######################## Results:\n {} \n###################################".format(self.results))
+
+    def run_eval_robot(self, code_str: str, defined_functions: List[str], eval_items: List=None, query="", repeat_times:int=1):
+        '''
+        Run the evaluation for the code snippet.
+        '''
+        self.init_results_dict(query, repeat_times)
+        
+        for i in range(repeat_times):
+            # reload vars 
+            gvars, lvars = prepare_vars(self.env, defined_functions)
+            exception = 0
+            try:
+                self.logger.info("Running code for the {}th time".format(i+1))
+                exec_safe(code_str, gvars, lvars)
+            except Exception as e:
+                # also record the traceback
+                exception = 1
+                self.logger.error(f'Error when executing code for {i}-th trial: {e}')
+                self.logger.error(traceback.format_exc())
+                continue
+            
+            # wait 3 seconds for the world state to change
+            if eval_items != None:
+                time.sleep(3)
+                self.eval_env_state(i, eval_items, exception=exception)
 
         # log metrics in the end
         self.logger.info("\n######################## Results:\n {} \n###################################".format(self.results))

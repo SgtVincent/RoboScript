@@ -1,8 +1,7 @@
-<!-- copied & modified from panda_moveit_config package in moveit tutorial 
-https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/franka_control.launch -->
+<?xml version="1.0"?>
 <launch>
-  <arg name="robot_ip" />
-  <arg name="load_gripper" />
+  <arg name="robot_ip" default="176.16.0.2"/>
+  <arg name="load_gripper" default="false"/>
 
   <!-- Launch real-robot control -->
   <include file="$(find franka_control)/launch/franka_control.launch" pass_all_args="true" />
@@ -10,14 +9,15 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/fra
   <!-- By default use joint position controllers -->
   <arg name="transmission" default="position" />
   <!-- Start ROS controllers -->
-  <include file="$(panda_moveit_config)/launch/ros_controllers.launch" pass_all_args="true" />
+  <include file="/home/cuite/ws_moveit/src/panda_moveit_config/launch/ros_controllers.launch" pass_all_args="true" />
 
   <!-- as well as MoveIt demo -->
-  <include file="$(franka_control)/launch/demo_moveit.launch" pass_all_args="true">
+  <include file="/home/cuite/ws_moveit/src/panda_moveit_config/launch/demo.launch" pass_all_args="true">
     <!-- robot description is loaded by franka_control.launch -->
     <arg name="load_robot_description" value="false" />
     <!-- MoveItSimpleControllerManager provides ros_control's JointTrajectory controllers
          as well as GripperCommand actions -->
     <arg name="moveit_controller_manager" value="simple" />
   </include>
+
 </launch>

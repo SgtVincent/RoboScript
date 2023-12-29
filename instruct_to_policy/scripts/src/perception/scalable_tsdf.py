@@ -53,6 +53,8 @@ class ScalableTSDFVolume(object):
             convert_rgb_to_intensity=False,
         )
 
+        print(f"w:{intrinsic.width},h:{intrinsic.height},fx:{intrinsic.fx},fy:{intrinsic.fy},cx:{intrinsic.cx},cy:{intrinsic.cy}")
+
         intrinsic = o3d.camera.PinholeCameraIntrinsic(
             width=intrinsic.width,
             height=intrinsic.height,
@@ -94,6 +96,7 @@ class ScalableTSDFVolume(object):
             min_bound=crop_center - crop_size / 2,
             max_bound=crop_center + crop_size / 2,
         )
+        print('bounding_box', bounding_box)
         cropped_mesh = mesh.crop(bounding_box)
         return cropped_mesh
 

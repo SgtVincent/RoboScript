@@ -251,12 +251,12 @@ class RosGraspDetector:
         self.pc_pub.publish(msg)
         pred_mesh, _ = self.generator.generate_mesh({'inputs': torch.from_numpy(tsdf_vol.get_grid()).cuda()})
         pred_mesh.vertices = (pred_mesh.vertices + 0.5) * 0.3
-        # import trimesh
-        # scene = trimesh.Scene()
-        # scene.add_geometry(pred_mesh)
-        # scene.add_geometry(trimesh.points.PointCloud(np.asarray(pc.points)))
-        # # o3d.visualization.draw_geometries([pred_mesh, pc])
-        # scene.show()
+        import trimesh
+        scene = trimesh.Scene()
+        scene.add_geometry(pred_mesh)
+        scene.add_geometry(trimesh.points.PointCloud(np.asarray(pc.points)))
+        # o3d.visualization.draw_geometries([pred_mesh, pc])
+        scene.show()
         # import pdb; pdb.set_trace()
         meshes = [pred_mesh]
 
@@ -279,10 +279,10 @@ class RosGraspDetector:
         #     cy=intrinsic.cy,
         # )
 
-        # extrinsic = extrinsic.as_matrix()
-        # import pdb; pdb.set_trace()
-        # o3d.visualization.draw(o3d.geometry.PointCloud.create_from_rgbd_image(rgbd, intrinsic, extrinsic))
-        # import pdb; pdb.set_trace()
+        extrinsic = extrinsic.as_matrix()
+        import pdb; pdb.set_trace()
+        o3d.visualization.draw(o3d.geometry.PointCloud.create_from_rgbd_image(rgbd, intrinsic, extrinsic))
+        import pdb; pdb.set_trace()
 
         #o3d.visualization.draw_geometries([pc])
         

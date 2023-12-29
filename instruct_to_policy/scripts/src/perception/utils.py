@@ -14,6 +14,7 @@ from geometry_msgs.msg import Pose, Point, Quaternion, Vector3
 from sensor_msgs.msg import Image, CameraInfo
 from std_msgs.msg import Header
 from .scalable_tsdf import ScalableTSDFVolume
+import torch
 
 class Rotation(scipy.spatial.transform.Rotation):
     @classmethod
@@ -263,8 +264,23 @@ def is_point_in_bbox(point: np.array, bbox: np.array) -> bool:
 
 def check_points_in_bbox(points_2d: np.array, bbox: np.array) -> np.array:
     xs, ys = points_2d[:, 0], points_2d[:, 1]
+    print('xs', np.max(xs), np.max(ys))
     x_min, y_min, x_max, y_max = bbox
     return np.logical_and(np.logical_and(x_min <= xs, xs <= x_max), np.logical_and(y_min <= ys, ys <= y_max))
+
+def check_points_in_mask(points_2d: np.array, detect_mask: np.array) -> np.array:
+    xs, ys = points_2d[:, 0], points_2d[:, 1]
+    # x_min, y_min, x_max, y_max = bbox
+    # return np.logical_and(np.logical_and(x_min <= xs, xs <= x_max), np.logical_and(y_min <= ys, ys <= y_max))
+    detect_mask = detect_mask.cpu().numpy()
+    points_2d = points_2d.astype(np.int32)
+    # print('points_2d', np.max(points_2d[:, 1]), np.max(points_2d[:, 0]))
+    H, W = detect_mask.shape
+    mask = np.logical_and(np.logical_and(0 <= xs, xs < W), np.logical_and(0 <= ys, ys < H))
+    points_in_view = points_2d[mask]
+    mask_in_view = detect_mask[points_in_view[:,1], points_in_view[:,0]] == True
+    mask[mask==True] = mask_in_view
+    return mask
 
 def one_hot_iou(one_hot_vector_1: np.array, one_hot_vector_2: np.array) -> float:
     """
@@ -278,32 +294,45 @@ def one_hot_iou(one_hot_vector_1: np.array, one_hot_vector_2: np.array) -> float
 # Open 3D utils 
 #########################
 
-def open3d_frustum_filter(pcl: o3d.geometry.PointCloud, bbox_2d_list: List[np.ndarray], 
-                          camera_intrinsic_list: List[CameraIntrinsic], camera_extrinsic_list: List[Transform]):
+def open3d_frustum_filter(pcl: o3d.geometry.PointCloud, detection_list: List[np.ndarray], 
+                          camera_intrinsic_list: List[CameraIntrinsic], camera_extrinsic_list: List[Transform],
+                          margin=0, detect_approach='mask'):
     """
     Filter open3d point cloud with frustum filters by projecting 3D points onto 2D image planes 
     and checking if they are within the 2D bounding boxes.
     @param pcl: open3d point cloud
-    @param bbox_2d_list: list of 2D bounding boxes in the form of [min_x, min_y, max_x, max_y]
+    @param detection_list: list of detection results {'mask': mask, 'bbox': bbox}
     @param camera_intrinsic_list: list of camera intrinsic parameters
     @param camera_extrinsic_list: list of camera extrinsic parameters
     """
     mask_list = []
     
-    for bbox, intrinsic, extrinsic in zip(bbox_2d_list, camera_intrinsic_list, camera_extrinsic_list):
-        if len(bbox) == 0:
-            # if the bbox is empty, skip it
-            continue
+    for detect_result, intrinsic, extrinsic in zip(detection_list, camera_intrinsic_list, camera_extrinsic_list):
         # project 3D points onto 2D image plane 
+        if len(detect_result) == 0:
+            pcl_points = np.asarray(pcl.points)
+            mask_list.append(np.ones(pcl_points.shape[0], dtype=np.bool))
+            continue
         points = extrinsic.transform_point(pcl.points)
         K = intrinsic.K 
         points = K.dot(points.T).T
         pixels = (points[:, :2] / points[:, 2:]).astype(np.int32) # (x,y) pixel coordinates
         
         # check if projected pixels are within 2D bounding box
-        mask = np.all(np.logical_and(pixels >= bbox[:2], pixels <= bbox[2:]), axis=1)
+        if detect_approach == 'mask':
+            detect_mask = detect_result['mask'].cpu().numpy()
+            H, W = detect_mask.shape
+            mask = np.all(np.logical_and(pixels >= [0, 0], pixels < [W, H]), axis=1)
+            pixels_in_view = pixels[mask]
+            mask_in_view = detect_mask[pixels_in_view[:,1], pixels_in_view[:,0]] == True
+            mask[mask==True] = mask_in_view
+        elif detect_approach == 'bbox':
+            bbox = detect_result['bbox'].cpu().numpy()
+            mask = np.all(np.logical_and(pixels >= bbox[:2] - margin, pixels <= bbox[2:] + margin), axis=1)
+        # mask_list.append(mask)
         mask_list.append(mask)
-        
+
+
     # combine masks from all cameras
     mask = np.all(mask_list, axis=0)
     
@@ -383,15 +412,15 @@ def match_bboxes_clustering(bboxes_2d_list: List[List[np.array]], intrinsics: Li
     
     return matched_bboxes_idx_tuple_list
             
-def match_bboxes_points_overlapping(bboxes_2d_list: List[List[np.array]], intrinsics: List[np.array], extrinsics: List[np.array], 
+def match_bboxes_points_overlapping(detection_list: List[List[np.array]], intrinsics: List[np.array], extrinsics: List[np.array], 
                  pcl: o3d.geometry.PointCloud, downsample=True, downsample_voxel_size=0.02,
-                 min_match_th=0.1, debug_visualize=False) -> List[Tuple[np.array]]:
+                 min_match_th=0.1, debug_visualize=False, detect_approach='mask') -> List[Tuple[np.array]]:
     '''
     Match 2D bounding boxes by projecting 3D points to 2D image planes and checking which points are inside the bounding boxes.
     The match between two 2D bounding boxes is evaluated by the one-hot IOU between the one-hot vectors of all 2D points that are inside the bounding boxes.
     
     Args: 
-        bboxes_2d_list: List of N lists of 2D bounding boxes in the form of [min_x, min_y, max_x, max_y] under N camera views
+        detection_list: List of N lists of detection result under N camera views {'bbox': bbox, 'mask': mask}
         intrinsics: List of N camera intrinsic parameters
         extrinsics: List of N scamera extrinsic parameters
         pcl: Open3D point cloud. The point cloud should be filtered with frustum filters to reduce computation cost! 
@@ -419,7 +448,7 @@ def match_bboxes_points_overlapping(bboxes_2d_list: List[List[np.array]], intrin
     # Downsample the point cloud to reduce computation cost if needed
     if downsample:
         pcl = pcl.voxel_down_sample(downsample_voxel_size)
-    num_views = len(bboxes_2d_list)
+    num_views = len(detection_list)
     
     # Project 3D points to 2D image planes for each camera
     # NOTE: there will be invalid 2d points that are outside of the image plane, fill them with out in next step
@@ -430,13 +459,16 @@ def match_bboxes_points_overlapping(bboxes_2d_list: List[List[np.array]], intrin
     
     # For each 2D bounding box, collect one-hot vector of all 2D points that are inside the bounding box
     one_hot_vectors_list = []
-    for view_idx, bboxes_2d in enumerate(bboxes_2d_list): # for each view 
+    for view_idx, detections in enumerate(detection_list): # for each view 
         points_2d = points_2d_list[view_idx]
         one_hot_vectors = []
         # for each bbox in the view
-        for bbox in bboxes_2d: 
+        for detect_result in detections: 
             # get one-hot vector of all 2D points that are inside the bounding box
-            mask = check_points_in_bbox(points_2d, bbox)
+            if detect_approach == 'mask':
+                mask = check_points_in_mask(points_2d, detect_result['mask'])
+            elif detect_approach == 'bbox':
+                mask = check_points_in_bbox(points_2d, detect_result['bbox'])
             one_hot_vector = mask.astype(np.int32)
             one_hot_vectors.append(one_hot_vector)  
         one_hot_vectors_list.append(one_hot_vectors)    

@@ -65,6 +65,15 @@ def prepare_vars(env, defined_functions:List[str]=[]):
                 "attach_object",
                 "detach_object",
                 "move_to_pose",
+                "detect_objects",
+                "detect_objects_with_moving",
+                "check",
+                "move_in_direction",
+                "figure_direction",
+                "follow_path",
+                "get_object_joint_info",
+                "generate_arc_path_around_joint",
+                "parse_vertical_grasp_pose",
                 "grasp",
             ]
         }

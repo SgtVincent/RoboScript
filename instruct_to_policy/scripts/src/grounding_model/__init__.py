@@ -3,10 +3,10 @@ try:
     from .grounding_embodiedgpt import GroundingEmbodiedGPT
 except:
     print("Grounding Model: EmbodiedGPT not available.")
-try:
-    from .grounding_glip import GroundingGLIP
-except:
-    print("Grounding Model: GLIP not available.")
+
+from .grounding_glip import GroundingGLIP
+# except:
+#     print("Grounding Model: GLIP not available.")
 
 def create_grounding_model(model_name: str, **kwargs)-> GroundingBase:
     """
@@ -18,6 +18,9 @@ def create_grounding_model(model_name: str, **kwargs)-> GroundingBase:
     if model_name == "embodiedgpt":
         return GroundingEmbodiedGPT(**kwargs)
     elif model_name == "glip":
+        # import IPython
+        # IPython.embed()
+        # exit(0)
         return GroundingGLIP(**kwargs)
     else:
         raise NotImplementedError(f"Grounding model {model_name}  not supported.")

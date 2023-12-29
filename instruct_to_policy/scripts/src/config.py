@@ -3,12 +3,14 @@ import os
 package_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from src.constants import *
 
-# from src.prompt.message_tabletop_ui import message_tabletop_ui
+# from src.prompt.message_tabletop_perception import message_tabletop_perception
 from src.prompt.message_tabletop_few_shot import message_tabletop_ui
-# from src.prompt.message_tabletop_zero_shot import message_tabletop_ui
+# from src.prompt.message_tabletop_zero_shot import message_tabletop_perception
 
 # from src.prompt.message_fgen import message_fgen
 from src.prompt.message_fgen_few_shot import message_fgen
+
+from src.prompt.message_tabletop_perception_moving_check import message_tabletop_perception
 
 from src.prompt.message_parse_question import message_parse_question
 from src.prompt.message_backup import message_parse_obj_name, message_transform_shape_pts
@@ -27,7 +29,7 @@ cfg_tabletop = {
                         "cabinet.handle_0", "cabinet.handle_1", "cabinet.handle_2", "cabinet.handle_3"],
       'sensor': {
         'namespace': '', # empty namespace by default 
-        'cameras': ['camera_left', 'camera_right', 'camera_top'],
+        'cameras': ['camera'],
         'gt_point_cloud': False,
       },
       'moveit_config': {
@@ -65,7 +67,7 @@ cfg_tabletop = {
   },
   'lmps': {
     'tabletop_ui': {
-      'messages': message_tabletop_ui,
+      'messages': message_tabletop_perception,
       'model': model_name,
       'max_tokens': 2048,
       'temperature': 0,

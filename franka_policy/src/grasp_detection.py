@@ -160,10 +160,10 @@ class GraspExecutor:
     def drop_off(self, joints = [    -0.6861938888210998, -1.0922074558700297, -0.596633734874051, -2.397880921082069, -0.5792871115412288, 1.3971697680950166, -1.9250296761749517]):
     
         group = self.group
-        group.set_goal_tolerance(0.005)
+        group.set_goal_tolerance(0.01)
         group.set_planner_id("RRTConnect")
-        group.set_max_velocity_scaling_factor(0.3)
-        group.set_max_acceleration_scaling_factor(0.3)
+        group.set_max_velocity_scaling_factor(0.3) # 0.3
+        group.set_max_acceleration_scaling_factor(0.3) # 0.3
         # pose_goal.position.x = 0.4
         group.set_joint_value_target(joints)
         
@@ -226,15 +226,17 @@ class GraspExecutor:
             if "inst" in obj:
                 print("removing ", obj)
                 self.scene.remove_world_object(obj)
-        reset_pos = [-0.08251470748374336, 0.19599197531792156, 0.841849711995378, -1.7190730213700678, -0.6383234506829698, 1.3664373589356658, 0.030431373252636857]
+        # reset_pos = [-0.08251470748374336, 0.19599197531792156, 0.841849711995378, -1.7190730213700678, -0.6383234506829698, 1.3664373589356658, 0.030431373252636857]
+        reset_pos = [-0.001209562553452295, -0.7798870970324466, -0.0025529672049247384, -2.3749749452691327, -0.0031800321414839528, 1.5748067867097109, 0.7786260150587473]
+        # reset_pos = [[-0.039542444942811984, -1.1657468428360787, -0.028334171383527288, -2.409319552490781, 0.07719298498348803, 1.8142590426603953, 0.7451903115113322]]
         # reset_pos = [-0.0745181431487993, 0.4494850737236856, 0.8270193549708322, -1.5205520947895879, -0.8831002754171688, 1.3287292592525481, 0.00643488985824300]
         # reset_pos = [-0.5861821080702139, 0.055900042107092915, -0.3281157743728023, -1.826453942497152, 0.7512797036630254, 1.6094823167995767, 2.091976654118447]
         #reset_pos = [-0.5878410830476827, -0.28344825294979825, 1.1282720037594176, -1.874332442399111, -0.31171058199803037, 1.8769036887578303, -0.5659639980552924]
         group = self.group
         group.set_goal_tolerance(0.01)
-        group.set_planner_id("RRTConnect")
-        group.set_max_velocity_scaling_factor(0.4)
-        group.set_max_acceleration_scaling_factor(0.4)
+        group.set_planner_id("RRTConnect") 
+        group.set_max_velocity_scaling_factor(0.2) # 0.4
+        group.set_max_acceleration_scaling_factor(0.2) # 0.4
         # pose_goal.position.x = 0.4
         group.set_joint_value_target(reset_pos)
         #self.go_to_pose_goal([-8.66025404e-01, -2.65143810e-17,  1.53080850e-17, -5.00000000e-01], [0.15 + 35     , -0.16160254,  0.47009619])
@@ -280,8 +282,8 @@ class GraspExecutor:
         group.set_goal_tolerance(0.01)
         group.set_planner_id("RRTConnect")
 
-        group.set_max_velocity_scaling_factor(0.2)
-        group.set_max_acceleration_scaling_factor(0.2)
+        group.set_max_velocity_scaling_factor(0.1) # 0.2
+        group.set_max_acceleration_scaling_factor(0.1) # 0.2
 
         # pose_goal.position.x = 0.4
         group.set_pose_target(pose_goal)
@@ -376,7 +378,7 @@ class RosGraspDetector:
         rosc: PointCloud2 = orh.o3dpc_to_rospc(cloud)
         rosc.header.frame_id = self.base_frame
         return rosc
-
+        
     def get_grasp_marker(
         self,
         orientation,
@@ -477,7 +479,7 @@ class RosGraspDetector:
         # o3d.visualization.draw(o3d.geometry.PointCloud.create_from_rgbd_image(rgbd, intrinsic, extrinsic))
         # import pdb; pdb.set_trace()
 
-        #o3d.visualization.draw_geometries([pc])
+        # o3d.visualization.draw_geometries([pc])
         
         state = argparse.Namespace(tsdf=tsdf_vol, pc = pc)
         grasps, scores, _ = self.model(state)
@@ -641,7 +643,7 @@ class RosGraspDetector:
             self.grasp_exe.moving = True
             print("pts shape", pts.shape)
             print("scores", np.min(scores), np.max(scores))
-            valid = scores > 0.6 # threshold
+            valid = scores > 0.8 # threshold
             if not valid.any():
                 print("no good grasps found.")
                 valid[np.argmax(scores)] = True

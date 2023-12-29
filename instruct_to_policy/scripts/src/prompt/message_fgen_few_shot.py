@@ -72,15 +72,72 @@ def pick_and_place(object_name, pick_pose, place_pose):
 "role": "assistant",
 "content":
 '''
-def move_in_direction(axis: np.array, distance: float):
-    current_pose = get_gripper_pose()
-    target_pose = Pose()
-    normalized_axis = np.array(axis) / np.linalg.norm(axis)
-    target_pose.position.x = axis[0] * distance + current_pose.position.x
-    target_pose.position.y = axis[1] * distance + current_pose.position.y
-    target_pose.position.z = axis[2] * distance + current_pose.position.z
-    target_pose.orientation = current_pose.orientation
-    move_to_pose(target_pose)
+def move_in_direction(self, axis: np.array, distance: float, reuse_dict: dict = None):
+    """
+    reuse_dict = {'object_name', 'choice'}
+        - object_name: the object being operated
+        - choice includes 'save', 'forward', 'reversed', 'averaged'
+            - save: save the initial pose and final pose of the {object_name} for reuse, such as save the position when opening the drawer
+            - forward: reuse the saved position of {object_name} in forward direction, setting the initial and final poses as the saved initial and final poses, respectively
+            - reversed: reuse the saved position of {object_name} in reversed direction, setting the initial and final poses as the saved final and initial poses, respectively
+            - averaged: reuse the averaged saved position of {object_name}, setting the final poses as the averaged pose of the saved final and initial poses
+    """
+    print("___________move_in_direction_____________")
+    waypoints = []
+    current_pose = self.move_group.get_current_pose().pose
+    if reuse_dict == None:
+        is_calculate = True
+    elif reuse_dict['choice'] == 'save':
+        is_calculate = True
+    else:
+        is_calculate = False
+
+    if is_calculate == True:
+        target_pose = copy.deepcopy(current_pose)
+        target_pose.position.x += axis[0] * distance
+        target_pose.position.y += axis[1] * distance
+        target_pose.position.z += axis[2] * distance
+    else:
+        object_name = reuse_dict['object_name']
+        choice = reuse_dict['choice']
+        if choice == 'save':
+            object_pos_dict = {'initial_pose': current_pose, 'final_pose': target_pose}
+            self.pos_dict_for_reuse[object_name] = object_pos_dict
+        elif choice == 'forward':
+            object_pos_dict = self.pos_dict_for_reuse[object_name]
+            target_pose = object_pos_dict['final_pose']
+        elif choice == 'reversed':
+            object_pos_dict = self.pos_dict_for_reuse[object_name]
+            target_pose = object_pos_dict['initial_pose']
+        elif choice == 'averaged':
+            object_pos_dict = self.pos_dict_for_reuse[object_name]
+            target_pose.position.x = (object_pos_dict['initial_pose'].position.x  + object_pos_dict['final_pose'].position.x) / 2
+            target_pose.position.y = (object_pos_dict['initial_pose'].position.y  + object_pos_dict['final_pose'].position.y) / 2
+            target_pose.position.z = (object_pos_dict['initial_pose'].position.z  + object_pos_dict['final_pose'].position.z) / 2
+        else:
+            raise NotImplementedError
+
+    waypoints.append(target_pose)
+    (plan, fraction) = self.move_group.compute_cartesian_path(
+        waypoints, 0.05, 0.0 ,False  # waypoints to follow  # eef_step
+    )  # jump_threshold
+    self.move_group.execute(plan, wait=True)
+'''
+},
+{# function: (beginning, ending)
+"role":"user",
+"content": "# define function: (beginning = get_object_center_position('cabinet'), ending = get_object_center_position('handle'))"
+},
+{
+"role": "assistant",
+"content":
+'''
+def figure_direction(beginning: np.array, ending: np.array):
+    print("------------------figure_direction------------------------")
+    vector = np.array(beginning) - np.array(ending)
+    direction = vector / np.linalg.norm(vector)
+    print(direction)
+    return direction
 '''
 },
 {# check_object_on_receptacle(object_name, receptacle_name)

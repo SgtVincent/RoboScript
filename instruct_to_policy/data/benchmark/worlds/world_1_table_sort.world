@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <sdf version="1.7">
   <world name="default">
-    <gravity>0 0 -9.8</gravity>
+    <gravity>0 0 0</gravity>
     <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
     <atmosphere type="adiabatic"/>
     <max_contacts>100</max_contacts>
@@ -34,19 +34,19 @@
     <include>
       <uri>model://sun</uri>
     </include>
-    <include>
+    <!-- <include>
       <uri>model://Table</uri>
       <name>table</name>
       <pose>0 0 0 0 0 0</pose>
       <static>1</static>
-    </include>
-    <include>
+    </include> -->
+    <!-- <include>
       <uri>model://cabinet_1076</uri>
       <name>cabinet</name>
       <pose>-1.6 0.0 0.866007 0 0 -3.1416</pose>
       <scale>1 1 1</scale>
       <static>0</static>
-    </include>
+    </include> -->
     <model name="apple">
       <static>0</static>
       <link name="link">
@@ -110,9 +110,9 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.272731 -0.237469 1.01538 0.003538 -0.000917 -0.625243</pose>
+      <pose>0.272731 0.237469 0.4 0.003538 -0.000917 -0.625243</pose>
     </model>
-    <model name="banana">
+    <!-- <model name="banana">
       <link name="link">
         <inertial>
           <pose>-0.000671 0.005194 0.015295 -1.5145 1.356 2.81684</pose>
@@ -175,7 +175,7 @@
         <kinematic>0</kinematic>
       </link>
       <pose>-0.355613 0.272482 1.01526 -0.001837 -0.003394 -0.993519</pose>
-    </model>
+    </model> -->
     <model name="white_ceramic_plate">
       <link name="link">
         <inertial>       
@@ -232,9 +232,9 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.01908 0.203189 1.0137 0.00096 -0.013757 0.015489</pose>
+      <pose>0.23908 -0.303189 0.4 0.00096 -0.013757 0.015489</pose>
     </model>
-    <model name="white_and_pink_box">
+    <!-- <model name="white_and_pink_box">
       <link name="link">
         <inertial>
           <pose>1.7e-05 -0.000146 0.0568 0 -0 0</pose>
@@ -291,8 +291,8 @@
         <kinematic>0</kinematic>
       </link>
       <pose>-0.46758 -0.40074 1.01488 -0.004313 -0.006344 -0.03659</pose>
-    </model>
-    <model name="brown_box">
+    </model> -->
+    <!-- <model name="brown_box">
       <link name="link">
         <inertial>
           <pose>8.5e-05 -3.5e-05 0.036814 0 -0 0</pose>
@@ -349,8 +349,8 @@
         <kinematic>0</kinematic>
       </link>
       <pose>-0.216087 0.437155 1.01461 0.005872 -0.011021 0.007924</pose>
-    </model>
-    <model name="brown_medication_bottle">
+    </model> -->
+    <!-- <model name="brown_medication_bottle">
       <link name="link">
         <inertial>
           <pose>-2.9e-05 3e-05 0.036406 0 -0 0</pose>
@@ -407,8 +407,8 @@
         <kinematic>0</kinematic>
       </link>
       <pose>0.113093 -0.388645 1.0149 0.003498 -0.008407 0.093534</pose>
-    </model>
-    <model name="bleach_cleanser">
+    </model> -->
+    <!-- <model name="bleach_cleanser">
       <static>0</static>
       <link name="link">
         <inertial>
@@ -472,8 +472,8 @@
         <kinematic>0</kinematic>
       </link>
       <pose>-0.014789 -0.130509 1.01522 0.007175 -0.007786 -0.101389</pose>
-    </model>
-    <model name="red_plastic_bowl">
+    </model> -->
+    <!-- <model name="red_plastic_bowl">
       <link name="link">
         <inertial>       
           <pose>0.0012293180361304247 -0.0001778823486961287 0.09010321687540569 1.6476966426584836 -1.5541440946054892 -3.0718923275378365</pose> 
@@ -530,8 +530,8 @@
         <kinematic>0</kinematic>
       </link>
       <pose>-0.082851 -0.403681 1.01447 0.005246 0.014671 0.678613</pose>
-    </model>
-    <model name="mustard_bottle">
+    </model> -->
+    <!-- <model name="mustard_bottle">
       <static>0</static>
       <link name="link">
         <inertial>
@@ -595,6 +595,6 @@
         <kinematic>0</kinematic>
       </link>
       <pose>0.128489 0.542142 1.01638 -1.56584 0.334296 -2.85292</pose>
-    </model>
+    </model> -->
   </world>
 </sdf>

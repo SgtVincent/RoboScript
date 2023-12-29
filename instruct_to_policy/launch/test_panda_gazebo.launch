@@ -57,7 +57,8 @@
     <!-- Always start in paused mode, and only unpause when spawning the model -->
     <arg name="paused" value="true"/>
     <arg name="gui" value="$(eval not arg('headless'))"/>
-    <arg name="use_sim_time" value="true"/>
+    <!-- <arg name="use_sim_time" value="true"/> -->
+    <arg name="use_sim_time" value="false"/>
     <arg name="verbose" value="$(arg verbose)"/>
   </include>
 

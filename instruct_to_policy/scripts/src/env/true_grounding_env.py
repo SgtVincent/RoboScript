@@ -258,6 +258,7 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         pose = Pose()
         pose.position = Point(*handle_center)
         pose.orientation = pre_defined_horizontal_orientation 
+        print("----------------pose--------------",pose)
         return pose
     
     def detect_objects(self, **kwargs):

@@ -9,6 +9,7 @@ from src.eval.evaluator import Evaluator
 from src.config import cfg_tabletop
 import rospy 
 import rospkg
+from src.env.multimodal_env import MultiModalEnv
 
 if __name__ == "__main__":
     
@@ -75,7 +76,9 @@ if __name__ == "__main__":
         rospy.loginfo("Code: \n'''{}\n'''".format(code_str))
         
         # setup environment and evaluator 
-        env = TrueGroundingEnv(cfg_tabletop) 
+        # env = TrueGroundingEnv(cfg_tabletop) 
+        env = MultiModalEnv(cfg_tabletop) 
+
         evaluator = Evaluator(env, log_file=log_file_path ,verbose=True, render=False)
 
         evaluator.run_eval(code_str, defined_functions, eval_items, query=query, repeat_times=5)

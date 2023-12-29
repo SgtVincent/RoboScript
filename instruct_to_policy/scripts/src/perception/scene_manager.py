@@ -3,6 +3,11 @@ from typing import List, Tuple, Dict
 from numpy.typing import ArrayLike
 import numpy as np 
 import open3d as o3d
+import torch
+import time
+import matplotlib.pyplot as plt
+from collections import defaultdict
+import copy 
 
 from .utils import (
     CameraIntrinsic, 
@@ -27,6 +32,8 @@ class SceneManager:
         self.bbox_match_downsample_voxel_size = 4 * self.tsdf_voxel_size
         self.bbox_drop_base_margin = kwargs.get('bbox_drop_base_margin', True)  
         self.bbox_base_margin = kwargs.get('bbox_base_margin', 0.01)
+
+        self.detect_approach = kwargs.get('detect_approach', 'mask') # bbox
         
         if not self.bbox_drop_base_margin:
             self.bbox_base_margin = 0.0
@@ -36,8 +43,10 @@ class SceneManager:
         self.camera_extrinsics = []
         self.object_names = []
         self.category_to_object_name_dict = {}
-        self.object_2d_bbox_dict: Dict[str, List] = {}
+        self.object_detect_dict: Dict[str, List] = {}
         self.bbox_3d_dict: Dict[str, List] = {}
+
+        self.bbox_oriented_3d_dict: Dict[str, o3d.geometry.OrientedBoundingBox] = {}
         
         # full tsdf volume
         self.scene_tsdf_full= ScalableTSDFVolume( 
@@ -80,6 +89,8 @@ class SceneManager:
         self.update_object_instances(data)
         # update 3D bounding boxes for each object by filtering the points inside the 2D bounding boxes and fitting 3D bounding boxes
         self.update_3d_bboxes(data)
+
+        o3d.io.write_point_cloud("/home/cuite/storage/scene.pcd", self.scene_tsdf_full.get_cloud())
         
     def update_fusion(self, data: Dict)->None:
         '''
@@ -88,6 +99,7 @@ class SceneManager:
             data: Dictionary of sensor data.
         '''
         # TODO: update the multi-view fusion result
+        now = time.time()
         self.camera_names = data['camera_names']
         self.camera_intrinsics = data['depth_camera_intrinsic_list']
         self.camera_extrinsics = data['depth_camera_extrinsic_list']
@@ -101,8 +113,10 @@ class SceneManager:
             # convert sensor_msgs/Image
             rgb = data['rgb_image_list'][i]
             depth = data['depth_image_list'][i]
-            detections = data['detections_list'][i]
-            bbox_2d_list = list(detections.values())
+            # detections = data['detections_list'][i]
+            # bbox_2d_list = list(detections.values())
+            # bbox_2d_list = data['detections_list'][i].values()
+            detection_list = data['detections_list'][i].values()
             
             # NOTE: assume the depth has been aligned with rgb
             assert rgb.shape[0] == depth.shape[0] and rgb.shape[1] == depth.shape[1]
@@ -111,12 +125,23 @@ class SceneManager:
                           
             # calculate the mask image with all bounding boxes inner regions set to 1
             mask_img = np.zeros_like(depth)
-            for bbox in bbox_2d_list:
-                mask_img[bbox[1]:bbox[3], bbox[0]:bbox[2]] = 1
+            for detect_result in detection_list:
+                if self.detect_approach == 'mask':
+                    mask = detect_result['mask']
+                    mask_img[mask.cpu().numpy()] = 1
+                else:
+                    bbox = detect_result['bbox']
+                    mask_img[bbox[1]:bbox[3], bbox[0]:bbox[2]] = 1
                           
                           
             self.scene_tsdf_full.integrate(depth, intrinsic, extrinsic, rgb_img=rgb)
             self.scene_tsdf_masked.integrate(depth, intrinsic, extrinsic, rgb_img=rgb, mask_img=mask_img)
+        
+        # pcl = self.scene_tsdf_full.get_cloud()
+        # print('------------begin--------------')
+        # o3d.visualization.draw_geometries([pcl])
+
+        print(f'-------------------------------------------cost_time:   {time.time()-now}----------------------------------------')
 
     def update_object_instances(self, data: Dict)->None:
         '''
@@ -130,7 +155,7 @@ class SceneManager:
         When matching the bounding boxes, we only consider the object category, e.g. mug, apple, etc.
         Then we assign new instance id to each matched bounding box tuple.
         '''
-        bboxes_2d_list = [
+        detection_list = [
             list(detections.values()) for detections in data['detections_list']
         ]
         bboxes_labels_list = [
@@ -141,13 +166,14 @@ class SceneManager:
         
         # Match 2D bounding boxes with points projection overlapping ratio
         bboxes_match_tuple_list = match_bboxes_points_overlapping(
-            bboxes_2d_list=bboxes_2d_list,
+            detection_list=detection_list,
             intrinsics=data['depth_camera_intrinsic_list'],
             extrinsics=data['depth_camera_extrinsic_list'],
             pcl=pcl,
             downsample=True,
             downsample_voxel_size=self.bbox_match_downsample_voxel_size,
             min_match_th=self.bbox_min_match_th,
+            detect_approach=self.detect_approach
         )
         
         # unify the matched bounding box names of a same object instance under different camera views,
@@ -155,15 +181,47 @@ class SceneManager:
         self.unify_bbox_names(bboxes_match_tuple_list, bboxes_labels_list)
         
         # update object names and 2D bounding boxes
-        self.object_2d_bbox_dict = {}
+        self.object_detect_dict = {}
         for bbox_name, match_idx_tuple in zip(self.object_names, bboxes_match_tuple_list):
-            self.object_2d_bbox_dict[bbox_name] = []
+            self.object_detect_dict[bbox_name] = []
             for i, idx in enumerate(match_idx_tuple):
                 # idx -1 means no match, append empty bounding box 
                 if idx != -1:
-                    self.object_2d_bbox_dict[bbox_name].append(bboxes_2d_list[i][idx])
+                    self.object_detect_dict[bbox_name].append(detection_list[i][idx])
                 else:
-                    self.object_2d_bbox_dict[bbox_name].append([])
+                    self.object_detect_dict[bbox_name].append([])
+
+        self.update_object_name_with_confidence()
+
+    def update_object_name_with_confidence(self)->None:
+        CONF_CAL = 'mean' # mean, max
+        object_detect_dict = copy.deepcopy(self.object_detect_dict)
+        # object_name_list_with_idx = [key for key in object_detect_dict.keys()]
+        object_name_dict = defaultdict(list)
+        for object_name_with_idx in object_detect_dict.keys():
+            object_name = object_name_with_idx.split('_')[0]
+            object_name_dict[object_name].append(object_name_with_idx)
+        for object_name in object_name_dict.keys():
+            object_name_list_with_idx = object_name_dict[object_name]
+            confidence_list = []
+            for object_name_with_idx in object_name_list_with_idx:
+                detect_list = self.object_detect_dict[object_name_with_idx]
+                object_conf = []
+                for detect_result in detect_list:
+                    if len(detect_result) != 0:
+                        object_conf.append(detect_result['score'])
+                if CONF_CAL == 'mean':
+                    confidence = sum(object_conf) / len(object_conf)
+                elif CONF_CAL == 'max':
+                    confidence = max(object_conf)
+                confidence_list.append(confidence)
+            confidence_array = np.array(confidence_list)
+            sorted_index = np.argsort(confidence_array)
+            sorted_index = sorted_index[::-1]
+            for i, index in enumerate(sorted_index):
+                object_detect_dict[f'{object_name}_{i}'] = self.object_detect_dict[object_name_list_with_idx[index]]
+        self.object_detect_dict = object_detect_dict
+
                 
     def update_3d_bboxes(self, data: Dict)->None:
         '''
@@ -171,16 +229,35 @@ class SceneManager:
         It filters the points inside the 2D bounding boxes and then fit the 3D bounding boxes.
         TODO: Can we have some clustering or segmentation methods to get tighter 3D bounding boxes?
         '''
+        #################### AxisAlignedBoundingBox either has zeros size, or has wrong bounds #############33
         pcl = self.scene_tsdf_masked.get_cloud()
-        for object_name, bbox_2d_list in self.object_2d_bbox_dict.items():
+        # print('------------begin--------------')
+        # o3d.visualization.draw_geometries([pcl])
+        ### lhy debug
+        object_cnt = 0
+        for object_name, detection_list in self.object_detect_dict.items():
             # get point clouds of the object by filtering the points inside the 2D bounding boxes
             obj_pcl, _ = open3d_frustum_filter(
                 pcl=pcl,
-                bbox_2d_list=bbox_2d_list,
+                detection_list=detection_list,
                 camera_intrinsic_list=data['depth_camera_intrinsic_list'],
-                camera_extrinsic_list=data['depth_camera_extrinsic_list']
+                camera_extrinsic_list=data['depth_camera_extrinsic_list'],
+                detect_approach = self.detect_approach
             )
-            
+            # print('---------before-----------------')
+            # o3d.visualization.draw_geometries([obj_pcl])
+            object_cnt += 1
+            o3d.io.write_point_cloud("/home/cuite/storage/"+object_name+str(object_cnt)+".pcd", obj_pcl)
+            fig_id_list = []
+            for detect_result in detection_list:
+                if len(detect_result) != 0:
+                    fig_id_list.append(detect_result['fig_id'])
+            print('object_name', object_name, fig_id_list)
+            MinPts = 5
+            R = 0.05
+            obj_pcl, idx = obj_pcl.remove_radius_outlier(MinPts,R)
+            # print('---------after-----------------')
+            # o3d.visualization.draw_geometries([obj_pcl])
             # fit 3D bounding box and convert it to [x_min, y_min, z_min, x_max, y_max, z_max] format
             aabb = obj_pcl.get_axis_aligned_bounding_box()
             
@@ -188,6 +265,11 @@ class SceneManager:
                 aabb.min_bound[0], aabb.min_bound[1], aabb.min_bound[2] + self.bbox_base_margin,
                 aabb.max_bound[0], aabb.max_bound[1], aabb.max_bound[2],
             ]
+
+            self.bbox_oriented_3d_dict[object_name] = obj_pcl.get_oriented_bounding_box()
+
+    def update_pos_list(self, data: Dict)->None:
+        self.pos_list = data['pos_list']
 
     def unify_bbox_names(self, bboxes_match_tuple_list: List[Tuple[int]], bboxes_labels_list: List[List[str]])-> List[Tuple[str, str]]:
         '''
@@ -234,6 +316,8 @@ class SceneManager:
         This function uses ground truth model state from gazebo and ignore all other parameters.
         '''
         obj_bbox_3d = self.bbox_3d_dict[obj_name]
+        print("____________________obj_bbox_3d_____________________")
+        print(obj_bbox_3d)
         return np.array([
             (obj_bbox_3d[0] + obj_bbox_3d[3]) / 2,
             (obj_bbox_3d[1] + obj_bbox_3d[4]) / 2,
@@ -245,6 +329,7 @@ class SceneManager:
         Get object mesh by cropping mesh with the 3D bounding box of the object.
         '''
         object_bbox = self.bbox_3d_dict[object_name]
+        # print('self.bbox_3d_dict', self.bbox_3d_dict)
         bbox_center = np.array([
             (object_bbox[0] + object_bbox[3]) / 2,
             (object_bbox[1] + object_bbox[4]) / 2,
@@ -266,15 +351,22 @@ class SceneManager:
         '''
         Get the list of 2D bounding boxes of the object in different camera views.
         '''
-        return self.object_2d_bbox_dict[object_name]
+        return self.object_detect_dict[object_name]
             
     def get_3d_bbox(self, object_name)->ArrayLike:
         '''
         Get the 3D bounding box of the object in the world frame.
         '''
         return np.array(self.bbox_3d_dict[object_name])
+    
+    def get_object_camera_idx(self, object_name)->int:
+        detect_result_list = self.object_detect_dict[object_name]
+        for detect_result in detect_result_list:
+            if len(detect_result) != 0:
+                print('camera_id', detect_result['camera_id'])
+                return detect_result['camera_id']
         
-    def visualize_3d_bboxes(self, show_masked_tsdf=False, show_full_tsdf=True):
+    def visualize_3d_bboxes(self, show_masked_tsdf=False, show_full_tsdf=True, show_oriented_box=False):
         '''
         Visualize the 3D bounding boxes and point cloud in the scene with open3d.
         '''
@@ -288,6 +380,12 @@ class SceneManager:
                 max_bound=np.array(bbox_3d[3:])
             )
             vis_list.append(bbox)
+
+            if show_oriented_box:
+                print("~~~show oriented box~~~")
+                obbox = self.bbox_oriented_3d_dict[obj_name]
+                obbox.color = [1., 0, 0]
+                vis_list.append(obbox)
             
         if show_masked_tsdf:
             vis_list.append(self.scene_tsdf_masked.get_mesh())
@@ -298,5 +396,21 @@ class SceneManager:
         # visualize the scene
         o3d.visualization.draw_geometries(vis_list)
         
+
+    def visualize_vec(self, start_points: list, vecs: list, draw_axis: bool=False):
+        vis_list = []
+        vis_list.append(self.scene_tsdf_full.get_mesh())
+        for start, vec in zip(start_points, vecs):
+            end_point = start + vec
+            line = o3d.geometry.LineSet()
+            line.points = o3d.utility.Vector3dVector(np.vstack((start, end_point)))
+            line.lines = o3d.utility.Vector2iVector([[0, 1]])
+            line.colors = o3d.utility.Vector3dVector([[1, 0, 0]])  # 设置线段颜色为红色
+            vis_list.append(line)
+        if draw_axis:
+            axis = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.5, origin=[0, 0, 0])
+            vis_list.append(axis)
+
+        o3d.visualization.draw_geometries(vis_list)
         
         

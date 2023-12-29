@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "qtts.h": "c",
+        "msp_cmn.h": "c",
+        "msp_errors.h": "c"
+    }
+}

@@ -63,4 +63,5 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
     <arg name="moveit_controller_manager" value="simple" />
     <arg name="use_rviz" value="$(arg moveit_rviz)" />
   </include>
+
 </launch>

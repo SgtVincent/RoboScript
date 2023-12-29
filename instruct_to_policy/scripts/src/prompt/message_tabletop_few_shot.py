@@ -95,24 +95,24 @@ detach_object('object_1')
 '''
 # Detailed planning:
 # Step 1: Grasp the drawer handle
-# Step 2: Push the drawer handle, move in -x direction
+# Step 2: Pull the drawer handle, move in -x direction
 # Step 3: Release the gripper from drawer handle
 
 
 # Grasp the drawer handle
-open_gripper()
-grasp_pose = parse_horizontal_grasp_pose('drawer1_handle')
-grasp(grasp_pose)
-close_gripper()
-attach_object('drawer1_handle')
+# open_gripper()
+# grasp_pose = parse_horizontal_grasp_pose('drawer1_handle')
+# grasp(grasp_pose)
+# close_gripper()
+# attach_object('drawer1_handle')
 
-# Push the drawer handle, move in -x direction
-direction = [-1, 0, 0] # (x, y, z)
-move_in_direction(direction, distance=0.2)
+# # Pull the drawer handle, move in -x direction
+# direction = [1, 0, 0] # (x, y, z)
+# move_in_direction(direction, distance=0.2)
 
-# Release the drawer
-open_gripper()
-detach_object('drawer1_handle')
+# # Release the drawer
+# open_gripper()
+# detach_object('drawer1_handle')
 '''
 },
 {# Open a Door 

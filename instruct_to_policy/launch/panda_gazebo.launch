@@ -43,7 +43,8 @@
     <!-- Always start in paused mode, and only unpause when spawning the model -->
     <arg name="paused" value="true"/>
     <arg name="gui" value="$(eval not arg('headless'))"/>
-    <arg name="use_sim_time" value="true"/>
+    <!-- <arg name="use_sim_time" value="true"/>  -->
+    <arg name="use_sim_time" value="false"/> 
     <arg name="verbose" value="$(arg verbose)"/>
   </include>
 
@@ -77,7 +78,7 @@
         name="$(arg arm_id)_gripper_spawner"
         if="$(arg use_gripper)"
         args="franka_gripper"
-        respawn="false"
+        respawn="true"
   />
 
   <!-- spawns the controller after the robot was put into its initial joint pose -->
@@ -89,11 +90,11 @@
   />
 
   <!-- state publisher for panda robot -->
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+  <!-- <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
   <node name="joint_state_publisher" type="joint_state_publisher" pkg="joint_state_publisher">
       <rosparam param="source_list">[franka_state_controller/joint_states, franka_gripper/joint_states] </rosparam>
       <param name="rate" value="30"/>
-  </node>
+  </node> -->
 
   <!-- Start only if cartesian_impedance_example_controller -->
   <node name="interactive_marker"

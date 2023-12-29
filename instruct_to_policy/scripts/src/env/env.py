@@ -71,6 +71,18 @@ class Env:
         """ detect objects in the scene with perception model"""
         raise NotImplementedError("detect_objects() not implemented")
     
+    def detect_objects_with_moving(self, **kwargs):
+        """ detect objects in the scene with perception model"""
+        raise NotImplementedError("detect_objects_with_moving() not implemented")
+    
+    def check(self, object_name, task_query):
+        """ verify the results of the execution"""
+        raise NotImplementedError("check() not implemented")
+    
+    def move_in_direction(self, axis: np.array, distance: float,reuse_dict: dict = None):
+        """ move_in_direction """
+        raise NotImplementedError("check() not implemented")
+
     def parse_question(self, question, **kwargs):
         """ parse question into a dictionary """
         raise NotImplementedError("parse_question() not implemented")

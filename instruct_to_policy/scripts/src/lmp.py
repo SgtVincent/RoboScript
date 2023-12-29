@@ -10,7 +10,7 @@ import astunparse
 from shapely.geometry import *
 from shapely.affinity import *
 import openai
-from openai import APIConnectionError, RateLimitError
+# from openai import APIConnectionError, RateLimitError
 
 from src.utils import *
 from src.constants import *
@@ -62,21 +62,21 @@ class LMP:
         messages, use_query = self.build_messages(query, context=context)
 
         while True:
-            try:
-                response = openai.ChatCompletion.create(
-                    messages=messages,
-                    # stop=self._stop_tokens,
-                    temperature=self._cfg["temperature"],
-                    model=self._cfg["model"],
-                    max_tokens=self._cfg["max_tokens"],
-                )
-                code_str = response["choices"][0]["message"]["content"].strip()
-                break
+            # try:
+            response = openai.ChatCompletion.create(
+                messages=messages,
+                # stop=self._stop_tokens,
+                temperature=self._cfg["temperature"],
+                model=self._cfg["model"],
+                max_tokens=self._cfg["max_tokens"],
+            )
+            code_str = response["choices"][0]["message"]["content"].strip()
+            break
 
-            except (RateLimitError, APIConnectionError) as e:
-                print(f"OpenAI API got err {e}")
-                print("Retrying after 10s.")
-                sleep(10)
+            # except (RateLimitError, APIConnectionError) as e:
+            #     print(f"OpenAI API got err {e}")
+            #     print("Retrying after 10s.")
+            #     sleep(10)
 
         if self._cfg["include_context"] and context != "":
             to_exec = f"{context}\n{code_str}"
@@ -140,21 +140,21 @@ class LMPFGen:
         messages.append(query_message)
 
         while True:
-            try:
-                response = openai.ChatCompletion.create(
-                    messages=messages,
-                    # stop=self._stop_tokens,
-                    temperature=self._cfg["temperature"],
-                    model=self._cfg["model"],
-                    max_tokens=self._cfg["max_tokens"],
-                )
-                f_src = response["choices"][0]["message"]["content"].strip()
-                break
+            # try:
+            response = openai.ChatCompletion.create(
+                messages=messages,
+                # stop=self._stop_tokens,
+                temperature=self._cfg["temperature"],
+                model=self._cfg["model"],
+                max_tokens=self._cfg["max_tokens"],
+            )
+            f_src = response["choices"][0]["message"]["content"].strip()
+            break
 
-            except (RateLimitError, APIConnectionError) as e:
-                print(f"OpenAI API got err {e}")
-                print("Retrying after 10s.")
-                sleep(10)
+            # except (RateLimitError, APIConnectionError) as e:
+            #     print(f"OpenAI API got err {e}")
+            #     print("Retrying after 10s.")
+            #     sleep(10)
 
         if fix_bugs:
             f_src = openai.Edit.create(

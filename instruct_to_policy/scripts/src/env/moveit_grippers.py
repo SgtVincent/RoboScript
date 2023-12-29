@@ -86,7 +86,7 @@ class FrankaGripperCommanderGroup(GripperCommanderGroup):
         done = self.gripper_move_client.wait_for_result(rospy.Duration(5.0))
         return done
 
-    def close_gripper(self, width=0.01, speed=0.05, force=10):
+    def close_gripper(self, width=0.01, speed=0.05, force=40):
         """Close the gripper."""
         goal = franka_gripper.msg.GraspGoal(width=width, speed=speed, force=force)
         goal.epsilon.inner = 0.08

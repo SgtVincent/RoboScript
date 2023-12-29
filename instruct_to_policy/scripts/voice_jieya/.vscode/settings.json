@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "msp_cmn.h": "c",
-        "qisr.h": "c",
-        "msp_errors.h": "c"
-    }
-}

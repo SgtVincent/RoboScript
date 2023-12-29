@@ -1,9 +1,0 @@
-{
-    "玩具":"toy",
-    "巧克力":"chocolate",
-    "零食":"snacks",
-    "饮料":"drink",
-    "把手":"handle",
-    "抽屉":"drawer",
-    "柜子":"cabinet",
-}

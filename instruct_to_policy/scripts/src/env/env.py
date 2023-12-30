@@ -111,6 +111,17 @@ class Env:
         """
         raise NotImplementedError("get_object_joint_info() not implemented")
     
+    def get_plane_normal(self, obj_name: str, position: np.ndarray)->np.ndarray:
+        """
+        Get the plane normal of an object closest to the given position.
+        Args:
+            obj_name: name of the object
+            position: np.ndarray, select the plane closest to this position
+        Returns:
+            closest_normal: np.ndarray the closest plane normal
+        """
+        raise NotImplementedError("get_plane_normal() not implemented")
+    
     ################ multimodal grounding interface ################
     def parse_question(self, question, **kwargs):
         """ parse question into a dictionary """

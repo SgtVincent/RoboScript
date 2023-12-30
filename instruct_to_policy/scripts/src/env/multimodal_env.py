@@ -8,6 +8,8 @@ from grasp_detection.msg import Grasp
 from .moveit_gazebo_env import MoveitGazeboEnv
 from src.grasp_detection import GraspDetectionBase, GraspDetectionRemote
 from src.grounding_model import create_grounding_model, GroundingBase
+from src.joint_prediction import JointPredictionBase
+from src.plane_detection import PlaneDetectionOpen3D
 from src.env.utils import (
     calculate_place_position, 
     is_collision, 
@@ -28,14 +30,17 @@ class MultiModalEnv(MoveitGazeboEnv):
         self.object_metadata_files = cfg["env"]["metadata_files"]
         self.grasp_config = cfg["grasp_detection"]
         self.grasp_method = self.grasp_config["method"] # ["heuristic", "model"]
+        self.plane_detection_config = cfg["plane_detection"]
+        
         
         self.grounding_config = cfg["grounding_model"]
         # use glip as default baseline 
         self.grounding_model_name = self.grounding_config.get("model_name", "glip")
-        self.grounding_model_args = self.grounding_config.get("model_args", {})
+        self.grounding_model_args = self.grounding_config.get("model_args", {})        
         
         self.grasp_model = None
         self.groudning_model = None
+        
         
         # scene manager to manage the scene objects, 3D reconstruction, detections, etc.
         self.scene = SceneManager()
@@ -52,6 +57,10 @@ class MultiModalEnv(MoveitGazeboEnv):
             self.grasp_model.load_model()
         
         self.grounding_model = create_grounding_model(self.grounding_model_name, **self.grounding_model_args)
+        # TODO: implement joint prediction model
+        self.joint_prediction_model = JointPredictionBase()
+        self.plane_detection_model = PlaneDetectionOpen3D(model_params=self.plane_detection_config)
+        
 
     def detect_objects(self, **kwargs):
         """
@@ -102,6 +111,13 @@ class MultiModalEnv(MoveitGazeboEnv):
         """
         return self.scene.get_3d_bbox(obj_name)
     
+    def get_plane_normal(self, obj_name: str, position: np.ndarray) -> np.ndarray:
+        '''
+        Get the plane normal of the object at the given position.
+        '''
+        sefl.
+        
+        
 
     ####################  Moveit planning related functions ####################
     def add_scene_objects_to_moveit(self, **kwargs):

@@ -261,6 +261,29 @@ class SceneManager:
         )             
             
         return object_mesh
+    
+    def get_object_cloud(self, object_name):
+        '''
+        Get object point cloud by cropping point cloud with the 3D bounding box of the object.
+        '''
+        object_bbox = self.bbox_3d_dict[object_name]
+        bbox_center = np.array([
+            (object_bbox[0] + object_bbox[3]) / 2,
+            (object_bbox[1] + object_bbox[4]) / 2,
+            (object_bbox[2] + object_bbox[5]) / 2,
+        ])
+        bbox_size = np.array([
+            object_bbox[3] - object_bbox[0],
+            object_bbox[4] - object_bbox[1],
+            object_bbox[5] - object_bbox[2],
+        ])
+        object_cloud = self.scene_tsdf_masked.crop_cloud(
+            crop_center=bbox_center,
+            crop_size=bbox_size,
+        )             
+            
+        return object_cloud
+    
             
     def get_object_2d_bbox_list(self, object_name)->List[List]:
         '''

@@ -1,4 +1,5 @@
 import os
+from re import L
 from typing import Dict, List, Tuple
 import numpy as np
 from scipy.spatial.transform import Rotation as R
@@ -23,7 +24,7 @@ class PlaneDetectionOpen3D:
         # Ref: A. Araújo and M. Oliveira, A robust statistics approach for plane detection in unorganized point clouds, Pattern Recognition, 2020
         pass
 
-    def detect_planes(self, pcl_o3d: o3d.geometry.PointCloud):
+    def detect_planes(self, pcl_o3d: o3d.geometry.PointCloud)-> Tuple[List[np.ndarray], List[o3d.geometry.OrientedBoundingBox]]:
         """
         Detects planar patches in the point cloud using a robust statistics-based approach using open3d detect_planar_patches interface.
         Args:
@@ -58,8 +59,8 @@ class PlaneDetectionOpen3D:
         normal_vectors = []
         for obox in oboxes:
             normal_vectors.append(obox.R[:, 2])
-        normal_vectors = np.array(normal_vectors)
-        return normal_vectors 
+            
+        return normal_vectors, oboxes
 
     def visualize_planes(self, pcd:o3d.geometry.PointCloud, oboxes: List[o3d.geometry.OrientedBoundingBox], normal_vectors: np.ndarray):
         '''

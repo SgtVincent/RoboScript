@@ -1,5 +1,6 @@
-from typing import Dict
+from typing import Dict, List, Tuple
 import open3d as o3d
+import numpy as np
 
 class PlaneDetectionBase:
     def __init__(self, model_params: Dict):
@@ -8,5 +9,5 @@ class PlaneDetectionBase:
     def load_model(self):
         raise NotImplementedError
 
-    def detect_planes(self, pcl_o3d: o3d.geometry.PointCloud):
+    def detect_planes(self, pcl_o3d: o3d.geometry.PointCloud)-> Tuple[List[np.ndarray], List[o3d.geometry.OrientedBoundingBox]]:
         raise NotImplementedError

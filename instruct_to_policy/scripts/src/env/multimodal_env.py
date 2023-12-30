@@ -1,3 +1,4 @@
+import dis
 from typing import List, Tuple, Dict
 import rospy 
 import json
@@ -114,9 +115,30 @@ class MultiModalEnv(MoveitGazeboEnv):
     def get_plane_normal(self, obj_name: str, position: np.ndarray) -> np.ndarray:
         '''
         Get the plane normal of the object at the given position.
+        Args:
+            obj_name: name of the object
+            position: position of the object
+        Returns:
+            normal: np.ndarray, [x, y, z]
         '''
-        sefl.
+        # First get the object point cloud from scene manager
+        object_point_cloud = self.scene.get_object_cloud(obj_name)
+
+        # Then calculate all planes with plane detection model
+        normal_vectors, oboxes = self.plane_detection_model.detect_planes(object_point_cloud)
         
+        # Calculate the distance from position to all planes (point-to-plane-distance)
+        distances = []
+        for i, obox in enumerate(oboxes):
+            plane_center = obox.get_center()    
+            normal_vector = normal_vectors[i]
+            distance = np.abs(np.dot(normal_vector, plane_center - position))
+            distances.append(distance)
+        
+        # Select the plane that is closest to the given position
+        min_idx = np.argmin(distances)
+        normal = normal_vectors[min_idx]
+        return normal
         
 
     ####################  Moveit planning related functions ####################

@@ -23,10 +23,16 @@ from perception_utils import (
     get_object_pose,              # Returns the pose of an object in the world frame. Returns: pose: Pose
     get_3d_bbox,                 # Returns the 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array [x_min, y_min, z_min, x_max, y_max, z_max]
     get_obj_name_list,           # Returns a list of names of objects present in the scene
-    parse_adaptive_shape_grasp_pose, # Predict a grasp pose for object of adaptive shape with neural networks. Args: object_name: str, preferred_position: Optional(np.array) [x,y,z]. Returns: grasp_pose: Pose
-    parse_horizontal_grasp_pose, # Generate a grasp pose from horizontal approach direction. Specially, this function is suitable for grasping parts of objects fixed to vertical surface. Args: object_name: str; approach_direction: Optional(np.ndarray), [x,y,z]. Returns: grasp_pose: Pose
-    parse_place_pose,            # Predict a place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: Optional(str), position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
+    parse_adaptive_shape_grasp_pose, # Args: object_name: str, preferred_position: Optional(np.array) [x,y,z], preferred_direction: Optional(np.array) [vx, vy, vz]. Returns: grasp_pose: Pose
+    parse_central_lift_grasp_pose, # Args: object_name: str, description: Optional(str) in ['top', 'center'], Returns: grasp_pose: Pose
+    parse_horizontal_grasp_pose, # Args: object_name: str, Returns: grasp_pose: Pose
+    parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: Optional(str), position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
 )
+
+There are three functions for predicting grasp poses, each tailored for different kinds of objects. Note that you need to choose the right grasp function for the object carefully!!!
+1. 'parse_central_lift_grasp_pose': This method involves a vertical lifting action. The gripper closes at the center of the object and is not suitable for elongated objects and is not suitable for the objects with openings, as the gripper's width is really small. It is optimal for handling spherical and cuboid objects without any opening that are not ideal for off-center grasping.
+2. 'parse_horizontal_grasp_pose': This approach is designed for lateral engagement and is ideal for interacting with objects attached to surfaces perpendicular to the tabletop, commonly found in domestic or industrial environments.
+3. 'parse_adaptive_shape_grasp_pose': This function utilizes GraspNet for predictive positioning. This technique is particularly effective for securing objects with unconventional shapes or openings, typical in various everyday scenarios.
 
 # Import utility functions for robot motion planning and execution
 from motion_utils import (
@@ -41,11 +47,10 @@ from motion_utils import (
 )
 '''
 You are encouraged to use above APIs to complete the task.
-Note that you may always need to create your arbitrary functions to help you complete the task. Do not generate them since they which will be defined by external scripts.
+Note that you may always need to create your arbitrary functions to help you complete the task, which will be defined by external scripts.
 The robot working space on table top is in range [-0.5, 0.2] in x-axis and [-0.5, 0.5] in y-axis. The height of the table top is 1.05.
-You may need to select a safe temporary location as an intermediate state by shifing in x,y -axis  to ensure that the operating object can be placed without interfering with other items or the robot's movements. 
-Note that you also need to save the object's original location to variable before moving it for later use.
-Note that you are a strict coder, you can not hard code a predefined value, but you need to use given api or novel tools to detect the value.
+You may need to select a safe temporary location by shifing in x,y -axis  to ensure that the operating object can be placed without interfering with other items or the robot's movements. 
+Note that you are a strict coder, you can not hard code a predefined value, but you need to use api and tools to detect the value.
 Please pay attention to the description and specific requirements of the target object in the task. You may need to write some founctions by yourself to determine whether the requirements are met.
 
 Your generated content should only contain comments starting with '#' and python code!
@@ -53,7 +58,7 @@ Your generated content should only contain comments starting with '#' and python
 },
 {# Pick up object on the table and place it 
 "role":"user",
-"content": "objects = ['object_1', 'container_1', 'table'] ; # pick up object_1 and place it into container_1"
+"content": "objects = ['object_1', 'container_1', 'object_random', 'container_random', 'table'] ; # pick up object_1 and place it into container_1"
 },
 {
 "role": "assistant",
@@ -352,7 +357,7 @@ detach_object('bowl')
 
 # Grasp the apple
 open_gripper()
-grasp_apple_pose = parse_adaptive_shape_grasp_pose(object='apple')
+grasp_apple_pose = parse_central_lift_grasp_pose(object='apple')
 grasp(grasp_apple_pose)
 close_gripper()
 attach_object('apple')
@@ -385,16 +390,16 @@ detach_object('apple')
 # Step 1: Grasp the peach in the plate
 # Step 2: Move the peach onto the table
 # Step 3: Release the peach 
-# Step 4: Grasp the apple in the fry pan
-# Step 5: Move the apple into the plate
-# Step 6: Release the apple
-# Step 7: Grasp the peach on the table
-# Step 8: Move the peach into the fry pan
-# Step 9: Release the peach
-
+# Step 4: Wait for environment to be static and detect objects new states 
+# Step 5: Grasp the apple in the fry pan
+# Step 6: Move the apple into the plate
+# Step 7: Release the apple
+# Step 8: Wait for environment to be static and detect objects new states
+# Step 9: Grasp the peach on the table
+# Step 10: Move the peach into the fry pan
 
 # Grasp the peach in the plate
-peach_grasp_pose = parse_adaptive_shape_grasp_pose(object_name='peach')
+peach_grasp_pose = parse_central_lift_grasp_pose(object_name='peach')
 open_gripper()
 grasp(peach_grasp_pose)
 close_gripper()
@@ -408,8 +413,12 @@ move_to_pose(peach_place_pose)
 open_gripper()
 detach_object('peach')
 
+# Wait for environment to be static and detect objects new states
+rospy.sleep(5)
+detect_objects()
+
 # Grasp the apple in the fry pan
-apple_grasp_pose = parse_adaptive_shape_grasp_pose(object_name='apple')
+apple_grasp_pose = parse_central_lift_grasp_pose(object_name='apple')
 grasp(apple_grasp_pose)
 close_gripper()
 attach_object('apple')
@@ -421,9 +430,13 @@ move_to_pose(apple_place_pose)
 # Release the apple
 open_gripper()
 detach_object('apple')
+
+# Wait for environment to be static and detect objects new states
+rospy.sleep(5)
+detect_objects()
  
 # Grasp the peach on the table
-peach_grasp_pose = parse_adaptive_shape_grasp_pose(object_name='peach')
+peach_grasp_pose = parse_central_lift_grasp_pose(object_name='peach')
 grasp(peach_grasp_pose)
 close_gripper()
 attach_object('peach')

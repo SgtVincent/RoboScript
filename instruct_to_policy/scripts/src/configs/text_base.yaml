@@ -1,0 +1,21 @@
+base_config: base.yaml
+
+grounding_model: {} # not used in text-only setting
+  
+joint_predction:
+  method: ground_truth
+  model_params:
+    service_name: /gazebo/get_joints_axes
+
+grasp_detection:
+  model_name: anygrasp
+  model_params:
+    service_name: /detect_grasps
+  visualize: false
+  verbose: false
+
+lmps:
+  tabletop_ui:
+    class: LMPOpenAI
+    model: gpt-3.5-turbo-16k
+    messages: message_tabletop_text

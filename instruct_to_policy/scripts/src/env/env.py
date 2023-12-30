@@ -21,11 +21,6 @@ class Env:
 
     def __init__(self, cfg):
         self._cfg = cfg
-        # TODO: get the min and max boundary of table from the sim 
-        self._min_xy = np.array(self._cfg["env"]["coords"]["bottom_left"])
-        self._max_xy = np.array(self._cfg["env"]["coords"]["top_right"])
-        self._table_z = self._cfg["env"]["coords"]["table_z"]
-        self._range_xy = self._max_xy - self._min_xy
         
         self.grasp_model = None
         self.grounding_model = None
@@ -42,6 +37,10 @@ class Env:
     def get_joint_values(self):
         """ return robot joint values """
         raise NotImplementedError("get_joint_values() not implemented")
+
+    def get_robot_base_position(self):
+        """Get the position of the robot base.""" 
+        raise NotImplementedError("get_robot_base_position() not implemented")
 
     def open_gripper(self):
         """ open gripper """

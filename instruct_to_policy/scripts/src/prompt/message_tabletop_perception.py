@@ -134,9 +134,9 @@ drawer_joint_info = get_object_joint_info(obj_name='drawer', position=drawer_han
 drawer_joint_position = drawer_joint_info["joint_position"]
 drawer_joint_axis = drawer_joint_info["joint_axis"]
 
-# Grasp the drawer handle with position and joint axis preferences
+# Grasp the drawer handle with negative joint axis as approach direction
 open_gripper()
-grasp_pose = parse_adaptive_shape_grasp_pose(object_name=drawer_handle_name, preferred_position=drawer_handle_position, preferred_approach_direction=drawer_joint_axis)
+grasp_pose = parse_horizontal_grasp_pose(object_name=drawer_handle_name, approach_direction=-drawer_joint_axis)
 grasp(grasp_pose)
 close_gripper()
 attach_object(drawer_handle_name)
@@ -192,9 +192,9 @@ drawer_joint_info = get_object_joint_info(obj_name=drawer_name, position=drawer_
 drawer_joint_position = drawer_joint_info["joint_position"]
 drawer_joint_axis = drawer_joint_info["joint_axis"]
 
-# Grasp the drawer handle with position and joint axis preferences
+# Grasp the drawer handle with negative joint axis as approach direction
 open_gripper()
-grasp_pose = parse_adaptive_shape_grasp_pose(object_name=drawer_handle_name, preferred_position=drawer_handle_position, preferred_approach_direction=drawer_joint_axis)
+grasp_pose = parse_horizontal_grasp_pose(object_name=drawer_handle_name, approach_direction=-drawer_joint_axis)
 grasp(grasp_pose)
 close_gripper()
 attach_object(drawer_handle_name)
@@ -252,9 +252,9 @@ drawer_joint_info = get_object_joint_info(obj_name='drawer', position=drawer_han
 drawer_joint_position = drawer_joint_info["joint_position"]
 drawer_joint_axis = drawer_joint_info["joint_axis"]
 
-# Grasp the drawer handle with position and joint axis preferences
+# Grasp the drawer handle with negative joint axis as approach direction
 open_gripper()
-grasp_pose = parse_adaptive_shape_grasp_pose(object_name=drawer_handle_name, preferred_position=drawer_handle_position, preferred_approach_direction=drawer_joint_axis)
+grasp_pose = parse_horizontal_grasp_pose(object_name=drawer_handle_name, approach_direction=-drawer_joint_axis)
 grasp(grasp_pose)
 close_gripper()
 attach_object(drawer_handle_name)
@@ -285,7 +285,7 @@ detach_object('red_box_0')
 },
 {# Open a Door 
 "role":"user",
-"content": "objects = ['door', 'door_handle'] ; # open the door"
+"content": "objects = ['door'] ; # open the door"
 },
 {
 "role":"assistant",
@@ -444,7 +444,7 @@ detect_objects(object_list=objects)
 
 # Grasp the apple
 open_gripper()
-grasp_apple_pose = parse_central_lift_grasp_pose(object='apple')
+grasp_apple_pose = parse_adaptive_shape_grasp_pose(object='apple')
 grasp(grasp_apple_pose)
 close_gripper()
 attach_object('apple')
@@ -492,7 +492,7 @@ objects = ['plate', 'fry_pan', 'table', 'peach', 'apple']
 detect_objects(object_list=objects)
 
 # Grasp the peach in the plate
-peach_grasp_pose = parse_central_lift_grasp_pose(object_name='peach')
+peach_grasp_pose = parse_adaptive_shape_grasp_pose(object_name='peach')
 open_gripper()
 grasp(peach_grasp_pose)
 close_gripper()
@@ -511,7 +511,7 @@ rospy.sleep(3)
 detect_objects(object_list=objects)
 
 # Grasp the apple in the fry pan
-apple_grasp_pose = parse_central_lift_grasp_pose(object_name='apple')
+apple_grasp_pose = parse_adaptive_shape_grasp_pose(object_name='apple')
 grasp(apple_grasp_pose)
 close_gripper()
 attach_object('apple')
@@ -529,7 +529,7 @@ rospy.sleep(3)
 detect_objects(object_list=objects)
  
 # Grasp the peach on the table
-peach_grasp_pose = parse_central_lift_grasp_pose(object_name='peach')
+peach_grasp_pose = parse_adaptive_shape_grasp_pose(object_name='peach')
 grasp(peach_grasp_pose)
 close_gripper()
 attach_object('peach')

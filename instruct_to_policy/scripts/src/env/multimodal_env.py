@@ -7,7 +7,7 @@ from geometry_msgs.msg import Quaternion, Pose, Point
 
 from grasp_detection.msg import Grasp
 from .moveit_gazebo_env import MoveitGazeboEnv
-from src.grasp_detection import GraspDetectionBase, GraspDetectionRemote
+from src.grasp_detection import create_grasp_model, GraspDetectionBase, GraspDetectionRemote
 from src.grounding_model import create_grounding_model, GroundingBase
 from src.joint_prediction import JointPredictionBase
 from src.plane_detection import PlaneDetectionOpen3D
@@ -28,7 +28,6 @@ class MultiModalEnv(MoveitGazeboEnv):
     def __init__(self, cfg) -> None:
         super().__init__(cfg)
         self.use_gt_perception = False 
-        self.object_metadata_files = cfg["env"]["metadata_files"]
         self.grasp_config = cfg["grasp_detection"]
         self.grasp_method = self.grasp_config["method"] # ["heuristic", "model"]
         self.plane_detection_config = cfg["plane_detection"]
@@ -52,12 +51,9 @@ class MultiModalEnv(MoveitGazeboEnv):
         """
         Initialze all models needed for the environment: grounding, grasp detection, etc.
         """
-        if self.grasp_method in ["model"]:
-            grasp_model_config = self.grasp_config["model_params"]
-            self.grasp_model = GraspDetectionRemote(grasp_model_config)
-            self.grasp_model.load_model()
-        
+    
         self.grounding_model = create_grounding_model(self.grounding_model_name, **self.grounding_model_args)
+        self.grasp_model = create_grasp_model(self.grasp_config)
         # TODO: implement joint prediction model
         self.joint_prediction_model = JointPredictionBase()
         self.plane_detection_model = PlaneDetectionOpen3D(model_params=self.plane_detection_config)

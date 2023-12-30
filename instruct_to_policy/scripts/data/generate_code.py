@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
 This script is used to generate the code for the robot arm manipulation.
-The code is generated with OpenAI API (gpt-3.5-turbo) chat completion.
 """
 
 import os 
@@ -11,14 +10,13 @@ import openai
 import argparse 
 import shapely
 import re
+import json
 # add parent directory to path
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # from src.prompt.message_definitions import *
 from src.lmp import *
-# from src.env.pybullet_env import PickPlaceEnv
-from src.config import cfg_tabletop
-from src.openai_api_key import OPENAI_API_KEY
+from src.configs.config import load_config
 import rospy 
 
 def load_queries(task_queries_file):
@@ -69,8 +67,9 @@ def prepare_vars_detached():
             "get_object_pose",
             "get_3d_bbox",
             "get_obj_name_list",
+            "detect_objects",
+            "get_object_joint_info",
             "parse_adaptive_shape_grasp_pose",
-            "parse_central_lift_grasp_pose",
             "parse_horizontal_grasp_pose",
             "parse_place_pose",
             "open_gripper",
@@ -152,7 +151,7 @@ def parse_args():
     #                     help="Max tokens (defaults to 2048)")
     # parser.add_argument("--max-queries", type=int, default=200, 
     #                     help="Max number of task queries to generate (defaults to 200)")
-
+    parser.add_argument("--config_file", type=str, default="configs/perception_few_shot_gpt_3.5.yaml")
     parser.add_argument("--task-queries", type=str, default="data/benchmark/task_queries/world_1_table_sort.txt",
                         help="Task queries file")
     parser.add_argument("--output-dir", type=str, default="data/benchmark/generated_code",
@@ -161,7 +160,9 @@ def parse_args():
                         help="Max tokens (defaults to 4096)")
     parser.add_argument("--max-queries", type=int, default=10, 
                         help="Max number of task queries to generate (defaults to 200)")
-    os.chdir("/home/junting/franka_ws/src/franka_fisher/instruct_to_policy")
+    # change to instruct_to_policy directory
+    dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    os.chdir(dir)
     
     args, unknown_args = parser.parse_known_args()
 
@@ -176,15 +177,9 @@ if __name__ == "__main__":
 
     # parse arguments
     args = parse_args()
-
-    # set openai api key
-    openai.api_key = OPENAI_API_KEY
-
+    
     # Initialize LMP instances
-    cfg_tabletop = copy.deepcopy(cfg_tabletop)
-    cfg_tabletop["env"] = dict()
-    # TODO: load table top from simulation 
-    cfg_tabletop["env"]["coords"] = lmp_tabletop_coords
+    cfg_tabletop = load_config(args.config_file)
 
     # prepare vars including APIs and constants
     fixed_vars, variable_vars = prepare_vars_detached()
@@ -208,18 +203,7 @@ if __name__ == "__main__":
         try:
             # remove extra '#' and '\n' in query line
             # task_query = task_query.replace('#', '').replace('\n', '')
-
-            # NOTE: 
-            # the benchmark test code generation cabalibity from scratch, so every time should create a new LMP instance
-            # creating the function-generating LMP
-            lmp_fgen = LMPFGen(cfg_tabletop["lmps"]["fgen"], fixed_vars, variable_vars)
-            
-            # creating the LMP that deals w/ high-level language commands
-            cfg_tabletop["lmps"]["tabletop_ui"]["debug_mode"] = True
-            
-            lmp_tabletop_ui = LMP(
-                "tabletop_ui", cfg_tabletop["lmps"]["tabletop_ui"], lmp_fgen, fixed_vars, variable_vars,
-            )
+            lmp_tabletop_ui = setup_LMP(None, cfg_tabletop, debug_mode=True)
 
             print(f"Generating code for task query {i}...")
             # generate code snippet

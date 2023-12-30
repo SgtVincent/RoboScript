@@ -20,7 +20,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.env.gazebo_env import GazeboEnv
 from src.env.utils import pose_msg_to_matrix, get_axis_aligned_bbox
 from src.perception.utils import CameraIntrinsic, Transform
-from src.config import cfg_tabletop
+from src.configs.config import load_config
 
 def get_2D_bbox_from_3D(bbox_center:np.ndarray, bbox_size:np.ndarray,
                           intrinsic:CameraIntrinsic, extrinsic:Transform)->np.ndarray:
@@ -230,6 +230,7 @@ def parse_args():
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("--world_name", type=str, default="table_cabinet_0")
+    parser.add_argument("--config_file", type=str, default="perception_few_shot_gpt_3.5.yaml")
     parser.add_argument(
         "--include_filters",
         type=str,
@@ -272,11 +273,10 @@ if __name__ == "__main__":
     rospy.sleep(3) 
     
     # initialize the environment and interface to gazebo
-    config = cfg_tabletop.copy()
+    config = load_config(args.config_file)
     # disable model loading 
     config['grasp_detection']['method'] = 'heuristic' 
-    # env = SimpleGroundingEnv(cfg_tabletop)
-    # moveit interface is not needed for this script
+
     env = GazeboEnv(config)
     object_names = env.get_gazebo_model_names()
     

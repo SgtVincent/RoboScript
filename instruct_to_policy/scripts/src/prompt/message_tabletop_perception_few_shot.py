@@ -1,4 +1,4 @@
-message_tabletop_perception = [
+message_tabletop_perception_few_shot = [
 {
 "role":"system",
 "content": """
@@ -141,7 +141,10 @@ grasp_pose = parse_adaptive_shape_grasp_pose(object_name=drawer_handle_name, pre
 grasp(grasp_pose)
 close_gripper()
 attach_object(drawer_handle_name)
+attach_object(drawer_handle_name)
 
+# Push the drawer handle, move in -prismatic joint axis direction
+direction = -drawer_joint_axis
 # Push the drawer handle, move in -prismatic joint axis direction
 direction = -drawer_joint_axis
 move_in_direction(direction, distance=0.2)
@@ -234,7 +237,7 @@ detect_objects(object_list=objects)
 
 # Grasp the apple
 open_gripper()
-grasp_apple_pose = parse_central_lift_grasp_pose(object='apple')
+grasp_apple_pose = parse_adaptive_shape_grasp_pose(object='apple')
 grasp(grasp_apple_pose)
 close_gripper()
 attach_object('apple')

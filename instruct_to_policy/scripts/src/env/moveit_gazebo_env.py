@@ -17,7 +17,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation
 from franka_msgs.msg import ErrorRecoveryAction, ErrorRecoveryActionGoal
 import rospy
-
+import tf2_ros
 # Brings in the SimpleActionClient
 from actionlib import SimpleActionClient, GoalStatus
 from moveit_msgs.msg import PositionIKRequest, RobotState
@@ -75,12 +75,14 @@ class MoveitGazeboEnv(GazeboEnv):
 
         # group name 
         # franka default
+        self.base_link = self.config.get('arm_base_link', 'panda_link0')
         self.arm_group_name = self.config.get('arm_group_name', "panda_arm")
         self.gripper_group_name = self.config.get('gripper_group_name', "panda_hand")
         self.manipulator_group_name = self.config.get('manipulator_group_name', "panda_manipulator")
         self.reset_joint_values = self.config.get('initial_joint_values', [0.0, -0.7854, 0.0, -2.3562, 0.0, 1.5708, 0.7854])
 
         # ur5 default
+        # self.base_link = self.config.get('arm_base_link', 'ur5_base_link')
         # self.arm_group_name = self.config.get('arm_group_name', "ur5_arm")
         # self.gripper_group_name = self.config.get('gripper_group_name', "gripper")
         # self.manipulator_group_name = self.config.get('manipulator_group_name', "ur5_manipulator")
@@ -93,6 +95,10 @@ class MoveitGazeboEnv(GazeboEnv):
         self.ignore_coll_check = False
         self.wait_at_grasp_pose = False
         self.wait_at_place_pose = False
+
+        # tf buffer and listener
+        self.tf_buffer = tf2_ros.Buffer()
+        self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
 
         # Service to compute IK
         self.compute_ik = rospy.ServiceProxy("/compute_ik", GetPositionIK)
@@ -298,6 +304,15 @@ class MoveitGazeboEnv(GazeboEnv):
         if group is None:
             group = self.move_group
         return group.get_current_pose().pose
+
+    def get_robot_base_position(self)->np.ndarray: 
+        """ 
+        Get the current position of the robot base in the reference frame by querying the tf from reference frame to robot base link
+        """
+
+        transform:tf2_ros.TransformStamped = self.tf_buffer.lookup_transform(self.reference_frame, self.base_link, rospy.Time(0), rospy.Duration(1.0))
+        position = np.array([transform.transform.translation.x, transform.transform.translation.y, transform.transform.translation.z], dtype=float)
+        return position
 
     @_block
     def open_gripper(self, gripper_group=None, width=0.08):

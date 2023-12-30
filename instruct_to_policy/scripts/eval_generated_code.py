@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 import os 
 import numpy as np
+import json
 import argparse
 from datetime import datetime
 from src.lmp import *
 from src.env.true_grounding_env import TrueGroundingEnv
 from src.eval.evaluator import Evaluator
-from src.config import cfg_tabletop
+from src.configs.config import load_config
 import rospy 
 import rospkg
 
@@ -23,9 +24,13 @@ if __name__ == "__main__":
     # code_to_eval = rospy.get_param('~code_to_eval', 'generated_code_gpt3_few_shot')
     code_to_eval = rospy.get_param('~code_to_eval', 'generated_code_gpt3_few_shot_grasp_preference')
 
+    config_file = rospy.get_param('~config_file', 'perception_few_shot_gpt_3.5.yaml')
+
     # code_to_eval = rospy.get_param('~code_to_eval', 'generated_code_gpt4')
     # code_to_eval = rospy.get_param('~code_to_eval', 'generated_code_gpt4_few_shot')
     # code_to_eval = rospy.get_param('~code_to_eval', 'generated_code_gpt4_few_shot_grasp_preference')
+    
+    cfg_tabletop = load_config(config_file)
     
     raw_file = os.path.join(pkg_root, f'data/benchmark/{code_to_eval}/raw_{world_name}.json')
     raw_file_path = os.path.join(pkg_root, raw_file)

@@ -22,6 +22,7 @@ class GraspDetectionRemote(GraspDetectionBase):
     """
     def __init__(self, config, **kwargs):
         super().__init__(config)
+            
         self.service_name = self.config["service_name"]
         
         # initialize ROS service proxy 

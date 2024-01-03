@@ -13,9 +13,6 @@ import openai
 from openai.error import APIConnectionError, RateLimitError
 
 from src.utils import *
-from src.constants import *
-from src.config import *
-from src.env.env import Env
 from .lmp_base import LMPBase, LMPFGenBase
 
 from src.openai_api_key import OPENAI_API_KEY

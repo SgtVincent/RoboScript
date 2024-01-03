@@ -26,7 +26,7 @@ def merge_dicts(dicts):
         for k, v in d.items()
     }
     
-def prepare_vars(env, defined_functions:List[str]=[]):
+def prepare_vars(env, defined_functions:List[str]=[], detached_mode=False):
     """Prepare variables including APIs and objects for LMPs """
     fixed_vars = {
         "os": os,
@@ -45,10 +45,14 @@ def prepare_vars(env, defined_functions:List[str]=[]):
             ]
         }
     )
+    
+    # lambda function to select either getattr(env, key) or None depending on detached_mode
+    get_attr_or_none = lambda key: getattr(env, key) if not detached_mode else None
+    
     # Add env api to fixed variables
     fixed_vars.update(
         {
-            k: getattr(env, k)
+            k: get_attr_or_none(k)
             for k in [
                 "move_group",
                 "get_object_center_position",
@@ -73,9 +77,10 @@ def prepare_vars(env, defined_functions:List[str]=[]):
     )
     
     # add moveit interfaces to variables
+    # TODO: do we really need to add these instances handles? 
     fixed_vars.update(
         {
-            k: getattr(env, k)
+            k: get_attr_or_none(k)
             for k in [
                 "move_group",
                 "gripper_group",

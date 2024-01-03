@@ -27,6 +27,9 @@ class LMPBase:
         self.exec_hist = ""
         self.dump_hist = []
 
+    def __del__(self):
+        del self._lmp_fgen
+
     def clear_exec_hist(self):
         self.exec_hist = ""
 

@@ -1,0 +1,28 @@
+base_config: perception_base.yaml
+
+grounding_model:
+  model_name: glip
+  model_args: {}
+  
+joint_predction:
+  method: ground_truth # TODO: change it to the joint prediction model 
+  model_params:
+    service_name: /gazebo/get_joints_axes
+
+grasp_detection:
+  model_name: anygrasp
+  model_params:
+    service_name: /detect_grasps
+  visualize: false
+  verbose: false
+
+lmps:
+  tabletop_ui:
+    class: LMPPPLX
+    model: mistral-medium
+    messages: message_tabletop_perception_few_shot
+
+  fgen:
+    class: LMPFGenPPLX
+    model: mistral-medium
+    messages: message_fgen_few_shot

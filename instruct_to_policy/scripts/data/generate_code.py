@@ -214,8 +214,12 @@ if __name__ == "__main__":
             lmp_tabletop_ui(task_query, "")
             # append dump_hist to list 
             dump_hist_list.append(lmp_tabletop_ui.dump_hist[-1])
-    
+            
+            # delete lmp_tabletop_ui to release memory/ kill threads
+            del lmp_tabletop_ui
+            
         except Exception as e:
+            # raise e 
             exception_log += "----------\n"
             exception_log += f"Cannot generate code for task query {i}: {task_query} \n"
             exception_log += f"Exception: {e} \n"

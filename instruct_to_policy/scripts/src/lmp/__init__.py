@@ -4,8 +4,8 @@ from src.utils import prepare_vars
 from .lmp_base import LMPBase, LMPFGenBase
 from .lmp_openai import LMPOpenAI, LMPFGenOpenAI
 # from .lmp_poe import LMPPoe, LMPFGenPoe
-from .lmp_perplexity import LMPPPLX, LMPFGenPPLX
-from .lmp_gemini import LMPGemini, LMPFGenGemini
+# from .lmp_perplexity import LMPPPLX, LMPFGenPPLX
+# from .lmp_gemini import LMPGemini, LMPFGenGemini
 
 
 def setup_LMP(env, cfg_tabletop, debug_mode=False, detached_mode=False)->LMPBase:

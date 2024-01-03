@@ -9,11 +9,7 @@ import ast
 import astunparse
 from shapely.geometry import *
 from shapely.affinity import *
-import openai
-from openai.error import APIConnectionError, RateLimitError
-
 from src.utils import *
-from src.env.env import Env
 import copy
 
 
@@ -34,7 +30,7 @@ class LMPBase:
     def clear_exec_hist(self):
         self.exec_hist = ""
 
-    def build_messages(self, query, context=""):
+    def build_messages(self, query, context="")->Tuple[List[Dict], str]:
         messages = copy.deepcopy(self._base_messages)
 
         query_message = {"role": "user", "content": ""}

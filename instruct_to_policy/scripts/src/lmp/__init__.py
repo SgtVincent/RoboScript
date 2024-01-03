@@ -4,10 +4,11 @@ from src.utils import prepare_vars
 from .lmp_base import LMPBase, LMPFGenBase
 from .lmp_openai import LMPOpenAI, LMPFGenOpenAI
 # from .lmp_poe import LMPPoe, LMPFGenPoe
-# from .lmp_perplexity import LMPPPLX, LMPFGenPPLX
+from .lmp_perplexity import LMPPPLX, LMPFGenPPLX
+from .lmp_gemini import LMPGemini, LMPFGenGemini
 
 
-def setup_LMP(env, cfg_tabletop, debug_mode=True)->LMPBase:
+def setup_LMP(env, cfg_tabletop, debug_mode=False, detached_mode=False)->LMPBase:
     '''
     Setup LMP for tabletop manipulation tasks.
     Args: 
@@ -17,6 +18,11 @@ def setup_LMP(env, cfg_tabletop, debug_mode=True)->LMPBase:
     Returns:
         lmp_tabletop_ui: the LMP instance for tabletop manipulation tasks
     '''
+    # TODO: implement debug mode and detached mode
+    # change all lmp configs to debug mode if set, used in offline code generation
+    if debug_mode:
+        for lmp_name, lmp_config in cfg_tabletop['lmps'].items():
+            cfg_tabletop['lmps'][lmp_name]['debug_mode'] = True
     
     # get LMP class and get its handle     
     lmp_class = cfg_tabletop["lmps"]["tabletop_ui"]["class"]
@@ -26,10 +32,9 @@ def setup_LMP(env, cfg_tabletop, debug_mode=True)->LMPBase:
     
     # LMP env wrapper
     cfg_tabletop = copy.deepcopy(cfg_tabletop)
-    LMP_env = env
 
     # prepare vars including APIs and constants
-    fixed_vars, variable_vars = prepare_vars(LMP_env)
+    fixed_vars, variable_vars = prepare_vars(env, detached_mode=detached_mode)
 
     # creating the function-generating LMP
     lmp_fgen = lmp_fgen_class(cfg_tabletop["lmps"]["fgen"], fixed_vars, variable_vars)
@@ -49,4 +54,4 @@ def setup_LMP(env, cfg_tabletop, debug_mode=True)->LMPBase:
         "tabletop_ui", cfg_tabletop["lmps"]["tabletop_ui"], lmp_fgen, fixed_vars, variable_vars
     )
 
-    return lmp_tabletop_ui
+    return lmp_tabletop_ui 

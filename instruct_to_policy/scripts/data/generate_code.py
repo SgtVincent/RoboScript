@@ -151,7 +151,7 @@ def parse_args():
     #                     help="Max tokens (defaults to 2048)")
     # parser.add_argument("--max-queries", type=int, default=200, 
     #                     help="Max number of task queries to generate (defaults to 200)")
-    parser.add_argument("--config_file", type=str, default="configs/perception_few_shot_gpt_3.5.yaml")
+    parser.add_argument("--config_file", type=str, default="perception_few_shot_gpt_3.5.yaml")
     parser.add_argument("--task-queries", type=str, default="data/benchmark/task_queries/world_1_table_sort.txt",
                         help="Task queries file")
     parser.add_argument("--output-dir", type=str, default="data/benchmark/generated_code",
@@ -166,9 +166,13 @@ def parse_args():
     
     args, unknown_args = parser.parse_known_args()
 
+    # create a subdir for this config 
+    args.output_dir = os.path.join(args.output_dir, args.config_file.split('.')[0])
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir)
-
+    
+    print(f"Saving generated code and logs to the output dir: {args.output_dir}")
+    
     return args
 
 
@@ -203,7 +207,7 @@ if __name__ == "__main__":
         try:
             # remove extra '#' and '\n' in query line
             # task_query = task_query.replace('#', '').replace('\n', '')
-            lmp_tabletop_ui = setup_LMP(None, cfg_tabletop, debug_mode=True)
+            lmp_tabletop_ui = setup_LMP(None, cfg_tabletop, debug_mode=True, detached_mode=True)
 
             print(f"Generating code for task query {i}...")
             # generate code snippet

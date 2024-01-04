@@ -29,7 +29,6 @@ class MultiModalEnv(MoveitGazeboEnv):
         super().__init__(cfg)
         self.use_gt_perception = False 
         self.grasp_config = cfg["grasp_detection"]
-        self.grasp_method = self.grasp_config["method"] # ["heuristic", "model"]
         self.plane_detection_config = cfg["plane_detection"]
         
         
@@ -39,7 +38,8 @@ class MultiModalEnv(MoveitGazeboEnv):
         self.grounding_model_args = self.grounding_config.get("model_args", {})        
         
         self.grasp_model = None
-        self.groudning_model = None
+        self.groudning_model = None 
+        self.joint_prediction_model = None
         
         
         # scene manager to manage the scene objects, 3D reconstruction, detections, etc.
@@ -56,7 +56,7 @@ class MultiModalEnv(MoveitGazeboEnv):
         self.grasp_model = create_grasp_model(self.grasp_config)
         # TODO: implement joint prediction model
         self.joint_prediction_model = JointPredictionBase()
-        self.plane_detection_model = PlaneDetectionOpen3D(model_params=self.plane_detection_config)
+        self.plane_detection_model = PlaneDetectionOpen3D(model_params=self.plane_detection_config['model_params'])
         
 
     def detect_objects(self, **kwargs):

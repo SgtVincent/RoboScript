@@ -155,7 +155,7 @@ detect_objects(object_list=objects)
 
 # Grasp the apple
 open_gripper()
-grasp_apple_pose = parse_adaptive_shape_grasp_pose(object='apple')
+grasp_apple_pose = parse_adaptive_shape_grasp_pose(object_name='apple')
 grasp(grasp_apple_pose)
 close_gripper()
 attach_object('apple')

@@ -381,7 +381,7 @@ detect_objects(object_list=objects)
 toy_names = ['toy_car', 'toy_train']
 toys_in_basket = []
 for toy_name in toy_names:
-    if check_object_in_receptacle(object=toy_name, receptacle='wood_basket'):
+    if check_object_in_receptacle(object_name=toy_name, receptacle='wood_basket'):
         toys_in_basket.append(toy_name)
         
 # For each toy in the basket, grasp it and put it on the table
@@ -423,7 +423,7 @@ detect_objects(object_list=objects)
 
 # Grasp the bowl
 open_gripper()
-grasp_bowl_pose = parse_adaptive_shape_grasp_pose(object='bowl', description='a bowl from the high shelf')
+grasp_bowl_pose = parse_adaptive_shape_grasp_pose(object_name='bowl', description='a bowl from the high shelf')
 grasp(grasp_bowl_pose)
 close_gripper()
 attach_object('bowl')
@@ -459,7 +459,7 @@ detect_objects(object_list=objects)
 
 # Grasp the apple
 open_gripper()
-grasp_apple_pose = parse_adaptive_shape_grasp_pose(object='apple')
+grasp_apple_pose = parse_adaptive_shape_grasp_pose(object_name='apple')
 grasp(grasp_apple_pose)
 close_gripper()
 attach_object('apple')

@@ -25,8 +25,8 @@ from perception_utils import (
     get_obj_name_list,           # Returns a list of names of objects present in the scene
     parse_adaptive_shape_grasp_pose, # Predict a grasp pose for object of adaptive shape with neural networks. Args: object_name: str, preferred_position: Optional(np.array) [x,y,z]. Returns: grasp_pose: Pose
     parse_horizontal_grasp_pose, # Generate a grasp pose from horizontal approach direction. Specially, this function is suitable for grasping parts of objects fixed to vertical surface. Args: object_name: str; approach_direction: Optional(np.ndarray), [x,y,z]. Returns: grasp_pose: Pose
-    parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: Optional(str), position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
-    detect_objects,              # Detect and update task-specific objects' status in the environment. Call this function before interaction with environment objects. Args: object_list: Optional(List[str]), objects to detect.
+    parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str; receptacle_name: Optional(str); position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
+    detect_objects,              # Detect and update task-relevant objects' status in the environment. The function takes a list of object categories as input, and detects all instances of categories in the environment, creating instance name handles globally by attaching an instance id to the category name. For example, "apple" -> ["apple_0", "apple_1", ...]. Call this function before interaction with environment objects. Args: category_list: Optional(List[str]), object categories to detect.
 )
 
 # Import utility functions for robot motion planning and execution

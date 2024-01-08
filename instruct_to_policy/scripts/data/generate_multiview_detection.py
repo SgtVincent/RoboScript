@@ -18,80 +18,51 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # from src.env.simple_grounding_env import SimpleGroundingEnv
 from src.env.gazebo_env import GazeboEnv
-from src.env.utils import pose_msg_to_matrix, get_axis_aligned_bbox
-from src.perception.utils import CameraIntrinsic, Transform
+from src.env.utils import pose_msg_to_matrix
+from src.perception.utils import CameraIntrinsic, Transform, project_2d_to_3d
 from src.configs.config import load_config
 
-def get_2D_bbox_from_3D(bbox_center:np.ndarray, bbox_size:np.ndarray,
-                          intrinsic:CameraIntrinsic, extrinsic:Transform)->np.ndarray:
-    corners = np.array([
-        [-1, -1, -1],
-        [-1, -1,  1],
-        [-1,  1, -1],
-        [-1,  1,  1],
-        [ 1, -1, -1],
-        [ 1, -1,  1],
-        [ 1,  1, -1],
-        [ 1,  1,  1]
-    ]) * bbox_size / 2 + bbox_center
 
-    # project 3D bounding box onto the depth image
-    corners = extrinsic.transform_point(corners)
-    K = intrinsic.K 
-    corners = K.dot(corners.T).T
-    corners = corners[:, :2] / corners[:, 2:]
-    corner_pixels = corners.astype(np.int32)
+def get_instance_bbox_2d(bbox_3d_center: np.ndarray, bbox_3d_size: np.ndarray, 
+                         points: np.ndarray, pixel_coords: np.ndarray, xy_margin=0.01, bottom_margin=0.01) -> Tuple[np.ndarray, np.ndarray]:
+    '''
+    Given a 3D bounding box, get the 2D bounding box in the depth image by projecting the points inside the 3D bounding box onto the depth image.
     
-    # calculate the 2D bounding box of the 8 corner_pixels
-    min_x = np.min(corner_pixels[:, 0])
-    max_x = np.max(corner_pixels[:, 0])
-    min_y = np.min(corner_pixels[:, 1])
-    max_y = np.max(corner_pixels[:, 1])
+    Args:
+        bbox_3d_center: (3,) np.ndarray, center of the 3D bounding box
+        bbox_3d_size: (3,) np.ndarray, size of the 3D bounding box
+        points: (N, 3) np.ndarray, points to project onto the depth image
+        pixel_coords: (N,) np.ndarray, pixel coordinates of the points in the depth image
+        xy_margin: float, expand margin to the x and y axis of the 3D bounding box to include points on the boundary surface
+        bottom_margin: float, shrink margin to the bottom of the 3D bounding box to exclude points on the table surface
+        
+    Returns:
+        bbox_2d: (4,) np.ndarray, 2D bounding box in the depth image
+        pixels_inside_bbox: (N,) np.ndarray, pixel coordinates of the points inside the 3D bounding box
+    '''
+    # get the 3D bounding box corner points in the object frame
+    bbox_3d_min = bbox_3d_center - bbox_3d_size / 2
+    bbox_3d_max = bbox_3d_center + bbox_3d_size / 2
+    bbox_3d_min[:2] -= xy_margin
+    bbox_3d_max[:2] += xy_margin
+    bbox_3d_min[2] += bottom_margin
+     
+    # generate a 2D mask of same size as depth image indicating whether a pixel's corresponding point is inside the 3D bounding box
+    mask = np.logical_and.reduce((points[:, 0] >= bbox_3d_min[0], points[:, 0] <= bbox_3d_max[0],
+                                  points[:, 1] >= bbox_3d_min[1], points[:, 1] <= bbox_3d_max[1],
+                                  points[:, 2] >= bbox_3d_min[2], points[:, 2] <= bbox_3d_max[2]))
+    
+    if np.sum(mask) == 0:
+        return None, None
+    
+    # generate the 2D bounding box on the depth image by finding the min and max x, y coordinates of pixels inside the 3D bounding box
+    pixels_inside_bbox = pixel_coords[mask]
+    bbox_2d = np.array([np.min(pixels_inside_bbox[:, 0]), np.min(pixels_inside_bbox[:, 1]),
+                        np.max(pixels_inside_bbox[:, 0]), np.max(pixels_inside_bbox[:, 1])])
+    
+    return bbox_2d, pixels_inside_bbox
+    
 
-    return np.array([min_x, min_y, max_x, max_y])
-    
-def check_occlusion(bbox_center:np.ndarray, bbox_size:np.ndarray, 
-                    intrinsic:CameraIntrinsic, extrinsic:Transform,
-                    depth_image:np.ndarray):
-    """
-    Check whether a model is occluded by other objects in the scene.
-    Calculate the bbox_3d corners and project them to the depth image.
-    At least 4 corners should have less depth than the corresponding pixel in the depth image.
-    """
-    # project 3D bounding box corners onto the depth image and get the corresponding depth values
-    corners = np.array([
-        [-1, -1, -1],
-        [-1, -1,  1],
-        [-1,  1, -1],
-        [-1,  1,  1],
-        [ 1, -1, -1],
-        [ 1, -1,  1],
-        [ 1,  1, -1],
-        [ 1,  1,  1]
-    ]) * bbox_size / 2 + bbox_center
-    
-    # project 3D bounding box onto the depth image
-    corners_local = extrinsic.transform_point(corners)
-    K = intrinsic.K 
-    corners_pixels_homo = K.dot(corners_local.T).T
-    corner_pixels = (corners_pixels_homo[:, :2] / corners_pixels_homo[:, 2:]).astype(np.int32)
-    valid_pixels_mask = np.logical_and(
-        np.logical_and(corner_pixels[:, 0] >= 0, corner_pixels[:, 0] < depth_image.shape[1]),
-        np.logical_and(corner_pixels[:, 1] >= 0, corner_pixels[:, 1] < depth_image.shape[0])
-    )
-    valid_depth_pixels = corner_pixels[valid_pixels_mask]
-    
-    # calculate corner points depth values
-    corner_depths = corners_local[:, 2]
-    corner_depths = corner_depths[valid_pixels_mask]
-    
-    # get the masks of corners of which depth is less than the corresponding pixel in the depth image
-    corner_depth_pixels = depth_image[valid_depth_pixels[:, 1], valid_depth_pixels[:, 0]]
-    visible_corner_mask = corner_depths < corner_depth_pixels
-    
-    # if at least 4 corners are visible, return False
-    return np.sum(visible_corner_mask) < 4
-    
 def save_sensor_data(sensor_data: Dict, world_name: str, output_dir: str):
     """save all sensor data to dataset
     """
@@ -115,7 +86,8 @@ def save_sensor_data(sensor_data: Dict, world_name: str, output_dir: str):
            
     return rgb_images
 
-def save_annotation(sensor_data: Dict, bbox_3d_list: List, object_names: List[str], world_name: str, output_dir: str):
+def save_annotation(sensor_data: Dict, bbox_3d_list: List, object_names: List[str], world_name: str, output_dir: str,
+                    min_bbox_size=5):
     annot_dict = {}
     if not os.path.exists(os.path.join(output_dir, 'annotations')):
         os.makedirs(os.path.join(output_dir, 'annotations'))
@@ -134,15 +106,40 @@ def save_annotation(sensor_data: Dict, bbox_3d_list: List, object_names: List[st
             'detections': {}
         }
         
+        # back-project depth image to 3D point cloud
+        points, pixel_coords = project_2d_to_3d(depth, intrinsics, extrinsics)
+        
+        # generate 2d bbox for each object 
         for j, object_name in enumerate(object_names):
 
-            bbox_center, bbox_size = bbox_3d_list[j]
-            if check_occlusion(bbox_center, bbox_size, intrinsics, extrinsics, depth):
-                annot_dict[camera]['detections'][object_name] = [] # empty list means no detection found
-            else:
-                # need to call tolist() to convert np.int32 to python int for json serialization
-                annot_dict[camera]['detections'][object_name] = get_2D_bbox_from_3D(bbox_center, bbox_size, intrinsics, extrinsics).tolist()
-    
+            bbox_3d_center, bbox_3d_size = bbox_3d_list[j]
+            
+            if bbox_3d_center is None or bbox_3d_size is None:
+                annot_dict[camera]['detections'][object_name] = [] 
+                continue
+            
+            # get the instance 2d bbox in the depth image 
+            bbox_2d, instance_pixels = get_instance_bbox_2d(np.array(bbox_3d_center), np.array(bbox_3d_size), points, pixel_coords)
+            
+            # filter empty bbox 
+            if bbox_2d is None or instance_pixels is None:
+                annot_dict[camera]['detections'][object_name] = [] 
+                continue
+            
+            # filter out too small bbox 
+            if bbox_2d[2] - bbox_2d[0] < min_bbox_size or bbox_2d[3] - bbox_2d[1] < min_bbox_size:
+                annot_dict[camera]['detections'][object_name] = [] 
+                continue
+            
+            # FIXME: gazebo depth and rgb image has several pixel offset, fix it in the future in gazebo and remove the hack below
+            # Currently, we just shift the bbox by 3 pixels to the left 
+            if bbox_2d is not None:
+                bbox_2d[0] = max(0, bbox_2d[0] - 5)
+                bbox_2d[2] = max(0, bbox_2d[2] - 5)
+            
+            # save the 2d bbox to annotation dict 
+            annot_dict[camera]['detections'][object_name] = bbox_2d.tolist()
+            
     # save annotation to file
     annot_file = os.path.join(output_dir, 'annotations', world_name + '.json')
     with open(annot_file, 'w') as f:

@@ -225,7 +225,7 @@ def get_mask_from_2D_bbox(bbox:np.ndarray, depth_image:np.ndarray)->np.ndarray:
     mask[bbox[1]:bbox[3], bbox[0]:bbox[2]] = 1
     return mask
 
-def integrate_point_cloud_in_bbox(intrinsics: List[np.array], extrinsics: List[np.array], depth_images_list: List[np.array], bboxes_2d_list: List[List[np.array]]) -> np.array:
+def integrate_point_cloud_in_bbox(intrinsics: List[np.ndarray], extrinsics: List[np.ndarray], depth_images_list: List[np.ndarray], bboxes_2d_list: List[List[np.ndarray]]) -> np.ndarray:
     '''
     Utility to integrate point cloud from all cameras with bounding boxes as masks
     '''
@@ -242,7 +242,7 @@ def integrate_point_cloud_in_bbox(intrinsics: List[np.array], extrinsics: List[n
         else:
             integrated_point_cloud += depth_images_list[camera_idx] * mask
     
-def project_3d_to_2d(points_3d: np.array, intrinsic: CameraIntrinsic, extrinsic: Transform) -> np.array:
+def project_3d_to_2d(points_3d: np.ndarray, intrinsic: CameraIntrinsic, extrinsic: Transform) -> np.ndarray:
     """
     Project 3D points to 2D image plane
     @param points_3d: 3D points in the form of (N, 3)
@@ -256,17 +256,87 @@ def project_3d_to_2d(points_3d: np.array, intrinsic: CameraIntrinsic, extrinsic:
     points_2d = points_2d[:, :2] / points_2d[:, 2:]
     return points_2d
 
-def is_point_in_bbox(point: np.array, bbox: np.array) -> bool:
+
+# TODO: This function is still buggy, check it later 
+# def project_2d_to_3d(depth_image: np.ndarray, intrinsic: CameraIntrinsic, extrinsic: Transform, depth_scale=1.0) -> Tuple[np.ndarray, np.ndarray]:
+#     """
+#     Project 2D points to 3D camera coordinate system
+#     @param depth_image: depth image in meters
+#     @param intrinsic: camera intrinsic parameters
+#     @param extrinsic: camera extrinsic parameters
+#     @return: 3D points in the form of (N, 3)
+#     @return: 3D points' corresponding pixel coordinates in depth image
+#     """
+#     # get pixel coordinates
+#     ys, xs = np.mgrid[:depth_image.shape[0], :depth_image.shape[1]]
+#     ys = ys.reshape(-1)
+#     xs = xs.reshape(-1)
+    
+#     # Back-project to 3D (in the camera frame)
+#     x_normalized = (xs - intrinsic.cx) / intrinsic.fx
+#     y_normalized = (ys - intrinsic.cy) / intrinsic.fy
+#     z = (depth_image / depth_scale).reshape(-1)
+#     x_cam = x_normalized * z
+#     y_cam = y_normalized * z
+
+#     # Homogeneous coordinates
+#     points_cam_hom = np.stack((x_cam, y_cam, z, np.ones_like(x_cam)), axis=-1)
+#     extrinsic_matrix = extrinsic.as_matrix()
+#     points_world_hom = points_cam_hom @ extrinsic_matrix.T
+#     points_world = points_world_hom[:, :3] / points_world_hom[:, 3:]
+    
+#     # return points and pixel coordinates
+#     return points_world, np.vstack((xs.flatten(), ys.flatten())).T 
+
+def project_2d_to_3d(depth_image: np.ndarray, intrinsic: CameraIntrinsic, extrinsic: Transform) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Project 2D points to 3D camera coordinate system
+    @param depth_image: depth image in meters
+    @param intrinsic: camera intrinsic parameters
+    @param extrinsic: camera extrinsic parameters
+    @return: 3D points in the form of (N, 3)
+    @return: 3D points' corresponding pixel coordinates in depth image
+    """
+    # get point cloud from depth image and camera parameters 
+    depth_o3d = o3d.geometry.Image(depth_image)
+    intrinsic_o3d = o3d.camera.PinholeCameraIntrinsic(intrinsic.width, intrinsic.height, intrinsic.K)
+    extrinsic_o3d = extrinsic.as_matrix()
+    pcd = o3d.geometry.PointCloud.create_from_depth_image(depth_o3d, intrinsic_o3d, extrinsic_o3d)
+    points = np.asarray(pcd.points)
+    
+    # project points onto depth image the get pixel coordinates
+    K = intrinsic.K 
+    points_cam = extrinsic.transform_point(points)
+    points_2d = K.dot(points_cam.T).T
+    points_2d = points_2d[:, :2] / points_2d[:, 2:]
+    pixels = points_2d.astype(np.int32)
+    
+    # return points and pixel coordinates
+    return points, pixels 
+
+def is_point_in_bbox_2d(point: np.ndarray, bbox: np.ndarray) -> bool:
     x, y = point
     x_min, y_min, x_max, y_max = bbox
     return x_min <= x <= x_max and y_min <= y <= y_max
 
-def check_points_in_bbox(points_2d: np.array, bbox: np.array) -> np.array:
+def is_point_in_bbox_3d(point: np.ndarray, bbox_center: np.ndarray, bbox_size: np.ndarray) -> bool:
+    x, y, z = point
+    x_min, y_min, z_min = bbox_center - bbox_size / 2
+    x_max, y_max, z_max = bbox_center + bbox_size / 2
+    return x_min <= x <= x_max and y_min <= y <= y_max and z_min <= z <= z_max
+
+def check_points_in_bbox_2d(points_2d: np.ndarray, bbox: np.ndarray) -> np.ndarray:
     xs, ys = points_2d[:, 0], points_2d[:, 1]
     x_min, y_min, x_max, y_max = bbox
     return np.logical_and(np.logical_and(x_min <= xs, xs <= x_max), np.logical_and(y_min <= ys, ys <= y_max))
 
-def one_hot_iou(one_hot_vector_1: np.array, one_hot_vector_2: np.array) -> float:
+def check_points_in_bbox_3d(points_3d: np.ndarray, bbox_center: np.ndarray, bbox_size: np.ndarray) -> np.ndarray:
+    xs, ys, zs = points_3d[:, 0], points_3d[:, 1], points_3d[:, 2]
+    x_min, y_min, z_min = bbox_center - bbox_size / 2
+    x_max, y_max, z_max = bbox_center + bbox_size / 2
+    return np.logical_and(np.logical_and(x_min <= xs, xs <= x_max), np.logical_and(np.logical_and(y_min <= ys, ys <= y_max), np.logical_and(z_min <= zs, zs <= z_max)))
+
+def one_hot_iou(one_hot_vector_1: np.ndarray, one_hot_vector_2: np.ndarray) -> float:
     """
     Calculate the IOU between two one-hot vectors
     """
@@ -313,9 +383,9 @@ def open3d_frustum_filter(pcl: o3d.geometry.PointCloud, bbox_2d_list: List[np.nd
     filtered_pcl.colors = o3d.utility.Vector3dVector(np.asarray(pcl.colors)[mask])
     return filtered_pcl, mask
 
-def match_bboxes_clustering(bboxes_2d_list: List[List[np.array]], intrinsics: List[np.array], extrinsics: List[np.array],
+def match_bboxes_clustering(bboxes_2d_list: List[List[np.ndarray]], intrinsics: List[np.ndarray], extrinsics: List[np.ndarray],
                             pcl: o3d.geometry.PointCloud, downsample=False, downsample_voxel_size=0.02,
-                            min_samples=10, cluster_eps=0.02, debug_visualize=False) -> List[Tuple[np.array]]:
+                            min_samples=10, cluster_eps=0.02, debug_visualize=False) -> List[Tuple[np.ndarray]]:
     '''
     Match 2D bounding boxes by 1) clustering 3D points into object instances. 2)Then match the clusters and 2D bounding boxes by projecting 
     3D points to 2D image planes and checking which cluster has the most points inside the bounding boxes.
@@ -361,7 +431,7 @@ def match_bboxes_clustering(bboxes_2d_list: List[List[np.array]], intrinsics: Li
         # count the occurrences of each cluster label within the bounding box
         cluster_counts = np.zeros(num_clusters)
         for bbox in bboxes:
-            mask = check_points_in_bbox(projected_points, bbox)
+            mask = check_points_in_bbox_2d(projected_points, bbox)
             bbox_cluster_labels = cluster_labels[mask]
             unique_labels, label_counts = np.unique(bbox_cluster_labels, return_counts=True)
             cluster_counts[unique_labels] += label_counts
@@ -372,7 +442,7 @@ def match_bboxes_clustering(bboxes_2d_list: List[List[np.array]], intrinsics: Li
         # assign the bounding box to the cluster with the most appearing label
         matched_bboxes_idx_tuple = [-1 for _ in range(num_views)]
         for bbox_idx, bbox in enumerate(bboxes):
-            mask = check_points_in_bbox(projected_points, bbox)
+            mask = check_points_in_bbox_2d(projected_points, bbox)
             bbox_cluster_labels = cluster_labels[mask]
             if max_count_label in bbox_cluster_labels:
                 matched_bboxes_idx_tuple[view_idx] = bbox_idx
@@ -383,9 +453,9 @@ def match_bboxes_clustering(bboxes_2d_list: List[List[np.array]], intrinsics: Li
     
     return matched_bboxes_idx_tuple_list
             
-def match_bboxes_points_overlapping(bboxes_2d_list: List[List[np.array]], intrinsics: List[np.array], extrinsics: List[np.array], 
+def match_bboxes_points_overlapping(bboxes_2d_list: List[List[np.ndarray]], intrinsics: List[np.ndarray], extrinsics: List[np.ndarray], 
                  pcl: o3d.geometry.PointCloud, downsample=True, downsample_voxel_size=0.02,
-                 min_match_th=0.1, debug_visualize=False) -> List[Tuple[np.array]]:
+                 min_match_th=0.1, debug_visualize=False) -> List[Tuple[np.ndarray]]:
     '''
     Match 2D bounding boxes by projecting 3D points to 2D image planes and checking which points are inside the bounding boxes.
     The match between two 2D bounding boxes is evaluated by the one-hot IOU between the one-hot vectors of all 2D points that are inside the bounding boxes.
@@ -436,7 +506,7 @@ def match_bboxes_points_overlapping(bboxes_2d_list: List[List[np.array]], intrin
         # for each bbox in the view
         for bbox in bboxes_2d: 
             # get one-hot vector of all 2D points that are inside the bounding box
-            mask = check_points_in_bbox(points_2d, bbox)
+            mask = check_points_in_bbox_2d(points_2d, bbox)
             one_hot_vector = mask.astype(np.int32)
             one_hot_vectors.append(one_hot_vector)  
         one_hot_vectors_list.append(one_hot_vectors)    
@@ -708,20 +778,9 @@ def draw_bboxes_2d(rgb_image: np.ndarray, bboxes_2d: List[np.ndarray], color=(0,
         cv2.rectangle(rgb_image, (bbox[0], bbox[1]), (bbox[2], bbox[3]), color=color, thickness=thickness)
     return rgb_image
 
-import matplotlib.pyplot as plt
-
-import numpy as np
-import cv2
-import matplotlib.pyplot as plt
-from typing import List, Tuple
-
-import numpy as np
-import cv2
-import matplotlib.pyplot as plt
-from typing import List, Tuple
 
 def draw_multiview_bbox_matches(rgb_image_list: List[np.ndarray], bboxes_2d_list: List[List[np.ndarray]], 
-                                matched_bboxes_idx_tuple_list: List[Tuple[np.array]], thickness=5) -> np.ndarray:
+                                matched_bboxes_idx_tuple_list: List[Tuple[np.ndarray]], thickness=5) -> np.ndarray:
     """
     Draw all 2D bounding box matches across different camera views.
     Place all RGB images from top to bottom.
@@ -731,7 +790,7 @@ def draw_multiview_bbox_matches(rgb_image_list: List[np.ndarray], bboxes_2d_list
     Args:
         rgb_image_list (List[np.ndarray]): List of RGB images.
         bboxes_2d_list (List[List[np.ndarray]]): List of lists of 2D bounding boxes in the form of [min_x, min_y, max_x, max_y].
-        matched_bboxes_idx_tuple_list (List[Tuple[np.array]]): List of tuples of matched 2D bounding box indices in the form of (view_1_bbox_idx, view_2_bbox_idx, ..., view_N_bbox_idx). If no bbox is matched, its index will be -1.
+        matched_bboxes_idx_tuple_list (List[Tuple[np.ndarray]]): List of tuples of matched 2D bounding box indices in the form of (view_1_bbox_idx, view_2_bbox_idx, ..., view_N_bbox_idx). If no bbox is matched, its index will be -1.
         thickness (int): Bounding box thickness.
         
     Returns:

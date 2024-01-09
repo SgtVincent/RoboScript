@@ -11,11 +11,10 @@ from gazebo_msgs.srv import (
     SetModelConfigurationRequest
 )
 from geometry_msgs.msg import Quaternion, Point, Pose
-from .env import Env
-from .gazebo_cameras import GazeboRGBDCameraSet
 from gazebo_plugins_local.srv import GazeboGetBoundingBoxes
 from grasp_detection.msg import BoundingBox3DArray, BoundingBox3D
-
+from .env import Env
+from .gazebo_cameras import GazeboRGBDCameraSet
 
 
 class GazeboEnv(Env):
@@ -140,6 +139,23 @@ class GazeboEnv(Env):
             
         rospy.logwarn(f"Query object {obj_name} has no ground truth bounding box in gazebo")
         return None, None
+    
+    def get_gt_bboxes(self)->Dict[str, Tuple[List, List]]:
+        """ Get ground truth bounding boxes for all objects"""
+        
+        self.gazebo_gt_bboxes:List[BoundingBox3D] = self.get_bounding_boxes().bboxes_3d
+        
+        bboxes = {}
+        for bbox_3d in self.gazebo_gt_bboxes:
+            
+            obj_name = bbox_3d.object_id
+            if 'cabinet::drawer' in obj_name or 'cabinet::handle' in obj_name:
+                obj_name = obj_name.replace('.', '::')
+            center = [bbox_3d.center.position.x, bbox_3d.center.position.y, bbox_3d.center.position.z]
+            size = [bbox_3d.size.x, bbox_3d.size.y, bbox_3d.size.z]
+            bboxes[obj_name] = (center, size)
+            
+        return bboxes
     
     def get_sensor_data(self):
         return self.camera_set.get_latest_data()

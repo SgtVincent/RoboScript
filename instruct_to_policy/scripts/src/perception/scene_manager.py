@@ -291,7 +291,7 @@ class SceneManager:
         '''
         return self.object_2d_bbox_dict[object_name]
             
-    def get_3d_bbox(self, object_name)->ArrayLike:
+    def get_3d_bbox(self, object_name)->np.ndarray:
         '''
         Get the 3D bounding box of the object in the world frame.
         '''

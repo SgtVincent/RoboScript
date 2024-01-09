@@ -71,7 +71,7 @@ class Env:
         """ get sensor data from perception model """
         raise NotImplementedError("get_sensor_data() not implemented")
     
-    def detect_objects(self, **kwargs):
+    def detect_objects(self, *nargs, **kwargs):
         """ detect objects in the scene with perception model"""
         raise NotImplementedError("detect_objects() not implemented")
     

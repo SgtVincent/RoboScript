@@ -79,7 +79,7 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         return gt_pose
     
     
-    def detect_objects(self, **kwargs):
+    def detect_objects(self, *nargs, **kwargs):
         # True grounding env does not need to detect objects since it receives ground truth model state from gazebo
         pass
     

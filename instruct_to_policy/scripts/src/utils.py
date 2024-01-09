@@ -70,6 +70,8 @@ def prepare_vars(env, defined_functions:List[str]=[], detached_mode=False):
                 "attach_object",
                 "detach_object",
                 "move_to_pose",
+                "move_in_direction",
+                "generate_arc_path_around_joint",
                 "follow_path",
                 "grasp",
             ]

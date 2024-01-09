@@ -43,6 +43,8 @@ from motion_utils import (
     open_gripper,    # Open the gripper. No args.
     close_gripper,   # Close the gripper. No args.
     move_to_pose,    # Move the gripper to pose. Args: pose: Pose
+    move_in_direction, # Move the gripper in the given direction in a straight line by certain distance. Note that you can use the surface normal and the joint axis. Args: axis: np.array, the move direction vector ; distance: float.
+    generate_arc_path_around_joint, # Generate a rotational gripper path of poses around the revolute joint. Args: current_pose: Pose, current pose of the gripper; joint_axis: np.array, the joint axis of the revolute joint; joint_position: np.array, the joint position of the revolute joint; n: int, number of waypoints; angle: float, angle of rotation in degree. Returns: path: List[Pose]
     follow_path,     # Move the gripper to follow a path of poses. Args: path: List[Pose]
     get_gripper_pose, # Get the gripper pose. No args. Returns: pose: Pose
     grasp,           # Executes a grasp motion at the grasp_pose. Args: grasp_pose: Pose

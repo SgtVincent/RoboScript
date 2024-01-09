@@ -6,14 +6,11 @@ It uses MoveIt! to plan and execute the grasps.
 """
 from typing import List, NamedTuple
 import numpy as np
-import os 
-import rospkg
-
+from scipy.spatial.transform import Rotation as R
 
 import moveit_commander
-from geometry_msgs.msg import Pose, PoseStamped
+from geometry_msgs.msg import Pose, PoseStamped, Point, Quaternion
 import open3d as o3d 
-import numpy as np
 from scipy.spatial.transform import Rotation
 from franka_msgs.msg import ErrorRecoveryAction, ErrorRecoveryActionGoal
 import rospy
@@ -314,6 +311,68 @@ class MoveitGazeboEnv(GazeboEnv):
         position = np.array([transform.transform.translation.x, transform.transform.translation.y, transform.transform.translation.z], dtype=float)
         return position
 
+    def move_in_direction(self, axis: np.ndarray, distance: float):
+        """
+        Move the gripper in a given direction in a straight line by a given distance.
+        """
+        current_pose = self.get_gripper_pose()
+        target_pose = Pose()
+        normalized_axis = np.array(axis) / np.linalg.norm(axis)
+        target_pose.position.x = normalized_axis[0] * distance + current_pose.position.x
+        target_pose.position.y = normalized_axis[1] * distance + current_pose.position.y
+        target_pose.position.z = normalized_axis[2] * distance + current_pose.position.z
+        target_pose.orientation = current_pose.orientation
+        self.move_to_pose(target_pose)
+
+    def generate_arc_path_around_joint(self, current_pose:Pose, joint_axis:np.ndarray, joint_position:np.ndarray, n:int, angle:float):
+        """
+        Generate a rotational gripper path of poses around the revolute joint.
+
+        Args:
+            current_pose: geometry_msgs.msg.Pose, the current pose of the end effector
+            joint_axis: np.ndarray, a 3D unit vector representing the joint's axis
+            joint_position: np.ndarray, the 3D position of the joint in space
+            n: int, the number of intermediate poses to generate along the arc
+            angle: float, the total angle of the arc in degrees
+        Returns: 
+            List[geometry_msgs.msg.Pose], a list of Pose messages representing the arc path
+        """
+        
+        # Convert angle from degrees to radians
+        angle_rad = np.deg2rad(angle)
+        
+        # Calculate the step angle for each intermediate pose
+        step_angle = angle_rad / n
+
+        # Generate the arc path
+        arc_path = []
+        for i in range(n + 1):
+            # Calculate the rotation for the current step
+            rotation = R.from_rotvec(joint_axis * step_angle * i)
+            
+            # Calculate the new position by applying the rotation to the vector from the joint to the current position
+            position_vector = np.array([current_pose.position.x, current_pose.position.y, current_pose.position.z]) - joint_position
+            new_position_vector = joint_position + rotation.apply(position_vector)
+            
+            # Calculate the new orientation by applying the rotation to the current orientation
+            current_orientation = R.from_quat([current_pose.orientation.x,
+                                            current_pose.orientation.y,
+                                            current_pose.orientation.z,
+                                            current_pose.orientation.w])
+            new_orientation = rotation * current_orientation
+            
+            # Create a new Pose message for the current step
+            new_pose_msg = Pose()
+            new_pose_msg.position = Point(x=new_position_vector[0], y=new_position_vector[1], z=new_position_vector[2])
+            new_orientation_quat = new_orientation.as_quat()
+            new_pose_msg.orientation = Quaternion(x=new_orientation_quat[0],
+                                            y=new_orientation_quat[1],
+                                            z=new_orientation_quat[2],
+                                            w=new_orientation_quat[3])
+            arc_path.append(new_pose_msg)
+        
+        return arc_path
+
     @_block
     def open_gripper(self, gripper_group=None, width=0.08):
         """Open the gripper."""
@@ -552,3 +611,4 @@ class MoveitGazeboEnv(GazeboEnv):
             self.open_gripper()
 
         return True
+    

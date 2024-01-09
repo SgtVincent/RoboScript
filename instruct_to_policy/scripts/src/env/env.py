@@ -58,6 +58,14 @@ class Env:
         """ follow a path """
         raise NotImplementedError("follow_path() not implemented")
 
+    def move_in_direction(self, axis: np.array, distance: float):
+        """ Move the gripper in the given direction in a straight line by the given distance. """
+        raise NotImplementedError("move_in_direction() not implemented")
+    
+    def generate_arc_path_around_joint(self, current_pose:Pose, joint_axis:np.ndarray, joint_position:np.ndarray, n:int, angle:float):
+        """ Generate a rotational gripper path of poses around the revolute joint. """
+        raise NotImplementedError("generate_arc_path_around_joint() not implemented")
+
     def grasp(self, pose):
         """ grasp object at pose """
         raise NotImplementedError("grasp() not implemented")

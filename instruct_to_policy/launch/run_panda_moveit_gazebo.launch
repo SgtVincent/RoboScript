@@ -19,10 +19,12 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <arg name="camera_model" default="$(find instruct_to_policy)/urdf/triple_d435_cameras.urdf.xacro"/>
   <arg name="use_gt_planning_scene" default="true" />
   <arg name="use_gt_bounding_box" default="true" />
+  <arg name="enable_moveit_sensor_plugins" default="false"/>
 
   <!-- Image pipeline options -->
   <arg name="align_depth_to_rgb" default="true" />
-  <arg name="publish_pointcloud" default="false" />
+  <arg name="publish_pointcloud_xyz" default="true" />
+  <arg name="publish_pointcloud_xyzrgb" default="false" />
 
   <!-- Environment variables for loading local artifacts -->
   <env name="GAZEBO_MODEL_PATH" value="$(find instruct_to_policy)/data/ycb/models:$(find instruct_to_policy)/data/google_scanned_object/models:$(find instruct_to_policy)/models:$(optenv GAZEBO_MODEL_PATH)"/>
@@ -51,11 +53,12 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <include file="$(find instruct_to_policy)/launch/gazebo_spawn_camera.launch">
     <arg name="camera_model" value="$(arg camera_model)"/>
     <arg name="align_depth_to_rgb" value="$(arg align_depth_to_rgb)"/>
-    <arg name="publish_pointcloud" value="$(arg publish_pointcloud)"/>  
+    <arg name="publish_pointcloud_xyz" value="$(arg publish_pointcloud_xyz)"/>
+    <arg name="publish_pointcloud_xyzrgb" value="$(arg publish_pointcloud_xyzrgb)"/>
   </include>
 
   <!-- Launch the MoveIt configuration for Franka Emika Panda -->
-  <include file="$(find instruct_to_policy)/launch/run_moveit.launch" pass_all_args="true" if="$(arg enable_moveit)">
+  <include file="$(find instruct_to_policy)/launch/moveit_run_panda.launch" pass_all_args="true" if="$(arg enable_moveit)">
     <!-- robot description is loaded by gazebo.launch, to enable Gazebo features -->
     <arg name="load_robot_description" value="false" />
     <!-- MoveItSimpleControllerManager provides ros_control's JointTrajectory controllers

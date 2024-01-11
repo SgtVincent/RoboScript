@@ -1,89 +1,54 @@
 <!-- register depth images to rgb images frame -->
 <launch>
-    <arg name="publish_pointcloud" default="false"/>
+    <arg name="queue_size" default="5"/>
+    <arg name="fill_upsampling_holes" default="true"/>
+    <arg name="publish_pointcloud_xyz" default="false"/>
+    <arg name="publish_pointcloud_xyzrgb" default="false"/>
+    <arg name="aligned_depth_camera_info" default="aligned_depth/camera_info"/>
+    <arg name="aligned_depth_image" default="aligned_depth/image_raw"/>
+    <arg name="point_topic" default="depth/points"/>
+    
+    <!-- camera_left -->
+    <include file="$(find instruct_to_policy)/launch/register_depth_single.launch">
+        <arg name="camera_name" value="camera_left"/>
+        <arg name="queue_size" value="$(arg queue_size)"/>
+        <arg name="fill_upsampling_holes" value="$(arg fill_upsampling_holes)"/>
+        <arg name="publish_pointcloud_xyz" value="$(arg publish_pointcloud_xyz)"/>
+        <arg name="publish_pointcloud_xyzrgb" value="$(arg publish_pointcloud_xyzrgb)"/>
+        <arg name="aligned_depth_camera_info" value="$(arg aligned_depth_camera_info)"/>
+        <arg name="aligned_depth_image" value="$(arg aligned_depth_image)"/>
+        <arg name="point_topic" value="$(arg point_topic)"/>
+    </include>
 
-    <group ns="camera_left">
-        <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" />
-        <node pkg="nodelet" type="nodelet" name="nodelet_register" args="load depth_image_proc/register nodelet_manager" output="screen">
-            <remap from="rgb/camera_info" to="color/camera_info"/>
-            <remap from="depth/camera_info" to="depth/camera_info"/>
-            <remap from="depth/image_rect" to="depth/image_raw"/>
-            <remap from="depth_registered/camera_info" to="aligned_depth/camera_info"/>
-            <remap from="depth_registered/image_rect" to="aligned_depth/image_raw"/>
-            <param name="queue_size" value="5"/>
-            <param name="fill_upsampling_holes" value="true"/>
-        </node>
+    <!-- camera_top -->
+    <include file="$(find instruct_to_policy)/launch/register_depth_single.launch">
+        <arg name="camera_name" value="camera_top"/>
+        <arg name="queue_size" value="$(arg queue_size)"/>
+        <arg name="fill_upsampling_holes" value="$(arg fill_upsampling_holes)"/>
+        <arg name="publish_pointcloud_xyz" value="$(arg publish_pointcloud_xyz)"/>
+        <arg name="publish_pointcloud_xyzrgb" value="$(arg publish_pointcloud_xyzrgb)"/>
+        <arg name="aligned_depth_camera_info" value="$(arg aligned_depth_camera_info)"/>
+        <arg name="aligned_depth_image" value="$(arg aligned_depth_image)"/>
+        <arg name="point_topic" value="$(arg point_topic)"/>
+    </include>
 
-        <node pkg="nodelet" type="nodelet" name="nodelet_xyzrgb" if="$(arg publish_pointcloud)" args="load depth_image_proc/point_cloud_xyzrgb nodelet_manager">
-            <remap from="rgb/image_rect_color" to="color/image_raw"/>
-            <remap from="rgb/camera_info" to="color/camera_info"/>
-            <remap from="depth_registered/camera_info" to="aligned_depth/camera_info"/>
-            <remap from="depth_registered/image_rect" to="aligned_depth/image_raw"/>
-            <remap from="depth_registered/points" to="depth/color/points"/>
-        </node>
-    </group>
+    <!-- camer_right -->
+    <include file="$(find instruct_to_policy)/launch/register_depth_single.launch">
+        <arg name="camera_name" value="camera_right"/>
+        <arg name="queue_size" value="$(arg queue_size)"/>
+        <arg name="fill_upsampling_holes" value="$(arg fill_upsampling_holes)"/>
+        <arg name="publish_pointcloud_xyz" value="$(arg publish_pointcloud_xyz)"/>
+        <arg name="publish_pointcloud_xyzrgb" value="$(arg publish_pointcloud_xyzrgb)"/>
+        <arg name="aligned_depth_camera_info" value="$(arg aligned_depth_camera_info)"/>
+        <arg name="aligned_depth_image" value="$(arg aligned_depth_image)"/>
+        <arg name="point_topic" value="$(arg point_topic)"/>
+    </include>
 
-    <group ns="camera_top">
-        <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" />
-        <node pkg="nodelet" type="nodelet" name="nodelet_register" args="load depth_image_proc/register nodelet_manager" output="screen">
-            <remap from="rgb/camera_info" to="color/camera_info"/>
-            <remap from="depth/camera_info" to="depth/camera_info"/>
-            <remap from="depth/image_rect" to="depth/image_raw"/>
-            <remap from="depth_registered/camera_info" to="aligned_depth/camera_info"/>
-            <remap from="depth_registered/image_rect" to="aligned_depth/image_raw"/>
-            <param name="queue_size" value="5"/>
-            <param name="fill_upsampling_holes" value="true"/>
-        </node>
-
-        <node pkg="nodelet" type="nodelet" name="nodelet_xyzrgb" if="$(arg publish_pointcloud)" args="load depth_image_proc/point_cloud_xyzrgb nodelet_manager">
-            <remap from="rgb/image_rect_color" to="color/image_raw"/>
-            <remap from="rgb/camera_info" to="color/camera_info"/>
-            <remap from="depth_registered/camera_info" to="aligned_depth/camera_info"/>
-            <remap from="depth_registered/image_rect" to="aligned_depth/image_raw"/>
-            <remap from="depth_registered/points" to="depth/color/points"/>
-        </node>
-    </group>
-
-    <group ns="camera_right">
-        <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" />
-        <node pkg="nodelet" type="nodelet" name="nodelet_register" args="load depth_image_proc/register nodelet_manager" output="screen">
-            <remap from="rgb/camera_info" to="color/camera_info"/>
-            <remap from="depth/camera_info" to="depth/camera_info"/>
-            <remap from="depth/image_rect" to="depth/image_raw"/>
-            <remap from="depth_registered/camera_info" to="aligned_depth/camera_info"/>
-            <remap from="depth_registered/image_rect" to="aligned_depth/image_raw"/>
-            <param name="queue_size" value="5"/>
-            <param name="fill_upsampling_holes" value="true"/>
-        </node>
-
-        <node pkg="nodelet" type="nodelet" name="nodelet_xyzrgb" if="$(arg publish_pointcloud)" args="load depth_image_proc/point_cloud_xyzrgb nodelet_manager">
-            <remap from="rgb/image_rect_color" to="color/image_raw"/>
-            <remap from="rgb/camera_info" to="color/camera_info"/>
-            <remap from="depth_registered/camera_info" to="aligned_depth/camera_info"/>
-            <remap from="depth_registered/image_rect" to="aligned_depth/image_raw"/>
-            <remap from="depth_registered/points" to="depth/color/points"/>
-        </node>
-    </group>
-
-    <!-- <group ns="camera_top_front">
-        <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" />
-        <node pkg="nodelet" type="nodelet" name="nodelet_register" args="load depth_image_proc/register nodelet_manager" output="screen">
-            <remap from="rgb/camera_info" to="color/camera_info"/>
-            <remap from="depth/camera_info" to="depth/camera_info"/>
-            <remap from="depth/image_rect" to="depth/image_raw"/>
-            <remap from="depth_registered/camera_info" to="aligned_depth/camera_info"/>
-            <remap from="depth_registered/image_rect" to="aligned_depth/image_raw"/>
-            <param name="queue_size" value="5"/>
-            <param name="fill_upsampling_holes" value="true"/>
-        </node>
-
-        <node pkg="nodelet" type="nodelet" name="nodelet_xyzrgb" if="$(arg publish_pointcloud)" args="load depth_image_proc/point_cloud_xyzrgb nodelet_manager">
-            <remap from="rgb/image_rect_color" to="color/image_raw"/>
-            <remap from="rgb/camera_info" to="color/camera_info"/>
-            <remap from="depth_registered/camera_info" to="aligned_depth/camera_info"/>
-            <remap from="depth_registered/image_rect" to="aligned_depth/image_raw"/>
-            <remap from="depth_registered/points" to="depth/color/points"/>
-        </node>
-    </group> -->
+    <!-- <include file="$(find instruct_to_policy)/launch/register_depth_single.launch">
+        <arg name="camera_name" value="camera_front"/>
+        <arg name="queue_size" value="$(arg queue_size)"/>
+        <arg name="fill_upsampling_holes" value="$(arg fill_upsampling_holes)"/>
+        <arg name="publish_pointcloud" value="$(arg publish_pointcloud)"/>
+    </include> -->
 
 </launch> 

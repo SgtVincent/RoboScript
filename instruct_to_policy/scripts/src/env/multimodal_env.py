@@ -42,7 +42,8 @@ class MultiModalEnv(MoveitGazeboEnv):
         
         
         # scene manager to manage the scene objects, 3D reconstruction, detections, etc.
-        self.scene = SceneManager()
+        self.scene_manager_args = cfg["perception"]["scene_manager"]
+        self.scene = SceneManager(**self.scene_manager_args)
 
         # information for evaluation and GT ablation 
         self.scene_gt_bboxes_3d = {}
@@ -115,7 +116,7 @@ class MultiModalEnv(MoveitGazeboEnv):
         # return self.scene.get_object_pose(obj_name)
         raise NotImplementedError
         
-    def get_3d_bbox(self, obj_name, **kwargs)->np.array:
+    def get_3d_bbox(self, obj_name, **kwargs)->np.ndarray:
         """
         Get the bounding box of the object.
         Args:
@@ -221,12 +222,16 @@ class MultiModalEnv(MoveitGazeboEnv):
     ####################  Moveit planning related functions ####################
     def add_scene_objects_to_moveit(self, **kwargs):
         """Add all objects in the scene to the moveit planning scene."""
+        # Add detected objects' meshes into moveit 
         for object_name in self.get_obj_name_list():
             object_mesh = self.scene.get_object_mesh(object_name)
             self.register_object_mesh(object_mesh, object_name)
             if object_name not in self.objects:
                 self.objects[object_name] = {}
-                
+        
+        #  
+        
+        
     
 
     

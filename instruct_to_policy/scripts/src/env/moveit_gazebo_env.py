@@ -112,7 +112,7 @@ class MoveitGazeboEnv(GazeboEnv):
         
         # NOTE: use xxx_manipulator move_group to make grasp center as end effector link 
         self.move_group = moveit_commander.MoveGroupCommander(self.manipulator_group_name, wait_for_servers=15)
-        self.move_group_arm = moveit_commander.MoveGroupCommander(self.arm_group_name, wait_for_servers=15)
+        # self.move_group_arm = moveit_commander.MoveGroupCommander(self.arm_group_name, wait_for_servers=15)
         # NOTE: use actionlib to control gripper for more detailed control instead of moveit commander 
         # self.move_group_gripper = moveit_commander.MoveGroupCommander(self.gripper_group_name, wait_for_servers=15)
         self.gripper_group = GripperCommanderGroup.get_instance(self.gripper_group_name)

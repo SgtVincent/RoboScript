@@ -1,5 +1,5 @@
 from typing import List, Tuple, Dict
-import copy
+import numpy as np
 import rospy 
 from std_srvs.srv import Empty
 from gazebo_msgs.srv import (
@@ -97,7 +97,7 @@ class GazeboEnv(Env):
             
         return objects
 
-    def get_gt_obj_pose(self, obj_name):
+    def get_gt_obj_pose(self, obj_name)->Pose:
         """ Get ground truth object pose from gazebo"""
         # name matching: gazebo model name is different from the name in the world, 
         # but obj_name should be a substring of the gazebo model name
@@ -122,7 +122,7 @@ class GazeboEnv(Env):
         return None
     
     
-    def get_gt_bbox(self, obj_name)->Tuple[List, List]:
+    def get_gt_bbox(self, obj_name)->Tuple[np.ndarray, np.ndarray]:
         """ Get object bounding box."""
         
         self.gazebo_gt_bboxes:List[BoundingBox3D] = self.get_bounding_boxes().bboxes_3d
@@ -133,14 +133,14 @@ class GazeboEnv(Env):
         
         for bbox in self.gazebo_gt_bboxes:
             if bbox.object_id == obj_name:
-                center = [bbox.center.position.x, bbox.center.position.y, bbox.center.position.z]
-                size = [bbox.size.x, bbox.size.y, bbox.size.z]
+                center = np.array([bbox.center.position.x, bbox.center.position.y, bbox.center.position.z])
+                size = np.array([bbox.size.x, bbox.size.y, bbox.size.z])
                 return center, size
             
         rospy.logwarn(f"Query object {obj_name} has no ground truth bounding box in gazebo")
         return None, None
     
-    def get_gt_bboxes(self)->Dict[str, Tuple[List, List]]:
+    def get_gt_bboxes(self)->Dict[str, Tuple[np.ndarray, np.ndarray]]:
         """ Get ground truth bounding boxes for all objects"""
         
         self.gazebo_gt_bboxes:List[BoundingBox3D] = self.get_bounding_boxes().bboxes_3d
@@ -151,8 +151,8 @@ class GazeboEnv(Env):
             obj_name = bbox_3d.object_id
             if 'cabinet::drawer' in obj_name or 'cabinet::handle' in obj_name:
                 obj_name = obj_name.replace('.', '::')
-            center = [bbox_3d.center.position.x, bbox_3d.center.position.y, bbox_3d.center.position.z]
-            size = [bbox_3d.size.x, bbox_3d.size.y, bbox_3d.size.z]
+            center = np.array([bbox_3d.center.position.x, bbox_3d.center.position.y, bbox_3d.center.position.z])
+            size = np.array([bbox_3d.size.x, bbox_3d.size.y, bbox_3d.size.z])
             bboxes[obj_name] = (center, size)
             
         return bboxes

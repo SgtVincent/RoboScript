@@ -21,7 +21,6 @@ env:
     arm_group_name: panda_arm
     gripper_group_name: panda_hand
     manipulator_group_name: panda_manipulator
-    use_gt_perception: false
     debug: true
     planning_time: 15
     max_velocity: 0.2
@@ -31,6 +30,9 @@ env:
     refenrence_frame: world
     cartesian_path: true
     initial_joint_values: [0.0, -0.7854, 0.0, -2.3562, 0.0, 1.5708, 0.7854]
+
+perception:
+  use_ground_truth: true
 
 grounding_model:
   model_name: glip
@@ -51,8 +53,6 @@ grasp_detection:
 plane_detection:
   model_name: open3d
   model_params: {}
-
-
 
 lmps:
   tabletop_ui:

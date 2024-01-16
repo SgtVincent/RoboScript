@@ -4,6 +4,7 @@
   <xacro:arg name="add_plug" default="false" />
   <xacro:arg name="use_mesh" default="true" />
   <xacro:arg name="publish_pointcloud" default="true" />
+  <xacro:arg name="update_rate" default="30" />
   <xacro:include filename="$(find realsense_gazebo_plugin)/urdf/_d435.urdf.xacro" />
 
 
@@ -16,22 +17,21 @@
   <link name="base_link" />
 
   <!-- left camera -->
-  <xacro:sensor_d435 parent="base_link" name="camera_left" topics_ns="camera_left" use_nominal_extrinsics="$(arg use_nominal_extrinsics)" add_plug="$(arg add_plug)" use_mesh="$(arg use_mesh)" publish_pointcloud="$(arg publish_pointcloud)">
+  <xacro:sensor_d435 parent="base_link" name="camera_left" topics_ns="camera_left" use_nominal_extrinsics="$(arg use_nominal_extrinsics)" add_plug="$(arg add_plug)" use_mesh="$(arg use_mesh)" publish_pointcloud="$(arg publish_pointcloud)" update_rate="$(arg update_rate)">
     <origin xyz="0.6 -1.5  1.8" rpy="0.0 0.45 2.1"/>
   </xacro:sensor_d435>
 
   <!-- right camera -->
-  <xacro:sensor_d435 parent="base_link" name="camera_right" topics_ns="camera_right" use_nominal_extrinsics="$(arg use_nominal_extrinsics)" add_plug="$(arg add_plug)" use_mesh="$(arg use_mesh)" publish_pointcloud="$(arg publish_pointcloud)">
+  <xacro:sensor_d435 parent="base_link" name="camera_right" topics_ns="camera_right" use_nominal_extrinsics="$(arg use_nominal_extrinsics)" add_plug="$(arg add_plug)" use_mesh="$(arg use_mesh)" publish_pointcloud="$(arg publish_pointcloud)" update_rate="$(arg update_rate)">
     <origin xyz="0.6 1.5 1.8" rpy="0.0 0.45 -2.1"/>
   </xacro:sensor_d435>
 
   <!-- top camera -->
-  <xacro:sensor_d435 parent="base_link" name="camera_top" topics_ns="camera_top" use_nominal_extrinsics="$(arg use_nominal_extrinsics)" add_plug="$(arg add_plug)" use_mesh="$(arg use_mesh)" publish_pointcloud="$(arg publish_pointcloud)">
+  <xacro:sensor_d435 parent="base_link" name="camera_top" topics_ns="camera_top" use_nominal_extrinsics="$(arg use_nominal_extrinsics)" add_plug="$(arg add_plug)" use_mesh="$(arg use_mesh)" publish_pointcloud="$(arg publish_pointcloud)" update_rate="$(arg update_rate)">
     <origin xyz="-0.5 0 3.4" rpy="0 1.57 0"/>
   </xacro:sensor_d435>
 
-  <gazebo> 
-    <!-- plugin to publish GT 3D bounding boxes to env node -->
+  <!-- <gazebo> 
     <plugin filename="libgazebo_ros_bbox_3d_plugin.so " name="gazebo_ros_bbox_3d_plugin">
       <updatePeriod>1.0</updatePeriod>
       <links_to_publish>
@@ -41,6 +41,6 @@
         <link>cabinet::drawer3</link>
       </links_to_publish>
     </plugin>
-  </gazebo>
+  </gazebo> -->
 
 </robot>

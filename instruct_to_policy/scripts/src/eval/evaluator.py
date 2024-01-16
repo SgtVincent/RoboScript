@@ -154,8 +154,11 @@ class Evaluator(object):
         
         # get object and receptacle bounding boxes
         # [x_min, y_min, z_min, x_max, y_max, z_max]
-        object_bbox = self.env.get_3d_bbox(object_name)
-        receptacle_bbox = self.env.get_3d_bbox(receptacle_name)
+        # NOTE: for mutlimodal env, should use get_gt_bbox
+        object_bbox_center, object_bbox_size = self.env.get_gt_bbox(object_name)
+        receptacle_bbox_center, receptacle_bbox_size = self.env.get_gt_bbox(receptacle_name)
+        object_bbox = np.concatenate([object_bbox_center - object_bbox_size/2, object_bbox_center + object_bbox_size/2])
+        receptacle_bbox = np.concatenate([receptacle_bbox_center - receptacle_bbox_size/2, receptacle_bbox_center + receptacle_bbox_size/2])
         
         # check if the object is on the receptacle by all the following conditions:
         # - if the object's z_max is higher than the receptacle's z_min
@@ -188,8 +191,11 @@ class Evaluator(object):
         
         # get object and receptacle bounding boxes
         # [x_min, y_min, z_min, x_max, y_max, z_max]
-        object_bbox = self.env.get_3d_bbox(object_name)
-        receptacle_bbox = self.env.get_3d_bbox(receptacle_name)
+        # NOTE: for mutlimodal env, should use get_gt_bbox
+        object_bbox_center, object_bbox_size = self.env.get_gt_bbox(object_name)
+        receptacle_bbox_center, receptacle_bbox_size = self.env.get_gt_bbox(receptacle_name)
+        object_bbox = np.concatenate([object_bbox_center - object_bbox_size/2, object_bbox_center + object_bbox_size/2])
+        receptacle_bbox = np.concatenate([receptacle_bbox_center - receptacle_bbox_size/2, receptacle_bbox_center + receptacle_bbox_size/2])
         
         # check if the object is on the receptacle by all the following conditions:
         # - if the object's 3d bbox with the receptacle's 3d bbox has an intersection over the object's 3d bbox larger than a threshold

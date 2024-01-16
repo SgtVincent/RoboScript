@@ -8,7 +8,7 @@
 
     <!-- camera description to load in gazebo -->
     <param name="camera_description"
-        command="xacro $(arg camera_model) use_nominal_extrinsics:=true publish_pointcloud:=false add_plug:=false" />
+        command="xacro $(arg camera_model) use_nominal_extrinsics:=true publish_pointcloud:=false add_plug:=false update_rate:=5.0" />
 
     <!-- push camera to factory and spawn robot in gazebo -->
     <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
@@ -19,7 +19,7 @@
         pkg="joint_state_publisher">
         <remap from="robot_description" to="camera_description" />
         <remap from="joint_states" to="camera_joint_states" />
-        <param name="rate" value="30" />
+        <param name="rate" value="5" />
     </node>
     <node name="$(anon camera_state_publisher)" pkg="robot_state_publisher"
         type="robot_state_publisher">

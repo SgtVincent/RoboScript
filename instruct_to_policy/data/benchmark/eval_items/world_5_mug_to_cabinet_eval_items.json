@@ -1,7 +1,7 @@
 [
     {
         "query_label": "simple_3",
-        "query": "# objects = [table, cabinet, apple, sugar_box, basket_with_fabric_liner] ; # clear the table by moving all table objects into the basket.",
+        "query": "# objects = [table, cabinet, white_and_yellow_mug, cabinet.drawer_0, cabinet.drawer_1, cabinet.handle_0, cabinet.handle_1] ; # place the mug into the second top drawer .",
         "eval_items": [
             {
                 "function": "check_relation_in",

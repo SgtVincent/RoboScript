@@ -24,7 +24,7 @@ def load_queries(task_queries_file):
     Load task queries from txt file. The first line is the world context, and the rest are task queries line by line:
     ''' 
     
-    objects = [table, cabinet, cabinet.drawer0, cabinet.drawer1, cabinet.drawer2, cabinet.drawer3, panda_robot] ; # open cabinet.drawer0
+    objects = [table, cabinet, cabinet.drawer_0, cabinet.drawer_1, cabinet.drawer_2, cabinet.drawer_3, panda_robot] ; # open cabinet.drawer_0
     ...
     '''
     """
@@ -32,7 +32,7 @@ def load_queries(task_queries_file):
         lines = f.readlines()
     
     # use regex to extract the query in each line:
-    # objects = [table, cabinet, cabinet.drawer0, cabinet.drawer1, cabinet.drawer2, cabinet.drawer3, panda_robot] ; # open cabinet.drawer0
+    # objects = [table, cabinet, cabinet.drawer_0, cabinet.drawer_1, cabinet.drawer_2, cabinet.drawer_3, panda_robot] ; # open cabinet.drawer_0
 
     valid_line_pattern = re.compile(r'(?P<context>objects.*);\s*#(?P<query>.*)')
     task_queries = []

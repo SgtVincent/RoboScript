@@ -4,10 +4,10 @@ env:
   interface: moveit
   verbose: false
   extra_objects:
-    - cabinet.drawer0
-    - cabinet.drawer1
-    - cabinet.drawer2
-    - cabinet.drawer3
+    - cabinet.drawer_0
+    - cabinet.drawer_1
+    - cabinet.drawer_2
+    - cabinet.drawer_3
     - cabinet.handle_0
     - cabinet.handle_1
     - cabinet.handle_2

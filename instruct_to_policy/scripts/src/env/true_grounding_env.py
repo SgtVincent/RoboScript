@@ -15,7 +15,7 @@ class TrueGroundingEnv(MoveitGazeboEnv):
     """
     def __init__(self, cfg) -> None:
         super().__init__(cfg)
-        self.use_gt_perception = True
+        # self.use_gt_perception = True
         self.grasp_config = cfg["grasp_detection"]
         
         self.grasp_model = None

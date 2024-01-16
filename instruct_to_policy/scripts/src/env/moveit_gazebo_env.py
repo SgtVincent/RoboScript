@@ -20,6 +20,7 @@ import rospy
 import tf2_ros
 # Brings in the SimpleActionClient
 from actionlib import SimpleActionClient, GoalStatus
+from std_srvs.srv import Empty, EmptyRequest
 from moveit_msgs.msg import PositionIKRequest, RobotState
 from moveit_msgs.srv import GetPositionIK
 
@@ -60,10 +61,10 @@ class MoveitGazeboEnv(GazeboEnv):
         self.verbose = cfg['env'].get('verbose', False)
         self.use_sim = len(self.sim) > 0
         self.config = cfg['env']['moveit_config']
+        self.use_gt_perception = cfg['perception']['use_ground_truth']
         
         # moveit config 
         self.debug = self.config.get('debug', False)
-        self.use_gt_perception = cfg['env'].get('use_gt_perception', True)
         self.planning_time = self.config.get('planning_time', 15)
         self.max_velocity = self.config.get('max_velocity', 0.2) 
         self.max_acceleration = self.config.get('max_acceleration', 0.2)
@@ -100,8 +101,10 @@ class MoveitGazeboEnv(GazeboEnv):
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
 
-        # Service to compute IK
+        # Initialized Moveit services
         self.compute_ik = rospy.ServiceProxy("/compute_ik", GetPositionIK)
+        if not self.use_gt_perception:
+            self.clear_octomap = rospy.ServiceProxy("/clear_octomap", Empty)
 
         # Joint limits for Franka panda Emika. Used to check if IK is at limits.
         self.upper_limit = np.array([2.8973, 1.7628, 2.8973, -0.0698, 2.8973, 3.7525, 2.8973])
@@ -128,11 +131,6 @@ class MoveitGazeboEnv(GazeboEnv):
         #     "/franka_control/error_recovery", ErrorRecoveryAction
         # )
 
-        # print("Loading static scene information")
-        # self.object_names = self.get_gazebo_model_names()
-        # TODO: load perceived object meshes/ representations into moveit planning scene
-        
-        
         # TODO: moveit configurations should be set inside the config file 
         # Set parameters in move_group
         self.move_group.set_planning_time(self.planning_time)
@@ -258,6 +256,9 @@ class MoveitGazeboEnv(GazeboEnv):
         else: 
             # remove all objects in planning scene from external perception 
             self.planning_scene.remove_world_object()
+            # clear octomap from perception 
+            self.clear_octomap()
+        
         
         # reset visualization marker if debug is enabledss
         if self.debug:              

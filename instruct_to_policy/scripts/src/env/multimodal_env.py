@@ -26,7 +26,7 @@ class MultiModalEnv(MoveitGazeboEnv):
     """
     def __init__(self, cfg) -> None:
         super().__init__(cfg)
-        self.use_gt_perception = False 
+        # self.use_gt_perception = False 
         self.grasp_config = cfg["grasp_detection"]
         self.plane_detection_config = cfg["plane_detection"]
         
@@ -228,11 +228,9 @@ class MultiModalEnv(MoveitGazeboEnv):
             self.register_object_mesh(object_mesh, object_name)
             if object_name not in self.objects:
                 self.objects[object_name] = {}
-        
-        #  
-        
-        
-    
+                
+        # clear octomap to resolve octomap update bugs
+        self.clear_octomap()
 
     
     

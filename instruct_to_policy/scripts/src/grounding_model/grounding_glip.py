@@ -64,8 +64,10 @@ class GroundingGLIP(GroundingBase):
         """
         Since the model is on remote server, we need to wait for the model to be ready.
         """
-        glip_checkpoint = "src/grounding_model/det_models/glip_large_model.pth"
-        glip_config_file = "src/grounding_model/glip/configs/glip_Swin_L.yaml"
+        # Update by Junting: ROS launch changes the current working directory. Use full path instead. 
+        grounding_model_dir = os.path.dirname(__file__)
+        glip_checkpoint = os.path.join(grounding_model_dir, "det_models/glip_large_model.pth")
+        glip_config_file = os.path.join(grounding_model_dir, "glip/configs/glip_Swin_L.yaml")
         # glip_checkpoint = "src/grounding_model/det_models/glip_tiny_model_o365_goldg_cc_sbu.pth"
         # glip_config_file = "src/grounding_model/glip/configs/glip_Swin_T_O365_GoldG.yaml"
         cfg.local_rank = 0

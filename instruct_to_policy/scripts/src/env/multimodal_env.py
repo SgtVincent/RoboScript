@@ -225,10 +225,16 @@ class MultiModalEnv(MoveitGazeboEnv):
         # Add detected objects' meshes into moveit 
         for object_name in self.get_obj_name_list():
             object_mesh = self.scene.get_object_mesh(object_name)
-            self.register_object_mesh(object_mesh, object_name)
+            
             if object_name not in self.objects:
                 self.objects[object_name] = {}
                 
+            # filter out full cabinet and table since their reconstructed mesh will lead to undesired collision in moveit 
+            # e.g. "cabinet_0", "table_0"
+            if object_name in ["cabinet_0", "table_0"]:
+                continue
+            self.register_object_mesh(object_mesh, object_name)
+
         # clear octomap to resolve octomap update bugs
         self.clear_octomap()
 

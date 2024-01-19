@@ -12,7 +12,7 @@ class ConfigBase:
         # grasp detection region of interest (ROI)
         self.resolution = 40
         self.voxel_grid_size = 0.3
-        self.voxel_size = 0.005
+        self.voxel_size = 0.003
         # maximum number of grasps to return
         self.max_grasp_num = 10
         self.volume_type = "scalable"

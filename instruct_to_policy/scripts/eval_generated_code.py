@@ -9,16 +9,17 @@ from src.env.true_grounding_env import TrueGroundingEnv
 from src.env.multimodal_env import MultiModalEnv
 from src.eval.evaluator import Evaluator
 from src.configs.config import load_config
-import rospy 
-import rospkg
-from ur_driver import cfg
+import rospy
 
 if __name__ == "__main__":
     
     # setup ros node
     rospy.init_node('eval_code', log_level=rospy.WARN)
+    # get current file path 
+    
+    
     # get package root path 
-    pkg_root = rospkg.RosPack().get_path('instruct_to_policy')
+    pkg_root = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     os.chdir(pkg_root)
     
     # Get ROS parameters 
@@ -54,7 +55,7 @@ if __name__ == "__main__":
 
     eval_result_list = []
     
-    gt_perception = cfg_tabletop['perception']['ground_truth']
+    gt_perception = cfg_tabletop['perception']['use_ground_truth']
 
     for task_idx, data in enumerate(raw_data):
         # if task_idx not in [1]: # debug

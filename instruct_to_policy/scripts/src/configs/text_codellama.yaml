@@ -1,0 +1,21 @@
+base_config: text_base.yaml
+
+grounding_model: {} # not used in text-only setting
+
+grasp_detection:
+  model_name: anygrasp
+  model_params:
+    service_name: /detect_grasps
+  visualize: false
+  verbose: false
+
+lmps:
+  tabletop_ui:
+    class: LMPPPLX
+    model: codellama-34b-instruct
+    messages: message_tabletop_text
+
+  fgen:
+    class: LMPFGenPPLX
+    model: codellama-34b-instruct
+    messages: message_fgen

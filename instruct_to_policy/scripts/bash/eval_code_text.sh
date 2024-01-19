@@ -15,6 +15,11 @@ benchmark_data_dir="$(rospack find instruct_to_policy)/data/benchmark"
 verbose=false
 
 configs_to_eval=(
+    "text_gpt_3"
+    "text_gpt_4"
+    "text_codellama"
+    "text_llama2_chat"
+    "text_gemini"
     "text_few_shot_gpt_3"
     "text_few_shot_gpt_4"
     "text_few_shot_codellama"
@@ -23,7 +28,7 @@ configs_to_eval=(
 )
 
 worlds_to_eval=(
-    "world_1_table_sort"
+    # "world_1_table_sort"
     "world_2_pick_and_place"
     "world_3_mug_to_empty_plate"
     "world_4_clear_table_to_basket"
@@ -56,16 +61,21 @@ function eval_code_in_world() {
     # get world name and full path to world
     world_path=$(realpath ${benchmark_data_dir}/worlds/${world_name}.world)
     
+    # run grasp detection node in another terminal with script run_grasp_detection.sh
+    gnome-terminal -- bash -c "source $(rospack find instruct_to_policy)/scripts/bash/run_grasp_detection.sh; exec bash"
+
     # roslaunch gazebo and moveit
     roslaunch instruct_to_policy run_${robot_name}_moveit_gazebo.launch \
+        --wait \
         world:=$world_path \
         moveit_rviz:=false \
+        gazebo_gui:=true \
         use_gt_planning_scene:=true \
         enable_moveit_sensor_plugins:=false \
         verbose:=$verbose &
 
     # Wait for the Gazebo world to load
-    sleep 10
+    sleep 15
     
     # eval all configs 
     for config_name in "${configs_to_eval[@]}"
@@ -78,10 +88,6 @@ function eval_code_in_world() {
     done
 
 }
-
-# run grasp detection node in another terminal with script run_grasp_detection.sh
-# the script is in the same directory as this script
-gnome-terminal -- bash -c "source $(rospack find instruct_to_policy)/scripts/bash/run_grasp_detection.sh; exec bash"
 
 # iterate through all the worlds under data/benchmark/worlds
 for world_name in "${worlds_to_eval[@]}"

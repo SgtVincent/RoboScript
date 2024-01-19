@@ -6,15 +6,8 @@
             {
                 "function": "check_relation_in",
                 "args": {
-                    "object_name": "apple",
-                    "receptacle_name": "basket_with_fabric_liner"
-                }
-            },
-            {
-                "function": "check_relation_in",
-                "args": {
-                    "object_name": "sugar_box",
-                    "receptacle_name": "basket_with_fabric_liner"
+                    "object_name": "white_and_yellow_mug",
+                    "receptacle_name": "cabinet.drawer_1"
                 }
             }
         ]   

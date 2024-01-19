@@ -150,7 +150,7 @@ class GazeboEnv(Env):
             
             obj_name = bbox_3d.object_id
             if 'cabinet::drawer' in obj_name or 'cabinet::handle' in obj_name:
-                obj_name = obj_name.replace('.', '::')
+                obj_name = obj_name.replace('::', '.')
             center = np.array([bbox_3d.center.position.x, bbox_3d.center.position.y, bbox_3d.center.position.z])
             size = np.array([bbox_3d.size.x, bbox_3d.size.y, bbox_3d.size.z])
             bboxes[obj_name] = (center, size)

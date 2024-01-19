@@ -188,6 +188,7 @@ class MoveitGazeboEnv(GazeboEnv):
             return False
         return True
 
+    @_block
     def computeIK(
         self,
         pose: Pose,
@@ -195,7 +196,12 @@ class MoveitGazeboEnv(GazeboEnv):
         move_group=None,
         avoid_colllision=True,
     ) -> bool:
-        """Check if a given pose is reachable for the robot. Return True if it is, False otherwise."""
+        """
+        Check if a given pose is reachable for the robot. Return True if it is, False otherwise.
+        
+        FIXME: /compute_ik is buggy for moveit 1 until Jan. 2024, see https://github.com/ros-planning/moveit/issues/1568
+        Do not use function, use move_group.plan() instead.
+        """
 
         # Create a pose to compute IK for
         pose_stamped = PoseStamped()
@@ -212,6 +218,7 @@ class MoveitGazeboEnv(GazeboEnv):
         request_value = self.compute_ik(ik_request)
 
         if request_value.error_code.val == -31:
+            rospy.logwarn()
             return False
 
         if request_value.error_code.val == 1:
@@ -439,7 +446,7 @@ class MoveitGazeboEnv(GazeboEnv):
         pose: Pose,
         pre_grasp_approach=0.1,
         depth=0.03,
-        tentative_depth_list=[0.03, 0.01, -0.01],
+        tentative_depth_list=[0.01, 0.0, -0.01],
     ):
         """Executes a grasp at a given pose with given orientation.
         It first moves to a pre-grasp pose, then approaches the grasp pose.
@@ -468,12 +475,14 @@ class MoveitGazeboEnv(GazeboEnv):
         success = self.move_to_pose(pre_grasp_pose)
         if not success:
             rospy.logwarn("MoveitEnv: Failed to move to pre-grasp pose")
-            return False
+            # return False
         
         if self.verbose:
             rospy.loginfo("MoveitEnv: Moved to pre-grasp pose")
 
-        self.open_gripper() # poor planning leads to collision between gripper and object, and it closes by force
+        # FIXME: collision between gripper and other objects closes gripper, re-open to make sure it is open at pre-grasp pose
+        # self.gripper_group.open_gripper(width=0.08)
+        self.open_gripper()
 
         if not self.tentative_approach:
             # calculate approach pose
@@ -488,6 +497,8 @@ class MoveitGazeboEnv(GazeboEnv):
                 rospy.logwarn("MoveitEnv: Failed to approach to grasp pose")
                 return False
         else:
+            plan_success = False
+            
             # calculate tentative approach pose
             for tentative_depth in tentative_depth_list:
                 tentative_approach_pose = get_pose_msg(
@@ -495,12 +506,17 @@ class MoveitGazeboEnv(GazeboEnv):
                     + Rotation.from_quat(orientation).as_matrix() @ (tentative_depth * np.array([0, 0, 1])),
                     orientation,
                 )
-                success = self.computeIK(tentative_approach_pose)
-                if success:
+
+                # try to plan to tentative approach pose
+                success = self.move_group.set_pose_target(tentative_approach_pose)
+                # return: (success flag : boolean, trajectory message : RobotTrajectory, planning time : float, error code : MoveitErrorCodes)
+                plan_success, plan, _, _ = self.move_group.plan()
+                
+                if plan_success:
                     self.move_to_pose(tentative_approach_pose)
                     break
             
-            if not success:
+            if not plan_success:
                 rospy.logwarn("MoveitEnv: Failed to approach to grasp pose")
                 return False
             

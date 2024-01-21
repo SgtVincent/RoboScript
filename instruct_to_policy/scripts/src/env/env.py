@@ -7,7 +7,6 @@ from shapely.affinity import *
 from geometry_msgs.msg import Quaternion, Pose, Point
 from grasp_detection.msg import Grasp 
 from src.grasp_detection.utils import select_grasp_by_preference
-from src.env.utils import calculate_place_position, is_collision, adjust_z
 
 class Env:
     """Wrapper for the environment grounding capabilities.
@@ -128,6 +127,12 @@ class Env:
         raise NotImplementedError("parse_question() not implemented")
     
     ################ parse pose tools ##############################
+    def parse_place_pose(self, object_name, receptacle_name:str=None, **kwargs)->Pose:
+        """
+        Parse place pose for the object. 
+        """
+        raise NotImplementedError("parse_place_pose() not implemented")
+    
     def parse_adaptive_shape_grasp_pose(self, object_name, **kwargs)->Pose:
         """
         Parse grasp pose for the object. Use ground truth grounding and grasp detection model.
@@ -171,64 +176,6 @@ class Env:
         best_grasp_pose = grasp_candidates[best_grasp_idx].grasp_pose
         
         return best_grasp_pose
-
-    def parse_place_pose(self, object_name, receptacle_name:str=None, **kwargs)->Pose:
-        """
-        Parse place pose for the object. Use ground truth grounding and heuristic place position calculation.
-        Args:
-            object_name: str, name of the object
-            receptacle_name: Optional(str), name of the receptacle
-            position: Optional(np.array), position of the place pose
-            description: Optional(str), description of the pose, "canonical pose" or "current pose"
-        """
-        # get parameters from kwargs
-        position = kwargs.get('position', None)
-        if isinstance(position, Point):
-            position = np.array([position.x, position.y, position.z])
-        if isinstance(position, list):
-            position = np.array(position)
-        description: str= kwargs.get('description', "current pose") 
-        assert description in ["canonical pose", "current pose"] # only support canonical pose and current pose for now
-        
-        # get the bounding box of the object and all other objectss
-        object_bbox = self.get_3d_bbox(object_name)
-        object_names = self.get_obj_name_list()
-        obstacle_bbox_list = [
-            self.get_3d_bbox(obstacle_name) for obstacle_name in object_names 
-            if obstacle_name not in [object_name]
-        ]
-        
-        pose = Pose()
-        
-        # If receptacle_name is given, get the receptacle position and bounding box
-        if receptacle_name is not None:
-            receptacle_bbox = self.get_3d_bbox(receptacle_name)
-            # FIXME: for drawer, just hard code the receptacle position x to [max_x-0.2, max_x]
-            if "drawer" in receptacle_name.lower():
-                receptacle_bbox[0] = receptacle_bbox[3] - 0.2
-        
-        # If position is given, use it directly, otherwise use grounding model to get the receptacle position
-        if position is None:
-            assert receptacle_name is not None, "parse_place_pose: position must be given if receptacle_name is not given"
-            position = calculate_place_position(
-                object_bbox, receptacle_bbox, obstacle_bbox_list, max_tries=100)
-        else:
-            # position already given, check if the position is valid, if not, adjust it until no collision found 
-            collision_mask = np.array([is_collision(object_bbox, obstacle_bbox) for obstacle_bbox in obstacle_bbox_list])
-            # adjust the z position if there is collision
-            if np.any(collision_mask):
-                collided_bbox_list = np.array(obstacle_bbox_list)[collision_mask]
-                position[2] = adjust_z(object_bbox, collided_bbox_list, extra_elevation=0.1)          
-            
-        pose.position = Point(*position)
-        if description == "canonical pose":
-            # use canonical orientation
-            pose.orientation = Quaternion(-1.0,0.0,0.0,0.0)
-        else:
-            # remain current orientation
-            pose.orientation = self.get_gripper_pose().orientation
-        
-        return pose
 
     def parse_central_lift_grasp_pose(self, object_name, description="top")->Pose:
         """

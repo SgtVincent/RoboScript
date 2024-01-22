@@ -36,7 +36,7 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <!-- fix panda at the table edge -->
   <arg name="x" default="-0.45" />
   <arg name="y" default="0.0" />
-  <arg name="z" default="1.02" />
+  <arg name="z" default="0.82" />
   <!-- run demo by default -->
   <arg name="world" default="$(find instruct_to_policy)/worlds/demo_table_cabinet.world" />
 

@@ -3,12 +3,14 @@
         default="$(find instruct_to_policy)/urdf/triple_d435_cameras.urdf.xacro"
         doc="Filename to a urdf.xacro file for gazebo to use" />
     <arg name="align_depth_to_rgb" default="true" />
-    <arg name="publish_pointcloud_xyz" default="false" />
-    <arg name="publish_pointcloud_xyzrgb" default="false" />
+    <arg name="publish_pointcloud" default="false" />
+    <arg name="publish_registered_pointcloud_xyz" default="false" />
+    <arg name="publish_registered_pointcloud_xyzrgb" default="false" />
+    <arg name="update_rate" default="5.0" />
 
     <!-- camera description to load in gazebo -->
     <param name="camera_description"
-        command="xacro $(arg camera_model) use_nominal_extrinsics:=true publish_pointcloud:=false add_plug:=false update_rate:=5.0" />
+        command="xacro $(arg camera_model) use_nominal_extrinsics:=true publish_pointcloud:=$(arg publish_pointcloud) add_plug:=false update_rate:=$(arg update_rate)" />
 
     <!-- push camera to factory and spawn robot in gazebo -->
     <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
@@ -30,8 +32,8 @@
     <!-- Process the raw sensor input -->
     <include file="$(find instruct_to_policy)/launch/register_depth.launch"
         if="$(arg align_depth_to_rgb)">
-        <arg name="publish_pointcloud_xyz" value="$(arg publish_pointcloud_xyz)" />
-        <arg name="publish_pointcloud_xyzrgb" value="$(arg publish_pointcloud_xyzrgb)" />
+        <arg name="publish_registered_pointcloud_xyz" value="$(arg publish_registered_pointcloud_xyz)" />
+        <arg name="publish_registered_pointcloud_xyzrgb" value="$(arg publish_registered_pointcloud_xyzrgb)" />
     </include>
 
 </launch>

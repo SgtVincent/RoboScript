@@ -2,19 +2,19 @@
 <launch>
     <arg name="queue_size" default="5"/>
     <arg name="fill_upsampling_holes" default="true"/>
-    <arg name="publish_pointcloud_xyz" default="false"/>
-    <arg name="publish_pointcloud_xyzrgb" default="false"/>
+    <arg name="publish_registered_pointcloud_xyz" default="false"/>
+    <arg name="publish_registered_pointcloud_xyzrgb" default="false"/>
     <arg name="aligned_depth_camera_info" default="aligned_depth/camera_info"/>
     <arg name="aligned_depth_image" default="aligned_depth/image_raw"/>
-    <arg name="point_topic" default="depth/points"/>
+    <arg name="point_topic" default="aligned_depth/points"/>
     
     <!-- camera_left -->
     <include file="$(find instruct_to_policy)/launch/register_depth_single.launch">
         <arg name="camera_name" value="camera_left"/>
         <arg name="queue_size" value="$(arg queue_size)"/>
         <arg name="fill_upsampling_holes" value="$(arg fill_upsampling_holes)"/>
-        <arg name="publish_pointcloud_xyz" value="$(arg publish_pointcloud_xyz)"/>
-        <arg name="publish_pointcloud_xyzrgb" value="$(arg publish_pointcloud_xyzrgb)"/>
+        <arg name="publish_registered_pointcloud_xyz" value="$(arg publish_registered_pointcloud_xyz)"/>
+        <arg name="publish_registered_pointcloud_xyzrgb" value="$(arg publish_registered_pointcloud_xyzrgb)"/>
         <arg name="aligned_depth_camera_info" value="$(arg aligned_depth_camera_info)"/>
         <arg name="aligned_depth_image" value="$(arg aligned_depth_image)"/>
         <arg name="point_topic" value="$(arg point_topic)"/>
@@ -25,8 +25,8 @@
         <arg name="camera_name" value="camera_top"/>
         <arg name="queue_size" value="$(arg queue_size)"/>
         <arg name="fill_upsampling_holes" value="$(arg fill_upsampling_holes)"/>
-        <arg name="publish_pointcloud_xyz" value="$(arg publish_pointcloud_xyz)"/>
-        <arg name="publish_pointcloud_xyzrgb" value="$(arg publish_pointcloud_xyzrgb)"/>
+        <arg name="publish_registered_pointcloud_xyz" value="$(arg publish_registered_pointcloud_xyz)"/>
+        <arg name="publish_registered_pointcloud_xyzrgb" value="$(arg publish_registered_pointcloud_xyzrgb)"/>
         <arg name="aligned_depth_camera_info" value="$(arg aligned_depth_camera_info)"/>
         <arg name="aligned_depth_image" value="$(arg aligned_depth_image)"/>
         <arg name="point_topic" value="$(arg point_topic)"/>
@@ -37,8 +37,8 @@
         <arg name="camera_name" value="camera_right"/>
         <arg name="queue_size" value="$(arg queue_size)"/>
         <arg name="fill_upsampling_holes" value="$(arg fill_upsampling_holes)"/>
-        <arg name="publish_pointcloud_xyz" value="$(arg publish_pointcloud_xyz)"/>
-        <arg name="publish_pointcloud_xyzrgb" value="$(arg publish_pointcloud_xyzrgb)"/>
+        <arg name="publish_registered_pointcloud_xyz" value="$(arg publish_registered_pointcloud_xyz)"/>
+        <arg name="publish_registered_pointcloud_xyzrgb" value="$(arg publish_registered_pointcloud_xyzrgb)"/>
         <arg name="aligned_depth_camera_info" value="$(arg aligned_depth_camera_info)"/>
         <arg name="aligned_depth_image" value="$(arg aligned_depth_image)"/>
         <arg name="point_topic" value="$(arg point_topic)"/>

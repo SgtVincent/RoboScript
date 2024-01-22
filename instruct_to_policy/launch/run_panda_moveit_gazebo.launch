@@ -21,11 +21,12 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <arg name="use_gt_planning_scene" default="true" />
   <arg name="use_gt_bounding_box" default="true" />
   <arg name="enable_moveit_sensor_plugins" default="false"/>
+  <arg name="publish_pointcloud" default="false"/>
 
   <!-- Image pipeline options -->
   <arg name="align_depth_to_rgb" default="true" />
-  <arg name="publish_pointcloud_xyz" default="false" />
-  <arg name="publish_pointcloud_xyzrgb" default="false" />
+  <arg name="publish_registered_pointcloud_xyz" default="false" />
+  <arg name="publish_registered_pointcloud_xyzrgb" default="false" />
 
   <!-- Environment variables for loading local artifacts -->
   <env name="GAZEBO_MODEL_PATH" value="$(find instruct_to_policy)/data/ycb/models:$(find instruct_to_policy)/data/google_scanned_object/models:$(find instruct_to_policy)/models:$(optenv GAZEBO_MODEL_PATH)"/>
@@ -56,8 +57,9 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <include file="$(find instruct_to_policy)/launch/gazebo_spawn_camera.launch">
     <arg name="camera_model" value="$(arg camera_model)"/>
     <arg name="align_depth_to_rgb" value="$(arg align_depth_to_rgb)"/>
-    <arg name="publish_pointcloud_xyz" value="$(arg publish_pointcloud_xyz)"/>
-    <arg name="publish_pointcloud_xyzrgb" value="$(arg publish_pointcloud_xyzrgb)"/>
+    <arg name="publish_pointcloud" value="$(arg publish_pointcloud)"/>
+    <arg name="publish_registered_pointcloud_xyz" value="$(arg publish_registered_pointcloud_xyz)"/>
+    <arg name="publish_registered_pointcloud_xyzrgb" value="$(arg publish_registered_pointcloud_xyzrgb)"/>
   </include>
 
   <!-- Launch the MoveIt configuration for Franka Emika Panda -->

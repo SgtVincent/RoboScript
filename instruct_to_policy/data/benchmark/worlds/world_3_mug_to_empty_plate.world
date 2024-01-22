@@ -103,7 +103,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.214824 -0.298031 1.01399 -0.001015 -0.010022 -0.002522</pose>
+      <pose>-0.214824 -0.298031 0.81399 -0.001015 -0.010022 -0.002522</pose>
     </model>
     <model name="turquoise_salad_plate">
       <link name="link">
@@ -161,7 +161,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.202483 0.288656 1.01386 -0.00028 0.014246 -0.000124</pose>
+      <pose>-0.202483 0.288656 0.81386 -0.00028 0.014246 -0.000124</pose>
     </model>
     <model name="lemon">
       <static>0</static>
@@ -284,7 +284,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.16048 0.012921 1.01424 -0.001167 0.006945 -0.004331</pose>
+      <pose>-0.16048 0.012921 0.81424 -0.001167 0.006945 -0.004331</pose>
     </model>
   </world>
 </sdf>

@@ -110,7 +110,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-2.4e-05 -0.141095 1.01525 -0.005884 -0.066304 0.000225</pose>
+      <pose>-2.4e-05 -0.141095 0.81525 -0.005884 -0.066304 0.000225</pose>
     </model>
     <model name="basket_with_fabric_liner">
       <link name="link">
@@ -168,7 +168,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.223052 0.297072 1.01325 -0.002846 0.005848 -2.3e-05</pose>
+      <pose>-0.223052 0.297072 0.81325 -0.002846 0.005848 -2.3e-05</pose>
     </model>
     <model name="apple">
       <static>0</static>
@@ -233,7 +233,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.311169 -0.302038 1.08442 -3.1313 -0.095002 -2.60446</pose>
+      <pose>-0.311169 -0.302038 0.88442 -3.1313 -0.095002 -2.60446</pose>
     </model>
   </world>
 </sdf>

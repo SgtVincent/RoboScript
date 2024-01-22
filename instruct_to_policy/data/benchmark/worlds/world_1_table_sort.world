@@ -110,7 +110,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.272731 -0.237469 1.01538 0.003538 -0.000917 -0.625243</pose>
+      <pose>-0.272731 -0.237469 0.81538 0.003538 -0.000917 -0.625243</pose>
     </model>
     <model name="banana">
       <link name="link">
@@ -174,7 +174,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.355613 0.272482 1.01526 -0.001837 -0.003394 -0.993519</pose>
+      <pose>-0.355613 0.272482 0.81526 -0.001837 -0.003394 -0.993519</pose>
     </model>
     <model name="white_ceramic_plate">
       <link name="link">
@@ -232,7 +232,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.01908 0.203189 1.0137 0.00096 -0.013757 0.015489</pose>
+      <pose>-0.01908 0.203189 0.8137 0.00096 -0.013757 0.015489</pose>
     </model>
     <model name="white_and_pink_box">
       <link name="link">
@@ -290,7 +290,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.46758 -0.40074 1.01488 -0.004313 -0.006344 -0.03659</pose>
+      <pose>-0.46758 -0.40074 0.81488 -0.004313 -0.006344 -0.03659</pose>
     </model>
     <model name="brown_box">
       <link name="link">
@@ -348,7 +348,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.216087 0.437155 1.01461 0.005872 -0.011021 0.007924</pose>
+      <pose>-0.216087 0.437155 0.81461 0.005872 -0.011021 0.007924</pose>
     </model>
     <model name="brown_medication_bottle">
       <link name="link">
@@ -406,7 +406,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>0.113093 -0.388645 1.0149 0.003498 -0.008407 0.093534</pose>
+      <pose>0.113093 -0.388645 0.8149 0.003498 -0.008407 0.093534</pose>
     </model>
     <model name="bleach_cleanser">
       <static>0</static>
@@ -471,7 +471,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.014789 -0.130509 1.01522 0.007175 -0.007786 -0.101389</pose>
+      <pose>-0.014789 -0.130509 0.81522 0.007175 -0.007786 -0.101389</pose>
     </model>
     <model name="red_plastic_bowl">
       <link name="link">
@@ -529,7 +529,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.082851 -0.403681 1.01447 0.005246 0.014671 0.678613</pose>
+      <pose>-0.082851 -0.403681 0.81447 0.005246 0.014671 0.678613</pose>
     </model>
     <model name="mustard_bottle">
       <static>0</static>
@@ -594,7 +594,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>0.128489 0.542142 1.01638 -1.56584 0.334296 -2.85292</pose>
+      <pose>0.128489 0.542142 0.81638 -1.56584 0.334296 -2.85292</pose>
     </model>
   </world>
 </sdf>

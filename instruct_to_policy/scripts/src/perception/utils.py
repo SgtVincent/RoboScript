@@ -708,20 +708,9 @@ def draw_bboxes_2d(rgb_image: np.ndarray, bboxes_2d: List[np.ndarray], color=(0,
         cv2.rectangle(rgb_image, (bbox[0], bbox[1]), (bbox[2], bbox[3]), color=color, thickness=thickness)
     return rgb_image
 
-import matplotlib.pyplot as plt
-
-import numpy as np
-import cv2
-import matplotlib.pyplot as plt
-from typing import List, Tuple
-
-import numpy as np
-import cv2
-import matplotlib.pyplot as plt
-from typing import List, Tuple
 
 def draw_multiview_bbox_matches(rgb_image_list: List[np.ndarray], bboxes_2d_list: List[List[np.ndarray]], 
-                                matched_bboxes_idx_tuple_list: List[Tuple[np.array]], thickness=5) -> np.ndarray:
+                                matched_bboxes_idx_tuple_list: List[Tuple[np.ndarray]], thickness=5) -> np.ndarray:
     """
     Draw all 2D bounding box matches across different camera views.
     Place all RGB images from top to bottom.

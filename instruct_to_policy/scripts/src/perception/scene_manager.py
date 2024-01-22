@@ -3,12 +3,13 @@ from typing import List, Tuple, Dict
 from numpy.typing import ArrayLike
 import numpy as np 
 import open3d as o3d
-
+import cv2
 from .utils import (
     CameraIntrinsic, 
     Transform, 
     open3d_frustum_filter,
     match_bboxes_points_overlapping,
+    draw_multiview_bbox_matches
 )
 from .scalable_tsdf import ScalableTSDFVolume
 
@@ -38,6 +39,11 @@ class SceneManager:
         self.category_to_object_name_dict = {}
         self.object_2d_bbox_dict: Dict[str, List] = {}
         self.bbox_3d_dict: Dict[str, List] = {}
+        
+        # data for 2d bbox matching debug visualization
+        self._last_rgb_image_list = []
+        self._last_bbox_2d_list = []
+        self._last_bboxes_match_tuple_list = []
         
         # full tsdf volume
         self.scene_tsdf_full= ScalableTSDFVolume( 
@@ -149,6 +155,10 @@ class SceneManager:
             downsample_voxel_size=self.bbox_match_downsample_voxel_size,
             min_match_th=self.bbox_min_match_th,
         )
+        # record debug data
+        self._last_rgb_image_list = data['rgb_image_list']
+        self._last_bbox_2d_list = bboxes_2d_list
+        self._last_bboxes_match_tuple_list = bboxes_match_tuple_list
         
         # unify the matched bounding box names of a same object instance under different camera views,
         # and update self.object_names, self.category_to_object_name_dict
@@ -323,3 +333,23 @@ class SceneManager:
         
         
         
+    def visualize_2d_bboxes_matching(self, save_path=""):
+        '''
+        Visualize the 2D bounding boxes matching results in rgb images
+        '''
+        # use draw_multiview_bbox_matches
+        vis_canvas = draw_multiview_bbox_matches(
+            rgb_image_list=self._last_rgb_image_list,
+            bboxes_2d_list=self._last_bbox_2d_list,
+            matched_bboxes_idx_tuple_list=self._last_bboxes_match_tuple_list,
+        )
+        
+        # convert to BGR for cv2
+        vis_canvas = cv2.cvtColor(vis_canvas, cv2.COLOR_BGR2RGB)
+        
+        if len(save_path) > 0:
+            cv2.imwrite(save_path, vis_canvas)
+        else:
+            # visualize the result
+            cv2.imshow("vis_canvas", vis_canvas)
+            cv2.waitKey(0)

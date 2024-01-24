@@ -11,6 +11,7 @@ from src.grasp_detection import create_grasp_model, GraspDetectionBase, GraspDet
 from src.grounding_model import create_grounding_model, GroundingBase
 from src.joint_prediction import JointPredictionBase
 from src.plane_detection import PlaneDetectionOpen3D
+from src.utils import has_keywords
 from src.env.utils import (
     calculate_place_position, 
     is_collision, 
@@ -29,7 +30,6 @@ class MultiModalEnv(MoveitGazeboEnv):
         # self.use_gt_perception = False 
         self.grasp_config = cfg["grasp_detection"]
         self.plane_detection_config = cfg["plane_detection"]
-        
         
         self.grounding_config = cfg["grounding_model"]
         # use glip as default baseline 
@@ -96,8 +96,9 @@ class MultiModalEnv(MoveitGazeboEnv):
             # associate the detected objects with gazebo model names if using gazebo 
             self.associate_scene_objects_with_gazebo()
         
-        # update objects in moveit planning scene 
-        self.add_scene_objects_to_moveit()
+        if not self.use_gt_planning_scene:
+            # update objects in moveit planning scene 
+            self.add_scene_objects_to_moveit()
 
     def get_obj_name_list(self) -> List[str]:
         """
@@ -217,7 +218,53 @@ class MultiModalEnv(MoveitGazeboEnv):
                     gazebo_name = gazebo_obj_name
             # associate the detected object with gazebo model name
             self.object_name_detect2gazebo[obj_name] = gazebo_name
+
+    def attach_object(self, object_id, link=None):
+        # if using gt planning scene, first convert the perception id to gazebo model name and then attach the object
+        if self.use_gt_planning_scene:
+            # get the gazebo model name of the object 
+            gazebo_id = self.object_name_detect2gazebo[object_id]
         
+        if link is None:
+            link = self.end_effctor_link
+
+        # DO NOT add furniture into moveit planning scene since they are static
+        if has_keywords(object_id, self.static_objects):
+            rospy.logdebug(f"Moveit: object {object_id} is static. Skip attaching to robot")
+            return False
+            
+        # NOTE: since the object name in moveit planning scene is different from the object name in gazebo with Gazebo plugin
+        # we need to convert the object name to the name in moveit planning scene
+        # e.g. 'apple' in gazebo -> 'apple.link' in moveit planning scene
+        moveit_object_names = self.planning_scene.get_known_object_names()
+        
+        for moveit_object_name in moveit_object_names:
+            if gazebo_id in moveit_object_name:
+                if object_id not in self.objects:
+                    self.objects[object_id] = {}
+                self.objects[object_id]["attach_name"] = moveit_object_name
+                self.move_group.attach_object(moveit_object_name, link) 
+                if self.verbose:
+                    rospy.loginfo(f"Moveit: attached object object {object_id} to {link}")
+                return True
+        
+        rospy.logerr(f"Moveit: object {object_id} not found in moveit planning scene. Planning scene objects: {moveit_object_names}")
+
+    def detach_object(self, object_id):
+        # if using gt planning scene, first convert the perception id to gazebo model name and then detach the object
+        # if self.use_gt_planning_scene:
+            # get the gazebo model name of the object 
+            # gazebo_id = self.object_name_detect2gazebo[object_id]
+        
+        try:
+            moveit_object_name = self.objects[object_id]["attach_name"]
+            self.move_group.detach_object(moveit_object_name)
+            
+            if self.verbose:
+                print(f"Moveit: detached object {object_id}")
+        except:
+            if self.verbose:
+                rospy.logerr(f"Moveit: failed to detach object {object_id}")        
 
     ####################  Moveit planning related functions ####################
     def add_scene_objects_to_moveit(self, **kwargs):

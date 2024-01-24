@@ -66,6 +66,8 @@ class MoveitGazeboEnv(GazeboEnv):
         self.use_sim = len(self.sim) > 0
         self.config = cfg['env']['moveit_config']
         self.use_gt_perception = cfg['perception']['use_ground_truth']
+        self.use_gt_3d_bboxes = cfg["perception"]["use_gt_3d_bboxes"]
+        self.use_gt_planning_scene = cfg["perception"]["use_gt_planning_scene"]
         
         # moveit config 
         self.debug = self.config.get('debug', False)
@@ -109,7 +111,7 @@ class MoveitGazeboEnv(GazeboEnv):
         # Initialized Moveit services
         self.compute_ik = rospy.ServiceProxy("/compute_ik", GetPositionIK)
         self.compute_fk = rospy.ServiceProxy("/compute_fk", GetPositionFK)
-        if not self.use_gt_perception:
+        if not self.use_gt_planning_scene:
             self.clear_octomap = rospy.ServiceProxy("/clear_octomap", Empty)
 
         # Joint limits for Franka panda Emika. Used to check if IK is at limits.
@@ -278,16 +280,19 @@ class MoveitGazeboEnv(GazeboEnv):
         # reset planning scene 
         # remove all attached objects
         self.planning_scene.remove_attached_object()
+        
+        if not self.use_gt_planning_scene:
+            # remove all objects in planning scene from external perception 
+            self.planning_scene.remove_world_object()
+            # clear octomap from perception if perception used for planning scene
+            self.clear_octomap()
+        
         if self.use_gt_perception:
             # load GT object names from gazebo
             for object_name in self.get_gazebo_model_names():
                 self.objects[object_name] = {}
         else: 
-            # remove all objects in planning scene from external perception 
-            self.planning_scene.remove_world_object()
-            # clear octomap from perception 
-            self.clear_octomap()
-        
+            self.objects = {}
         
         # reset visualization marker if debug is enabledss
         if self.debug:              

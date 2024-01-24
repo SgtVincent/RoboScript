@@ -14,7 +14,7 @@ import rospy
 if __name__ == "__main__":
     
     # setup ros node
-    rospy.init_node('eval_code', log_level=rospy.WARN)
+    rospy.init_node('eval_code', log_level=rospy.DEBUG)
     # get current file path 
     
     
@@ -26,6 +26,12 @@ if __name__ == "__main__":
     world_name = rospy.get_param('~world_name', 'world_1_table_sort')
     code_dir = rospy.get_param('~code_dir', 'data/benchmark/generated_code')
     config_to_eval = rospy.get_param('~config_to_eval', 'text_few_shot_codellama')
+    
+    # ablation study toggles
+    use_gt_2d_detections = rospy.get_param('~use_gt_2d_detections', False)
+    use_gt_3d_bboxes = rospy.get_param('~use_gt_3d_bboxes', False)
+    use_gt_planning_scene = rospy.get_param('~use_gt_planning_scene', False)
+    
     config_file = os.path.join(pkg_root, f'scripts/src/configs/{config_to_eval}.yaml')
     cfg_tabletop = load_config(config_file)
     
@@ -33,16 +39,30 @@ if __name__ == "__main__":
     raw_file_path = os.path.join(pkg_root, raw_file)
     eval_items_file = os.path.join(pkg_root, f'data/benchmark/eval_items/{world_name}_eval_items.json')
     
+    # append ablation study toggles to config name
+    output_config_to_eval = config_to_eval
+    if use_gt_2d_detections:
+        output_config_to_eval += '_gt_2d_det'
+    if use_gt_3d_bboxes:
+        output_config_to_eval += '_gt_3d_bbox'
+    if use_gt_planning_scene:
+        output_config_to_eval += '_gt_plan_scene'
+    
+    # overwrite the config in the config dict 
+    cfg_tabletop['perception']['use_gt_2d_detections'] = use_gt_2d_detections
+    cfg_tabletop['perception']['use_gt_3d_bboxes'] = use_gt_3d_bboxes
+    cfg_tabletop['perception']['use_gt_planning_scene'] = use_gt_planning_scene
+    
     # log file should be appended with the formatted current time 
     time_str = datetime.now().strftime("%Y%m%d-%H:%M")
-    log_file = rospy.get_param('~log_file', f'eval_{config_to_eval}_{world_name}_{time_str}.log')
+    log_file = rospy.get_param('~log_file', f'eval_{output_config_to_eval}_{world_name}_{time_str}.log')
     log_file_path = os.path.join(pkg_root, 'log', log_file)
     # make log directory if not exist
     os.makedirs(os.path.dirname(log_file_path), exist_ok=True)
     
     # results file 
     result_file = rospy.get_param('~result_file', 
-                                  os.path.join(pkg_root, f'data/benchmark/eval_results/{config_to_eval}/{world_name}_{time_str}.json'))
+                                  os.path.join(pkg_root, f'data/benchmark/eval_results/{output_config_to_eval}/{world_name}_{time_str}.json'))
     result_file_path = os.path.join(pkg_root, result_file)
     # make result directory if not exist
     os.makedirs(os.path.dirname(result_file_path), exist_ok=True)

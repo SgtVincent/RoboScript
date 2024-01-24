@@ -150,7 +150,7 @@ class FrankaGripperCommanderGroup(GripperCommanderGroup):
         return result
 
     def open_gripper(self, width=0.08, **kwargs):
-        cancel_other_goals = kwargs.get("cancel_other_goals", True)
+        cancel_other_goals = kwargs.get("cancel_other_goals", False)
         if cancel_other_goals:
             self.stop_action()
 
@@ -191,22 +191,18 @@ class FrankaGripperCommanderGroup(GripperCommanderGroup):
 
     def close_gripper(self, width=0.01, speed=0.03, force=10, **kwargs):
         """Close the gripper."""
-        cancel_other_goals = kwargs.get("cancel_other_goals", True)
+        cancel_other_goals = kwargs.get("cancel_other_goals", False)
         if cancel_other_goals:
             self.stop_action()
 
         goal = franka_gripper.msg.GraspGoal(width=width, speed=speed, force=force)
         # the size of the object is unknown in this API, so we set the inner and outer tolerance to 0.04
-        goal.epsilon.inner = 0.04
-        goal.epsilon.outer = 0.04
+        goal.epsilon.inner = 0.08
+        goal.epsilon.outer = 0.08
         self._caller = "close_gripper"
         self.gripper_grasp_client.send_goal(goal, done_cb=self._done_cb, active_cb=self._active_cb, feedback_cb=self._feedback_cb)
 
-        # manually wait for 5 seconds
-        for i in range(5):
-            rospy.sleep(1.0)
-            rospy.logdebug(f"FrankaGripperCommanderGroup: Manually waiting for gripper to close for {i+1} seconds...")
-            
+        rospy.sleep(3.0)
         done = self.gripper_grasp_client.wait_for_result(rospy.Duration(5.0))
         rospy.logdebug(f"FrankaGripperCommanderGroup: close_gripper done when joint positions:{self._joint_positions}")
         return done

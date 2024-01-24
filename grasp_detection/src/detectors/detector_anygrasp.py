@@ -5,6 +5,7 @@ from typing import List, Tuple, Dict
 import open3d as o3d 
 from scipy.spatial.transform import Rotation as R
 import graspnetAPI 
+import torch 
 
 # ROS
 import rospy 
@@ -40,6 +41,10 @@ class DetectorAnygrasp(DetectorBase):
         self.resolution = self.config.resolution
         self.color_type = self.config.color_type
         self.voxel_size = self.config.voxel_size
+    
+        # set random seed 
+        np.random.seed(self.config.random_seed)
+        torch.manual_seed(self.config.random_seed)
     
         self.debug = self.config.debug
         

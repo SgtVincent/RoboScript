@@ -72,11 +72,11 @@
           <surface>
             <friction>
               <ode>
-                <mu>5</mu>
-                <mu2>5</mu2>
+                <mu>10</mu>
+                <mu2>10</mu2>
               </ode>
               <torsional>
-                <coefficient>5</coefficient>
+                <coefficient>10</coefficient>
                 <use_patch_radius>1</use_patch_radius>
                 <patch_radius>0.1</patch_radius>
                 <ode/>

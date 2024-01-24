@@ -23,6 +23,9 @@ class ConfigBase:
         # environment-specific parameters
         self.table_height = 1.02 # height of the table plane
 
+        # random seed 
+        self.random_seed = 42
+
 
 class ConfigGIGA(ConfigBase):
     def __init__(self):

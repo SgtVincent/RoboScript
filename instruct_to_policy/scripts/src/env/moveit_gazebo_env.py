@@ -479,7 +479,7 @@ class MoveitGazeboEnv(GazeboEnv):
         pose: Pose,
         pre_grasp_approach=0.1,
         depth=0.03,
-        tentative_depth_list=[0.01, 0.0, -0.01],
+        tentative_depth_list=[0.03, 0.01, -0.01],
     ):
         """Executes a grasp at a given pose with given orientation.
         It first moves to a pre-grasp pose, then approaches the grasp pose.

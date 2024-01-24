@@ -14,6 +14,7 @@ lmps:
     class: LMPPPLX
     model: llama-2-70b-chat
     messages: message_tabletop_text
+    query_prefix: '\nPlease pay attention to the format of examples in chat history and imitate it. Do NOT generate common texts. ONLY generate comments or detailed planning starting with # and python code \n#.'
 
   fgen:
     class: LMPFGenPPLX

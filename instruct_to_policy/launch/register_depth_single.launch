@@ -9,9 +9,9 @@
     <arg name="aligned_depth_image" default="aligned_depth/image_raw"/>
     
     <!-- pointcloud parameters -->
-    <arg name="publish_pointcloud_xyz" default="false"/>
-    <arg name="publish_pointcloud_xyzrgb" default="false"/>
-    <arg name="point_topic" default="depth/points"/>
+    <arg name="publish_registered_pointcloud_xyz" default="false"/>
+    <arg name="publish_registered_pointcloud_xyzrgb" default="false"/>
+    <arg name="point_topic" default="aligned_depth/points"/>
 
     <group ns="$(arg camera_name)">
         <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" />
@@ -27,14 +27,14 @@
 
 
         <!-- publish xyz-only point cloud if enabled -->
-        <node pkg="nodelet" type="nodelet" name="nodelet_xyz" if="$(arg publish_pointcloud_xyz)" args="load depth_image_proc/point_cloud_xyz nodelet_manager">
+        <node pkg="nodelet" type="nodelet" name="nodelet_xyz" if="$(arg publish_registered_pointcloud_xyz)" args="load depth_image_proc/point_cloud_xyz nodelet_manager">
             <remap from="camera_info" to="$(arg aligned_depth_camera_info)"/>
             <remap from="image_rect" to="$(arg aligned_depth_image)"/>
             <remap from="points" to="$(arg point_topic)"/>
         </node>
 
         <!-- publish xyzrgb point cloud if enabled -->
-        <node pkg="nodelet" type="nodelet" name="nodelet_xyzrgb" if="$(arg publish_pointcloud_xyzrgb)" args="load depth_image_proc/point_cloud_xyzrgb nodelet_manager">
+        <node pkg="nodelet" type="nodelet" name="nodelet_xyzrgb" if="$(arg publish_registered_pointcloud_xyzrgb)" args="load depth_image_proc/point_cloud_xyzrgb nodelet_manager">
             <remap from="rgb/image_rect_color" to="color/image_raw"/>
             <remap from="rgb/camera_info" to="color/camera_info"/>
             <remap from="depth_registered/camera_info" to="$(arg aligned_depth_camera_info)"/>

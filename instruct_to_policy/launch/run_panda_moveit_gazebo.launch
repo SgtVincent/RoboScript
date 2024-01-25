@@ -17,7 +17,7 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <arg name="verbose" default="false" />
   <arg name="camera_set" default="true"/>
   <arg name="camera_model" default="$(find instruct_to_policy)/urdf/triple_d435_cameras.urdf.xacro"/>
-  <arg name="use_sim_time" default="true" />
+  <arg name="use_sim_time" default="false" />
   <arg name="use_gt_planning_scene" default="true" />
   <arg name="use_gt_bounding_box" default="true" />
   <arg name="enable_moveit_sensor_plugins" default="false"/>

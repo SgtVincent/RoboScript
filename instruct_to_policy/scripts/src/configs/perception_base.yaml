@@ -2,8 +2,9 @@ base_config: base.yaml
 
 perception:
   use_ground_truth: false
-  use_gt_planning_scene: false
+  use_gt_2d_detections: false
   use_gt_3d_bboxes: false
+  use_gt_planning_scene: false
   scene_manager:
     tsdf_voxel_size: 0.005
     tsdf_color_type: rgb

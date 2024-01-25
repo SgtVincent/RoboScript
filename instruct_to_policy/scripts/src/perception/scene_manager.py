@@ -60,7 +60,7 @@ class SceneManager:
         )
         
         
-    def update(self, data: Dict)->None:
+    def update(self, data: Dict, **kwargs)->None:
         '''
         Update the scene manager with new sensor data and new 2D detections. 
         Args:
@@ -80,12 +80,18 @@ class SceneManager:
                 ],
             }  
         '''
+        use_gt_3d_bboxes = kwargs.get('use_gt_3d_bboxes', False)
+        
         # update 3D fusion by TSDF integration
         self.update_fusion(data)
-        # update object instances by matching 2D bounding boxes and unifying matched bboxes names 
-        self.update_object_instances(data)
-        # update 3D bounding boxes for each object by filtering the points inside the 2D bounding boxes and fitting 3D bounding boxes
-        self.update_3d_bboxes(data)
+        if use_gt_3d_bboxes:
+            # use ground truth 3D bounding boxes
+            self.update_3d_bboxes(data, use_gt_3d_bboxes=True)
+        else:
+            # update object instances by matching 2D bounding boxes and unifying matched bboxes names 
+            self.update_object_instances(data)
+            # update 3D bounding boxes for each object by filtering the points inside the 2D bounding boxes and fitting 3D bounding boxes
+            self.update_3d_bboxes(data)
         
     def update_fusion(self, data: Dict)->None:
         '''
@@ -118,7 +124,8 @@ class SceneManager:
             # calculate the mask image with all bounding boxes inner regions set to 1
             mask_img = np.zeros_like(depth)
             for bbox in bbox_2d_list:
-                mask_img[bbox[1]:bbox[3], bbox[0]:bbox[2]] = 1
+                if len(bbox) > 0:
+                    mask_img[bbox[1]:bbox[3], bbox[0]:bbox[2]] = 1
                           
                           
             self.scene_tsdf_full.integrate(depth, intrinsic, extrinsic, rgb_img=rgb)
@@ -175,29 +182,49 @@ class SceneManager:
                 else:
                     self.object_2d_bbox_dict[bbox_name].append([])
                 
-    def update_3d_bboxes(self, data: Dict)->None:
+    def update_3d_bboxes(self, data: Dict, use_gt_3d_bboxes=False)->None:
         '''
         Update the 3D bounding boxes for each object.
         It filters the points inside the 2D bounding boxes and then fit the 3D bounding boxes.
         TODO: Can we have some clustering or segmentation methods to get tighter 3D bounding boxes?
         '''
         pcl = self.scene_tsdf_masked.get_cloud()
-        for object_name, bbox_2d_list in self.object_2d_bbox_dict.items():
-            # get point clouds of the object by filtering the points inside the 2D bounding boxes
-            obj_pcl, _ = open3d_frustum_filter(
-                pcl=pcl,
-                bbox_2d_list=bbox_2d_list,
-                camera_intrinsic_list=data['depth_camera_intrinsic_list'],
-                camera_extrinsic_list=data['depth_camera_extrinsic_list']
-            )
+        
+        if use_gt_3d_bboxes:
+            # update self.object_names, self.category_to_object_name_dict
+            self.object_names = data['bbox_3d_dict'].keys()
+            # FIXME: consider the case there are multiple objects with the same category
+            self.category_to_object_name_dict =  {
+                object_name.split('_')[0]: [object_name] for object_name in self.object_names
+            }
             
-            # fit 3D bounding box and convert it to [x_min, y_min, z_min, x_max, y_max, z_max] format
-            aabb = obj_pcl.get_axis_aligned_bounding_box()
-            
-            self.bbox_3d_dict[object_name] = [
-                aabb.min_bound[0], aabb.min_bound[1], aabb.min_bound[2] + self.bbox_base_margin,
-                aabb.max_bound[0], aabb.max_bound[1], aabb.max_bound[2],
-            ]
+            # use ground truth 3D bounding boxes
+            for object_name in self.object_names:
+                bbox_center, bbox_size = data['bbox_3d_dict'][object_name]
+                self.bbox_3d_dict[object_name] = [
+                    bbox_center[0] - bbox_size[0] / 2, bbox_center[1] - bbox_size[1] / 2, bbox_center[2] - bbox_size[2] / 2,
+                    bbox_center[0] + bbox_size[0] / 2, bbox_center[1] + bbox_size[1] / 2, bbox_center[2] + bbox_size[2] / 2,
+                ]
+            # FIXME: Should we also modify the bbox by filtering the points inside the 2D bounding boxes?
+        
+        else:
+            # get 3D bounding boxes for each object by filtering the points inside the 2D bounding boxes and get its aabb
+            for object_name, bbox_2d_list in self.object_2d_bbox_dict.items():
+                # get point clouds of the object by filtering the points inside the 2D bounding boxes
+                obj_pcl, _ = open3d_frustum_filter(
+                    pcl=pcl,
+                    bbox_2d_list=bbox_2d_list,
+                    camera_intrinsic_list=data['depth_camera_intrinsic_list'],
+                    camera_extrinsic_list=data['depth_camera_extrinsic_list']
+                )
+                
+                # fit 3D bounding box and convert it to [x_min, y_min, z_min, x_max, y_max, z_max] format
+                aabb = obj_pcl.get_axis_aligned_bounding_box()
+                
+                self.bbox_3d_dict[object_name] = [
+                    aabb.min_bound[0], aabb.min_bound[1], aabb.min_bound[2] + self.bbox_base_margin,
+                    aabb.max_bound[0], aabb.max_bound[1], aabb.max_bound[2],
+                ]
 
     def unify_bbox_names(self, bboxes_match_tuple_list: List[Tuple[int]], bboxes_labels_list: List[List[str]])-> List[Tuple[str, str]]:
         '''

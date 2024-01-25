@@ -314,6 +314,45 @@ def project_2d_to_3d(depth_image: np.ndarray, intrinsic: CameraIntrinsic, extrin
     # return points and pixel coordinates
     return points, pixels 
 
+def get_instance_bbox_2d(bbox_3d_center: np.ndarray, bbox_3d_size: np.ndarray, 
+                         points: np.ndarray, pixel_coords: np.ndarray, xy_margin=0.01, bottom_margin=0.01) -> Tuple[np.ndarray, np.ndarray]:
+    '''
+    Given a 3D bounding box, get the 2D bounding box in the depth image by projecting the points inside the 3D bounding box onto the depth image.
+    
+    Args:
+        bbox_3d_center: (3,) np.ndarray, center of the 3D bounding box
+        bbox_3d_size: (3,) np.ndarray, size of the 3D bounding box
+        points: (N, 3) np.ndarray, points to project onto the depth image
+        pixel_coords: (N,) np.ndarray, pixel coordinates of the points in the depth image
+        xy_margin: float, expand margin to the x and y axis of the 3D bounding box to include points on the boundary surface
+        bottom_margin: float, shrink margin to the bottom of the 3D bounding box to exclude points on the table surface
+        
+    Returns:
+        bbox_2d: (4,) np.ndarray, 2D bounding box in the depth image
+        pixels_inside_bbox: (N,) np.ndarray, pixel coordinates of the points inside the 3D bounding box
+    '''
+    # get the 3D bounding box corner points in the object frame
+    bbox_3d_min = bbox_3d_center - bbox_3d_size / 2
+    bbox_3d_max = bbox_3d_center + bbox_3d_size / 2
+    bbox_3d_min[:2] -= xy_margin
+    bbox_3d_max[:2] += xy_margin
+    bbox_3d_min[2] += bottom_margin
+     
+    # generate a 2D mask of same size as depth image indicating whether a pixel's corresponding point is inside the 3D bounding box
+    mask = np.logical_and.reduce((points[:, 0] >= bbox_3d_min[0], points[:, 0] <= bbox_3d_max[0],
+                                  points[:, 1] >= bbox_3d_min[1], points[:, 1] <= bbox_3d_max[1],
+                                  points[:, 2] >= bbox_3d_min[2], points[:, 2] <= bbox_3d_max[2]))
+    
+    if np.sum(mask) == 0:
+        return None, None
+    
+    # generate the 2D bounding box on the depth image by finding the min and max x, y coordinates of pixels inside the 3D bounding box
+    pixels_inside_bbox = pixel_coords[mask]
+    bbox_2d = np.array([np.min(pixels_inside_bbox[:, 0]), np.min(pixels_inside_bbox[:, 1]),
+                        np.max(pixels_inside_bbox[:, 0]), np.max(pixels_inside_bbox[:, 1])])
+    
+    return bbox_2d, pixels_inside_bbox
+
 def is_point_in_bbox_2d(point: np.ndarray, bbox: np.ndarray) -> bool:
     x, y = point
     x_min, y_min, x_max, y_max = bbox

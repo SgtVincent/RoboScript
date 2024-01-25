@@ -9,7 +9,7 @@ from geometry_msgs.msg import Quaternion, Pose, Point
 from .moveit_gazebo_env import MoveitGazeboEnv
 from src.grasp_detection import create_grasp_model, GraspDetectionBase, GraspDetectionRemote
 from src.grounding_model import create_grounding_model, GroundingBase
-from src.joint_prediction import JointPredictionBase
+from src.joint_prediction import JointPredictionBase, JointPredictionGT
 from src.plane_detection import PlaneDetectionOpen3D
 from src.utils import has_keywords
 from src.env.utils import (
@@ -43,6 +43,8 @@ class MultiModalEnv(MoveitGazeboEnv):
         
         # scene manager to manage the scene objects, 3D reconstruction, detections, etc.
         self.scene_manager_args = cfg["perception"]["scene_manager"]
+        self.use_gt_2d_detections = cfg["perception"]["use_gt_2d_detections"]
+        self.use_gt_3d_bboxes = cfg["perception"]["use_gt_3d_bboxes"]
         self.scene = SceneManager(**self.scene_manager_args)
 
         # information for evaluation and GT ablation 
@@ -59,7 +61,8 @@ class MultiModalEnv(MoveitGazeboEnv):
         self.grounding_model = create_grounding_model(self.grounding_model_name, **self.grounding_model_args)
         self.grasp_model = create_grasp_model(self.grasp_config)
         # TODO: implement joint prediction model
-        self.joint_prediction_model = JointPredictionBase()
+        # for true grounding env, always use ground truth joint prediction model
+        self.joint_prediction_model = JointPredictionGT()
         self.plane_detection_model = PlaneDetectionOpen3D(model_params=self.plane_detection_config['model_params'])
         
 
@@ -78,6 +81,27 @@ class MultiModalEnv(MoveitGazeboEnv):
 
         # call detection pipeline
         sensor_data = self.get_sensor_data()
+        
+        # Inject ground truth 3d bboxes if use_gt_2d_detections is set 
+        
+        if self.use_gt_2d_detections or self.use_gt_3d_bboxes:
+            gt_bbox_3d_dict = {}
+            gazebo_gt_bboxes_3d = self.get_gt_bboxes()
+            for object_name in object_list:
+                if object_name in gazebo_gt_bboxes_3d:
+                    if "." in object_name: # the object is already a part of a model
+                        object_id = object_name
+                    else:
+                        object_id = f"{object_name}_0"
+                    # FIXME: consider the case when there are multiple objects with the same name
+                    gt_bbox_3d_dict[object_id] = gazebo_gt_bboxes_3d[object_name]
+             
+            # add the ground truth 3d bboxes to sensor data
+            sensor_data['bbox_3d_dict'] = gt_bbox_3d_dict
+        
+            # check if gt grounding model is used 
+            assert self.grounding_model_name == "ground_truth"
+        
         detections_list = self.grounding_model.query_2d_bbox_list(
             sensor_data=sensor_data,
             object_list=object_list
@@ -87,7 +111,7 @@ class MultiModalEnv(MoveitGazeboEnv):
             'detections_list': detections_list
         }
         data.update(sensor_data)
-        self.scene.update(data)
+        self.scene.update(data, use_gt_3d_bboxes=self.use_gt_3d_bboxes)
         
         # update GT data if using gazebo
         if self.sim == 'gazebo':
@@ -154,6 +178,66 @@ class MultiModalEnv(MoveitGazeboEnv):
         min_idx = np.argmin(distances)
         normal = normal_vectors[min_idx]
         return normal
+     
+    def get_object_joint_info(self, obj_name: str, position: np.ndarray, type="any")->Dict:
+        """
+        Get the joint axis closest to the given axis.
+        # TODO: replace this GT function with external perception models
+        Args:
+            obj_name: name of the object
+            position: np.ndarray, select the joint closest to this position
+            type: str, allowed type of the joint, "any", "revolute", "prismatic"
+        Returns:
+            closest_axis: Dict, the closest joint axis
+                {
+                    "joint_position":[
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "joint_axis": [
+                        -1.0,
+                        -8.511809568290118e-08,
+                        -1.677630052654422e-07
+                    ],
+                    "type": "prismatic"
+                }
+        """
+        
+        if type == "any":
+            joint_types = ["revolute", "prismatic"]
+        elif type in ["revolute", "prismatic"]:
+            joint_types = [type]
+        else:
+            raise ValueError("Error in get_object_joint_info: Invalid type: {}".format(type))
+        
+        # convert the object name to gazebo model name
+        gazebo_obj_name = self.object_name_detect2gazebo[obj_name]
+        
+        # get joints axes from joint prediction model
+        # FIXME: if the obj_name is part of the model, should only return the joints connecting to this part
+        if '.' in gazebo_obj_name:
+            gazebo_obj_name = gazebo_obj_name.split('.')[0]
+        data = {
+            "obj_name": gazebo_obj_name,
+            "joint_types": joint_types,
+        }
+        joints_axes = self.joint_prediction_model.predict(data)
+        
+        # find the closest joint axis: the distance is between the position (point) and the line (joint axis)
+        closest_axis = None
+        closest_axis_dist = float('inf')
+        for joint_axis in joints_axes:
+            joint_position = np.array(joint_axis["joint_position"])
+            joint_axis_vector = np.array(joint_axis["joint_axis"])
+            
+            # compute the distance between the point and the line
+            dist = np.linalg.norm(np.cross(joint_axis_vector, position - joint_position)) / np.linalg.norm(joint_axis_vector)
+            if dist < closest_axis_dist:
+                closest_axis_dist = dist
+                closest_axis = joint_axis
+    
+        return closest_axis   
         
     #################### Gazebo/ Ground truth related functions ############### 
     def update_scene_gt_bboxes_3d(self, min_points=10): 

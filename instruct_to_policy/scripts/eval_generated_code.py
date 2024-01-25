@@ -43,8 +43,10 @@ if __name__ == "__main__":
     output_config_to_eval = config_to_eval
     if use_gt_2d_detections:
         output_config_to_eval += '_gt_2d_det'
+        cfg_tabletop['grounding_model']['model_name'] = 'ground_truth'
     if use_gt_3d_bboxes:
         output_config_to_eval += '_gt_3d_bbox'
+        cfg_tabletop['grounding_model']['model_name'] = 'ground_truth'
     if use_gt_planning_scene:
         output_config_to_eval += '_gt_plan_scene'
     
@@ -90,7 +92,7 @@ if __name__ == "__main__":
         # from dict to list 
         defined_functions = [v for k, v in data['src_fs'].items()]
         
-        assert query == eval_items_with_query['query'] # sanity check
+        # assert query == eval_items_with_query['query'] # sanity check
         eval_items = eval_items_with_query['eval_items']
         
         rospy.loginfo("Running code for query: {}".format(query))

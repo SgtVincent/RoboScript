@@ -66,7 +66,6 @@ class MoveitGazeboEnv(GazeboEnv):
         self.use_sim = len(self.sim) > 0
         self.config = cfg['env']['moveit_config']
         self.use_gt_perception = cfg['perception']['use_ground_truth']
-        self.use_gt_3d_bboxes = cfg["perception"]["use_gt_3d_bboxes"]
         self.use_gt_planning_scene = cfg["perception"]["use_gt_planning_scene"]
         
         # moveit config 

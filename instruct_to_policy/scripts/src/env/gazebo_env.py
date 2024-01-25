@@ -1,4 +1,4 @@
-from typing import List, Tuple, Dict
+from typing import Any, List, Tuple, Dict
 import numpy as np
 import rospy 
 from std_srvs.srv import Empty
@@ -157,7 +157,7 @@ class GazeboEnv(Env):
             
         return bboxes
     
-    def get_sensor_data(self):
+    def get_sensor_data(self) -> Dict[str, Any]:
         return self.camera_set.get_latest_data()
     
     def get_link_pose(self, link_name, ref_frame="world"):

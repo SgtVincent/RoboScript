@@ -1,4 +1,5 @@
 from .grounding_base import GroundingBase
+from .grounding_gt import GroundingGT
 try:
     from .grounding_embodiedgpt import GroundingEmbodiedGPT
 except:
@@ -19,5 +20,7 @@ def create_grounding_model(model_name: str, **kwargs)-> GroundingBase:
         return GroundingEmbodiedGPT(**kwargs)
     elif model_name == "glip":
         return GroundingGLIP(**kwargs)
+    elif model_name == "ground_truth":
+        return GroundingGT(**kwargs)
     else:
         raise NotImplementedError(f"Grounding model {model_name}  not supported.")

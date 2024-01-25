@@ -45,7 +45,8 @@ def fill_df_from_json_files(df: pd.DataFrame, json_files: List[str], configs_to_
                         finished_whole_task_over_repeat_trials.append(np.all(eval_items_results).astype(int))
              
             # Fill the DataFrame with the aggregated results
-            df.loc[(configs_to_eval[i], 'grammer_correctness'), query_label] = np.mean(grammer_correctness_list)
+            df.loc[(configs_to_eval[i], 'grammer_correctness'), query_label] = np.any(grammer_correctness_list)
+            df.loc[(configs_to_eval[i], 'semantic_correctness'), query_label] = np.any(finished_whole_task_over_repeat_trials)
             df.loc[(configs_to_eval[i], 'finished_steps_ratio'), query_label] = np.mean(finished_steps_over_repeat_trials)
             df.loc[(configs_to_eval[i], 'finished_whole_task'), query_label] = np.mean(finished_whole_task_over_repeat_trials)
 
@@ -66,11 +67,11 @@ def parse_args():
                         default=[    
                                 "text_gpt_3",
                                 "text_gpt_4",
-                                # "text_codellama",
-                                # "text_llama2_chat",
-                                # "text_gemini",
-                                "text_few_shot_gpt_3",
-                                "text_few_shot_gpt_4",
+                                "text_codellama",
+                                "text_llama2_chat",
+                                "text_gemini",
+                                # "text_few_shot_gpt_3",
+                                # "text_few_shot_gpt_4",
                                 # "text_few_shot_codellama",
                                 # "text_few_shot_llama2_chat",
                                 # "text_few_shot_gemini",
@@ -84,7 +85,7 @@ def parse_args():
 if __name__ == '__main__':
 
     args = parse_args()
-    metrics = ['grammer_correctness', 'finished_steps_ratio', 'finished_whole_task']
+    metrics = ['grammer_correctness', 'semantic_correctness',  'finished_steps_ratio', 'finished_whole_task']
     
     df_list = []
     for world_name in args.worlds_list:

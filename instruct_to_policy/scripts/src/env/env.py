@@ -177,10 +177,12 @@ class Env:
         
         return best_grasp_pose
 
-    def parse_central_lift_grasp_pose(self, object_name, description="top")->Pose:
+    def parse_central_lift_grasp_pose(self, object_name, **kwargs)->Pose:
         """
         Parse central lift grasp pose for the object. Use ground truth grounding and heuristic place position calculation.
         """
+        description = kwargs.get('description', "top")
+        
         object_bbox = self.get_3d_bbox(object_name)
         object_center = (object_bbox[:3] + object_bbox[3:]) / 2
         
@@ -196,7 +198,7 @@ class Env:
         pose.orientation = Quaternion(-1.0,0.0,0.0,0.0)
         return pose
 
-    def parse_horizontal_grasp_pose(self, object)->Pose:
+    def parse_horizontal_grasp_pose(self, object_name, **kwargs)->Pose:
         """ 
         Parse horizontal pose for grasping drawer handle. (master pose for cabinet drawer pulling)
         Currently the position of the handle if the GT bounding box center of handle in gazebo. 
@@ -204,7 +206,7 @@ class Env:
         """
         pre_defined_horizontal_orientation = Quaternion(-0.5, -0.5, 0.5, 0.5) # for franka hand 
     
-        handle_bbox = self.get_3d_bbox(object)
+        handle_bbox = self.get_3d_bbox(object_name)
         handle_center = (handle_bbox[:3] + handle_bbox[3:]) / 2
         pose = Pose()
         pose.position = Point(*handle_center)

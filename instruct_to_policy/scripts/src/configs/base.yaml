@@ -23,7 +23,7 @@ env:
     manipulator_group_name: panda_manipulator
     debug: true
     planning_time: 15
-    max_velocity: 0.2
+    max_velocity: 0.4
     max_acceleration: 0.2
     goal_position_tolerance: 0.001
     goal_orientation_tolerance: 0.02
@@ -33,6 +33,9 @@ env:
 
 perception:
   use_ground_truth: true
+  use_gt_2d_detections: true
+  use_gt_3d_bboxes: true
+  use_gt_planning_scene: true
 
 grounding_model:
   model_name: glip

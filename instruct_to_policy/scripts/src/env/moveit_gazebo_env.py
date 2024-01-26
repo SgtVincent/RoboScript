@@ -453,6 +453,8 @@ class MoveitGazeboEnv(GazeboEnv):
         
         for moveit_object_name in moveit_object_names:
             if object_id in moveit_object_name:
+                if object_id not in self.objects:
+                    self.objects[object_id] = {}
                 self.objects[object_id]["attach_name"] = moveit_object_name
                 self.move_group.attach_object(moveit_object_name, link) 
                 if self.verbose:
@@ -483,7 +485,7 @@ class MoveitGazeboEnv(GazeboEnv):
         pose: Pose,
         pre_grasp_approach=0.1,
         depth=0.03,
-        tentative_depth_list=[0.03, 0.01, -0.01],
+        tentative_depth_list=[0.02, 0.0, -0.02],
     ):
         """Executes a grasp at a given pose with given orientation.
         It first moves to a pre-grasp pose, then approaches the grasp pose.

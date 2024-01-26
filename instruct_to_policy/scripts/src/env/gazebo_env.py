@@ -7,6 +7,7 @@ from gazebo_msgs.srv import (
     GetLinkState,
     GetWorldProperties, 
     GetModelProperties,
+    GetJointProperties,
     SetModelConfiguration,
     SetModelConfigurationRequest
 )
@@ -36,6 +37,7 @@ class GazeboEnv(Env):
         self.get_link_state = rospy.ServiceProxy(f"/{self.node_name}/get_link_state", GetLinkState)
         self.get_world_properties = rospy.ServiceProxy(f"/{self.node_name}/get_world_properties", GetWorldProperties)
         self.get_model_properties = rospy.ServiceProxy(f"/{self.node_name}/get_model_properties", GetModelProperties)
+        self.get_joint_properties = rospy.ServiceProxy(f"/{self.node_name}/get_joint_properties", GetJointProperties)
         self.get_bounding_boxes = rospy.ServiceProxy(f"/{self.node_name}/get_bounding_boxes", GazeboGetBoundingBoxes)
 
         self.robot_names = ["panda", "fr3", "ur5"]
@@ -153,6 +155,13 @@ class GazeboEnv(Env):
                 obj_name = obj_name.replace('::', '.')
             center = np.array([bbox_3d.center.position.x, bbox_3d.center.position.y, bbox_3d.center.position.z])
             size = np.array([bbox_3d.size.x, bbox_3d.size.y, bbox_3d.size.z])
+            
+            # FIXME: enlarge handle bbox to include part of the wooden board
+            # TODO: Should do this modification in model definition or external annotation metadata file  
+            # enlarge the handle bbox in -x direction for 0.01 m
+            # if 'cabinet.handle' in obj_name:
+            #     center[0] -= 0.01
+            #     size[0] += 0.02
             bboxes[obj_name] = (center, size)
             
         return bboxes

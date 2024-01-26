@@ -1,13 +1,17 @@
 <launch>
     <arg name="world_name" default="world_5_mug_to_cabinet" />
     <!-- <arg name="world_name" default="world_3_mug_to_empty_plate" /> -->
-    <arg name="config_to_eval" default="text_gpt_4" />
+    <!-- <arg name="config_to_eval" default="text_gpt_4" /> -->
+    <arg name="config_to_eval" default="perception_few_shot_gpt_4" />
     <!-- <arg name="config_to_eval" default="text_few_shot_gemini" /> -->
     <!-- <arg name="config_to_eval" default="perception_few_shot_gemini"/> -->
 
     <node name="eval_code" pkg="instruct_to_policy" type="eval_generated_code.py" output="screen">
         <param name="world_name" value="$(arg world_name)" />
         <param name="config_to_eval" value="$(arg config_to_eval)" />
+        <param name="use_gt_2d_detections" value="true" />
+        <param name="use_gt_3d_bboxes" value="true" />
+        <param name="use_gt_planning_scene" value="true" />
     </node>
 
 </launch>

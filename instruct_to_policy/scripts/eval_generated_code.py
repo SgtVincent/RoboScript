@@ -35,8 +35,7 @@ if __name__ == "__main__":
     config_file = os.path.join(pkg_root, f'scripts/src/configs/{config_to_eval}.yaml')
     cfg_tabletop = load_config(config_file)
     
-    raw_file = os.path.join(pkg_root, code_dir, f'{config_to_eval}/raw_{world_name}.json')
-    raw_file_path = os.path.join(pkg_root, raw_file)
+    raw_file_path = os.path.join(pkg_root, code_dir, f'{config_to_eval}/raw_{world_name}.json')
     eval_items_file = os.path.join(pkg_root, f'data/benchmark/eval_items/{world_name}_eval_items.json')
     
     # append ablation study toggles to config name

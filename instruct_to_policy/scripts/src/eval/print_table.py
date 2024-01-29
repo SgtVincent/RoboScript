@@ -8,7 +8,7 @@ import glob
 import argparse 
 import numpy as np 
 
-def fill_df_from_json_files(df: pd.DataFrame, json_files: List[str], configs_to_eval: List[str]):
+def fill_df_from_json_files(args, df: pd.DataFrame, json_files: List[str], queries_label_list: List[str]):
         # Iterate over the list of json files to fill the DataFrame
     for i, json_file in enumerate(json_files):
         # Open the JSON file and load the data
@@ -45,10 +45,10 @@ def fill_df_from_json_files(df: pd.DataFrame, json_files: List[str], configs_to_
                         finished_whole_task_over_repeat_trials.append(np.all(eval_items_results).astype(int))
              
             # Fill the DataFrame with the aggregated results
-            df.loc[(configs_to_eval[i], 'grammer_correctness'), query_label] = np.any(grammer_correctness_list)
-            df.loc[(configs_to_eval[i], 'semantic_correctness'), query_label] = np.any(finished_whole_task_over_repeat_trials)
-            df.loc[(configs_to_eval[i], 'finished_steps_ratio'), query_label] = np.mean(finished_steps_over_repeat_trials)
-            df.loc[(configs_to_eval[i], 'finished_whole_task'), query_label] = np.mean(finished_whole_task_over_repeat_trials)
+            df.loc[(args.configs_to_eval[i], 'grammer_correctness'), query_label] = np.any(grammer_correctness_list)
+            df.loc[(args.configs_to_eval[i], 'semantic_correctness'), query_label] = np.any(finished_whole_task_over_repeat_trials)
+            df.loc[(args.configs_to_eval[i], 'finished_steps_ratio'), query_label] = np.mean(finished_steps_over_repeat_trials)
+            df.loc[(args.configs_to_eval[i], 'finished_whole_task'), query_label] = np.mean(finished_whole_task_over_repeat_trials)
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -56,19 +56,19 @@ def parse_args():
     parser.add_argument('--repeat_times', type=int, default=5)
     parser.add_argument('--worlds_list', nargs='+', default=[
                                                             # "world_1_table_sort",
+                                                            "world_1_table_sort",
                                                             "world_2_pick_and_place",
                                                             "world_3_mug_to_empty_plate",
                                                             "world_4_clear_table_to_basket",
                                                             "world_5_mug_to_cabinet",
                                                             "world_6_mug_to_same_color_plate",
-                                                            "world_1_table_sort",
                                                             ])
     parser.add_argument('--configs_to_eval', nargs='+', type=str, 
                         default=[    
                                 "text_gpt_3",
                                 "text_gpt_4",
-                                "text_codellama",
-                                "text_llama2_chat",
+                                # "text_codellama",
+                                # "text_llama2_chat",
                                 "text_gemini",
                                 # "text_few_shot_gpt_3",
                                 # "text_few_shot_gpt_4",
@@ -127,7 +127,7 @@ if __name__ == '__main__':
             # fill the world_df with nan by default 
             world_df = world_df.fillna(np.nan)
             
-            fill_df_from_json_files(world_df, json_files, args.configs_to_eval)
+            fill_df_from_json_files(args, world_df, json_files, queries_label_list)
             
         df_list.append(world_df)
     

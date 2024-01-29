@@ -59,6 +59,13 @@ class DetectorAnygrasp(DetectorBase):
         # preprocess perception data: integrate depth images into TSDF volume and point cloud 
         cloud, min_bound, max_bound = self._preprocess(req.perception_data)
         
+        # self.memory_tracker.print_diff()
+        
+        # safety checking to avoid memory overflow from ill 2D perception 
+        if np.any((max_bound - min_bound) > self.config.bound_size_limit):
+            rospy.logerr("Bound size too large! Rejecting request...")
+            return DetectGraspsResponse(grasps=[])
+        
         # transform point cloud to the same coordinate frame as the model
         # the anygrasp model is trained with the x-axis pointing down
         # 
@@ -74,12 +81,16 @@ class DetectorAnygrasp(DetectorBase):
         
         
         # get prediction
+        rospy.logdebug("Detecting grasps with input points of shape: {}, lims: {}".format(points.shape, lims))
         ret = self.model.get_grasp(points, colors, lims)
+        # make program 50% slower
+        torch.cuda.empty_cache()
+        
         if len(ret) == 2:
             gg, cloud = ret
         else:
             # if no valid grasp found, 3-tuple is returned for debugging (not used here)
-            print('No Grasp detected by Anygrasp model!')
+            rospy.logerr('No Grasp detected by Anygrasp model!')
             if self.debug:
                 cloud = cloud.transform(trans_mat)
                 # create world coordinate frame
@@ -201,7 +212,7 @@ class DetectorAnygrasp(DetectorBase):
 
             tsdf.integrate(depth, intrinsics, extrinsics, rgb_img=rgb, mask_img=mask)
 
-
+        # might get OOM here if the input point cloud is too large
         full_cloud: o3d.geometry.PointCloud = tsdf.get_cloud()
         cloud = full_cloud
         
@@ -253,7 +264,17 @@ class DetectorAnygrasp(DetectorBase):
             # filter the cloud by the table plane height
             height = self.config.table_height
             cloud = cloud.select_by_index(np.where(np.asarray(cloud.points)[:,2] > height)[0])
-            
+        
+        # if cloud is too large, downsample it
+        if len(cloud.points) > self.config.max_point_num:
+            num_points = len(cloud.points)
+            every_k_points = int(num_points // self.config.max_point_num) + 1
+            cloud = cloud.uniform_down_sample(every_k_points)
+            rospy.logwarn(f"Anygrasp get more input points ({num_points}) than its limit ({self.config.max_point_num}). Downsample {len(cloud.points)} points")
+
+        del tsdf
+        del full_cloud
+        
         return cloud, min_bound, max_bound
         
     

@@ -21,7 +21,7 @@ class ConfigBase:
         # self.max_gripper_width = 0.08 # franka hand 
         self.max_gripper_width = 0.1 # robotiq 85
         # environment-specific parameters
-        self.table_height = 1.02 # height of the table plane
+        self.table_height = 0.82 # height of the table plane
 
         # random seed 
         self.random_seed = 42
@@ -48,6 +48,12 @@ class ConfigAnygrasp(ConfigBase):
         self.filter_bbox_2d_margin = 5 # in pixel
         self.filter_bbox_3d_margin = 0.15 # in meter
         self.filter_table_plane = False # whether to filter table plane
+        
+        # safety config: 
+        # bound size limit for the input point cloud
+        self.bound_size_limit = np.array([0.6, 0.6, 0.6])  
+        # max number of points in the input point cloud
+        self.max_point_num = 100000 
         
         self.debug = False # whether to visualize the grasps 
 

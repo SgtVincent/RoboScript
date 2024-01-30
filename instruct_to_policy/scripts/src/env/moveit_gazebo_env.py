@@ -631,7 +631,7 @@ class MoveitGazeboEnv(GazeboEnv):
         
         # get the bounding box of the object and all other objectss
         object_bbox = self.get_3d_bbox(object_name)
-        object_names = self.get_obj_name_list()
+        object_names = self.get_object_name_list()
         obstacle_bbox_list = [
             self.get_3d_bbox(obstacle_name) for obstacle_name in object_names 
             if obstacle_name not in [object_name]

@@ -1,1 +1,1 @@
-objects = [table, cabinet, white_and_yellow_mug, cabinet.drawer_0, cabinet.drawer_1, cabinet.handle_0, cabinet.handle_1] ; # place the mug into the second top drawer 
+objects = [table, cabinet, white_and_yellow_mug, cabinet.drawer_0, cabinet.drawer_1, cabinet.handle_0, cabinet.handle_1] ; # place the mug into the second top drawer

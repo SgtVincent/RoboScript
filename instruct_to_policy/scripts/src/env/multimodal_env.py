@@ -124,44 +124,44 @@ class MultiModalEnv(MoveitGazeboEnv):
             # update objects in moveit planning scene 
             self.add_scene_objects_to_moveit()
 
-    def get_obj_name_list(self) -> List[str]:
+    def get_object_name_list(self) -> List[str]:
         """
         Get object name list from scene manager
         """
         return self.scene.get_object_names()
 
-    def get_object_center_position(self, obj_name, **kwargs):
+    def get_object_center_position(self, object_name, **kwargs):
         """
         Get the position of the object in the world frame. 
         This function uses ground truth model state from gazebo and ignore all other parameters.
         """
-        return self.scene.get_object_center_position(obj_name)
+        return self.scene.get_object_center_position(object_name)
         
-    def get_object_pose(self, obj_name, **kwargs):
-        # return self.scene.get_object_pose(obj_name)
+    def get_object_pose(self, object_name, **kwargs):
+        # return self.scene.get_object_pose(object_name)
         raise NotImplementedError
         
-    def get_3d_bbox(self, obj_name, **kwargs)->np.ndarray:
+    def get_3d_bbox(self, object_name, **kwargs)->np.ndarray:
         """
         Get the bounding box of the object.
         Args:
-            obj_name: name of the object
+            object_name: name of the object
         Returns:
             bbox: np.ndarray, [x_min, y_min, z_min, x_max, y_max, z_max]
         """
-        return self.scene.get_3d_bbox(obj_name)
+        return self.scene.get_3d_bbox(object_name)
     
-    def get_plane_normal(self, obj_name: str, position: np.ndarray) -> np.ndarray:
+    def get_plane_normal(self, object_name: str, position: np.ndarray) -> np.ndarray:
         '''
         Get the plane normal of the object at the given position.
         Args:
-            obj_name: name of the object
+            object_name: name of the object
             position: position of the object
         Returns:
             normal: np.ndarray, [x, y, z]
         '''
         # First get the object point cloud from scene manager
-        object_point_cloud = self.scene.get_object_cloud(obj_name)
+        object_point_cloud = self.scene.get_object_cloud(object_name)
 
         # Then calculate all planes with plane detection model
         normal_vectors, oboxes = self.plane_detection_model.detect_planes(object_point_cloud)
@@ -179,12 +179,12 @@ class MultiModalEnv(MoveitGazeboEnv):
         normal = normal_vectors[min_idx]
         return normal
      
-    def get_object_joint_info(self, obj_name: str, position: np.ndarray, type="any")->Dict:
+    def get_object_joint_info(self, object_name: str, position: np.ndarray, type="any")->Dict:
         """
         Get the joint axis closest to the given axis.
         # TODO: replace this GT function with external perception models
         Args:
-            obj_name: name of the object
+            object_name: name of the object
             position: np.ndarray, select the joint closest to this position
             type: str, allowed type of the joint, "any", "revolute", "prismatic"
         Returns:
@@ -212,14 +212,14 @@ class MultiModalEnv(MoveitGazeboEnv):
             raise ValueError("Error in get_object_joint_info: Invalid type: {}".format(type))
         
         # convert the object name to gazebo model name
-        gazebo_obj_name = self.object_name_detect2gazebo[obj_name]
+        gazebo_object_name = self.object_name_detect2gazebo[object_name]
         
         # get joints axes from joint prediction model
-        # FIXME: if the obj_name is part of the model, should only return the joints connecting to this part
-        if '.' in gazebo_obj_name:
-            gazebo_obj_name = gazebo_obj_name.split('.')[0]
+        # FIXME: if the object_name is part of the model, should only return the joints connecting to this part
+        if '.' in gazebo_object_name:
+            gazebo_object_name = gazebo_object_name.split('.')[0]
         data = {
-            "obj_name": gazebo_obj_name,
+            "object_name": gazebo_object_name,
             "joint_types": joint_types,
         }
         joints_axes = self.joint_prediction_model.predict(data)
@@ -255,7 +255,7 @@ class MultiModalEnv(MoveitGazeboEnv):
         # get the full point cloud from scene manager
         point_cloud_full: o3d.geometry.PointCloud = self.scene.scene_tsdf_full.get_cloud()
         
-        for obj_name, gazebo_bbox in gazebo_gt_bboxes_3d.items():
+        for object_name, gazebo_bbox in gazebo_gt_bboxes_3d.items():
             # get all scene objects that has more than min_points points in the bounding box 
             center = np.array(gazebo_bbox[0])
             size = np.array(gazebo_bbox[1])
@@ -267,7 +267,7 @@ class MultiModalEnv(MoveitGazeboEnv):
             if len(obj_point_cloud.points) > min_points:
                 # re-compute the bounding box of the object with the point cloud
                 obj_bbox = obj_point_cloud.get_axis_aligned_bounding_box()
-                self.scene_gt_bboxes_3d[obj_name] = obj_bbox
+                self.scene_gt_bboxes_3d[object_name] = obj_bbox
     
     def associate_scene_objects_with_gazebo(self):
         """
@@ -286,22 +286,22 @@ class MultiModalEnv(MoveitGazeboEnv):
         
         # associate the detected objects from scene with gazebo model names by getting its closest bounding box 
         # TODO: consider optimize this loop and add max distance threshold
-        for obj_name in object_names:
+        for object_name in object_names:
             # get the bounding box of the detected object
-            obj_bbox = self.scene.get_3d_bbox(obj_name)
+            obj_bbox = self.scene.get_3d_bbox(object_name)
             # find its closest gazebo model name
             min_dist = np.inf
             gazebo_name = None
-            for gazebo_obj_name, gazebo_bbox in self.scene_gt_bboxes_3d.items():
+            for gazebo_object_name, gazebo_bbox in self.scene_gt_bboxes_3d.items():
                 # compute the center distance 
                 obj_bbox_center = (obj_bbox[:3] + obj_bbox[3:]) / 2.0
                 gazebo_bbox_center = gazebo_bbox.get_center()
                 dist = np.linalg.norm(obj_bbox_center - gazebo_bbox_center)
                 if dist < min_dist:
                     min_dist = dist
-                    gazebo_name = gazebo_obj_name
+                    gazebo_name = gazebo_object_name
             # associate the detected object with gazebo model name
-            self.object_name_detect2gazebo[obj_name] = gazebo_name
+            self.object_name_detect2gazebo[object_name] = gazebo_name
 
     def attach_object(self, object_id, link=None):
         # if using gt planning scene, first convert the perception id to gazebo model name and then attach the object
@@ -354,7 +354,7 @@ class MultiModalEnv(MoveitGazeboEnv):
     def add_scene_objects_to_moveit(self, **kwargs):
         """Add all objects in the scene to the moveit planning scene."""
         # Add detected objects' meshes into moveit 
-        for object_name in self.get_obj_name_list():
+        for object_name in self.get_object_name_list():
             object_mesh = self.scene.get_object_mesh(object_name)
             
             if object_name not in self.objects:

@@ -25,8 +25,8 @@ class Env:
         self.grounding_model = None
         self.joint_prediction_model = None
 
-    def get_obj_name_list(self)-> List[str]:
-        raise NotImplementedError("get_obj_name_list() not implemented")
+    def get_object_name_list(self)-> List[str]:
+        raise NotImplementedError("get_object_name_list() not implemented")
 
     ################# robot contorl interface #################
     def get_gripper_pose(self)->Pose:
@@ -74,21 +74,21 @@ class Env:
         """ detect objects in the scene with perception model"""
         raise NotImplementedError("detect_objects() not implemented")
     
-    def get_object_center_position(self, obj_name)->ArrayLike:
+    def get_object_center_position(self, object_name)->ArrayLike:
         """ Get object position."""
         raise NotImplementedError("get_object_center_position() not implemented")
 
-    def get_3d_bbox(self, obj_name: str)-> ArrayLike:
+    def get_3d_bbox(self, object_name: str)-> ArrayLike:
         """
         Get the bounding box of the object.
         Args:
-            obj_name: name of the object
+            object_name: name of the object
         Returns:
             bbox: np.ndarray, [x_min, y_min, z_min, x_max, y_max, z_max]
         """
         raise NotImplementedError("get_3d_bbox() not implemented")
     
-    def get_object_joints_axes(self, obj_name: str)->List:
+    def get_object_joints_axes(self, object_name: str)->List:
         """
         Get the joint axes for the given list of joint names.
         Args:
@@ -98,11 +98,11 @@ class Env:
         """
         raise NotImplementedError("get_joint_axes() not implemented")
     
-    def get_object_joint_info(self, obj_name: str, position: np.ndarray, type="any")->Dict:
+    def get_object_joint_info(self, object_name: str, position: np.ndarray, type="any")->Dict:
         """
         Get the joint axis closest to the given axis.
         Args:
-            obj_name: name of the object
+            object_name: name of the object
             position: np.ndarray, select the joint closest to this position
             type: str, allowed type of the joint, "any", "revolute", "prismatic"
         Returns:
@@ -110,11 +110,11 @@ class Env:
         """
         raise NotImplementedError("get_object_joint_info() not implemented")
     
-    def get_plane_normal(self, obj_name: str, position: np.ndarray)->np.ndarray:
+    def get_plane_normal(self, object_name: str, position: np.ndarray)->np.ndarray:
         """
         Get the plane normal of an object closest to the given position.
         Args:
-            obj_name: name of the object
+            object_name: name of the object
             position: np.ndarray, select the plane closest to this position
         Returns:
             closest_normal: np.ndarray the closest plane normal

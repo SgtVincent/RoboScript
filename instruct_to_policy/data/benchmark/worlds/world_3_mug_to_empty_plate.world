@@ -43,7 +43,7 @@
     <include>
       <uri>model://cabinet_1076</uri>
       <name>cabinet</name>
-      <pose>-1.5 0.0 0.693 0 0 -3.1416</pose>
+      <pose>-1.45 -0.2 0.693 0 0 -3.1416</pose>
       <scale>1 1 1</scale>
       <static>0</static>
     </include>
@@ -103,7 +103,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.214824 -0.298031 0.81399 -0.001015 -0.010022 -0.002522</pose>
+      <pose>-0.214824 -0.298031 0.81399 -0.001015 -0.010023 -0.002522</pose>
     </model>
     <model name="turquoise_salad_plate">
       <link name="link">
@@ -226,27 +226,27 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.248367 0.285174 1.01871 -0.030116 -0.059031 0.002079</pose>
+      <pose>-0.246124 0.287173 0.829379 1.554884 0.667688 -0.555816</pose>
     </model>
-    <model name="cyan_mug">
+    <model name="brown_ceramic_cup">
       <link name="link">
         <inertial>
-          <pose>-0.012344 -0.001511 0.052247 -3.10219 -1.49034 -3.09397</pose>
-          <mass>0.116108</mass>
+          <pose>-0.000312 0.000221 0.042413 -0.414269 -1.55707 -0.662139</pose>
+          <mass>0.3</mass>
           <inertia>
-            <ixx>0.000252252</ixx>
-            <ixy>-2.95001e-20</ixy>
-            <ixz>4.56604e-21</ixz>
-            <iyy>0.000222876</iyy>
-            <iyz>2.43404e-21</iyz>
-            <izz>0.000170992</izz>
+            <ixx>9.5491e-05</ixx>
+            <ixy>1.50291e-20</ixy>
+            <ixz>3.15924e-20</ixz>
+            <iyy>8.32621e-05</iyy>
+            <iyz>1.13587e-20</iyz>
+            <izz>8.31544e-05</izz>
           </inertia>
         </inertial>
         <collision name="collision">
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>model://Cole_Hardware_Mug_Classic_Blue/meshes/model.obj</uri>
+              <uri>model://Ecoforms_Cup_B4_SAN/meshes/model.obj</uri>
             </mesh>
           </geometry>
           <surface>
@@ -276,7 +276,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>model://Cole_Hardware_Mug_Classic_Blue/meshes/model.obj</uri>
+              <uri>model://Ecoforms_Cup_B4_SAN/meshes/model.obj</uri>
             </mesh>
           </geometry>
         </visual>
@@ -284,7 +284,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.16048 0.012921 0.81424 -0.001167 0.006945 -0.004331</pose>
+      <pose>0.094219 -0.023674 0.814741 -0.008702 -0.009738 5.7e-05</pose>
     </model>
   </world>
 </sdf>

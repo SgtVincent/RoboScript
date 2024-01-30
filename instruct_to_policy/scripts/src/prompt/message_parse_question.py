@@ -20,7 +20,7 @@ from perception_utils import (
     get_object_center_position,  # Returns the position of an object in the world frame. Returns: position: np.array [x,y,z]
     get_object_pose,             # Returns the pose of an object in the world frame. Returns: pose: Pose
     get_3d_bbox,                 # Returns the 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array [x_min, y_min, z_min, x_max, y_max, z_max]
-    get_obj_name_list,           # Returns a list of names of objects present in the scene
+    get_object_name_list,           # Returns a list of names of objects present in the scene
 )
 '''
 The coordinate frame of the world/table is defined as follows:

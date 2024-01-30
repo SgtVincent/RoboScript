@@ -1,19 +1,19 @@
 [
     {
-        "query_label": "simple_2",
-        "query": "# objects = [table, cabinet, apple, sugar_box, basket_with_fabric_liner] ; # clear the table by moving all table objects into the basket.",
+        "query_label": "hard_4",
+        "query": "# objects = [table, cabinet, orange, toy_bus, basket_with_fabric_liner] ; # clear the table by moving all table objects into the basket.",
         "eval_items": [
             {
                 "function": "check_relation_in",
                 "args": {
-                    "object_name": "apple",
+                    "object_name": "orange",
                     "receptacle_name": "basket_with_fabric_liner"
                 }
             },
             {
                 "function": "check_relation_in",
                 "args": {
-                    "object_name": "sugar_box",
+                    "object_name": "toy_bus",
                     "receptacle_name": "basket_with_fabric_liner"
                 }
             }

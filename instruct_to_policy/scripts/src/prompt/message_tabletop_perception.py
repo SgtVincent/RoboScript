@@ -22,7 +22,7 @@ from perception_utils import (
     get_object_center_position,  # Returns the position of an object in the world frame. Returns: position: np.array [x,y,z]
     get_object_pose,              # Returns the pose of an object in the world frame. Returns: pose: Pose
     get_3d_bbox,                 # Returns the 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array [x_min, y_min, z_min, x_max, y_max, z_max]
-    get_obj_name_list,           # Returns a list of names of objects present in the scene
+    get_object_name_list,           # Returns a list of names of objects present in the scene
     parse_adaptive_shape_grasp_pose, # Predict a grasp pose for object of adaptive shape with neural networks. Args: object_name: str, preferred_position: Optional(np.array) [x,y,z]. Returns: grasp_pose: Pose
     parse_horizontal_grasp_pose, # Generate a grasp pose from horizontal approach direction. Specially, this function is suitable for grasping parts of objects fixed to vertical surface. Args: object_name: str; approach_direction: Optional(np.ndarray), [x,y,z]. Returns: grasp_pose: Pose
     parse_place_pose,            # Predict the place pose for an object relative to a receptacle. Args: object_name: str; receptacle_name: Optional(str); position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
@@ -112,7 +112,7 @@ drawer_handle_name = 'cabinet.handle_0'
 drawer_handle_position = get_object_center_position(drawer_handle_name)
 
 # Get the drawer prismatic joint closest to the handle position
-drawer_joint_info = get_object_joint_info(obj_name=drawer_name, position=drawer_handle_position, type="prismatic")
+drawer_joint_info = get_object_joint_info(object_name=drawer_name, position=drawer_handle_position, type="prismatic")
 drawer_joint_position = drawer_joint_info["joint_position"]
 drawer_joint_axis = drawer_joint_info["joint_axis"]
 
@@ -125,7 +125,7 @@ attach_object(drawer_handle_name)
 
 # Pull the drawer handle, move in prismatic joint axis direction
 direction = drawer_joint_axis
-move_in_direction(direction, distance=0.2)
+move_in_direction(direction, distance=0.25)
 
 # Release the drawer
 open_gripper()
@@ -159,7 +159,7 @@ drawer_handle_name = 'cabinet.handle_0'
 
 # Get the drawer prismatic joint closest to the handle position
 drawer_handle_position = get_object_center_position(drawer_handle_name)
-drawer_joint_info = get_object_joint_info(obj_name=drawer_name, position=drawer_handle_position, type="prismatic")
+drawer_joint_info = get_object_joint_info(object_name=drawer_name, position=drawer_handle_position, type="prismatic")
 drawer_joint_position = drawer_joint_info["joint_position"]
 drawer_joint_axis = drawer_joint_info["joint_axis"]
 
@@ -172,7 +172,7 @@ attach_object(drawer_handle_name)
 
 # Push the drawer handle, move in -prismatic joint axis direction
 direction = -drawer_joint_axis
-move_in_direction(direction, distance=0.2)
+move_in_direction(direction, distance=0.25)
 
 # Release the drawer
 open_gripper()
@@ -209,7 +209,7 @@ drawer_handle_name = 'cabinet.handle_0'
 drawer_handle_position = get_object_center_position(drawer_handle_name)
 
 # Get the drawer prismatic joint closest to the handle position
-drawer_joint_info = get_object_joint_info(obj_name=drawer_name, position=drawer_handle_position, type="prismatic")
+drawer_joint_info = get_object_joint_info(object_name=drawer_name, position=drawer_handle_position, type="prismatic")
 drawer_joint_position = drawer_joint_info["joint_position"]
 drawer_joint_axis = drawer_joint_info["joint_axis"]
 
@@ -222,7 +222,7 @@ attach_object(drawer_handle_name)
 
 # Pull the drawer handle, move in prismatic joint axis direction
 direction = drawer_joint_axis
-move_in_direction(direction, distance=0.2)
+move_in_direction(direction, distance=0.25)
  
 # Release the drawer
 open_gripper()
@@ -274,7 +274,7 @@ drawer_handle_name = 'cabinet.handle_1'
 drawer_handle_position = get_object_center_position(drawer_handle_name)
 
 # Get the drawer prismatic joint closest to the handle position
-drawer_joint_info = get_object_joint_info(obj_name=drawer_name, position=drawer_handle_position, type="prismatic")
+drawer_joint_info = get_object_joint_info(object_name=drawer_name, position=drawer_handle_position, type="prismatic")
 drawer_joint_position = drawer_joint_info["joint_position"]
 drawer_joint_axis = drawer_joint_info["joint_axis"]
 
@@ -287,7 +287,7 @@ attach_object(drawer_handle_name)
 
 # Pull the drawer handle, move in prismatic joint axis direction
 direction = drawer_joint_axis
-move_in_direction(direction, distance=0.2)
+move_in_direction(direction, distance=0.25)
 
 # Release the drawer
 open_gripper()
@@ -337,7 +337,7 @@ handle_name = 'door.handle_0'
 handle_position = get_object_center_position(handle_name)
 
 # Get the door revolute joint closest to the handle position
-door_joint_info = get_object_joint_info(obj_name=door_name, position=handle_position, type="revolute")
+door_joint_info = get_object_joint_info(object_name=door_name, position=handle_position, type="revolute")
 door_joint_position = door_joint_info["joint_position"]
 door_joint_axis = door_joint_info["joint_axis"]
 

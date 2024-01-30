@@ -15,25 +15,25 @@ benchmark_data_dir="$(rospack find instruct_to_policy)/data/benchmark"
 verbose=false
 
 configs_to_eval=(
-    "text_gpt_3"
-    "text_gpt_4"
-    "text_codellama"
-    "text_llama2_chat"
+    # "text_gpt_3"
+    # "text_gpt_4"
     "text_gemini"
-    "text_few_shot_gpt_3"
-    "text_few_shot_gpt_4"
-    "text_few_shot_codellama"
-    "text_few_shot_llama2_chat"
-    "text_few_shot_gemini"
+    # "text_codellama"
+    # "text_llama2_chat"
+    # "text_few_shot_gpt_3"
+    # "text_few_shot_gpt_4"
+    # "text_few_shot_codellama"
+    # "text_few_shot_llama2_chat"
+    # "text_few_shot_gemini"
 )
 
 worlds_to_eval=(
-    # "world_1_table_sort"
-    "world_2_pick_and_place"
-    "world_3_mug_to_empty_plate"
-    "world_4_clear_table_to_basket"
-    "world_5_mug_to_cabinet"
-    "world_6_mug_to_same_color_plate"
+    "world_1_table_sort"
+    # "world_2_pick_and_place"
+    # "world_3_mug_to_empty_plate"
+    # "world_4_clear_table_to_basket"
+    # "world_5_mug_to_cabinet"
+    # "world_6_mug_to_same_color_plate"
 )
 
 # function to kill all descendant processes of a given pid
@@ -61,9 +61,6 @@ function eval_code_in_world() {
     # get world name and full path to world
     world_path=$(realpath ${benchmark_data_dir}/worlds/${world_name}.world)
     
-    # run grasp detection node in another terminal with script run_grasp_detection.sh
-    gnome-terminal -- bash -c "source $(rospack find instruct_to_policy)/scripts/bash/run_grasp_detection.sh; exec bash"
-
     # roslaunch gazebo and moveit
     roslaunch instruct_to_policy run_${robot_name}_moveit_gazebo.launch \
         --wait \
@@ -80,6 +77,10 @@ function eval_code_in_world() {
     # eval all configs 
     for config_name in "${configs_to_eval[@]}"
     do 
+
+        # run grasp detection node in another terminal with script run_grasp_detection.sh
+        gnome-terminal -- bash -c "source $(rospack find instruct_to_policy)/scripts/bash/run_grasp_detection.sh; exec bash"
+
         echo "-----------------Evaluating $config_name in world $world_name -------------------------------------"
         rosrun instruct_to_policy eval_generated_code.py \
             _world_name:=$world_name \
@@ -89,10 +90,17 @@ function eval_code_in_world() {
 
 }
 
+roscore &
+
 # iterate through all the worlds under data/benchmark/worlds
 for world_name in "${worlds_to_eval[@]}"
 do
     
+    # clean up python processes to free model memory
+    kikkall -9 gzserver
+    killall -9 gzclient
+    killall -9 python 
+
     # skip if benchmark world does not have eval_items file 
     if [ ! -f "$benchmark_data_dir/eval_items/${world_name}_eval_items.json" ]; then
         echo "Skipping world $world_name because it does not have ground truth annotations in eval_items dir."
@@ -100,7 +108,7 @@ do
     fi 
 
     # evaluate code of all configs in the world
-    eval_code_in_world $world_name $robot_name $verbose
+    eval_code_in_world $world_name $robot_name $verbose 2>&1 | tee -a "eval_code_text_${world_name}.log"
     
     # kill all descendant processes of this script
     kill_descendant_processes $$

@@ -58,7 +58,7 @@ def prepare_vars(env, defined_functions:List[str]=[], detached_mode=False, inclu
                 "get_object_center_position",
                 "get_object_pose",
                 "get_3d_bbox",
-                "get_obj_name_list",
+                "get_object_name_list",
                 "detect_objects",
                 "get_object_joint_info",
                 "parse_adaptive_shape_grasp_pose",
@@ -94,7 +94,7 @@ def prepare_vars(env, defined_functions:List[str]=[], detached_mode=False, inclu
             fixed_vars.update(
                 {
                     "objects": env.get_gazebo_model_names() # model names from gazebo
-                    # "objects": env.get_obj_name_list() # could be either from gazebo or perception
+                    # "objects": env.get_object_name_list() # could be either from gazebo or perception
                 }
             )
         except:

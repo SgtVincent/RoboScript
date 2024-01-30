@@ -34,46 +34,46 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         # for true grounding env, always use ground truth joint prediction model
         self.joint_prediction_model = JointPredictionGT()
         
-    def get_obj_name_list(self) -> List[str]:
+    def get_object_name_list(self) -> List[str]:
         """
         Get objects names from gazebo API.
         """
         return self.get_gazebo_model_names()
         
-    def get_object_center_position(self, obj_name, **kwargs):
+    def get_object_center_position(self, object_name, **kwargs):
         """
         Get the position of the object in the world frame. 
         This function uses ground truth model state from gazebo and ignore all other parameters.
         """
         # NOTE: get_gt_obj_pose does not work for articulated links, since the mesh might be offset from the link origin
-        # gt_pose = self.get_gt_obj_pose(obj_name)
+        # gt_pose = self.get_gt_obj_pose(object_name)
         # if gt_pose is None:
         #     return None
         # return np.array([gt_pose.position.x, gt_pose.position.y, gt_pose.position.z], dtype=float)
-        center, size = self.get_gt_bbox(obj_name)
+        center, size = self.get_gt_bbox(object_name)
         if center is None or size is None:
             return None
         return np.array(center, dtype=float)
         
-    def get_3d_bbox(self, obj_name, **kwargs)->np.array:
+    def get_3d_bbox(self, object_name, **kwargs)->np.array:
         """
         Get the 3D bounding box of the object in the world frame.
         This function uses ground truth model state from gazebo and ignore all other parameters.
         Return [x_min, y_min, z_min, x_max, y_max, z_max]
         """
-        center, size = self.get_gt_bbox(obj_name)
+        center, size = self.get_gt_bbox(object_name)
         if center is None or size is None:
             return None
         bbox = np.array([center[0] - size[0]/2, center[1] - size[1]/2, center[2] - size[2]/2, 
                             center[0] + size[0]/2, center[1] + size[1]/2, center[2] + size[2]/2])
         return bbox
     
-    def get_object_pose(self, obj_name, **kwargs):
+    def get_object_pose(self, object_name, **kwargs):
         """
         Get the pose of the object in the world frame. 
         This function uses ground truth model state from gazebo and ignore all other parameters.
         """
-        gt_pose = self.get_gt_obj_pose(obj_name)
+        gt_pose = self.get_gt_obj_pose(object_name)
         if gt_pose is None:
             return None
         return gt_pose
@@ -84,11 +84,11 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         pass
     
     
-    def get_object_joint_info(self, obj_name: str, position: np.ndarray, type="any")->Dict:
+    def get_object_joint_info(self, object_name: str, position: np.ndarray, type="any")->Dict:
         """
         Get the joint axis closest to the given axis.
         Args:
-            obj_name: name of the object
+            object_name: name of the object
             position: np.ndarray, select the joint closest to this position
             type: str, allowed type of the joint, "any", "revolute", "prismatic"
         Returns:
@@ -117,7 +117,7 @@ class TrueGroundingEnv(MoveitGazeboEnv):
         
         # get joints axes from joint prediction model
         data = {
-            "obj_name": obj_name,
+            "object_name": object_name,
             "joint_types": joint_types,
         }
         joints_axes = self.joint_prediction_model.predict(data)

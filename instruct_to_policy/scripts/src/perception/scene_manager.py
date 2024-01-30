@@ -92,6 +92,9 @@ class SceneManager:
             self.update_object_instances(data)
             # update 3D bounding boxes for each object by filtering the points inside the 2D bounding boxes and fitting 3D bounding boxes
             self.update_3d_bboxes(data)
+            # reorder object instances by spatial relationship
+            self.reorder_instance_ids()
+            
         
     def update_fusion(self, data: Dict)->None:
         '''
@@ -258,7 +261,34 @@ class SceneManager:
         # update self.object_names, self.category_to_object_name_dict
         self.object_names = object_name_list
         self.category_to_object_name_dict = categories_to_name
+    
+    def reorder_instance_ids(self, robot_base=[-0.5,0,0.8]):
+        '''
+        Reorder object instances id by the spatial relationship 
+        '''
+        # reorder all objects with 'drawer' and 'handle' in category name by height, from high to low, from 0 to n
+        for category in self.category_to_object_name_dict.keys():
+            if 'drawer' in category or 'handle' in category:
+                object_names = self.category_to_object_name_dict[category]
+                object_heights = []
+                for object_name in object_names:
+                    object_heights.append(self.bbox_3d_dict[object_name][5])
+                # sort by height from high to low
+                sorted_object_names = [x for _,x in sorted(zip(object_heights,object_names), reverse=True)]
+                
+                # update the content of self.bbox_3d_dict and self.object_2d_bbox_dict with new order
+                bbox_3d_dict_update = {}
+                object_2d_bbox_dict_update = {}
+                for i, object_name in enumerate(object_names):
+                    bbox_3d_dict_update[object_name] = self.bbox_3d_dict[sorted_object_names[i]]
+                    object_2d_bbox_dict_update[object_name] = self.object_2d_bbox_dict[sorted_object_names[i]]
+                    
+                self.bbox_3d_dict.update(bbox_3d_dict_update)
+                self.object_2d_bbox_dict.update(object_2d_bbox_dict_update)
         
+        # TODO: for other pick and place objects, reorder by distance to the robot base in x-y plane
+        
+    
     def get_object_names(self)->str:
         '''
         Get the list of object names in the scene.

@@ -28,7 +28,7 @@ if __name__=="__main__":
                         help="CoACD threshold (defaults to 0.02)")
 
     args = parser.parse_args()
-    args.use_coacd = True # ycb objects are poorly meshed, need to use coacd to get better physics simulation results
+    args.use_coacd = False # ycb objects are poorly meshed, need to use coacd to get better physics simulation results
     
     # Get the list of all downloaded mesh folders
     folder_names = os.listdir(args.model_folder)

@@ -819,21 +819,25 @@ def draw_bboxes_2d(rgb_image: np.ndarray, bboxes_2d: List[np.ndarray], color=(0,
 
 
 def draw_multiview_bbox_matches(rgb_image_list: List[np.ndarray], bboxes_2d_list: List[List[np.ndarray]], 
-                                matched_bboxes_idx_tuple_list: List[Tuple[np.ndarray]], thickness=5) -> np.ndarray:
+                                matched_bboxes_idx_tuple_list: List[Tuple[np.ndarray]], object_name_list: List[str]=[],
+                                thickness=5, text_thickness=1, text_scale=0.5) -> np.ndarray:
     """
-    Draw all 2D bounding box matches across different camera views.
+    Draw all 2D bounding box matches across different camera views with object names.
     Place all RGB images from top to bottom.
     For each tuple of matched bounding boxes across different views, draw them with the same color. Different tuples will have different colors.
-    Then draw lines between the matched bounding boxes between top-to-bottom images.
+    Then draw lines between the matched bounding boxes between top-to-bottom images and add object names near the bounding boxes.
     
     Args:
         rgb_image_list (List[np.ndarray]): List of RGB images.
-        bboxes_2d_list (List[List[np.ndarray]]): List of lists of 2D bounding boxes in the form of [min_x, min_y, max_x, max_y].
-        matched_bboxes_idx_tuple_list (List[Tuple[np.ndarray]]): List of tuples of matched 2D bounding box indices in the form of (view_1_bbox_idx, view_2_bbox_idx, ..., view_N_bbox_idx). If no bbox is matched, its index will be -1.
+        bboxes_2d_list (List[List[np.ndarray]]): List of lists of 2D bounding boxes.
+        matched_bboxes_idx_tuple_list (List[Tuple[np.ndarray]]): List of tuples of matched 2D bounding box indices.
+        object_name_list (List[str]): List of object names corresponding to each tuple in matched_bboxes_idx_tuple_list.
         thickness (int): Bounding box thickness.
+        text_thickness (int): Thickness of the text.
+        text_scale (float): Scale of the text.
         
     Returns:
-        np.ndarray: RGB image with bounding boxes.
+        np.ndarray: RGB image with bounding boxes and object names.
     """
     num_views = len(rgb_image_list)
     max_width = max([rgb_image.shape[1] for rgb_image in rgb_image_list])
@@ -843,36 +847,37 @@ def draw_multiview_bbox_matches(rgb_image_list: List[np.ndarray], bboxes_2d_list
     offset = 0
     # first draw all RGB images
     for view_idx, rgb_image in enumerate(rgb_image_list):
-        # place all RGB images from top to bottom on the canvas
-        canvas[offset:offset+rgb_image.shape[0], :rgb_image.shape[1]] = rgb_image
+        canvas[offset:offset + rgb_image.shape[0], :rgb_image.shape[1]] = rgb_image
         offset += rgb_image.shape[0]
         
     offset = 0
-    # draw matched bounding boxes and lines
+    # draw matched bounding boxes, lines, and object names
     for view_idx, rgb_image in enumerate(rgb_image_list):
         cmap = plt.cm.get_cmap('tab20')  # Choose a colormap
         for match_idx, matched_bboxes_idx_tuple in enumerate(matched_bboxes_idx_tuple_list):
-            # select color for this match
             color = (np.array(cmap(match_idx % 20)[:3]) * 255).astype(int).tolist()
             if matched_bboxes_idx_tuple[view_idx] != -1:
-                # draw bounding box
-                bbox_2d = bboxes_2d_list[view_idx][matched_bboxes_idx_tuple[view_idx]].copy()  # Make a copy of the bounding box before modifying it
+                bbox_2d = bboxes_2d_list[view_idx][matched_bboxes_idx_tuple[view_idx]].copy()
                 bbox_2d[1] += offset
                 bbox_2d[3] += offset
                 cv2.rectangle(canvas, (bbox_2d[0], bbox_2d[1]), (bbox_2d[2], bbox_2d[3]), color=color, thickness=thickness)
                 
-                # draw line between matched bounding boxes
-                if view_idx < num_views - 1 and matched_bboxes_idx_tuple[view_idx+1] != -1:
-                    next_bbox_2d = bboxes_2d_list[view_idx+1][matched_bboxes_idx_tuple[view_idx+1]].copy()  # Make a copy of the bounding box before modifying it
-                    next_bbox_2d[1] += offset + rgb_image.shape[0]  # Add offset for the next image
-                    next_bbox_2d[3] += offset + rgb_image.shape[0]  # Add offset for the next image
+                if len(object_name_list) > 0:
+                
+                    # add object name text
+                    text_position = (bbox_2d[0], bbox_2d[1] - 10)  # adjust as needed
+                    cv2.putText(canvas, object_name_list[match_idx], text_position, cv2.FONT_HERSHEY_SIMPLEX, 
+                                text_scale, color=color, thickness=text_thickness)
+                
+                if view_idx < num_views - 1 and matched_bboxes_idx_tuple[view_idx + 1] != -1:
+                    next_bbox_2d = bboxes_2d_list[view_idx + 1][matched_bboxes_idx_tuple[view_idx + 1]].copy()
+                    next_bbox_2d[1] += offset + rgb_image.shape[0]
+                    next_bbox_2d[3] += offset + rgb_image.shape[0]
 
-                    # change the start point of the line to the middle of the current bounding box
                     start_point = ((bbox_2d[0] + bbox_2d[2]) // 2, bbox_2d[3])
-                    # change the end point of the line to the middle of the next bounding box
                     end_point = ((next_bbox_2d[0] + next_bbox_2d[2]) // 2, next_bbox_2d[1])
-
                     cv2.line(canvas, start_point, end_point, color=color, thickness=thickness)
+                    
         offset += rgb_image.shape[0]
 
     return canvas

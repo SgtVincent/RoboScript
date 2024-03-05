@@ -91,7 +91,25 @@ if __name__ == '__main__':
     for world_name in args.worlds_list:
         # Get the list of JSON files
         json_files = []
+        # Read queries and eval_items from eval_items_file
+        eval_items_dir = args.eval_results_dir.replace('eval_results', 'eval_items')
+        eval_items_file = f'{eval_items_dir}/{world_name}_eval_items.json'
+        with open(eval_items_file, 'r') as f:
+            query_items_data: List[Dict] = json.load(f)
+        queries_dict = {i: query_eval_items['query'] for i, query_eval_items in enumerate(query_items_data)}
+        queries_label_list = [query_eval_items['query_label'] for query_eval_items in query_items_data]
+        num_eval_items_list = [len(query_eval_items['eval_items']) for query_eval_items in query_items_data]
         
+        # Create a multi-index for rows
+        row_index = pd.MultiIndex.from_product([args.configs_to_eval, metrics], names=['config_to_eval', 'metric'])
+        # Create a index for columns
+        col_index = pd.Index(queries_label_list, name='query_index')
+        # Create a DataFrame with the multi-index
+        world_df = pd.DataFrame(index=row_index, columns=col_index)
+        # fill the world_df with nan by default 
+        world_df = world_df.fillna(np.nan)
+        
+        # for each config_to_eval, get the json file with latest time stamp
         for config_to_eval in args.configs_to_eval:
             # for each config_to_eval, get the json file with latest time stamp
             json_file_list = glob.glob(f'{args.eval_results_dir}/{config_to_eval}/{world_name}_*.json')
@@ -104,35 +122,18 @@ if __name__ == '__main__':
             latest_json_file = json_file_list[-1]
             # json_file = f'{args.eval_results_dir}/{config_to_eval}/{world_name}.json'
             json_files.append(latest_json_file)
-
-            # Read queries and eval_items from eval_items_file
-            eval_items_dir = args.eval_results_dir.replace('eval_results', 'eval_items')
-            eval_items_file = f'{eval_items_dir}/{world_name}_eval_items.json'
-            with open(eval_items_file, 'r') as f:
-                query_items_data: List[Dict] = json.load(f)
-            queries_dict = {i: query_eval_items['query'] for i, query_eval_items in enumerate(query_items_data)}
-            queries_label_list = [query_eval_items['query_label'] for query_eval_items in query_items_data]
-            num_eval_items_list = [len(query_eval_items['eval_items']) for query_eval_items in query_items_data]
             
-            # Create a single sdf with multi-index 
-            # Each row is indexed by config_to_eval and metric name  
-            # Each column is indexed by query index ONLY
-
-            # Create a multi-index for rows
-            row_index = pd.MultiIndex.from_product([args.configs_to_eval, metrics], names=['config_to_eval', 'metric'])
-            # Create a index for columns
-            col_index = pd.Index(queries_label_list, name='query_index')
-            # Create a DataFrame with the multi-index
-            world_df = pd.DataFrame(index=row_index, columns=col_index)
-            # fill the world_df with nan by default 
-            world_df = world_df.fillna(np.nan)
-            
-            fill_df_from_json_files(args, world_df, json_files, queries_label_list)
+        fill_df_from_json_files(args, world_df, json_files, queries_label_list)
             
         df_list.append(world_df)
     
     # Save the DataFrame to a CSV file
     df = pd.concat(df_list, axis=1)
+    
+    # Sort the columns from simple_0, simple_1 to hard_0, ... hard_5 exactly
+    columns = ['simple_0', 'simple_1', 'hard_0', 'hard_1', 'hard_2', 'hard_3', 'hard_4', 'hard_5']
+    df = df[columns]
+    
     df.to_csv(args.output_csv)
     print(df)
     print(f"Saved results to {args.output_csv}")

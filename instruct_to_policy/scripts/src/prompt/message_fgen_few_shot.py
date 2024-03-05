@@ -17,8 +17,8 @@ from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
 
 # Import utility functions for perception
 from perception_utils import (
-    get_object_center_position,  # Returns the position of an object in the world frame. Returns: position: np.array [x,y,z]
-    get_object_pose,              # Returns the pose of an object in the world frame. Returns: pose: Pose
+    get_object_center_position,  # Returns the position of an object in the world frame. Args: object_name: str. Returns: position: np.array [x,y,z]
+    get_object_pose,              # Returns the pose of an object in the world frame. Args: object_name: str. Returns: pose: Pose
     get_3d_bbox,                 # Returns the 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array [x_min, y_min, z_min, x_max, y_max, z_max]
     get_object_name_list,           # Returns a list of names of objects present in the scene
     parse_adaptive_shape_grasp_pose, # Predict a grasp pose for object of adaptive shape with neural networks. Args: object_name: str, preferred_position: Optional(np.array) [x,y,z]. Returns: grasp_pose: Pose

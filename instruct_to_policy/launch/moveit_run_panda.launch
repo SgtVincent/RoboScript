@@ -31,8 +31,8 @@
   <arg name="enable_moveit_sensor_plugins" default="false" />
   
   <!-- if enable_moveit_sensor_plugins set to true, set sensors_config_file -->
-  <arg name="sensors_config_file" if="$(arg enable_moveit_sensor_plugins)" value="$(find panda_moveit_config)/config/sensors_triple_d435_pointcloud.yaml"/>
-  <!-- <arg name="sensors_config_file" if="$(arg enable_moveit_sensor_plugins)" value="$(find panda_moveit_config)/config/sensors_triple_d435_depthmap.yaml"/> -->
+  <!-- <arg name="sensors_config_file" if="$(arg enable_moveit_sensor_plugins)" value="$(find panda_moveit_config)/config/sensors_triple_d435_pointcloud.yaml"/> -->
+  <arg name="sensors_config_file" if="$(arg enable_moveit_sensor_plugins)" value="$(find panda_moveit_config)/config/sensors_triple_d435_depthmap.yaml"/>
   <arg name="sensors_config_file" unless="$(arg enable_moveit_sensor_plugins)" value="$(find panda_moveit_config)/config/sensors_empty.yaml"/>
 
   <!-- Use rviz config for MoveIt tutorial -->

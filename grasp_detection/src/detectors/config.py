@@ -56,7 +56,6 @@ class ConfigAnygrasp(ConfigBase):
         self.max_point_num = 100000 
         
         self.debug = False # whether to visualize the grasps 
-
-        
-        
-        
+        # Still buggy, DO not use
+        self.save_visualization = False # whether to save the visualization
+        self.save_visualization_dir = "/home/junting/Pictures/saved_anygrasp"

@@ -102,18 +102,18 @@ class Evaluator(object):
             # reset environment
             self.reset()
             exception = 0
-            # try:
-            #     self.logger.info("Running code for the {}th time".format(i+1))
-            #     exec_safe(code_str, gvars, lvars)
-            # except Exception as e:
-            #     # also record the traceback
-            #     exception = 1
-            #     self.logger.error(f'Error when executing code for {i}-th trial: {e}')
-            #     self.logger.error(traceback.format_exc())
-            #     continue
+            try:
+                self.logger.info("Running code for the {}th time".format(i+1))
+                exec_safe(code_str, gvars, lvars)
+            except Exception as e:
+                # also record the traceback
+                exception = 1
+                self.logger.error(f'Error when executing code for {i+1}-th trial: {e}')
+                self.logger.error(traceback.format_exc())
+                continue
             
-            self.logger.info("Running code for the {}th time".format(i+1))
-            exec_safe(code_str, gvars, lvars)
+            # self.logger.info("Running code for the {}th time".format(i+1))
+            # exec_safe(code_str, gvars, lvars)
             
             # wait 3 seconds for the world state to change
             time.sleep(3)
@@ -149,6 +149,10 @@ class Evaluator(object):
             eval_args = eval_item['args']
             result = int(eval_func(**eval_args))
             self.results[repeat_idx]['eval_items_results'].append(result)
+
+        # write evaluation result of this round to log file
+        self.logger.info(f"Results for the {repeat_idx + 1}-th trial: {self.results[repeat_idx]}")
+      
       
       
     def check_relation_on(self, object_name:str, receptacle_name:str, **kwargs):

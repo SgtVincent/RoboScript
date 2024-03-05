@@ -181,7 +181,7 @@ if __name__ == '__main__':
     
     # log file should be appended with the formatted current time 
     time_str = datetime.now().strftime("%Y%m%d-%H:%M")
-    log_file = rospy.get_param('~log_file', f'eval_pick_and_place.log')
+    log_file = rospy.get_param('~log_file', f'eval_pick_and_place_{time_str}.log')
     log_file_path = os.path.join(pkg_root, 'log', log_file)
     # make log directory if not exist
     os.makedirs(os.path.dirname(log_file_path), exist_ok=True)

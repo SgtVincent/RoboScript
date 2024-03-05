@@ -1,5 +1,6 @@
 import os 
 import sys
+from datetime import datetime
 import numpy as np 
 from typing import List, Tuple, Dict
 import open3d as o3d 
@@ -111,8 +112,35 @@ class DetectorAnygrasp(DetectorBase):
             # create world coordinate frame
             world_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.1, origin=min_bound)
             grippers[0].paint_uniform_color([1,0,0])
-            o3d.visualization.draw_geometries([*grippers, cloud, world_frame])
+            if self.debug:
+                # o3d.visualization.draw_geometries([*grippers, cloud, world_frame])
+                o3d.visualization.draw_geometries([grippers[0], cloud])
+        
+        # Do no use this snippet, bug still remains until Feb. 2024
+        if self.config.save_visualization:
+            # create the directory if not exist
+            if not os.path.exists(self.config.save_visualization_dir):
+                os.makedirs(self.config.save_visualization_dir)
+            formatted_timestr = datetime.now().strftime("%Y-%m-%d-%H:%M")
+            save_path = os.path.join(self.config.save_visualization_dir, f"{formatted_timestr}.png")
+            
+            vis = o3d.visualization.Visualizer()
+            vis.create_window()
+            
+            # add point cloud and grippers to the visualizer
+            cloud = cloud.transform(trans_mat)
+            grippers = gg.to_open3d_geometry_list()
+            grippers[0].paint_uniform_color([1,0,0])
+            for gripper in grippers:
+                vis.add_geometry(gripper)
+            vis.add_geometry(cloud)
+            
+            vis.run()
+            # vis.update_renderer()
+            vis.capture_screen_image(save_path)
+            vis.destroy_window()
             # o3d.visualization.draw_geometries([grippers[0], cloud, world_frame])
+            del vis 
         
         # compose response
         grasps_msg = []

@@ -123,7 +123,7 @@
         <collision name="collision">
           <geometry>
             <mesh>
-              <scale>1 1 1</scale>
+              <scale>0.7 0.7 0.7</scale>
               <uri>model://017_orange/google_16k/textured_coacd_0.02.obj</uri>
             </mesh>
           </geometry>
@@ -153,7 +153,7 @@
         <visual name="visual">
           <geometry>
             <mesh>
-              <scale>1 1 1</scale>
+              <scale>0.7 0.7 0.7</scale>
               <uri>model://017_orange/google_16k/textured.obj</uri>
             </mesh>
           </geometry>
@@ -168,7 +168,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.069084 -0.312195 0.815503 0.003887 0.011289 1.4e-05</pose>
+      <pose>0.06906 -0.02198 0.86753 2.67156 -0.273982 3.11429</pose>
     </model>
     <model name="toy_bus">
       <link name="link">
@@ -226,7 +226,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>0.082475 -0.061716 0.83037 0.199767 -1.55924 -1.03876</pose>
+      <pose>-0.135539 -0.364542 0.814753 0.008174 -0.002427 -0.983971</pose>
     </model>
   </world>
 </sdf>

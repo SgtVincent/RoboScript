@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-import os 
+import os
+from cv2 import repeat 
 import numpy as np
 import json
 import argparse
@@ -26,6 +27,7 @@ if __name__ == "__main__":
     world_name = rospy.get_param('~world_name', 'world_1_table_sort')
     code_dir = rospy.get_param('~code_dir', 'data/benchmark/generated_code')
     config_to_eval = rospy.get_param('~config_to_eval', 'text_few_shot_codellama')
+    repeat_times = rospy.get_param('~repeat_times', 10)
     
     # ablation study toggles
     use_gt_2d_detections = rospy.get_param('~use_gt_2d_detections', False)
@@ -38,21 +40,26 @@ if __name__ == "__main__":
     raw_file_path = os.path.join(pkg_root, code_dir, f'{config_to_eval}/raw_{world_name}.json')
     eval_items_file = os.path.join(pkg_root, f'data/benchmark/eval_items/{world_name}_eval_items.json')
     
+    use_gt_perception = cfg_tabletop['perception']['use_ground_truth']
+    
     # append ablation study toggles to config name
     output_config_to_eval = config_to_eval
-    if use_gt_2d_detections:
-        output_config_to_eval += '_gt_2d_det'
-        cfg_tabletop['grounding_model']['model_name'] = 'ground_truth'
-    if use_gt_3d_bboxes:
-        output_config_to_eval += '_gt_3d_bbox'
-        cfg_tabletop['grounding_model']['model_name'] = 'ground_truth'
-    if use_gt_planning_scene:
-        output_config_to_eval += '_gt_plan_scene'
-    
-    # overwrite the config in the config dict 
-    cfg_tabletop['perception']['use_gt_2d_detections'] = use_gt_2d_detections
-    cfg_tabletop['perception']['use_gt_3d_bboxes'] = use_gt_3d_bboxes
-    cfg_tabletop['perception']['use_gt_planning_scene'] = use_gt_planning_scene
+    # setting multimodal env config from ros params
+    if not use_gt_perception:
+        
+        if use_gt_2d_detections:
+            output_config_to_eval += '_gt_2d_det'
+            cfg_tabletop['grounding_model']['model_name'] = 'ground_truth'
+        if use_gt_3d_bboxes:
+            output_config_to_eval += '_gt_3d_bbox'
+            cfg_tabletop['grounding_model']['model_name'] = 'ground_truth'
+        if use_gt_planning_scene:
+            output_config_to_eval += '_gt_plan_scene'
+        
+        # overwrite the config in the config dict 
+        cfg_tabletop['perception']['use_gt_2d_detections'] = use_gt_2d_detections
+        cfg_tabletop['perception']['use_gt_3d_bboxes'] = use_gt_3d_bboxes
+        cfg_tabletop['perception']['use_gt_planning_scene'] = use_gt_planning_scene
     
     # log file should be appended with the formatted current time 
     time_str = datetime.now().strftime("%Y%m%d-%H:%M")
@@ -107,7 +114,7 @@ if __name__ == "__main__":
 
         evaluator = Evaluator(env, log_file=log_file_path ,verbose=True, render=False)
 
-        evaluator.run_eval(code_str, defined_functions, eval_items, query=query, repeat_times=5)
+        evaluator.run_eval(code_str, defined_functions, eval_items, query=query, repeat_times=repeat_times)
         results = evaluator.get_results()
         
         # append results to eval_result_list 

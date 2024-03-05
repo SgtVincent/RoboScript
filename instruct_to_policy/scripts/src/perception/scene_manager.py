@@ -366,13 +366,15 @@ class SceneManager:
         
     def visualize_3d_bboxes(self, show_masked_tsdf=False, show_full_tsdf=True):
         '''
-        Visualize the 3D bounding boxes and point cloud in the scene with open3d.
+        Visualize the 3D bounding boxes, object names, and point cloud in the scene with open3d.
         '''
         vis_list = []
-        # add 3D bounding boxes 
+
+        # Add 3D bounding boxes and object names
         for obj_name in self.object_names:
             bbox_3d = self.bbox_3d_dict[obj_name]
-            # create a axis-aligned bounding box 
+
+            # Create an axis-aligned bounding box
             bbox = o3d.geometry.AxisAlignedBoundingBox(
                 min_bound=np.array(bbox_3d[:3]),
                 max_bound=np.array(bbox_3d[3:])
@@ -385,7 +387,7 @@ class SceneManager:
         if show_full_tsdf:
             vis_list.append(self.scene_tsdf_full.get_mesh())
         
-        # visualize the scene
+        # Visualize the scene
         o3d.visualization.draw_geometries(vis_list)
         
         

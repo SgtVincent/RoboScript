@@ -15,11 +15,21 @@ function gen_code {
 }
 
 config_files=(
-    # "perception_few_shot_gpt_3.5.yaml"  
+    # "perception_few_shot_gpt_3.yaml"  
     # "perception_few_shot_gpt_4.yaml"
     # "perception_few_shot_codellama.yaml"
     # "perception_few_shot_llama2_chat.yaml"
     # "perception_few_shot_gemini.yaml"
+    # "text_few_shot_gpt_3.yaml"
+    # "text_few_shot_gpt_4.yaml"
+    # "text_few_shot_codellama.yaml"
+    # "text_few_shot_llama2_chat.yaml"
+    # "text_few_shot_gemini.yaml"
+    "text_gpt_3.yaml"
+    "text_gpt_4.yaml"
+    "text_codellama.yaml"
+    "text_llama2_chat.yaml"
+    "text_gemini.yaml"
 )
 
 task_query_files=(

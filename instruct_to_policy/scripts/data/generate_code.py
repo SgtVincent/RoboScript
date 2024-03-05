@@ -151,7 +151,7 @@ def parse_args():
     #                     help="Max tokens (defaults to 2048)")
     # parser.add_argument("--max-queries", type=int, default=200, 
     #                     help="Max number of task queries to generate (defaults to 200)")
-    parser.add_argument("--config_file", type=str, default="perception_few_shot_gpt_3.5.yaml")
+    parser.add_argument("--config_file", type=str, default="perception_few_shot_gpt_3.yaml")
     parser.add_argument("--task-queries", type=str, default="data/benchmark/task_queries/world_1_table_sort.txt",
                         help="Task queries file")
     parser.add_argument("--output-dir", type=str, default="data/benchmark/generated_code",

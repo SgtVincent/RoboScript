@@ -1,7 +1,7 @@
 [
     {
         "query_label": "hard_0",
-        "query": "# objects = [table, cabinet, apple, banana, white_ceramic_plate, white_and_pink_box, brown_box, brown_medication_bottle, bleach_cleanser, red_plastic_bowl, mustard_bottle] ;  place all fruits on the table into the white plate.",
+        "query": "# objects = [table, cabinet, apple, banana, white_ceramic_plate, white_and_pink_box, brown_box, brown_medication_bottle, bleach_cleanser, red_plastic_bowl, mustard_bottle] ; # place all fruits on the table into the white plate.",
         "eval_items":[
             {
                 "function": "check_relation_on",
@@ -21,68 +21,27 @@
     },
     {
         "query_label": "hard_1",
-        "query": "# objects = [table, cabinet, apple, banana, white_ceramic_plate, white_and_pink_box, brown_box, brown_medication_bottle, bleach_cleanser, red_plastic_bowl, mustard_bottle] ;  place all standing bottles on the table into the white plate.",
-        "eval_items":[
-            {
-                "function": "check_relation_on",
-                "args": {
-                    "object_name": "bleach_cleanser",
-                    "receptacle_name": "white_ceramic_plate"
-                }
-            },
-            {
-                "function": "check_relation_on",
-                "args": {
-                    "object_name": "brown_medication_bottle",
-                    "receptacle_name": "white_ceramic_plate"
-                }
-            },
-            {
-                "function": "check_relation_on",
-                "args": {
-                    "object_name": "mustard_bottle",
-                    "receptacle_name": "white_ceramic_plate",
-                    "flag_not": 1
-                }
-            }
-        ]
-    },
-    {
-        "query_label": "hard_2",
-        "query": "# objects = [table, cabinet, apple, banana, white_ceramic_plate, white_and_pink_box, brown_box, brown_medication_bottle, bleach_cleanser, red_plastic_bowl, mustard_bottle, cabinet.drawer0, cabinet.drawer1, cabinet.drawer2, cabinet.handle_0, cabinet.handle_1, cabinet.handle_2] ;  open the second top cabinet drawer and place all boxes into it .",
+        "query": "# objects = [table, cabinet, apple, banana, white_ceramic_plate, white_and_pink_box, brown_box, brown_medication_bottle, bleach_cleanser, red_plastic_bowl, mustard_bottle, cabinet.drawer_0, cabinet.drawer_1, cabinet.drawer_2, cabinet.handle_0, cabinet.handle_1, cabinet.handle_2] ; # open the second top cabinet drawer and place all boxes into it .",
         "eval_items":[
             {
                 "function": "check_relation_in",
                 "args": {
                     "object_name": "white_and_pink_box",
-                    "receptacle_name": "cabinet.drawer1"
+                    "receptacle_name": "cabinet.drawer_1"
                 }
             },
             {
                 "function": "check_relation_in",
                 "args": {
                     "object_name": "brown_box",
-                    "receptacle_name": "cabinet.drawer1"
+                    "receptacle_name": "cabinet.drawer_1"
                 }
             }
         ]
     },
     {
-        "query_label": "hard_3",
-        "query": "# objects = [table, cabinet, apple, banana, white_ceramic_plate, white_and_pink_box, brown_box, brown_medication_bottle, bleach_cleanser, red_plastic_bowl, mustard_bottle] ;  stand up lying bottles and mugs on the table.",
-        "eval_items":[
-            {
-                "function": "check_object_pose",
-                "args": {
-                    "object_name": "mustard_bottle",
-                    "pose_description": "standing"
-                }
-            }
-        ]
-    },
-    {
-        "query_label": "hard_4",
-        "query": "# objects = [table, cabinet, apple, banana, white_ceramic_plate, white_and_pink_box, brown_box, brown_medication_bottle, bleach_cleanser, red_plastic_bowl, mustard_bottle] ;  exchange the position of the apple and the banana on the table.",
+        "query_label": "hard_2",
+        "query": "# objects = [table, cabinet, apple, banana, white_ceramic_plate, white_and_pink_box, brown_box, brown_medication_bottle, bleach_cleanser, red_plastic_bowl, mustard_bottle] ; # exchange the position of the apple and the banana on the table.",
         "eval_items":[
             {
                 "function": "check_object_position",

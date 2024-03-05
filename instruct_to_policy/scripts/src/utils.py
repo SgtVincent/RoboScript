@@ -26,7 +26,7 @@ def merge_dicts(dicts):
         for k, v in d.items()
     }
     
-def prepare_vars(env, defined_functions:List[str]=[], detached_mode=False):
+def prepare_vars(env, defined_functions:List[str]=[], detached_mode=False, include_objects=True):
     """Prepare variables including APIs and objects for LMPs """
     fixed_vars = {
         "os": os,
@@ -58,7 +58,7 @@ def prepare_vars(env, defined_functions:List[str]=[], detached_mode=False):
                 "get_object_center_position",
                 "get_object_pose",
                 "get_3d_bbox",
-                "get_obj_name_list",
+                "get_object_name_list",
                 "detect_objects",
                 "get_object_joint_info",
                 "parse_adaptive_shape_grasp_pose",
@@ -88,6 +88,22 @@ def prepare_vars(env, defined_functions:List[str]=[], detached_mode=False):
         }
     )
     
+    # load objects to variables if enabled
+    if include_objects:
+        try: 
+            fixed_vars.update(
+                {
+                    "objects": env.get_gazebo_model_names() # model names from gazebo
+                    # "objects": env.get_object_name_list() # could be either from gazebo or perception
+                }
+            )
+        except:
+            fixed_vars.update(
+                {
+                    "objects": []
+                }
+            )
+    
     # load defined functions into fixed_vars by exec in reverse order
     variable_vars = {}
     for func in defined_functions[::-1]:
@@ -97,11 +113,24 @@ def prepare_vars(env, defined_functions:List[str]=[], detached_mode=False):
     return fixed_vars, {}
 
 
-def exec_safe(code_str, gvars=None, lvars=None):
+def exec_safe(code_str, gvars=None, lvars=None, slack_mode=True):
     # Due to few shot and zero shot prompt, code might generate import, slack this contraint
-    # banned_phrases = ['import', '__']
+    # banned_phrases = ['import']
     # for phrase in banned_phrases:
     #     assert phrase not in code_str
+  
+  
+    # Under slack mode, some  
+    if slack_mode:
+        # 1. Remove all lines starting with 'import <package> ...' and 'from <package> import ...' 
+        code_str = '\n'.join([
+            line 
+            for line in code_str.split('\n')
+            if not (line.startswith('import') or line.startswith('from'))
+        ])
+        
+        # 2. Replace 'exit()' with 'return'
+        code_str = code_str.replace('exit()', 'return') 
   
     if gvars is None:
         gvars = {}
@@ -114,8 +143,6 @@ def exec_safe(code_str, gvars=None, lvars=None):
     ])
     # print(code_str)
     exec(code_str, custom_gvars, lvars)
-
-
 
 class FunctionParser(ast.NodeTransformer):
 

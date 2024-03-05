@@ -1,5 +1,19 @@
 base_config: base.yaml
 
+perception:
+  use_ground_truth: false
+  use_gt_2d_detections: false
+  use_gt_3d_bboxes: false
+  use_gt_planning_scene: false
+  scene_manager:
+    tsdf_voxel_size: 0.005
+    tsdf_color_type: rgb
+    tsdf_trunc_ratio: 4.0
+    tsdf_max_depth: 3.0
+    bbox_min_match_th: 0.1
+    bbox_drop_base_margin: true
+    bbox_base_margin: 0.01
+
 grounding_model:
   model_name: glip
   model_args: {}

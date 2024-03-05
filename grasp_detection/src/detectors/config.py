@@ -12,7 +12,7 @@ class ConfigBase:
         # grasp detection region of interest (ROI)
         self.resolution = 40
         self.voxel_grid_size = 0.3
-        self.voxel_size = 0.005
+        self.voxel_size = 0.003
         # maximum number of grasps to return
         self.max_grasp_num = 10
         self.volume_type = "scalable"
@@ -21,7 +21,10 @@ class ConfigBase:
         # self.max_gripper_width = 0.08 # franka hand 
         self.max_gripper_width = 0.1 # robotiq 85
         # environment-specific parameters
-        self.table_height = 1.02 # height of the table plane
+        self.table_height = 0.82 # height of the table plane
+
+        # random seed 
+        self.random_seed = 42
 
 
 class ConfigGIGA(ConfigBase):
@@ -46,8 +49,13 @@ class ConfigAnygrasp(ConfigBase):
         self.filter_bbox_3d_margin = 0.15 # in meter
         self.filter_table_plane = False # whether to filter table plane
         
+        # safety config: 
+        # bound size limit for the input point cloud
+        self.bound_size_limit = np.array([0.6, 0.6, 0.6])  
+        # max number of points in the input point cloud
+        self.max_point_num = 100000 
+        
         self.debug = False # whether to visualize the grasps 
-
-        
-        
-        
+        # Still buggy, DO not use
+        self.save_visualization = False # whether to save the visualization
+        self.save_visualization_dir = "/home/junting/Pictures/saved_anygrasp"

@@ -17,10 +17,10 @@ from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
 
 # Import utility functions for perception
 from perception_utils import (
-    get_object_center_position,  # Returns the position of an object in the world frame. Returns: position: np.array [x,y,z]
-    get_object_pose,              # Returns the pose of an object in the world frame. Returns: pose: Pose
+    get_object_center_position,  # Returns the position of an object in the world frame. Args: object_name: str. Returns: position: np.array [x,y,z]
+    get_object_pose,              # Returns the pose of an object in the world frame. Args: object_name: str. Returns: pose: Pose
     get_3d_bbox,                 # Returns the 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array [x_min, y_min, z_min, x_max, y_max, z_max]
-    get_obj_name_list,           # Returns a list of names of objects present in the scene
+    get_object_name_list,           # Returns a list of names of objects present in the scene
     parse_adaptive_shape_grasp_pose, # Predict a grasp pose for object of adaptive shape with neural networks. Args: object_name: str, preferred_position: Optional(np.array) [x,y,z]. Returns: grasp_pose: Pose
     parse_horizontal_grasp_pose, # Generate a grasp pose from horizontal approach direction. Specially, this function is suitable for grasping parts of objects fixed to vertical surface. Args: object_name: str; approach_direction: Optional(np.ndarray), [x,y,z]. Returns: grasp_pose: Pose
     parse_place_pose,            # Predict a place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: Optional(str), position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
@@ -38,8 +38,9 @@ from motion_utils import (
     grasp,           # Executes a grasp motion at the grasp_pose. Args: grasp_pose: Pose
 )
 '''
-The robot working space on table top is in range [-0.5, 0.2] in x-axis and [-0.5, 0.5] in y-axis. The height of the table top is 1.05.
+The robot working space on table top is in range [-0.5, 0.2] in x-axis and [-0.5, 0.5] in y-axis. The height of the table top is 0.85.
 Your generated content should only contain a single Python function and comments starting with '#'. No questions or common texts.
+You should try your best to use perception and motion planning APIs to define the function.
 """
 },
 {# pick_and_place(pick_pose, place_pose)
@@ -117,7 +118,7 @@ def generate_arc_path_around_joint(current_pose, joint_axis, joint_position, n, 
 },
 {# move_in_direction(axis, distance)
 "role":"user",
-"content": "# define function: move_in_direction(axis=move_direction, distance=0.2)"
+"content": "# define function: move_in_direction(axis=move_direction, distance=0.25)"
 },
 {
 "role": "assistant",
@@ -155,7 +156,7 @@ def check_object_on_receptacle(object_name, receptacle_name):
 "content": '''
 def get_objects_in_receptacle(receptacle_name):
     # Use the bbox to check if the object is inside the receptacle
-    objects = get_obj_name_list()
+    objects = get_object_name_list()
     objects_in_receptacle = []
     
     # get the bbox of the receptacle
@@ -164,7 +165,10 @@ def get_objects_in_receptacle(receptacle_name):
         if obj != receptacle_name:
             # check if the object is inside the receptacle
             obj_center = get_object_center_position(obj)
-            if bbox_receptacle[0] < obj_center[0] < bbox_receptacle[3] and bbox_receptacle[1] < obj_center[1] < bbox_receptacle[4] and bbox_receptacle[2] < obj_center[2] < bbox_receptacle[5]:
+            if_obj_in_receptacle_x = bbox_receptacle[0] < obj_center[0] < bbox_receptacle[3]
+            if_obj_in_receptacle_y = bbox_receptacle[1] < obj_center[1] < bbox_receptacle[4]
+            if_obj_in_receptacle_z = bbox_receptacle[2] < obj_center[2] < bbox_receptacle[5]
+            if if_obj_in_receptacle_x and if_obj_in_receptacle_y and if_obj_in_receptacle_z:
                 objects_in_receptacle.append(obj)
     
     return objects_in_receptacle
@@ -186,29 +190,5 @@ def check_same_orientation(object_name_1, object_name_2):
     return np.allclose(orientation_1, orientation_2)
 '''
 },
-{# check_is_lying(object_name)
-"role": "user",
-"content": "# define function: check_is_lying(object_name='bottle')"
-},
-{
-"role": "assistant",
-"content": '''
-def is_lying(object_name):
-    # Judge if the object is lying by its orientation:
-    # Calculate the angle between the object's z-axis and the table normal
-    angle_threshold = np.radians(60) # 60 degree
-    table_normal = np.array([0, 0, 1])
-    
-    # Compute the angle between the object's z-axis and the table normal
-    object_gt_pose = get_object_pose(object_name)
-    object_rotation_matrix = R.from_quat([object_gt_pose.orientation.x, object_gt_pose.orientation.y, object_gt_pose.orientation.z, object_gt_pose.orientation.w]).as_matrix()
-    z_axis = np.array([0, 0, 1])
-    object_z_axis = object_rotation_matrix @ z_axis
-    angle = np.arccos(np.clip(np.dot(object_z_axis, table_normal), -1, 1))
-
-    # If the angle is larger than the threshold, the object is lying
-    return angle > angle_threshold
-'''
-}
 ]
 

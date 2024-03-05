@@ -76,7 +76,7 @@ We generate random tasks queries for each generated world by sending chat comple
 Example task query:
 
 ```
-objects = [table, cabinet, cabinet.drawer0, cabinet.drawer1, cabinet.drawer2, cabinet.drawer3, panda_robot, yellow_blue_bowl, turquoise_plant_saucer, white_box, bowl, white_and_brown_box] ; # open cabinet.drawer0 and retrieve the bowl from it
+objects = [table, cabinet, cabinet.drawer_0, cabinet.drawer_1, cabinet.drawer_2, cabinet.drawer_3, panda_robot, yellow_blue_bowl, turquoise_plant_saucer, white_box, bowl, white_and_brown_box] ; # open cabinet.drawer_0 and retrieve the bowl from it
 ```
 
 You can run the bash script [run_queries_gen.sh](./scripts/bash/run_queries_gen.sh) to generate task queries for all the generated worlds. The script will generate a task query file `table_cabinet_<i>.txt` for each world under the [task_queries](./data/task_queries) folder.
@@ -106,13 +106,13 @@ def bbox_contains_pt(obj, bbox_name):
 # Step 3: Print the found objects
 
 # Open the cabinet drawer
-cabinet_drawer2_pose = parse_pose(object='cabinet.drawer2', action='open')
+cabinet_drawer2_pose = parse_pose(object='cabinet.drawer_2', action='open')
 move_to_pose(cabinet_drawer2_pose, move_group)
 
 # Search for objects inside the cabinet drawer
 found_objects = []
 for obj in objects:
-    if bbox_contains_pt(obj, 'cabinet.drawer2'):
+    if bbox_contains_pt(obj, 'cabinet.drawer_2'):
         found_objects.append(obj)
 ```
 

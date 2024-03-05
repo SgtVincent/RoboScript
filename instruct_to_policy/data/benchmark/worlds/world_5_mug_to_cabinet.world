@@ -43,14 +43,14 @@
     <include>
       <uri>model://cabinet_1076</uri>
       <name>cabinet</name>
-      <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
+      <pose>-1.45 -0.2 0.693 0 0 -3.1416</pose>
       <scale>1 1 1</scale>
       <static>0</static>
     </include>
     <model name="white_and_yellow_mug">
       <link name="link">
-        <inertial>
-          <pose>-0.007717 -0.002383 0.058497 -1.45337 -0.001127 1.7736</pose>
+        <inertial>       
+          <pose>-0.007717 -0.002383 0.058497 -1.45337 -0.001127 1.7736</pose> 
           <mass>0.1</mass>
           <inertia>
             <ixx>0.000166994</ixx>
@@ -78,7 +78,7 @@
                 <coefficient>10</coefficient>
                 <use_patch_radius>1</use_patch_radius>
                 <patch_radius>0.1</patch_radius>
-                <ode/>
+<ode/>
               </torsional>
             </friction>
             <contact>
@@ -89,7 +89,7 @@
             </contact>
             <bounce/>
           </surface>
-          <max_contacts>10</max_contacts>
+<max_contacts>10</max_contacts>
         </collision>
         <visual name="visual">
           <geometry>
@@ -98,12 +98,12 @@
               <uri>model://Room_Essentials_Mug_White_Yellow/meshes/model.obj</uri>
             </mesh>
           </geometry>
-        </visual>
-        <self_collide>0</self_collide>
+                  </visual>
+<self_collide>0</self_collide>
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.145605 -0.094768 1.01454 -0.004081 0.011701 2.12957</pose>
+      <pose>-0.145605 -0.094768 0.81454 -0.004081 0.011701 2.12957</pose>
     </model>
   </world>
 </sdf>

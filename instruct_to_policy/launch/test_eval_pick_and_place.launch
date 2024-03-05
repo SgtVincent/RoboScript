@@ -1,0 +1,6 @@
+<launch>
+
+    <!-- <node name="eval_model_pick_and_place" pkg="instruct_to_policy" type="eval_model_pick_and_place.py" output="screen"/> -->
+    <node name="eval_drawer_pick_and_place" pkg="instruct_to_policy" type="eval_drawer_pick_and_place.py" output="screen"/>
+
+</launch>

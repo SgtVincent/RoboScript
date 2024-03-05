@@ -77,7 +77,7 @@ mamba deactivate
 mamba activate ros_env
 
 # Install ros-noetic common dev tools and pin gcc/g++ version
-mamba install gcc=9.5.0 gxx=9.5.0 compilers cxx-compiler cmake pkg-config make ninja colcon-common-extensions catkin_tools boost-cpp ros-noetic-ros-numpy
+mamba install gcc=9.5.0 gxx=9.5.0 compilers cxx-compiler cmake pkg-config make ninja colcon-common-extensions catkin_tools boost-cpp ros-noetic-ros-numpy ros-noetic-rviz-tools
 
 # Install ros gazebo packages
 mamba install ros-noetic-gazebo-ros-pkgs

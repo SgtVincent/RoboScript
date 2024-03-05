@@ -55,10 +55,10 @@
       <plugin filename="libgazebo_ros_bbox_3d_plugin.so" name="gazebo_ros_bbox_3d_plugin">
         <updatePeriod>1.0</updatePeriod>
         <links_to_publish>
-          <link>cabinet::drawer0</link>
-          <link>cabinet::drawer1</link>
-          <link>cabinet::drawer2</link>
-          <link>cabinet::drawer3</link>
+          <link>cabinet::drawer_0</link>
+          <link>cabinet::drawer_1</link>
+          <link>cabinet::drawer_2</link>
+          <link>cabinet::drawer_3</link>
           <link>cabinet::handle_0</link>
           <link>cabinet::handle_1</link>
           <link>cabinet::handle_2</link>

@@ -32,9 +32,18 @@ class GraspDetectionRemote(GraspDetectionBase):
         
     def load_model(self):
         # waiting for DetectGrasp service to be ready 
-        rospy.wait_for_service(self.service_name)
+        n_trials = 3
+        while n_trials > 0:
+            try:
+                rospy.wait_for_service(self.service_name, timeout=5)
+                break
+            except rospy.ROSException:
+                n_trials -= 1
+                rospy.logwarn(f"Grasp detection: remote model service not ready, {n_trials} trials left")
+        if n_trials <= 0:
+            raise rospy.ROSException(f"Grasp detection: remote model service not ready after {n_trials} trials")
         rospy.loginfo("Grasp detection: remote model service ready")
-        
+    
     def predict(self, data: Dict)-> List[Grasp]:
 
         perception_msg = data_to_percetion_msg(data, self.cv_bridge)

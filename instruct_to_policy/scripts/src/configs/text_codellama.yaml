@@ -1,0 +1,22 @@
+base_config: text_base.yaml
+
+grounding_model: {} # not used in text-only setting
+
+grasp_detection:
+  model_name: anygrasp
+  model_params:
+    service_name: /detect_grasps
+  visualize: false
+  verbose: false
+
+lmps:
+  tabletop_ui:
+    class: LMPPPLX
+    model: codellama-34b-instruct
+    messages: message_tabletop_text
+    query_prefix: '\nPlease pay attention to the format of examples in chat history and imitate it. Do NOT generate common texts. ONLY generate comments or detailed planning starting with # and python code \n#.'
+
+  fgen:
+    class: LMPFGenPPLX
+    model: codellama-34b-instruct
+    messages: message_fgen

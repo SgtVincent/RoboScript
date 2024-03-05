@@ -3,12 +3,13 @@ from typing import List, Tuple, Dict
 from numpy.typing import ArrayLike
 import numpy as np 
 import open3d as o3d
-
+import cv2
 from .utils import (
     CameraIntrinsic, 
     Transform, 
     open3d_frustum_filter,
     match_bboxes_points_overlapping,
+    draw_multiview_bbox_matches
 )
 from .scalable_tsdf import ScalableTSDFVolume
 
@@ -39,6 +40,11 @@ class SceneManager:
         self.object_2d_bbox_dict: Dict[str, List] = {}
         self.bbox_3d_dict: Dict[str, List] = {}
         
+        # data for 2d bbox matching debug visualization
+        self._last_rgb_image_list = []
+        self._last_bbox_2d_list = []
+        self._last_bboxes_match_tuple_list = []
+        
         # full tsdf volume
         self.scene_tsdf_full= ScalableTSDFVolume( 
             voxel_size=self.tsdf_voxel_size, 
@@ -54,7 +60,7 @@ class SceneManager:
         )
         
         
-    def update(self, data: Dict)->None:
+    def update(self, data: Dict, **kwargs)->None:
         '''
         Update the scene manager with new sensor data and new 2D detections. 
         Args:
@@ -74,12 +80,21 @@ class SceneManager:
                 ],
             }  
         '''
+        use_gt_3d_bboxes = kwargs.get('use_gt_3d_bboxes', False)
+        
         # update 3D fusion by TSDF integration
         self.update_fusion(data)
-        # update object instances by matching 2D bounding boxes and unifying matched bboxes names 
-        self.update_object_instances(data)
-        # update 3D bounding boxes for each object by filtering the points inside the 2D bounding boxes and fitting 3D bounding boxes
-        self.update_3d_bboxes(data)
+        if use_gt_3d_bboxes:
+            # use ground truth 3D bounding boxes
+            self.update_3d_bboxes(data, use_gt_3d_bboxes=True)
+        else:
+            # update object instances by matching 2D bounding boxes and unifying matched bboxes names 
+            self.update_object_instances(data)
+            # update 3D bounding boxes for each object by filtering the points inside the 2D bounding boxes and fitting 3D bounding boxes
+            self.update_3d_bboxes(data)
+            # reorder object instances by spatial relationship
+            self.reorder_instance_ids()
+            
         
     def update_fusion(self, data: Dict)->None:
         '''
@@ -112,7 +127,8 @@ class SceneManager:
             # calculate the mask image with all bounding boxes inner regions set to 1
             mask_img = np.zeros_like(depth)
             for bbox in bbox_2d_list:
-                mask_img[bbox[1]:bbox[3], bbox[0]:bbox[2]] = 1
+                if len(bbox) > 0:
+                    mask_img[bbox[1]:bbox[3], bbox[0]:bbox[2]] = 1
                           
                           
             self.scene_tsdf_full.integrate(depth, intrinsic, extrinsic, rgb_img=rgb)
@@ -149,6 +165,10 @@ class SceneManager:
             downsample_voxel_size=self.bbox_match_downsample_voxel_size,
             min_match_th=self.bbox_min_match_th,
         )
+        # record debug data
+        self._last_rgb_image_list = data['rgb_image_list']
+        self._last_bbox_2d_list = bboxes_2d_list
+        self._last_bboxes_match_tuple_list = bboxes_match_tuple_list
         
         # unify the matched bounding box names of a same object instance under different camera views,
         # and update self.object_names, self.category_to_object_name_dict
@@ -165,29 +185,49 @@ class SceneManager:
                 else:
                     self.object_2d_bbox_dict[bbox_name].append([])
                 
-    def update_3d_bboxes(self, data: Dict)->None:
+    def update_3d_bboxes(self, data: Dict, use_gt_3d_bboxes=False)->None:
         '''
         Update the 3D bounding boxes for each object.
         It filters the points inside the 2D bounding boxes and then fit the 3D bounding boxes.
         TODO: Can we have some clustering or segmentation methods to get tighter 3D bounding boxes?
         '''
         pcl = self.scene_tsdf_masked.get_cloud()
-        for object_name, bbox_2d_list in self.object_2d_bbox_dict.items():
-            # get point clouds of the object by filtering the points inside the 2D bounding boxes
-            obj_pcl, _ = open3d_frustum_filter(
-                pcl=pcl,
-                bbox_2d_list=bbox_2d_list,
-                camera_intrinsic_list=data['depth_camera_intrinsic_list'],
-                camera_extrinsic_list=data['depth_camera_extrinsic_list']
-            )
+        
+        if use_gt_3d_bboxes:
+            # update self.object_names, self.category_to_object_name_dict
+            self.object_names = data['bbox_3d_dict'].keys()
+            # FIXME: consider the case there are multiple objects with the same category
+            self.category_to_object_name_dict =  {
+                object_name.split('_')[0]: [object_name] for object_name in self.object_names
+            }
             
-            # fit 3D bounding box and convert it to [x_min, y_min, z_min, x_max, y_max, z_max] format
-            aabb = obj_pcl.get_axis_aligned_bounding_box()
-            
-            self.bbox_3d_dict[object_name] = [
-                aabb.min_bound[0], aabb.min_bound[1], aabb.min_bound[2] + self.bbox_base_margin,
-                aabb.max_bound[0], aabb.max_bound[1], aabb.max_bound[2],
-            ]
+            # use ground truth 3D bounding boxes
+            for object_name in self.object_names:
+                bbox_center, bbox_size = data['bbox_3d_dict'][object_name]
+                self.bbox_3d_dict[object_name] = [
+                    bbox_center[0] - bbox_size[0] / 2, bbox_center[1] - bbox_size[1] / 2, bbox_center[2] - bbox_size[2] / 2,
+                    bbox_center[0] + bbox_size[0] / 2, bbox_center[1] + bbox_size[1] / 2, bbox_center[2] + bbox_size[2] / 2,
+                ]
+            # FIXME: Should we also modify the bbox by filtering the points inside the 2D bounding boxes?
+        
+        else:
+            # get 3D bounding boxes for each object by filtering the points inside the 2D bounding boxes and get its aabb
+            for object_name, bbox_2d_list in self.object_2d_bbox_dict.items():
+                # get point clouds of the object by filtering the points inside the 2D bounding boxes
+                obj_pcl, _ = open3d_frustum_filter(
+                    pcl=pcl,
+                    bbox_2d_list=bbox_2d_list,
+                    camera_intrinsic_list=data['depth_camera_intrinsic_list'],
+                    camera_extrinsic_list=data['depth_camera_extrinsic_list']
+                )
+                
+                # fit 3D bounding box and convert it to [x_min, y_min, z_min, x_max, y_max, z_max] format
+                aabb = obj_pcl.get_axis_aligned_bounding_box()
+                
+                self.bbox_3d_dict[object_name] = [
+                    aabb.min_bound[0], aabb.min_bound[1], aabb.min_bound[2] + self.bbox_base_margin,
+                    aabb.max_bound[0], aabb.max_bound[1], aabb.max_bound[2],
+                ]
 
     def unify_bbox_names(self, bboxes_match_tuple_list: List[Tuple[int]], bboxes_labels_list: List[List[str]])-> List[Tuple[str, str]]:
         '''
@@ -221,7 +261,34 @@ class SceneManager:
         # update self.object_names, self.category_to_object_name_dict
         self.object_names = object_name_list
         self.category_to_object_name_dict = categories_to_name
+    
+    def reorder_instance_ids(self, robot_base=[-0.5,0,0.8]):
+        '''
+        Reorder object instances id by the spatial relationship 
+        '''
+        # reorder all objects with 'drawer' and 'handle' in category name by height, from high to low, from 0 to n
+        for category in self.category_to_object_name_dict.keys():
+            if 'drawer' in category or 'handle' in category:
+                object_names = self.category_to_object_name_dict[category]
+                object_heights = []
+                for object_name in object_names:
+                    object_heights.append(self.bbox_3d_dict[object_name][5])
+                # sort by height from high to low
+                sorted_object_names = [x for _,x in sorted(zip(object_heights,object_names), reverse=True)]
+                
+                # update the content of self.bbox_3d_dict and self.object_2d_bbox_dict with new order
+                bbox_3d_dict_update = {}
+                object_2d_bbox_dict_update = {}
+                for i, object_name in enumerate(object_names):
+                    bbox_3d_dict_update[object_name] = self.bbox_3d_dict[sorted_object_names[i]]
+                    object_2d_bbox_dict_update[object_name] = self.object_2d_bbox_dict[sorted_object_names[i]]
+                    
+                self.bbox_3d_dict.update(bbox_3d_dict_update)
+                self.object_2d_bbox_dict.update(object_2d_bbox_dict_update)
         
+        # TODO: for other pick and place objects, reorder by distance to the robot base in x-y plane
+        
+    
     def get_object_names(self)->str:
         '''
         Get the list of object names in the scene.
@@ -291,7 +358,7 @@ class SceneManager:
         '''
         return self.object_2d_bbox_dict[object_name]
             
-    def get_3d_bbox(self, object_name)->ArrayLike:
+    def get_3d_bbox(self, object_name)->np.ndarray:
         '''
         Get the 3D bounding box of the object in the world frame.
         '''
@@ -299,13 +366,15 @@ class SceneManager:
         
     def visualize_3d_bboxes(self, show_masked_tsdf=False, show_full_tsdf=True):
         '''
-        Visualize the 3D bounding boxes and point cloud in the scene with open3d.
+        Visualize the 3D bounding boxes, object names, and point cloud in the scene with open3d.
         '''
         vis_list = []
-        # add 3D bounding boxes 
+
+        # Add 3D bounding boxes and object names
         for obj_name in self.object_names:
             bbox_3d = self.bbox_3d_dict[obj_name]
-            # create a axis-aligned bounding box 
+
+            # Create an axis-aligned bounding box
             bbox = o3d.geometry.AxisAlignedBoundingBox(
                 min_bound=np.array(bbox_3d[:3]),
                 max_bound=np.array(bbox_3d[3:])
@@ -318,8 +387,28 @@ class SceneManager:
         if show_full_tsdf:
             vis_list.append(self.scene_tsdf_full.get_mesh())
         
-        # visualize the scene
+        # Visualize the scene
         o3d.visualization.draw_geometries(vis_list)
         
         
         
+    def visualize_2d_bboxes_matching(self, save_path=""):
+        '''
+        Visualize the 2D bounding boxes matching results in rgb images
+        '''
+        # use draw_multiview_bbox_matches
+        vis_canvas = draw_multiview_bbox_matches(
+            rgb_image_list=self._last_rgb_image_list,
+            bboxes_2d_list=self._last_bbox_2d_list,
+            matched_bboxes_idx_tuple_list=self._last_bboxes_match_tuple_list,
+        )
+        
+        # convert to BGR for cv2
+        vis_canvas = cv2.cvtColor(vis_canvas, cv2.COLOR_BGR2RGB)
+        
+        if len(save_path) > 0:
+            cv2.imwrite(save_path, vis_canvas)
+        else:
+            # visualize the result
+            cv2.imshow("vis_canvas", vis_canvas)
+            cv2.waitKey(0)

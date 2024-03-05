@@ -1,9 +1,8 @@
-<?xml version='1.0'?>
-<sdf version='1.7'>
-  <model name='cabinet_1076'>
-    <link name='base_link'>
+<sdf version="1.7">
+  <model name="cabinet_1076">
+    <link name="base_link">
       <inertial>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <mass>100</mass>
         <inertia>
           <ixx>27.945378620841662</ixx>
@@ -17,352 +16,352 @@
       <self_collide>0</self_collide>
       <enable_wind>0</enable_wind>
       <kinematic>0</kinematic>
-      <pose>0 0 0 0 0 0</pose>
+      <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
       <gravity>1</gravity>
-      <visual name='base_link_fixed_joint_lump__vertical_side_panel-83_visual_9'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__vertical_side_panel-83_visual_9">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-15.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__vertical_side_panel-82_visual_8'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__vertical_side_panel-82_visual_8">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-10.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__frame_horizontal_bar-78_visual_3'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__frame_horizontal_bar-78_visual_3">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-20.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__bottom_panel-85_visual_13'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__bottom_panel-85_visual_13">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-8.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__frame_horizontal_bar-87_visual_15'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__frame_horizontal_bar-87_visual_15">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-4.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__frame_horizontal_bar-80_visual_5'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__frame_horizontal_bar-80_visual_5">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-22.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__frame_vertical_bar-76_visual_1'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__frame_vertical_bar-76_visual_1">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-7.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__vertical_side_panel-83_visual_10'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__vertical_side_panel-83_visual_10">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-14.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__frame_horizontal_bar-86_visual_14'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__frame_horizontal_bar-86_visual_14">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-23.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__bottom_panel-85_visual_12'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__bottom_panel-85_visual_12">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-2.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__back_panel-84_visual_11'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__back_panel-84_visual_11">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-5.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__base_side_panel-58_visual_20'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__base_side_panel-58_visual_20">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-19.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__frame_horizontal_bar-77_visual_2'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__frame_horizontal_bar-77_visual_2">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-21.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__base_side_panel-55_visual_17'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__base_side_panel-55_visual_17">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-16.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__base_side_panel-56_visual_18'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__base_side_panel-56_visual_18">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-18.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__vertical_side_panel-82_visual_7'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__vertical_side_panel-82_visual_7">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-11.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__base_side_panel-57_visual_19'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__base_side_panel-57_visual_19">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-12.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__other_leaf-89_visual_16'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__other_leaf-89_visual_16">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-88.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__frame_horizontal_bar-81_visual_6'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__frame_horizontal_bar-81_visual_6">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-17.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__frame_horizontal_bar-79_visual_4'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__frame_horizontal_bar-79_visual_4">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-6.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='base_link_fixed_joint_lump__frame_vertical_bar-75_visual'>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+      <visual name="base_link_fixed_joint_lump__frame_vertical_bar-75_visual">
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-3.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_9'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_9">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-15.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -404,14 +403,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_18'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_18">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-18.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -453,14 +452,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_17'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_17">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-16.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -502,14 +501,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-3.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -551,14 +550,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_1'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_1">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-7.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -600,14 +599,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_5'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_5">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-22.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -649,14 +648,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_13'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_13">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-8.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -698,14 +697,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_8'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_8">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-10.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -747,14 +746,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_2'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_2">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-21.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -796,14 +795,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_11'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_11">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-5.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -845,14 +844,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_14'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_14">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-23.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -894,14 +893,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_7'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_7">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-11.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -943,14 +942,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_19'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_19">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-12.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -992,14 +991,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_15'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_15">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-4.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -1041,14 +1040,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_12'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_12">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-2.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -1090,14 +1089,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_3'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_3">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-20.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -1139,14 +1138,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_20'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_20">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-19.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -1188,14 +1187,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_10'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_10">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-14.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -1237,14 +1236,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_16'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_16">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-88.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -1286,14 +1285,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_4'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_4">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-6.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -1335,14 +1334,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='base_link_fixed_joint_lump__link_4_collision_6'>
+      <collision name="base_link_fixed_joint_lump__link_4_collision_6">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 1.5708 0 -1.5708</pose>
+        <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-17.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -1385,10 +1384,10 @@
         </surface>
       </collision>
     </link>
-    <link name='drawer3'>
-      <pose>0 0 0 1.5708 0 -1.5708</pose>
+    <link name="drawer_3">
+      <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
       <inertial>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <mass>5</mass>
         <inertia> 
           <ixx> 0.06598219020833333 </ixx>
@@ -1402,134 +1401,134 @@
       <self_collide>0</self_collide>
       <enable_wind>0</enable_wind>
       <kinematic>0</kinematic>
-      <visual name='drawer3_fixed_joint_lump__drawer_back-50_visual_4'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_3_fixed_joint_lump__drawer_back-50_visual_4">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-48.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__drawer_bottom-51_visual_5'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_3_fixed_joint_lump__drawer_bottom-51_visual_5">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-46.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__drawer_side-48_visual_2'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_3_fixed_joint_lump__drawer_side-48_visual_2">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-42.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__drawer_side-49_visual_3'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_3_fixed_joint_lump__drawer_side-49_visual_3">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-47.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__other_leaf-53_visual_7'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_3_fixed_joint_lump__other_leaf-53_visual_7">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-49.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__drawer_front-47_visual_1'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_3_fixed_joint_lump__drawer_front-47_visual_1">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-43.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__drawer_front-46_visual'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_3_fixed_joint_lump__drawer_front-46_visual">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-55.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__drawer_bottom-51_visual_6'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_3_fixed_joint_lump__drawer_bottom-51_visual_6">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-45.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <collision name='drawer3_collision_1'>
+      <collision name="drawer_3_collision_1">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-43.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -1571,14 +1570,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision_2'>
+      <collision name="drawer_3_collision_2">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-42.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -1620,14 +1619,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision_4'>
+      <collision name="drawer_3_collision_4">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-48.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -1669,14 +1668,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision_5'>
+      <collision name="drawer_3_collision_5">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-46.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -1718,14 +1717,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision_7'>
+      <collision name="drawer_3_collision_7">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-49.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -1767,14 +1766,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision_3'>
+      <collision name="drawer_3_collision_3">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-47.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -1816,14 +1815,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision_6'>
+      <collision name="drawer_3_collision_6">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-45.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -1865,14 +1864,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision'>
+      <collision name="drawer_3_collision">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-55.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -1916,10 +1915,10 @@
       </collision>
 
     </link>
-    <link name='drawer2'>
-      <pose>0 0 0 1.5708 0 -1.5708</pose>
+    <link name="drawer_2">
+      <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
       <inertial>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <mass>5</mass>
         <inertia>
           <ixx>1</ixx>
@@ -1934,134 +1933,134 @@
       <enable_wind>0</enable_wind>
       <kinematic>0</kinematic>
 
-      <visual name='drawer2_fixed_joint_lump__drawer_side-39_visual_3'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_2_fixed_joint_lump__drawer_side-39_visual_3">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-79.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__drawer_bottom-41_visual_5'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_2_fixed_joint_lump__drawer_bottom-41_visual_5">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-78.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__drawer_front-37_visual_1'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_2_fixed_joint_lump__drawer_front-37_visual_1">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-75.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__drawer_front-36_visual'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_2_fixed_joint_lump__drawer_front-36_visual">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-87.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__drawer_back-40_visual_4'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_2_fixed_joint_lump__drawer_back-40_visual_4">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-80.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__drawer_bottom-41_visual_6'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_2_fixed_joint_lump__drawer_bottom-41_visual_6">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-77.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__drawer_side-38_visual_2'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_2_fixed_joint_lump__drawer_side-38_visual_2">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-74.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__other_leaf-43_visual_7'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_2_fixed_joint_lump__other_leaf-43_visual_7">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-81.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <collision name='drawer2_collision_7'>
+      <collision name="drawer_2_collision_7">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-81.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -2103,14 +2102,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision_4'>
+      <collision name="drawer_2_collision_4">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-80.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -2152,14 +2151,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision_5'>
+      <collision name="drawer_2_collision_5">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-78.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -2201,14 +2200,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision_1'>
+      <collision name="drawer_2_collision_1">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-75.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -2250,14 +2249,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision_3'>
+      <collision name="drawer_2_collision_3">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-79.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -2299,14 +2298,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision_6'>
+      <collision name="drawer_2_collision_6">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-77.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -2348,14 +2347,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision_2'>
+      <collision name="drawer_2_collision_2">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-74.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -2397,14 +2396,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision'>
+      <collision name="drawer_2_collision">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-87.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -2447,10 +2446,10 @@
         </surface>
       </collision>
     </link>
-    <link name='drawer1'>
-      <pose>0 0 0 1.5708 0 -1.5708</pose>
+    <link name="drawer_1">
+      <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
       <inertial>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <mass>5</mass>
         <inertia> 
           <ixx>0.05435549562616668</ixx>
@@ -2465,135 +2464,135 @@
       <enable_wind>0</enable_wind>
       <kinematic>0</kinematic>
 
-      <visual name='drawer1_fixed_joint_lump__drawer_bottom-31_visual_6'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_1_fixed_joint_lump__drawer_bottom-31_visual_6">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-61.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
 
-      <visual name='drawer1_fixed_joint_lump__other_leaf-33_visual_7'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_1_fixed_joint_lump__other_leaf-33_visual_7">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-65.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer1_fixed_joint_lump__drawer_front-26_visual'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_1_fixed_joint_lump__drawer_front-26_visual">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-59.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer1_fixed_joint_lump__drawer_back-30_visual_4'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_1_fixed_joint_lump__drawer_back-30_visual_4">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-64.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer1_fixed_joint_lump__drawer_bottom-31_visual_5'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_1_fixed_joint_lump__drawer_bottom-31_visual_5">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-62.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer1_fixed_joint_lump__drawer_front-27_visual_1'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_1_fixed_joint_lump__drawer_front-27_visual_1">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-71.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer1_fixed_joint_lump__drawer_side-28_visual_2'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_1_fixed_joint_lump__drawer_side-28_visual_2">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-58.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer1_fixed_joint_lump__drawer_side-29_visual_3'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_1_fixed_joint_lump__drawer_side-29_visual_3">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-63.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <collision name='drawer1_collision'>
+      <collision name="drawer_1_collision">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-59.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -2635,14 +2634,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision_5'>
+      <collision name="drawer_1_collision_5">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-62.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -2684,14 +2683,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision_4'>
+      <collision name="drawer_1_collision_4">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-64.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -2733,14 +2732,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision_7'>
+      <collision name="drawer_1_collision_7">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-65.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -2782,14 +2781,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision_3'>
+      <collision name="drawer_1_collision_3">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-63.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -2831,14 +2830,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision_6'>
+      <collision name="drawer_1_collision_6">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-61.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -2880,14 +2879,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision_1'>
+      <collision name="drawer_1_collision_1">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-71.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -2929,14 +2928,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision_2'>
+      <collision name="drawer_1_collision_2">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-58.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -2979,10 +2978,10 @@
         </surface>
       </collision>
     </link>
-    <link name='drawer0'>
-      <pose>0 0 0 1.5708 0 -1.5708</pose>
+    <link name="drawer_0">
+      <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
       <inertial>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <mass>5</mass>
         <inertia>
           <ixx>0.05670848092041667</ixx>
@@ -2997,142 +2996,142 @@
       <enable_wind>0</enable_wind>
       <kinematic>0</kinematic>
       <gravity>1</gravity>
-      <visual name='drawer0_fixed_joint_lump__drawer_back-22_visual_5'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_0_fixed_joint_lump__drawer_back-22_visual_5">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-32.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__drawer_bottom-23_visual_6'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_0_fixed_joint_lump__drawer_bottom-23_visual_6">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-30.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__drawer_bottom-23_visual_7'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_0_fixed_joint_lump__drawer_bottom-23_visual_7">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-29.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__other_leaf-17_visual'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_0_fixed_joint_lump__other_leaf-17_visual">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-33.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__drawer_front-18_visual_1'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_0_fixed_joint_lump__drawer_front-18_visual_1">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-27.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__drawer_front-19_visual_2'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_0_fixed_joint_lump__drawer_front-19_visual_2">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-39.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__drawer_side-20_visual_3'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_0_fixed_joint_lump__drawer_side-20_visual_3">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-31.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__drawer_side-21_visual_4'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_0_fixed_joint_lump__drawer_side-21_visual_4">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-26.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <collision name='drawer0_collision'>
+      <collision name="drawer_0_collision">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-33.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -3174,14 +3173,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_2'>
+      <collision name="drawer_0_collision_2">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-39.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -3223,14 +3222,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_1'>
+      <collision name="drawer_0_collision_1">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-27.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -3272,14 +3271,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_3'>
+      <collision name="drawer_0_collision_3">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-31.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -3321,14 +3320,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_4'>
+      <collision name="drawer_0_collision_4">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-26.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -3370,14 +3369,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_5'>
+      <collision name="drawer_0_collision_5">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-32.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -3419,14 +3418,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_6'>
+      <collision name="drawer_0_collision_6">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-30.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -3468,14 +3467,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_7'>
+      <collision name="drawer_0_collision_7">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-29.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -3517,14 +3516,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_8'>
+      <collision name="drawer_0_collision_8">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-38.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -3566,14 +3565,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_9'>
+      <collision name="drawer_0_collision_9">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-36.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -3615,14 +3614,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_10'>
+      <collision name="drawer_0_collision_10">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
             <uri>model://cabinet_1076/textured_objs/original-37.obj</uri>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -3665,10 +3664,10 @@
         </surface>
       </collision>
     </link>
-    <link name='handle_0'>
-      <pose>0 0 0 1.5708 0 -1.5708</pose>
+    <link name="handle_0">
+      <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
       <inertial>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <mass>0.5</mass>
         <inertia> 
           <ixx> 0.01 </ixx>
@@ -3682,62 +3681,62 @@
       <self_collide>0</self_collide>
       <enable_wind>0</enable_wind>
       <kinematic>0</kinematic>
-      <visual name='drawer0_fixed_joint_lump__handle-9_visual_8'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_0_fixed_joint_lump__handle-9_visual_8">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-38.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__handle-9_visual_9'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_0_fixed_joint_lump__handle-9_visual_9">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-36.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer0_fixed_joint_lump__handle-9_visual_10'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_0_fixed_joint_lump__handle-9_visual_10">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-37.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'>
+          <shader type="pixel">
             <normal_map>__default__</normal_map>
           </shader>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <collision name='drawer0_collision_8'>
+      <collision name="drawer_0_collision_8">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <uri>model://cabinet_1076/textured_objs/original-38.obj</uri>
-            <scale>1 1 1</scale>
+            <uri>model://cabinet_1076/coacd_objs/original-38.obj</uri>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -3779,14 +3778,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_9'>
+      <collision name="drawer_0_collision_9">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <uri>model://cabinet_1076/textured_objs/original-36.obj</uri>
-            <scale>1 1 1</scale>
+            <uri>model://cabinet_1076/coacd_objs/original-36.obj</uri>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -3828,14 +3827,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer0_collision_10'>
+      <collision name="drawer_0_collision_10">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <uri>model://cabinet_1076/textured_objs/original-37.obj</uri>
-            <scale>1 1 1</scale>
+            <uri>model://cabinet_1076/coacd_objs/original-37.obj</uri>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -3878,10 +3877,10 @@
         </surface>
       </collision>
     </link>
-    <link name='handle_1'>
-      <pose>0 0 0 1.5708 0 -1.5708</pose>
+    <link name="handle_1">
+      <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
       <inertial>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <mass>0.5</mass>
         <inertia> 
           <ixx> 0.01 </ixx>
@@ -3895,59 +3894,59 @@
       <self_collide>0</self_collide>
       <enable_wind>0</enable_wind>
       <kinematic>0</kinematic>
-      <visual name='drawer1_fixed_joint_lump__handle-25_visual_8'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_1_fixed_joint_lump__handle-25_visual_8">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-70.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer1_fixed_joint_lump__handle-25_visual_9'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_1_fixed_joint_lump__handle-25_visual_9">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-68.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer1_fixed_joint_lump__handle-25_visual_10'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_1_fixed_joint_lump__handle-25_visual_10">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-69.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <collision name='drawer1_collision_8'>
+      <collision name="drawer_1_collision_8">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <uri>model://cabinet_1076/textured_objs/original-70.obj</uri>
-            <scale>1 1 1</scale>
+            <uri>model://cabinet_1076/coacd_objs/original-70.obj</uri>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -3989,14 +3988,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision_9'>
+      <collision name="drawer_1_collision_9">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <uri>model://cabinet_1076/textured_objs/original-68.obj</uri>
-            <scale>1 1 1</scale>
+            <uri>model://cabinet_1076/coacd_objs/original-68.obj</uri>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -4038,14 +4037,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer1_collision_10'>
+      <collision name="drawer_1_collision_10">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <uri>model://cabinet_1076/textured_objs/original-69.obj</uri>
-            <scale>1 1 1</scale>
+            <uri>model://cabinet_1076/coacd_objs/original-69.obj</uri>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -4088,10 +4087,10 @@
         </surface>
       </collision>
     </link>
-    <link name='handle_2'>
-      <pose>0 0 0 1.5708 0 -1.5708</pose>
+    <link name="handle_2">
+      <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
       <inertial>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <mass>0.5</mass>
         <inertia> 
           <ixx> 0.01 </ixx>
@@ -4105,59 +4104,59 @@
       <self_collide>0</self_collide>
       <enable_wind>0</enable_wind>
       <kinematic>0</kinematic>
-      <visual name='drawer2_fixed_joint_lump__handle-35_visual_8'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_2_fixed_joint_lump__handle-35_visual_8">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-86.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__handle-35_visual_9'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_2_fixed_joint_lump__handle-35_visual_9">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-84.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer2_fixed_joint_lump__handle-35_visual_10'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_2_fixed_joint_lump__handle-35_visual_10">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-85.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <collision name='drawer2_collision_8'>
+      <collision name="drawer_2_collision_8">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <uri>model://cabinet_1076/textured_objs/original-86.obj</uri>
-            <scale>1 1 1</scale>
+            <uri>model://cabinet_1076/coacd_objs/original-86.obj</uri>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -4199,14 +4198,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision_9'>
+      <collision name="drawer_2_collision_9">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <uri>model://cabinet_1076/textured_objs/original-84.obj</uri>
-            <scale>1 1 1</scale>
+            <uri>model://cabinet_1076/coacd_objs/original-84.obj</uri>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -4248,14 +4247,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer2_collision_10'>
+      <collision name="drawer_2_collision_10">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <uri>model://cabinet_1076/textured_objs/original-85.obj</uri>
-            <scale>1 1 1</scale>
+            <uri>model://cabinet_1076/coacd_objs/original-85.obj</uri>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -4298,10 +4297,10 @@
         </surface>
       </collision>
     </link>
-    <link name='handle_3'>
-      <pose>0 0 0 1.5708 0 -1.5708</pose>
+    <link name="handle_3">
+      <pose>0.0 0.0 0.0 1.5708 0.0 -1.5708</pose>
       <inertial>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <mass>0.5</mass>
         <inertia> 
           <ixx> 0.01 </ixx>
@@ -4315,59 +4314,59 @@
       <self_collide>0</self_collide>
       <enable_wind>0</enable_wind>
       <kinematic>0</kinematic>
-      <visual name='drawer3_fixed_joint_lump__handle-45_visual_8'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_3_fixed_joint_lump__handle-45_visual_8">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-54.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__handle-45_visual_9'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_3_fixed_joint_lump__handle-45_visual_9">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-53.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <visual name='drawer3_fixed_joint_lump__handle-45_visual_10'>
-        <pose>0 0 0 0 0 0</pose>
+      <visual name="drawer_3_fixed_joint_lump__handle-45_visual_10">
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <scale>1 1 1</scale>
+            <scale>0.8 0.8 0.8</scale>
             <uri>model://cabinet_1076/textured_objs/original-52.obj</uri>
           </mesh>
         </geometry>
         <material>
-          <shader type='pixel'/>
+          <shader type="pixel" />
           <emissive>0 0 0 1</emissive>
         </material>
         <transparency>0</transparency>
         <cast_shadows>1</cast_shadows>
       </visual>
-      <collision name='drawer3_collision_8'>
+      <collision name="drawer_3_collision_8">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <uri>model://cabinet_1076/textured_objs/original-54.obj</uri>
-            <scale>1 1 1</scale>
+            <uri>model://cabinet_1076/coacd_objs/original-54.obj</uri>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -4409,14 +4408,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision_9'>
+      <collision name="drawer_3_collision_9">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <uri>model://cabinet_1076/textured_objs/original-53.obj</uri>
-            <scale>1 1 1</scale>
+            <uri>model://cabinet_1076/coacd_objs/original-53.obj</uri>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -4458,14 +4457,14 @@
           </contact>
         </surface>
       </collision>
-      <collision name='drawer3_collision_10'>
+      <collision name="drawer_3_collision_10">
         <laser_retro>0</laser_retro>
         <max_contacts>10</max_contacts>
-        <pose>0 0 0 0 0 0</pose>
+        <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-            <uri>model://cabinet_1076/textured_objs/original-52.obj</uri>
-            <scale>1 1 1</scale>
+            <uri>model://cabinet_1076/coacd_objs/original-52.obj</uri>
+            <scale>0.8 0.8 0.8</scale>
           </mesh>
         </geometry>
         <surface>
@@ -4508,17 +4507,17 @@
         </surface>
       </collision>
     </link>
-    <joint name='joint_0' type='prismatic'>
+    <joint name="joint_0" type="prismatic">
       <parent>base_link</parent>
-      <child>drawer0</child>
-      <pose>0 0 0 0 0 0</pose>
+      <child>drawer_0</child>
+      <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
       <axis>
         <xyz>0 0 1</xyz>
         <limit>
-          <lower>0</lower>
-          <upper>0.25</upper>
+          <lower>0.0</lower>
+          <upper>0.3</upper>
           <effort>1000</effort>
-          <velocity>0.5</velocity>
+          <velocity>0.4</velocity>
         </limit>
         <dynamics>
           <spring_reference>0</spring_reference>
@@ -4540,17 +4539,17 @@
         </ode>
       </physics>
     </joint>
-    <joint name='joint_1' type='prismatic'>
+    <joint name="joint_1" type="prismatic">
       <parent>base_link</parent>
-      <child>drawer1</child>
-      <pose>0 0 0 0 0 0</pose>
+      <child>drawer_1</child>
+      <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
       <axis>
         <xyz>0 0 1</xyz>
         <limit>
-          <lower>0</lower>
-          <upper>0.25</upper>
+          <lower>0.0</lower>
+          <upper>0.3</upper>
           <effort>1000</effort>
-          <velocity>0.5</velocity>
+          <velocity>0.4</velocity>
         </limit>
         <dynamics>
           <spring_reference>0</spring_reference>
@@ -4572,17 +4571,17 @@
         </ode>
       </physics>
     </joint>
-    <joint name='joint_2' type='prismatic'>
+    <joint name="joint_2" type="prismatic">
       <parent>base_link</parent>
-      <child>drawer2</child>
-      <pose>0 0 0 0 0 0</pose>
+      <child>drawer_2</child>
+      <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
       <axis>
         <xyz>0 0 1</xyz>
         <limit>
-          <lower>0</lower>
-          <upper>0.25</upper>
+          <lower>0.0</lower>
+          <upper>0.3</upper>
           <effort>1000</effort>
-          <velocity>0.5</velocity>
+          <velocity>0.4</velocity>
         </limit>
         <dynamics>
           <spring_reference>0</spring_reference>
@@ -4604,17 +4603,17 @@
         </ode>
       </physics>
     </joint>
-    <joint name='joint_3' type='prismatic'>
+    <joint name="joint_3" type="prismatic">
       <parent>base_link</parent>
-      <child>drawer3</child>
-      <pose>0 0 0 0 0 0</pose>
+      <child>drawer_3</child>
+      <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
       <axis>
         <xyz>0 0 1</xyz>
         <limit>
-          <lower>0</lower>
-          <upper>0.25</upper>
+          <lower>0.0</lower>
+          <upper>0.3</upper>
           <effort>1000</effort>
-          <velocity>0.5</velocity>
+          <velocity>0.4</velocity>
         </limit>
         <dynamics>
           <spring_reference>0</spring_reference>
@@ -4636,10 +4635,10 @@
         </ode>
       </physics>
     </joint>
-    <joint name='joint_handle_3' type='fixed'>
-      <parent>drawer3</parent>
+    <joint name="joint_handle_3" type="fixed">
+      <parent>drawer_3</parent>
       <child>handle_3</child>
-      <pose>0 0 0 0 0 0</pose>
+      <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
       <physics>
         <ode>
           <limit>
@@ -4653,10 +4652,10 @@
         </ode>
       </physics>
     </joint>
-    <joint name='joint_handle_2' type='fixed'>
-      <parent>drawer2</parent>
+    <joint name="joint_handle_2" type="fixed">
+      <parent>drawer_2</parent>
       <child>handle_2</child>
-      <pose>0 0 0 0 0 0</pose>
+      <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
       <physics>
         <ode>
           <limit>
@@ -4670,10 +4669,10 @@
         </ode>
       </physics>
     </joint>
-    <joint name='joint_handle_1' type='fixed'>
-      <parent>drawer1</parent>
+    <joint name="joint_handle_1" type="fixed">
+      <parent>drawer_1</parent>
       <child>handle_1</child>
-      <pose>0 0 0 0 0 0</pose>
+      <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
       <physics>
         <ode>
           <limit>
@@ -4687,10 +4686,10 @@
         </ode>
       </physics>
     </joint>
-    <joint name='joint_handle_0' type='fixed'>
-      <parent>drawer0</parent>
+    <joint name="joint_handle_0" type="fixed">
+      <parent>drawer_0</parent>
       <child>handle_0</child>
-      <pose>0 0 0 0 0 0</pose>
+      <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
       <physics>
         <ode>
           <limit>

@@ -1,5 +1,14 @@
 <?xml version="1.0"?>
 <launch>
+  <!-- Gazebo & GUI Configuration -->
+  <arg name="gazebo"      default="true"  doc="Should the gazebo simulation be launched? Use false in case if you want to include this file and launch gazebo yourself" />
+  <arg name="robot_name" default="ur5" doc="Name of the robot to spawn" />
+  <arg name="gazebo_gui" default="true" doc="Start Gazebo GUI"/>
+  <arg name="paused" default="false" doc="Start Gazebo paused"/>
+  <arg name="verbose" default="false" doc="Should gazebo be started in verbose mode?" />
+  <arg name="world" default="worlds/empty.world" doc="Gazebo world file"/>
+  <arg name="use_gt_planning_scene" default="true" />
+  <arg name="use_gt_bounding_box" default="true" />
   <!-- UR5 spawn base pose -->
   <arg name="x" default="-0.45" />
   <arg name="y" default="0.0" />
@@ -17,14 +26,6 @@
   <arg name="wrist_3_joint" default="0"/>
   <arg name="robotiq_85_left_knuckle_joint" default="0.1"/>
 
-  <!-- Gazebo options -->
-  <arg name="robot_name" default="ur5" doc="Name of the robot to spawn" />
-  <arg name="gazebo_gui" default="true" doc="Start Gazebo GUI"/>
-  <arg name="paused" default="false" doc="Start Gazebo paused"/>
-  <arg name="verbose" default="false" doc="Should gazebo be started in verbose mode?" />
-  <arg name="world_name" default="worlds/empty.world" doc="Gazebo world file"/>
-  <arg name="use_gt_planning_scene" default="true" />
-  <arg name="use_gt_bounding_box" default="true" />
 
   <arg name="initial_joint_positions" default="
           -J shoulder_pan_joint $(arg shoulder_pan_joint) 
@@ -38,8 +39,12 @@
 
 
   <!-- Start Gazebo paused to allow the controllers to pickup the initial pose -->
-  <include file="$(find gazebo_ros)/launch/empty_world.launch" pass_all_args="true">
+  <include file="$(find gazebo_ros)/launch/empty_world.launch" if="$(arg gazebo)">
+    <arg name="world_name" value="$(arg world)"/>
+    <!-- Always start in paused mode, and only unpause when spawning the model -->
     <arg name="paused" value="true"/>
+    <arg name="gui" value="$(arg gazebo_gui)"/>
+    <arg name="use_sim_time" value="true"/>
     <arg name="verbose" value="$(arg verbose)"/>
   </include>
 

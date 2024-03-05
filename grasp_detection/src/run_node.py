@@ -19,7 +19,7 @@ from detectors.config import ConfigAnygrasp, ConfigGIGA
 
 if __name__ == '__main__':
     
-    rospy.init_node('grasp_detector_node')
+    rospy.init_node('grasp_detector_node', log_level=rospy.INFO)
 
     # Load ROS parameters 
     model_name = rospy.get_param('~model_name', 'anygrasp') 

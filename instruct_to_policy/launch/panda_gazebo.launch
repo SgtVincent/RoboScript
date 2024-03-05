@@ -5,7 +5,7 @@
 
   <!-- Gazebo & GUI Configuration -->
   <arg name="gazebo"      default="true"  doc="Should the gazebo simulation be launched? Use false in case if you want to include this file and launch gazebo yourself" />
-  <arg name="headless"    default="false" doc="Should the gazebo GUI be launched?" />
+  <arg name="gazebo_gui" default="true" doc="Start Gazebo GUI"/>
   <arg name="paused"      default="false" doc="Should the simulation directly be stopped at 0s?" />
   <arg name="world"       default="worlds/empty.world" doc="Filename to a SDF World for gazebo to use" />
   <arg name="rviz"        default="false" doc="Should RVIz be launched?" />
@@ -42,7 +42,7 @@
     <arg name="world_name" value="$(arg world)"/>
     <!-- Always start in paused mode, and only unpause when spawning the model -->
     <arg name="paused" value="true"/>
-    <arg name="gui" value="$(eval not arg('headless'))"/>
+    <arg name="gui" value="$(arg gazebo_gui)"/>
     <arg name="use_sim_time" value="true"/>
     <arg name="verbose" value="$(arg verbose)"/>
   </include>

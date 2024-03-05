@@ -1,7 +1,7 @@
 [
     {
         "query_label": "simple_0",
-        "query": "# objects = [table, cabinet, apple, footed_bowl, cabinet.drawer0, cabinet.drawer1, cabinet.handle_0, cabinet.handle_1] ; # place the apple into the footed bowl.",
+        "query": "# objects = [table, cabinet, apple, footed_bowl, cabinet.drawer_0, cabinet.drawer_1, cabinet.handle_0, cabinet.handle_1] ; # place the apple into the footed bowl.",
         "eval_items": [
             {
                 "function": "check_relation_in",

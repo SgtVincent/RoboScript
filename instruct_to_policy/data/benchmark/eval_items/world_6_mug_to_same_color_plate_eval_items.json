@@ -1,7 +1,7 @@
 [
     {
-        "query_label": "simple_4",
-        "query": "# objects = [table, cabinet, green_plant_plate, white_ceramic_plate, red_plant_saucer, white_porcelain_mug] ; # move the white mug into a container with same color.",
+        "query_label": "hard_5",
+        "query": "# objects = [table, cabinet, green_plant_plate, white_ceramic_plate, red_plant_saucer, white_porcelain_mug] ; # move the white mug into a container with same color. Note that the color information of the object is demonstrated in its name.",
         "eval_items": [
             {
                 "function": "check_relation_on",

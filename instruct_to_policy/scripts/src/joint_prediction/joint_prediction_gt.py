@@ -61,21 +61,21 @@ class JointPredictionGT(JointPredictionBase):
         rospy.loginfo("Joint prediction: all remote model services ready!")
 
     
-    def get_model_joint_names(self, obj_name: str)->List[str]:
+    def get_model_joint_names(self, object_name: str)->List[str]:
         """
         Get the list of joint names of the object from Gazebo
         """
-        request = GetModelPropertiesRequest(model_name=obj_name)
+        request = GetModelPropertiesRequest(model_name=object_name)
         response: GetModelPropertiesResponse = self._get_model_properties(request)
         return response.joint_names
     
     
-    def get_joint_axes(self, obj_name: str)->List[JointAxis]:
+    def get_joint_axes(self, object_name: str)->List[JointAxis]:
         """
         Get the list of joint axes of the object from Gazebo
         """
-        joint_names = self.get_model_joint_names(obj_name)
-        full_joint_names = [String(f"{obj_name}::{joint_name}") for joint_name in joint_names]
+        joint_names = self.get_model_joint_names(object_name)
+        full_joint_names = [String(f"{object_name}::{joint_name}") for joint_name in joint_names]
         request = GazeboGetJointsAxesRequest(joint_names=full_joint_names)
         response: GazeboGetJointsAxesResponse = self._get_joint_axes(request)
         return response.joints_axes
@@ -89,7 +89,7 @@ class JointPredictionGT(JointPredictionBase):
         Args:
             data: Dict, query data
             {
-                "obj_name": str,
+                "object_name": str,
                 "joint_types": List[str] # ["revolute", "prismatic"],
             }
 
@@ -97,23 +97,23 @@ class JointPredictionGT(JointPredictionBase):
             list: List of dictionaries of joint axes.
             [
                 {
-                    "joint_position":[
+                    "joint_position":np.array([
                         0.0,
                         0.0,
                         0.0
-                    ],
-                    "joint_axis": [
+                    ]),
+                    "joint_axis": np.array([
                         -1.0,
                         -8.511809568290118e-08,
                         -1.677630052654422e-07
-                    ],
+                    ]),
                     "type": "prismatic"
                 },  
                 ...
             ]  
         """
         # Call /get_joints_axes service and retrieve the joint axes
-        joints_axes:List[JointAxis] = self.get_joint_axes(data["obj_name"])
+        joints_axes:List[JointAxis] = self.get_joint_axes(data["object_name"])
 
         # convert the list of JointAxis to a list of dictionary 
         ret = []
@@ -124,16 +124,16 @@ class JointPredictionGT(JointPredictionBase):
                 continue
             
             joint_axis_dict = {
-                "joint_position": [
+                "joint_position": np.array([
                     joint_axis.origin.x,
                     joint_axis.origin.y,
                     joint_axis.origin.z,
-                ],
-                "joint_axis": [
+                ]),
+                "joint_axis": np.array([
                     joint_axis.axis.x,
                     joint_axis.axis.y,
                     joint_axis.axis.z,
-                ],
+                ]),
                 "type": joint_type_map[joint_axis.type],
             }
             ret.append(joint_axis_dict)

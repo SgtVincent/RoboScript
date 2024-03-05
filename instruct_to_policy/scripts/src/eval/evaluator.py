@@ -22,6 +22,10 @@ class Evaluator(object):
         self._reset_counter = 0
         self.init_logger()
         
+    def __del__(self):
+        for handler in self.logger.handlers[:]:
+            handler.close()
+        
     def init_logger(self):
         '''
         Setup logger for the evaluator.
@@ -104,9 +108,12 @@ class Evaluator(object):
             except Exception as e:
                 # also record the traceback
                 exception = 1
-                self.logger.error(f'Error when executing code for {i}-th trial: {e}')
+                self.logger.error(f'Error when executing code for {i+1}-th trial: {e}')
                 self.logger.error(traceback.format_exc())
                 continue
+            
+            # self.logger.info("Running code for the {}th time".format(i+1))
+            # exec_safe(code_str, gvars, lvars)
             
             # wait 3 seconds for the world state to change
             time.sleep(3)
@@ -142,6 +149,10 @@ class Evaluator(object):
             eval_args = eval_item['args']
             result = int(eval_func(**eval_args))
             self.results[repeat_idx]['eval_items_results'].append(result)
+
+        # write evaluation result of this round to log file
+        self.logger.info(f"Results for the {repeat_idx + 1}-th trial: {self.results[repeat_idx]}")
+      
       
       
     def check_relation_on(self, object_name:str, receptacle_name:str, **kwargs):
@@ -154,8 +165,11 @@ class Evaluator(object):
         
         # get object and receptacle bounding boxes
         # [x_min, y_min, z_min, x_max, y_max, z_max]
-        object_bbox = self.env.get_3d_bbox(object_name)
-        receptacle_bbox = self.env.get_3d_bbox(receptacle_name)
+        # NOTE: for mutlimodal env, should use get_gt_bbox
+        object_bbox_center, object_bbox_size = self.env.get_gt_bbox(object_name)
+        receptacle_bbox_center, receptacle_bbox_size = self.env.get_gt_bbox(receptacle_name)
+        object_bbox = np.concatenate([object_bbox_center - object_bbox_size/2, object_bbox_center + object_bbox_size/2])
+        receptacle_bbox = np.concatenate([receptacle_bbox_center - receptacle_bbox_size/2, receptacle_bbox_center + receptacle_bbox_size/2])
         
         # check if the object is on the receptacle by all the following conditions:
         # - if the object's z_max is higher than the receptacle's z_min
@@ -188,8 +202,11 @@ class Evaluator(object):
         
         # get object and receptacle bounding boxes
         # [x_min, y_min, z_min, x_max, y_max, z_max]
-        object_bbox = self.env.get_3d_bbox(object_name)
-        receptacle_bbox = self.env.get_3d_bbox(receptacle_name)
+        # NOTE: for mutlimodal env, should use get_gt_bbox
+        object_bbox_center, object_bbox_size = self.env.get_gt_bbox(object_name)
+        receptacle_bbox_center, receptacle_bbox_size = self.env.get_gt_bbox(receptacle_name)
+        object_bbox = np.concatenate([object_bbox_center - object_bbox_size/2, object_bbox_center + object_bbox_size/2])
+        receptacle_bbox = np.concatenate([receptacle_bbox_center - receptacle_bbox_size/2, receptacle_bbox_center + receptacle_bbox_size/2])
         
         # check if the object is on the receptacle by all the following conditions:
         # - if the object's 3d bbox with the receptacle's 3d bbox has an intersection over the object's 3d bbox larger than a threshold
@@ -255,6 +272,21 @@ class Evaluator(object):
             print(f'Check if {object_name} is close to {position_description}: {is_close}')
             
         return is_close
+        
+    def check_joint_state(self, joint_name:str, **kwargs):
+        '''
+        Check if the joint is at the correct state. 
+        '''
+        check_position_func = kwargs.get('check_position_func', lambda x: x)
+        
+        # get joint properties from gazebo 
+        joint_name = joint_name.replace('.', '::')
+        joint_properties = self.env.get_joint_properties(joint_name)
+        joint_type = joint_properties.type
+        joint_position = joint_properties.position[0]
+        
+        return check_position_func(joint_position)
+        
         
     def get_start_obj_pose(self, object_name:str):
         '''

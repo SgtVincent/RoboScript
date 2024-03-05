@@ -12,13 +12,17 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <arg name="paused" default="false" />
   <arg name="verbose" default="false" />
   <arg name="camera_set" default="true"/>
-  <arg name="camera_model" default="$(find realsense_gazebo_plugin)/urdf/triple_d435_cameras.urdf.xacro"/>
+  <arg name="camera_model" default="$(find instruct_to_policy)/urdf/triple_d435_cameras.urdf.xacro"/>
+  <arg name="use_sim_time" default="false" />
+  <arg name="use_gt_planning_scene" default="true" />
+  <arg name="use_gt_bounding_box" default="true" />
+  <arg name="enable_moveit_sensor_plugins" default="false"/>
+  <arg name="publish_pointcloud" default="false"/>
 
   <!-- Image pipeline options -->
   <arg name="align_depth_to_rgb" default="true" />
-  <arg name="publish_pointcloud" default="false" />
-  <arg name="use_gt_planning_scene" default="true" />
-  <arg name="use_gt_bounding_box" default="true" />
+  <arg name="publish_registered_pointcloud_xyz" default="false" />
+  <arg name="publish_registered_pointcloud_xyzrgb" default="false" />
 
   <!-- Environment variables for loading local artifacts -->
   <env name="GAZEBO_MODEL_PATH" value="$(find instruct_to_policy)/data/ycb/models:$(find instruct_to_policy)/data/google_scanned_object/models:$(find instruct_to_policy)/models:$(optenv GAZEBO_MODEL_PATH)"/>
@@ -29,16 +33,14 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <!-- pose to spawn UR5 robot -->
   <arg name="x" default="-0.45" />
   <arg name="y" default="0.0" />
-  <arg name="z" default="1.02" />
+  <arg name="z" default="0.82" />
   <!-- run demo by default -->
   <arg name="world" default="$(find instruct_to_policy)/worlds/demo_table_cabinet.world" />
 
-  <!-- Launch Gazebo and spawn the robot -->
+<!-- Launch the gazebo simulator and spawn the robot -->  
   <include file="$(find instruct_to_policy)/launch/ur5_gazebo.launch" pass_all_args="true">
-    <arg name="world_name" value="$(arg world)"/>
     <arg name="use_gt_planning_scene" default="$(arg use_gt_planning_scene)" />
     <arg name="use_gt_bounding_box" default="$(arg use_gt_bounding_box)" />
-
   </include>
 
   <!-- Launch the camera set -->
@@ -46,6 +48,8 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
     <arg name="camera_model" value="$(arg camera_model)"/>
     <arg name="align_depth_to_rgb" value="$(arg align_depth_to_rgb)"/>
     <arg name="publish_pointcloud" value="$(arg publish_pointcloud)"/>  
+    <arg name="publish_registered_pointcloud_xyz" value="$(arg publish_registered_pointcloud_xyz)"/>
+    <arg name="publish_registered_pointcloud_xyzrgb" value="$(arg publish_registered_pointcloud_xyzrgb)"/>
   </include>
   
   <!-- Launch MoveIt for UR5 -->

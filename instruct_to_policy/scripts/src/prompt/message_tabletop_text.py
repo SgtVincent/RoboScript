@@ -19,10 +19,10 @@ from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
 
 # Import utility functions for perception
 from perception_utils import (
-    get_object_center_position,  # Returns the position of an object in the world frame. Returns: position: np.array [x,y,z]
-    get_object_pose,              # Returns the pose of an object in the world frame. Returns: pose: Pose
+    get_object_center_position,  # Returns the position of an object in the world frame. Args: object_name: str. Returns: position: np.array [x,y,z]
+    get_object_pose,              # Returns the pose of an object in the world frame. Args: object_name: str. Returns: pose: Pose
     get_3d_bbox,                 # Returns the 3D bounding box of an object in the world frame. Args: object_name: str. Returns: bbox: np.array [x_min, y_min, z_min, x_max, y_max, z_max]
-    get_obj_name_list,           # Returns a list of names of objects present in the scene
+    get_object_name_list,           # Returns a list of names of objects present in the scene. Args: None. Returns: object_name_list: List[str]
     parse_adaptive_shape_grasp_pose, # Predict a grasp pose for object of adaptive shape with neural networks. Args: object_name: str, preferred_position: Optional(np.array) [x,y,z]. Returns: grasp_pose: Pose
     parse_horizontal_grasp_pose, # Generate a grasp pose from horizontal approach direction. Specially, this function is suitable for grasping parts of objects fixed to vertical surface. Args: object_name: str; approach_direction: Optional(np.ndarray), [x,y,z]. Returns: grasp_pose: Pose
     parse_place_pose,            # Predict a place pose for an object relative to a receptacle. Args: object_name: str, receptacle_name: Optional(str), position: Optional(np.array) [x,y,z], . Returns: place_pose: Pose
@@ -42,7 +42,7 @@ from motion_utils import (
 '''
 You are encouraged to use above APIs to complete the task.
 Note that you may always need to create your arbitrary functions to help you complete the task. Do not generate them since they which will be defined by external scripts.
-The robot working space on table top is in range [-0.5, 0.2] in x-axis and [-0.5, 0.5] in y-axis. The height of the table top is 1.05.
+The robot working space on table top is in range [-0.5, 0.2] in x-axis and [-0.5, 0.5] in y-axis. The height of the table top is 0.85.
 You may need to select a safe temporary location as an intermediate state by shifing in x,y -axis  to ensure that the operating object can be placed without interfering with other items or the robot's movements. 
 Note that you also need to save the object's original location to variable before moving it for later use.
 Note that you are a strict coder, you can not hard code a predefined value, but you need to use given api or novel tools to detect the value.
@@ -103,7 +103,7 @@ attach_object('drawer1_handle')
 
 # Pull the drawer handle, move in +x direction
 direction = [1, 0, 0] # (x, y, z)
-move_in_direction(direction, distance=0.2)
+move_in_direction(direction, distance=0.25)
 
 # Release the drawer
 open_gripper()
@@ -133,7 +133,7 @@ attach_object('drawer1_handle')
 
 # Push the drawer handle, move in -x direction
 direction = [-1, 0, 0] # (x, y, z)
-move_in_direction(direction, distance=0.2)
+move_in_direction(direction, distance=0.25)
 
 # Release the drawer
 open_gripper()
@@ -165,7 +165,7 @@ attach_object('drawer1_handle')
 
 # Pull the handle of the top drawer, move in +x direction
 direction = [1, 0, 0] # (x, y, z)
-move_in_direction(direction, distance=0.2)
+move_in_direction(direction, distance=0.25)
 
 # Release the handle of the top drawer
 open_gripper()
@@ -212,7 +212,7 @@ attach_object('drawer0_handle')
 
 # Pull the handle of the top drawer, move in +x direction
 direction = np.array([1, 0, 0]) # (x, y, z)
-move_in_direction(direction, distance=0.2)
+move_in_direction(direction, distance=0.25)
  
 # Release the handle of the top drawer
 open_gripper()
@@ -286,7 +286,7 @@ detach_object('door_handle')
 toy_names = ['toy_car', 'toy_train']
 toys_in_basket = []
 for toy_name in toy_names:
-    if check_object_in_receptacle(object=toy_name, receptacle='wood_basket'):
+    if check_object_in_receptacle(object_name=toy_name, receptacle='wood_basket'):
         toys_in_basket.append(toy_name)
         
 # For each toy in the basket, grasp it and put it on the table
@@ -322,7 +322,7 @@ for toy_name in toys_in_basket:
 
 # Grasp the bowl
 open_gripper()
-grasp_bowl_pose = parse_adaptive_shape_grasp_pose(object='bowl', description='a bowl from the high shelf')
+grasp_bowl_pose = parse_adaptive_shape_grasp_pose(object_name='bowl', description='a bowl from the high shelf')
 grasp(grasp_bowl_pose)
 close_gripper()
 attach_object('bowl')
@@ -352,7 +352,7 @@ detach_object('bowl')
 
 # Grasp the apple
 open_gripper()
-grasp_apple_pose = parse_adaptive_shape_grasp_pose(object='apple')
+grasp_apple_pose = parse_adaptive_shape_grasp_pose(object_name='apple')
 grasp(grasp_apple_pose)
 close_gripper()
 attach_object('apple')

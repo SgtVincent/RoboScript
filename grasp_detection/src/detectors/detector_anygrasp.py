@@ -1,10 +1,12 @@
 import os 
 import sys
+from datetime import datetime
 import numpy as np 
 from typing import List, Tuple, Dict
 import open3d as o3d 
 from scipy.spatial.transform import Rotation as R
 import graspnetAPI 
+import torch 
 
 # ROS
 import rospy 
@@ -41,6 +43,10 @@ class DetectorAnygrasp(DetectorBase):
         self.color_type = self.config.color_type
         self.voxel_size = self.config.voxel_size
     
+        # set random seed 
+        np.random.seed(self.config.random_seed)
+        torch.manual_seed(self.config.random_seed)
+    
         self.debug = self.config.debug
         
     def load_model(self):
@@ -53,6 +59,13 @@ class DetectorAnygrasp(DetectorBase):
         """
         # preprocess perception data: integrate depth images into TSDF volume and point cloud 
         cloud, min_bound, max_bound = self._preprocess(req.perception_data)
+        
+        # self.memory_tracker.print_diff()
+        
+        # safety checking to avoid memory overflow from ill 2D perception 
+        if np.any((max_bound - min_bound) > self.config.bound_size_limit):
+            rospy.logerr("Bound size too large! Rejecting request...")
+            return DetectGraspsResponse(grasps=[])
         
         # transform point cloud to the same coordinate frame as the model
         # the anygrasp model is trained with the x-axis pointing down
@@ -69,12 +82,16 @@ class DetectorAnygrasp(DetectorBase):
         
         
         # get prediction
+        rospy.logdebug("Detecting grasps with input points of shape: {}, lims: {}".format(points.shape, lims))
         ret = self.model.get_grasp(points, colors, lims)
+        # make program 50% slower
+        torch.cuda.empty_cache()
+        
         if len(ret) == 2:
             gg, cloud = ret
         else:
             # if no valid grasp found, 3-tuple is returned for debugging (not used here)
-            print('No Grasp detected by Anygrasp model!')
+            rospy.logerr('No Grasp detected by Anygrasp model!')
             if self.debug:
                 cloud = cloud.transform(trans_mat)
                 # create world coordinate frame
@@ -95,8 +112,35 @@ class DetectorAnygrasp(DetectorBase):
             # create world coordinate frame
             world_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.1, origin=min_bound)
             grippers[0].paint_uniform_color([1,0,0])
-            o3d.visualization.draw_geometries([*grippers, cloud, world_frame])
+            if self.debug:
+                # o3d.visualization.draw_geometries([*grippers, cloud, world_frame])
+                o3d.visualization.draw_geometries([grippers[0], cloud])
+        
+        # Do no use this snippet, bug still remains until Feb. 2024
+        if self.config.save_visualization:
+            # create the directory if not exist
+            if not os.path.exists(self.config.save_visualization_dir):
+                os.makedirs(self.config.save_visualization_dir)
+            formatted_timestr = datetime.now().strftime("%Y-%m-%d-%H:%M")
+            save_path = os.path.join(self.config.save_visualization_dir, f"{formatted_timestr}.png")
+            
+            vis = o3d.visualization.Visualizer()
+            vis.create_window()
+            
+            # add point cloud and grippers to the visualizer
+            cloud = cloud.transform(trans_mat)
+            grippers = gg.to_open3d_geometry_list()
+            grippers[0].paint_uniform_color([1,0,0])
+            for gripper in grippers:
+                vis.add_geometry(gripper)
+            vis.add_geometry(cloud)
+            
+            vis.run()
+            # vis.update_renderer()
+            vis.capture_screen_image(save_path)
+            vis.destroy_window()
             # o3d.visualization.draw_geometries([grippers[0], cloud, world_frame])
+            del vis 
         
         # compose response
         grasps_msg = []
@@ -196,7 +240,7 @@ class DetectorAnygrasp(DetectorBase):
 
             tsdf.integrate(depth, intrinsics, extrinsics, rgb_img=rgb, mask_img=mask)
 
-
+        # might get OOM here if the input point cloud is too large
         full_cloud: o3d.geometry.PointCloud = tsdf.get_cloud()
         cloud = full_cloud
         
@@ -248,7 +292,17 @@ class DetectorAnygrasp(DetectorBase):
             # filter the cloud by the table plane height
             height = self.config.table_height
             cloud = cloud.select_by_index(np.where(np.asarray(cloud.points)[:,2] > height)[0])
-            
+        
+        # if cloud is too large, downsample it
+        if len(cloud.points) > self.config.max_point_num:
+            num_points = len(cloud.points)
+            every_k_points = int(num_points // self.config.max_point_num) + 1
+            cloud = cloud.uniform_down_sample(every_k_points)
+            rospy.logwarn(f"Anygrasp get more input points ({num_points}) than its limit ({self.config.max_point_num}). Downsample {len(cloud.points)} points")
+
+        del tsdf
+        del full_cloud
+        
         return cloud, min_bound, max_bound
         
     

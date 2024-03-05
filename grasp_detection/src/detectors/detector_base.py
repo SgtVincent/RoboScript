@@ -14,7 +14,7 @@ class DetectorBase(object):
         self.cv_bridge = cv_bridge.CvBridge()
         
         # initialize ROS service 
-        self.service = rospy.Service(self.service_name, DetectGrasps, self.detect_callback)
+        self.service = rospy.Service(self.service_name, DetectGrasps, self.detect_callback, buff_size=1)
         rospy.loginfo(f'DetectGrasps service {self.service_name} listener is ready.')
 
     def detect_callback(self, req: DetectGraspsRequest)->DetectGraspsResponse:

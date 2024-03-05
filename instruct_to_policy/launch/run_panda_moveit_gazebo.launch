@@ -17,12 +17,16 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <arg name="verbose" default="false" />
   <arg name="camera_set" default="true"/>
   <arg name="camera_model" default="$(find instruct_to_policy)/urdf/triple_d435_cameras.urdf.xacro"/>
+  <arg name="use_sim_time" default="false" />
   <arg name="use_gt_planning_scene" default="true" />
   <arg name="use_gt_bounding_box" default="true" />
+  <arg name="enable_moveit_sensor_plugins" default="false"/>
+  <arg name="publish_pointcloud" default="false"/>
 
   <!-- Image pipeline options -->
   <arg name="align_depth_to_rgb" default="true" />
-  <arg name="publish_pointcloud" default="false" />
+  <arg name="publish_registered_pointcloud_xyz" default="false" />
+  <arg name="publish_registered_pointcloud_xyzrgb" default="false" />
 
   <!-- Environment variables for loading local artifacts -->
   <env name="GAZEBO_MODEL_PATH" value="$(find instruct_to_policy)/data/ycb/models:$(find instruct_to_policy)/data/google_scanned_object/models:$(find instruct_to_policy)/models:$(optenv GAZEBO_MODEL_PATH)"/>
@@ -33,14 +37,15 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <!-- fix panda at the table edge -->
   <arg name="x" default="-0.45" />
   <arg name="y" default="0.0" />
-  <arg name="z" default="1.02" />
+  <arg name="z" default="0.82" />
   <!-- run demo by default -->
   <arg name="world" default="$(find instruct_to_policy)/worlds/demo_table_cabinet.world" />
 
+  <!-- set use_sim_time param -->
+  <param name="/use_sim_time" value="$(arg use_sim_time)"/>
 
   <!-- Launch the gazebo simulator and spawn the robot -->
   <include file="$(find instruct_to_policy)/launch/panda_gazebo.launch" pass_all_args="true">
-    <arg name="headless" value="$(eval not arg('gazebo_gui'))" />
     <arg name="use_gripper" default="$(arg load_gripper)" />
     <arg name="controller" default="$(arg transmission)_joint_trajectory_controller" />
     <arg name="use_gt_planning_scene" default="$(arg use_gt_planning_scene)" />
@@ -51,16 +56,19 @@ https://github.com/ros-planning/panda_moveit_config/blob/noetic-devel/launch/dem
   <include file="$(find instruct_to_policy)/launch/gazebo_spawn_camera.launch">
     <arg name="camera_model" value="$(arg camera_model)"/>
     <arg name="align_depth_to_rgb" value="$(arg align_depth_to_rgb)"/>
-    <arg name="publish_pointcloud" value="$(arg publish_pointcloud)"/>  
+    <arg name="publish_pointcloud" value="$(arg publish_pointcloud)"/>
+    <arg name="publish_registered_pointcloud_xyz" value="$(arg publish_registered_pointcloud_xyz)"/>
+    <arg name="publish_registered_pointcloud_xyzrgb" value="$(arg publish_registered_pointcloud_xyzrgb)"/>
   </include>
 
   <!-- Launch the MoveIt configuration for Franka Emika Panda -->
-  <include file="$(find instruct_to_policy)/launch/run_moveit.launch" pass_all_args="true" if="$(arg enable_moveit)">
+  <include file="$(find instruct_to_policy)/launch/moveit_run_panda.launch" pass_all_args="true" if="$(arg enable_moveit)">
     <!-- robot description is loaded by gazebo.launch, to enable Gazebo features -->
     <arg name="load_robot_description" value="false" />
     <!-- MoveItSimpleControllerManager provides ros_control's JointTrajectory controllers
          as well as GripperCommand actions -->
     <arg name="moveit_controller_manager" value="simple" />
     <arg name="use_rviz" value="$(arg moveit_rviz)" />
+    <arg name="enable_moveit_sensor_plugins" value="$(arg enable_moveit_sensor_plugins)" />
   </include>
 </launch>

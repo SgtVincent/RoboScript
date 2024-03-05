@@ -1,1 +1,1 @@
-objects = [table, cabinet, white_ceramic_plate, turquoise_salad_plate, lemon, cyan_mug] ; # place the cyan mug into an empty plate, you need to find empty plate by checking if there is any object in the plate with spatial relation
+objects = [table, cabinet, white_ceramic_plate, turquoise_salad_plate, lemon, brown_ceramic_cup] ; # place the brown cup into an empty plate, you need to find empty plate by checking if there is any object in the plate's 2D region on the table

@@ -24,7 +24,7 @@ def load_queries(task_queries_file):
     Load task queries from txt file. The first line is the world context, and the rest are task queries line by line:
     ''' 
     
-    objects = [table, cabinet, cabinet.drawer0, cabinet.drawer1, cabinet.drawer2, cabinet.drawer3, panda_robot] ; # open cabinet.drawer0
+    objects = [table, cabinet, cabinet.drawer_0, cabinet.drawer_1, cabinet.drawer_2, cabinet.drawer_3, panda_robot] ; # open cabinet.drawer_0
     ...
     '''
     """
@@ -32,7 +32,7 @@ def load_queries(task_queries_file):
         lines = f.readlines()
     
     # use regex to extract the query in each line:
-    # objects = [table, cabinet, cabinet.drawer0, cabinet.drawer1, cabinet.drawer2, cabinet.drawer3, panda_robot] ; # open cabinet.drawer0
+    # objects = [table, cabinet, cabinet.drawer_0, cabinet.drawer_1, cabinet.drawer_2, cabinet.drawer_3, panda_robot] ; # open cabinet.drawer_0
 
     valid_line_pattern = re.compile(r'(?P<context>objects.*);\s*#(?P<query>.*)')
     task_queries = []
@@ -151,7 +151,7 @@ def parse_args():
     #                     help="Max tokens (defaults to 2048)")
     # parser.add_argument("--max-queries", type=int, default=200, 
     #                     help="Max number of task queries to generate (defaults to 200)")
-    parser.add_argument("--config_file", type=str, default="perception_few_shot_gpt_3.5.yaml")
+    parser.add_argument("--config_file", type=str, default="perception_few_shot_gpt_3.yaml")
     parser.add_argument("--task-queries", type=str, default="data/benchmark/task_queries/world_1_table_sort.txt",
                         help="Task queries file")
     parser.add_argument("--output-dir", type=str, default="data/benchmark/generated_code",
@@ -214,7 +214,10 @@ if __name__ == "__main__":
             lmp_tabletop_ui(task_query, "")
             # append dump_hist to list 
             dump_hist_list.append(lmp_tabletop_ui.dump_hist[-1])
-    
+            
+            # delete lmp_tabletop_ui to release memory/ kill threads
+            del lmp_tabletop_ui
+            
         except Exception as e:
             exception_log += "----------\n"
             exception_log += f"Cannot generate code for task query {i}: {task_query} \n"

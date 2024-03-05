@@ -1,5 +1,5 @@
-from typing import List, Tuple, Dict
-import copy
+from typing import Any, List, Tuple, Dict
+import numpy as np
 import rospy 
 from std_srvs.srv import Empty
 from gazebo_msgs.srv import (
@@ -7,15 +7,15 @@ from gazebo_msgs.srv import (
     GetLinkState,
     GetWorldProperties, 
     GetModelProperties,
+    GetJointProperties,
     SetModelConfiguration,
     SetModelConfigurationRequest
 )
 from geometry_msgs.msg import Quaternion, Point, Pose
-from .env import Env
-from .gazebo_cameras import GazeboRGBDCameraSet
 from gazebo_plugins_local.srv import GazeboGetBoundingBoxes
 from grasp_detection.msg import BoundingBox3DArray, BoundingBox3D
-
+from .env import Env
+from .gazebo_cameras import GazeboRGBDCameraSet
 
 
 class GazeboEnv(Env):
@@ -37,6 +37,7 @@ class GazeboEnv(Env):
         self.get_link_state = rospy.ServiceProxy(f"/{self.node_name}/get_link_state", GetLinkState)
         self.get_world_properties = rospy.ServiceProxy(f"/{self.node_name}/get_world_properties", GetWorldProperties)
         self.get_model_properties = rospy.ServiceProxy(f"/{self.node_name}/get_model_properties", GetModelProperties)
+        self.get_joint_properties = rospy.ServiceProxy(f"/{self.node_name}/get_joint_properties", GetJointProperties)
         self.get_bounding_boxes = rospy.ServiceProxy(f"/{self.node_name}/get_bounding_boxes", GazeboGetBoundingBoxes)
 
         self.robot_names = ["panda", "fr3", "ur5"]
@@ -98,50 +99,74 @@ class GazeboEnv(Env):
             
         return objects
 
-    def get_gt_obj_pose(self, obj_name):
+    def get_gt_obj_pose(self, object_name)->Pose:
         """ Get ground truth object pose from gazebo"""
         # name matching: gazebo model name is different from the name in the world, 
-        # but obj_name should be a substring of the gazebo model name
+        # but object_name should be a substring of the gazebo model name
         
         gazebo_model_names = self.get_gazebo_model_names()
         for gazebo_model_name in gazebo_model_names:
-            if obj_name in gazebo_model_name.lower():
-                obj_name = gazebo_model_name
+            if object_name in gazebo_model_name.lower():
+                object_name = gazebo_model_name
                 break
         # try query as model 
-        resp = self.get_model_state(obj_name, self.frame)
+        resp = self.get_model_state(object_name, self.frame)
         if resp.success:
             return resp.pose
         
         # try query as link
-        link_name = obj_name.replace(".", "::")
+        link_name = object_name.replace(".", "::")
         resp = self.get_link_state(link_name, self.frame)
         if resp.success:
             return resp.link_state.pose
         
-        # Failed to get state for obj_name
+        # Failed to get state for object_name
         return None
     
     
-    def get_gt_bbox(self, obj_name)->Tuple[List, List]:
+    def get_gt_bbox(self, object_name)->Tuple[np.ndarray, np.ndarray]:
         """ Get object bounding box."""
         
         self.gazebo_gt_bboxes:List[BoundingBox3D] = self.get_bounding_boxes().bboxes_3d
             
         # gt bbox of drawer or handle: need to convert to link name
-        if 'cabinet.drawer' in obj_name or 'cabinet.handle' in obj_name:
-            obj_name = obj_name.replace('.', '::')
+        if 'cabinet.drawer' in object_name or 'cabinet.handle' in object_name:
+            object_name = object_name.replace('.', '::')
         
         for bbox in self.gazebo_gt_bboxes:
-            if bbox.object_id == obj_name:
-                center = [bbox.center.position.x, bbox.center.position.y, bbox.center.position.z]
-                size = [bbox.size.x, bbox.size.y, bbox.size.z]
+            if bbox.object_id == object_name:
+                center = np.array([bbox.center.position.x, bbox.center.position.y, bbox.center.position.z])
+                size = np.array([bbox.size.x, bbox.size.y, bbox.size.z])
                 return center, size
             
-        rospy.logwarn(f"Query object {obj_name} has no ground truth bounding box in gazebo")
+        rospy.logwarn(f"Query object {object_name} has no ground truth bounding box in gazebo")
         return None, None
     
-    def get_sensor_data(self):
+    def get_gt_bboxes(self)->Dict[str, Tuple[np.ndarray, np.ndarray]]:
+        """ Get ground truth bounding boxes for all objects"""
+        
+        self.gazebo_gt_bboxes:List[BoundingBox3D] = self.get_bounding_boxes().bboxes_3d
+        
+        bboxes = {}
+        for bbox_3d in self.gazebo_gt_bboxes:
+            
+            object_name = bbox_3d.object_id
+            if 'cabinet::drawer' in object_name or 'cabinet::handle' in object_name:
+                object_name = object_name.replace('::', '.')
+            center = np.array([bbox_3d.center.position.x, bbox_3d.center.position.y, bbox_3d.center.position.z])
+            size = np.array([bbox_3d.size.x, bbox_3d.size.y, bbox_3d.size.z])
+            
+            # FIXME: enlarge handle bbox to include part of the wooden board
+            # TODO: Should do this modification in model definition or external annotation metadata file  
+            # enlarge the handle bbox in -x direction for 0.01 m
+            # if 'cabinet.handle' in object_name:
+            #     center[0] -= 0.01
+            #     size[0] += 0.02
+            bboxes[object_name] = (center, size)
+            
+        return bboxes
+    
+    def get_sensor_data(self) -> Dict[str, Any]:
         return self.camera_set.get_latest_data()
     
     def get_link_pose(self, link_name, ref_frame="world"):
@@ -150,26 +175,26 @@ class GazeboEnv(Env):
         resp = self.get_link_state(link_name, ref_frame)
         return resp.link_state.pose
 
-    def get_mesh(self, obj_name):
+    def get_mesh(self, object_name):
         """ Get object mesh."""
         raise NotImplementedError("get_mesh() not implemented: Not knowing how to get the ground truth mesh from gazebo")
 
-    def get_object_collision(self, obj_name):
+    def get_object_collision(self, object_name):
         """
         Get object collision mesh/ bounding box, and return as a dictionary
         """
         collision_dict = {}
         try:
-            collision_dict["collision"] = self.get_mesh(obj_name)
+            collision_dict["collision"] = self.get_mesh(object_name)
             collision_dict["type"] = "mesh"
         except:
             pass
 
         try:
-            collision_dict["collision"] = self.get_3d_bbox(obj_name)
+            collision_dict["collision"] = self.get_3d_bbox(object_name)
             collision_dict["type"] = "box"
         except:
-            rospy.logwarn(f"Object {obj_name} has no collision mesh or bounding box in gazebo")
+            rospy.logwarn(f"Object {object_name} has no collision mesh or bounding box in gazebo")
             pass
 
         return collision_dict

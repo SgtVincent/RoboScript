@@ -43,7 +43,7 @@
     <include>
       <uri>model://cabinet_1076</uri>
       <name>cabinet</name>
-      <pose>-1.6 0.0 0.866007 0 0 -3.1416</pose>
+      <pose>-1.45 -0.2 0.693 0 0 -3.1416</pose>
       <scale>1 1 1</scale>
       <static>0</static>
     </include>
@@ -110,7 +110,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.272731 -0.237469 1.01538 0.003538 -0.000917 -0.625243</pose>
+      <pose>-0.204362 -0.332023 0.815299 0.003503 -0.001058 -0.625238</pose>
     </model>
     <model name="banana">
       <link name="link">
@@ -174,7 +174,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.355613 0.272482 1.01526 -0.001837 -0.003394 -0.993519</pose>
+      <pose>-0.370036 0.452791 0.814685 0.014824 0.009645 -2.73055</pose>
     </model>
     <model name="white_ceramic_plate">
       <link name="link">
@@ -232,7 +232,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.01908 0.203189 1.0137 0.00096 -0.013757 0.015489</pose>
+      <pose>-0.01908 0.203189 0.8137 0.00096 -0.013757 0.015489</pose>
     </model>
     <model name="white_and_pink_box">
       <link name="link">
@@ -290,10 +290,10 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.46758 -0.40074 1.01488 -0.004313 -0.006344 -0.03659</pose>
+      <pose>-0.383764 -0.462874 0.814881 -0.003409 -0.006173 -0.036599</pose>
     </model>
-    <model name="brown_box">
-      <link name="link">
+    <model name='brown_box'>
+      <link name='link'>
         <inertial>
           <pose>8.5e-05 -3.5e-05 0.036814 0 -0 0</pose>
           <mass>0.1</mass>
@@ -306,7 +306,7 @@
             <izz>5.90056e-05</izz>
           </inertia>
         </inertial>
-        <visual name="visual">
+        <visual name='visual'>
           <geometry>
             <mesh>
               <scale>0.8 0.8 0.8</scale>
@@ -314,7 +314,7 @@
             </mesh>
           </geometry>
         </visual>
-        <collision name="collision_0">
+        <collision name='collision_0'>
           <geometry>
             <mesh>
               <scale>0.8 0.8 0.8</scale>
@@ -348,253 +348,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.216087 0.437155 1.01461 0.005872 -0.011021 0.007924</pose>
-    </model>
-    <model name="brown_medication_bottle">
-      <link name="link">
-        <inertial>
-          <pose>-2.9e-05 3e-05 0.036406 0 -0 0</pose>
-          <mass>0.1</mass>
-          <inertia>
-            <ixx>5.6554e-05</ixx>
-            <ixy>-1.16136e-08</ixy>
-            <ixz>2.44656e-08</ixz>
-            <iyy>5.65453e-05</iyy>
-            <iyz>2.11708e-08</iyz>
-            <izz>2.24906e-05</izz>
-          </inertia>
-        </inertial>
-        <visual name="visual">
-          <geometry>
-            <mesh>
-              <scale>1 1 1</scale>
-              <uri>model://Germanium_GE132/meshes/model.obj</uri>
-            </mesh>
-          </geometry>
-        </visual>
-        <collision name="collision_0">
-          <geometry>
-            <mesh>
-              <scale>1 1 1</scale>
-              <uri>model://Germanium_GE132/meshes/model.obj</uri>
-            </mesh>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <friction>
-              <ode>
-                <mu>10</mu>
-                <mu2>10</mu2>
-              </ode>
-              <torsional>
-                <coefficient>10</coefficient>
-                <use_patch_radius>1</use_patch_radius>
-                <patch_radius>0.1</patch_radius>
-                <ode/>
-              </torsional>
-            </friction>
-            <contact>
-              <ode>
-                <max_vel>0.001</max_vel>
-                <min_depth>0.001</min_depth>
-              </ode>
-            </contact>
-            <bounce/>
-          </surface>
-        </collision>
-        <self_collide>0</self_collide>
-        <enable_wind>0</enable_wind>
-        <kinematic>0</kinematic>
-      </link>
-      <pose>0.113093 -0.388645 1.0149 0.003498 -0.008407 0.093534</pose>
-    </model>
-    <model name="bleach_cleanser">
-      <static>0</static>
-      <link name="link">
-        <inertial>
-          <pose>-0.017507 0.011594 0.102533 0 -0 0</pose>
-          <mass>0.1</mass>
-          <inertia>
-            <ixx>0.000455348</ixx>
-            <ixy>2.6262e-07</ixy>
-            <ixz>-2.64049e-05</ixz>
-            <iyy>0.000487986</iyy>
-            <iyz>2.41196e-07</iyz>
-            <izz>8.34394e-05</izz>
-          </inertia>
-        </inertial>
-        <collision name="collision">
-          <geometry>
-            <mesh>
-              <scale>0.790536 0.790536 0.790536</scale>
-              <uri>model://021_bleach_cleanser/google_16k/textured.obj</uri>
-            </mesh>
-          </geometry>
-          <surface>
-            <friction>
-              <ode>
-                <mu>10</mu>
-                <mu2>10</mu2>
-              </ode>
-              <torsional>
-                <coefficient>10</coefficient>
-                <use_patch_radius>1</use_patch_radius>
-                <patch_radius>0.1</patch_radius>
-                <ode/>
-              </torsional>
-            </friction>
-            <contact>
-              <ode>
-                <max_vel>0.001</max_vel>
-                <min_depth>0.001</min_depth>
-              </ode>
-            </contact>
-            <bounce/>
-          </surface>
-          <max_contacts>10</max_contacts>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <mesh>
-              <scale>0.790536 0.790536 0.790536</scale>
-              <uri>model://021_bleach_cleanser/google_16k/textured.obj</uri>
-            </mesh>
-          </geometry>
-          <material>
-            <script>
-              <uri>model://021_bleach_cleanser/bleach_cleanser.material</uri>
-              <name>bleach_cleanser</name>
-            </script>
-          </material>
-        </visual>
-        <self_collide>0</self_collide>
-        <enable_wind>0</enable_wind>
-        <kinematic>0</kinematic>
-      </link>
-      <pose>-0.014789 -0.130509 1.01522 0.007175 -0.007786 -0.101389</pose>
-    </model>
-    <model name="red_plastic_bowl">
-      <link name="link">
-        <inertial>       
-          <pose>0.0012293180361304247 -0.0001778823486961287 0.09010321687540569 1.6476966426584836 -1.5541440946054892 -3.0718923275378365</pose> 
-          <mass>3.227396891530707</mass>
-          <inertia>
-            <ixx>0.02410602944133669</ixx>
-            <ixy>6.111785305792758e-19</ixy>
-            <ixz>3.5094441340823684e-18</ixz>
-            <iyy>0.01746285199971744</iyy>
-            <iyz>-9.802776101164265e-19</iyz>
-            <izz>0.017332179746324738</izz>
-          </inertia>
-        </inertial>
-        <collision name="collision">
-          <geometry>
-            <mesh>
-              <scale>0.5 0.5 0.5</scale>
-              <uri>model://Bradshaw_International_11642_7_Qt_MP_Plastic_Bowl/meshes/model.obj</uri>
-            </mesh>
-          </geometry>
-          <surface>
-            <friction>
-              <ode>
-                <mu>10</mu>
-                <mu2>10</mu2>
-              </ode>
-              <torsional>
-                <coefficient>10</coefficient>
-                <use_patch_radius>1</use_patch_radius>
-                <patch_radius>0.1</patch_radius>
-                <ode/>
-              </torsional>
-            </friction>
-            <contact>
-              <ode>
-                <max_vel>0.001</max_vel>
-                <min_depth>0.001</min_depth>
-              </ode>
-            </contact>
-            <bounce/>
-          </surface>
-          <max_contacts>10</max_contacts>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <mesh>
-              <scale>0.5 0.5 0.5</scale>
-              <uri>model://Bradshaw_International_11642_7_Qt_MP_Plastic_Bowl/meshes/model.obj</uri>
-            </mesh>
-          </geometry>
-        </visual>
-        <self_collide>0</self_collide>
-        <enable_wind>0</enable_wind>
-        <kinematic>0</kinematic>
-      </link>
-      <pose>-0.082851 -0.403681 1.01447 0.005246 0.014671 0.678613</pose>
-    </model>
-    <model name="mustard_bottle">
-      <static>0</static>
-      <link name="link">
-        <inertial>
-          <pose>-0.015066 -0.023093 0.076577 0 -0 0</pose>
-          <mass>0.1</mass>
-          <inertia>
-            <ixx>0.000248368</ixx>
-            <ixy>1.27507e-05</ixy>
-            <ixz>-7.97289e-07</ixz>
-            <iyy>0.000273212</iyy>
-            <iyz>-1.07042e-06</iyz>
-            <izz>7.5278e-05</izz>
-          </inertia>
-        </inertial>
-        <collision name="collision">
-          <geometry>
-            <mesh>
-              <uri>model://006_mustard_bottle/google_16k/textured.obj</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-          <surface>
-            <friction>
-              <ode>
-                <mu>10</mu>
-                <mu2>10</mu2>
-              </ode>
-              <torsional>
-                <coefficient>10</coefficient>
-                <use_patch_radius>1</use_patch_radius>
-                <patch_radius>0.1</patch_radius>
-                <ode/>
-              </torsional>
-            </friction>
-            <contact>
-              <ode>
-                <max_vel>0.001</max_vel>
-                <min_depth>0.001</min_depth>
-              </ode>
-            </contact>
-            <bounce/>
-          </surface>
-          <max_contacts>10</max_contacts>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <mesh>
-              <uri>model://006_mustard_bottle/google_16k/textured.obj</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-          <material>
-            <script>
-              <uri>model://006_mustard_bottle/mustard_bottle.material</uri>
-              <name>mustard_bottle</name>
-            </script>
-          </material>
-        </visual>
-        <self_collide>0</self_collide>
-        <enable_wind>0</enable_wind>
-        <kinematic>0</kinematic>
-      </link>
-      <pose>0.128489 0.542142 1.01638 -1.56584 0.334296 -2.85292</pose>
+      <pose>-0.032555 -0.141017 0.814566 0.005934 -0.011096 0.007923</pose>
     </model>
   </world>
 </sdf>

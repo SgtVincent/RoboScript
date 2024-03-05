@@ -41,7 +41,7 @@ class GazeboRGBDCamera:
         # point cloud subscriber 
         self.sub_pcl = None
         if sub_pcl:
-            self.pcl_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/depth/color/points", PointCloud2, self.pcl_callback)
+            self.pcl_sub = rospy.Subscriber(self.ns + '/' + camera_name + "/depth/points", PointCloud2, self.pcl_callback)
 
 
         self.bridge = CvBridge()

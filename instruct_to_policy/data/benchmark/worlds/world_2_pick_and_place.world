@@ -43,7 +43,7 @@
     <include>
       <uri>model://cabinet_1076</uri>
       <name>cabinet</name>
-      <pose>-1.5 0.0 0.866007 0 0 -3.1416</pose>
+      <pose>-1.45 -0.2 0.693 0 0 -3.1416</pose>
       <scale>1 1 1</scale>
       <static>0</static>
     </include>
@@ -66,17 +66,17 @@
           <geometry>
             <mesh>
               <uri>model://013_apple/google_16k/textured.obj</uri>
-              <scale>0.720932 0.720932 0.720932</scale>
+              <scale>0.7 0.7 0.7</scale>
             </mesh>
           </geometry>
           <surface>
             <friction>
               <ode>
-                <mu>5</mu>
-                <mu2>5</mu2>
+                <mu>10</mu>
+                <mu2>10</mu2>
               </ode>
               <torsional>
-                <coefficient>5</coefficient>
+                <coefficient>10</coefficient>
                 <use_patch_radius>1</use_patch_radius>
                 <patch_radius>0.1</patch_radius>
                 <ode/>
@@ -96,7 +96,7 @@
           <geometry>
             <mesh>
               <uri>model://013_apple/google_16k/textured.obj</uri>
-              <scale>0.720932 0.720932 0.720932</scale>
+              <scale>0.7 0.7 0.7</scale>
             </mesh>
           </geometry>
           <material>
@@ -110,7 +110,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.215209 -0.226958 1.01539 0.003841 -0.000706 -0.005062</pose>
+      <pose>-0.085209 -0.166958 0.81539 0.003841 -0.000706 -0.005062</pose>
     </model>
     <model name="footed_bowl">
       <link name="link">
@@ -129,7 +129,7 @@
         <collision name="collision">
           <geometry>
             <mesh>
-              <scale>1 1 1</scale>
+              <scale>1 1 0.7</scale>
               <uri>model://Footed_Bowl_Sand/meshes/model.obj</uri>
             </mesh>
           </geometry>
@@ -159,7 +159,7 @@
         <visual name="visual">
           <geometry>
             <mesh>
-              <scale>1 1 1</scale>
+              <scale>1 1 0.7</scale>
               <uri>model://Footed_Bowl_Sand/meshes/model.obj</uri>
             </mesh>
           </geometry>
@@ -168,7 +168,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <pose>-0.122685 0.244758 1.11059 -0.008949 -0.008627 0.704792</pose>
+      <pose>-0.122685 0.244758 0.91059 -0.008949 -0.008627 0.704792</pose>
     </model>
   </world>
 </sdf>

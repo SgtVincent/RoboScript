@@ -17,7 +17,7 @@ class JointPredictionBase(object):
         '''
         This function takes in a dictionary of query data 
         {
-            "obj_name": str, # object name
+            "object_name": str, # object name
             "joint_types": List[str] # ["revolute", "prismatic"],
             ##### perception data #####
             ....

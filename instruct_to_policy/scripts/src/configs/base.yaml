@@ -57,6 +57,7 @@ plane_detection:
   model_name: open3d
   model_params: {}
 
+
 lmps:
   tabletop_ui:
     class: LMPOpenAI

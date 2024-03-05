@@ -16,7 +16,7 @@
   <arg name="load_gripper" default="true" />
 
   <!-- By default, we will load or override the robot_description -->
-  <arg name="load_robot_description" default="true" />
+  <arg name="load_robot_description" default="true"/>
 
   <!-- Choose controller manager: fake, simple, or ros_control -->
   <arg name="moveit_controller_manager" default="fake" />
@@ -39,16 +39,13 @@
   <arg name="rviz_tutorial" default="false" />
 
   <!-- If needed, broadcast static tf for robot root -->
-  <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="virtual_joint_broadcaster_0"
-  args="0 0 0 0 0 0 world $(arg arm_id)_link0" /> -->
+  <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="virtual_joint_broadcaster_0" args="0 0 0 0 0 0 world $(arg arm_id)_link0" /> -->
 
 
   <group if="$(eval arg('moveit_controller_manager') == 'fake')">
-    <!-- We do not have a real robot connected, so publish fake joint states via a
-    joint_state_publisher
+    <!-- We do not have a real robot connected, so publish fake joint states via a joint_state_publisher
          MoveIt's fake controller's joint states are considered via the 'source_list' parameter -->
-    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"
-      unless="$(arg use_gui)">
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" unless="$(arg use_gui)">
       <rosparam param="source_list">[move_group/fake_controller_joint_states]</rosparam>
     </node>
     <!-- If desired, a GUI version is available allowing to move the simulated robot around manually
@@ -59,8 +56,7 @@
     </node> -->
 
     <!-- Given the published joint states, publish tf for the robot links -->
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
-      respawn="true" output="screen" />
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
   </group>
 
   <!-- Run the main MoveIt executable without trajectory execution (we do not have controllers

@@ -219,7 +219,6 @@ if __name__ == "__main__":
             del lmp_tabletop_ui
             
         except Exception as e:
-            # raise e 
             exception_log += "----------\n"
             exception_log += f"Cannot generate code for task query {i}: {task_query} \n"
             exception_log += f"Exception: {e} \n"

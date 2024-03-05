@@ -5,6 +5,22 @@ This benchmark is to evaluate the performance of different multimodal large lang
 To minimize the sim-to-real gap in code generation for robotics control, the whole pipeline is built on ROS (Robot Operating System) and Gazebo simulation. Thus the generated code tested in Gazebo can be directly deployed to control real robots. Project overview:
 ![Project Overview](./images/overview.png)
 
+## TODO List for release
+
+Add ! emoji for the most important tasks.
+- :exclamation: Mandatory:
+  - [ ] Add support for Gamma
+  - [ ] Add support for UR5
+  - [ ] Refactor scripts to reproduce experiments
+  - [ ] Refactor readme
+- :grey_exclamation: Favaorable:
+  - [ ] Separate grounding model to a standalone ros node for better environment isolation
+  - [ ] Add support for multimodal LMs (after refactoring the grounding node)
+  - [ ] Better Environment & task generation
+- :question: Feature extensions:
+  - [ ] Add support for Environment generation ---> task generation ---> code generation ---> execution and evaluation ---> data collection
+
+
 ## Installation
 
 **Please read the notes below carefully before installing anything:**

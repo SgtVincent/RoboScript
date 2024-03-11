@@ -9,8 +9,10 @@ To minimize the sim-to-real gap in code generation for robotics control, the who
 
 Add ! emoji for the most important tasks.
 - :exclamation: Mandatory:
-  - [ ] Add support for Gamma
-  - [ ] Add support for UR5
+  - [ ] Add support for Gamma (Junting)
+  - [ ] Add support for UR5 (Junting)
+  - [ ] Verify real robot setup instructions (Qiaojun)
+  - [ ] Verify real robot full-pipeline execution (Qiaojun)
   - [ ] Refactor scripts to reproduce experiments
   - [ ] Refactor readme
 - :grey_exclamation: Favaorable:

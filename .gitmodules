@@ -8,7 +8,7 @@
 	path = grasp_detection/src/detectors/GIGA
 	url = https://github.com/SgtVincent/GIGA.git
 [submodule "moveit_configs/franka/panda_moveit_config"]
-	path = moveit_configs/franka/panda_moveit_config
+	path = moveit_configs/panda_moveit_config
 	url = https://github.com/SgtVincent/panda_moveit_config.git
 [submodule "moveit_configs/ur5_package"]
 	path = moveit_configs/ur5_package
@@ -16,6 +16,6 @@
 [submodule "moveit_configs/flexiv_ros"]
 	path = moveit_configs/flexiv_ros
 	url = https://github.com/flexivrobotics/flexiv_ros.git
-[submodule "moveit_configs/franka/franka_umi_description"]
-	path = moveit_configs/franka/franka_umi_description
-	url = https://github.com/SgtVincent/franka_umi_description.git
+[submodule "moveit_configs/franka_panda_umi"]
+	path = moveit_configs/franka_panda_umi
+	url = https://github.com/SgtVincent/franka_panda_umi.git

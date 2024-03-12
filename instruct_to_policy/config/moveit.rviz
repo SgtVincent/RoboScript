@@ -199,7 +199,7 @@ Visualization Manager:
         Colliding Link Color: 255; 0; 0
         Goal State Alpha: 1
         Goal State Color: 250; 128; 0
-        Interactive Marker Size: 0
+        Interactive Marker Size: 0.20000000298023224
         Joint Violation Color: 255; 0; 255
         Planning Group: panda_manipulator
         Query Goal State: true
@@ -400,7 +400,7 @@ Visualization Manager:
         camera_top_link:
           Value: false
         panda_EE:
-          Value: true
+          Value: false
         panda_K:
           Value: false
         panda_NE:
@@ -410,7 +410,7 @@ Visualization Manager:
         panda_hand_sc:
           Value: false
         panda_hand_tcp:
-          Value: false
+          Value: true
         panda_leftfinger:
           Value: false
         panda_link0:
@@ -710,7 +710,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.29325532913208
+      Distance: 2.6051955223083496
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -726,9 +726,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5647964477539062
+      Pitch: 0.41979649662971497
       Target Frame: panda_link0
-      Yaw: 6.269961357116699
+      Yaw: 0.0017771730199456215
     Saved: ~
 Window Geometry:
   Displays:

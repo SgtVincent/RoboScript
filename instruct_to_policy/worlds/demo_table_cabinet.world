@@ -50,7 +50,7 @@
       <name>cabinet</name>
       <!-- overwrite model name -->
       <name>cabinet</name>
-      <pose>-1.5 0.0 0.693 0 0 -3.1416</pose>
+      <pose>-1.45 -0.2 0.693 0 0 -3.1416</pose>
       <scale>1 1 1</scale>
       <static>0</static>
     </include>
@@ -62,21 +62,15 @@
     -->
     <!-- Add containers and objects HERE -->
     <include>
-      <uri>model://red_plate</uri>
+      <uri>model://Threshold_Tray_Rectangle_Porcelain</uri>
       <name>plate</name>
-      <pose>0.0 -0.225 1.02 0 0 0</pose>
+      <pose>-0.118402 0.245751 0.813629 0 0 0</pose>
       <static>0</static>
     </include>
     <include>
-      <uri>model://orange</uri>
+      <uri>model://017_orange</uri>
       <name>orange</name>
-      <pose>0.0 0.1 1.026 0 0 0</pose>
-      <static>0</static>
-    </include>
-    <include>
-      <uri>model://rectangle_plate</uri>
-      <name>rectangle_plate</name>
-      <pose>0.0 0.136 1.015 0 0 0</pose>
+      <pose>-0.097133 -0.236331 0.849652 0 0 0</pose>
       <static>0</static>
     </include>
   </world>

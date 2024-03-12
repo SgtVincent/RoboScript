@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="panda">
+
+  <xacro:include filename="$(find franka_umi_description)/robots/franka_umi_robot.xacro"/>
+
+  <xacro:arg name="arm_id" default="panda" />
+  <xacro:arg name="use_gt_planning_scene" default="true" />
+  <xacro:arg name="use_gt_bounding_box" default="true" />
+  <xacro:arg name="enable_gt_joint_axis" default="true" />
+
+  <xacro:franka_umi_robot arm_id="$(arg arm_id)"
+                      joint_limits="${xacro.load_yaml('$(find franka_umi_description)/robots/panda/joint_limits.yaml')}">
+  </xacro:franka_umi_robot>
+
+  <!-- overwrite physics parameters for gripper fingers -->
+
+  <gazebo reference="$(arg arm_id)_leftfinger">
+    <collision>
+      <max_contacts>10</max_contacts>
+      <surface>
+        <contact>
+          <ode>
+            <kp>100000</kp>
+            <kd>5.0</kd>
+            <max_vel>0</max_vel>
+            <min_depth>0.001</min_depth>
+          </ode>
+        </contact>
+        <friction>
+          <ode>
+            <mu>10</mu>
+            <mu2>10</mu2>
+          </ode>
+          <torsional>
+            <coefficient>10.0</coefficient>
+            <use_patch_radius>true</use_patch_radius>
+            <patch_radius>0.1</patch_radius>
+          </torsional>
+        </friction>
+      </surface>
+    </collision>
+  </gazebo>
+
+  <gazebo reference="$(arg arm_id)_rightfinger">
+    <collision>
+      <max_contacts>10</max_contacts>
+      <surface>
+        <contact>
+          <ode>
+            <kp>100000</kp>
+            <kd>5.0</kd>
+            <max_vel>0</max_vel>
+            <min_depth>0.001</min_depth>
+          </ode>
+        </contact>
+        <friction>
+          <ode>
+            <mu>10</mu>
+            <mu2>10</mu2>
+          </ode>
+          <torsional>
+            <coefficient>10.0</coefficient>
+            <use_patch_radius>true</use_patch_radius>
+            <patch_radius>0.1</patch_radius>
+          </torsional>
+        </friction>
+      </surface>
+    </collision>
+  </gazebo>
+
+  <!-- gazebo plugin to publish models to moveit planning scene -->
+  <gazebo>
+    <!-- plugin to publish GT world state to moveit planning scene -->
+    <xacro:if value="$(arg use_gt_planning_scene)">
+      <plugin filename="libgazebo_ros_moveit_planning_scene.so" name="gazebo_ros_moveit_planning_scene">
+        <topicName>/planning_scene</topicName>
+        <updatePeriod>3.0</updatePeriod>
+      </plugin>
+    </xacro:if>
+    
+    <!-- plugin to publish GT 3D bounding boxes to env node -->
+    <xacro:if value="$(arg use_gt_bounding_box)">
+      <plugin filename="libgazebo_ros_bbox_3d_plugin.so" name="gazebo_ros_bbox_3d_plugin">
+        <links_to_publish>
+          <link>cabinet::drawer_0</link>
+          <link>cabinet::drawer_1</link>
+          <link>cabinet::drawer_2</link>
+          <link>cabinet::drawer_3</link>
+          <link>cabinet::handle_0</link>
+          <link>cabinet::handle_1</link>
+          <link>cabinet::handle_2</link>
+          <link>cabinet::handle_3</link>
+        </links_to_publish>
+      </plugin>
+    </xacro:if>
+
+    <!-- plugin to host service for ground truth joint axis query -->
+    <xacro:if value="$(arg enable_gt_joint_axis)">
+      <plugin filename="libgazebo_ros_joint_axis_service.so" name="gazebo_ros_joint_axis_service">
+        <NodeName>gazebo_ros_joint_axis_service</NodeName>  
+      </plugin>
+    </xacro:if>
+
+
+  </gazebo>
+
+</robot>

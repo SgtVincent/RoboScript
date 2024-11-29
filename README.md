@@ -1,8 +1,7 @@
-# LLM-manipulation Benchmark
+# Roboscript
 
-This benchmark is to evaluate the performance of different multimodal large language models (LLM) on the task of code generation for object manipulation. The task is to generate python script to control a robotic arm to execute tasks specified in natural language instructions.
-
-To minimize the sim-to-real gap in code generation for robotics control, the whole pipeline is built on ROS (Robot Operating System) and Gazebo simulation. Thus the generated code tested in Gazebo can be directly deployed to control real robots. Project overview:
+RoboScript is a platform designed to bridge the gap between high - level task planning and the practical deployment of code for robot manipulation: [Arxiv](https://arxiv.org/abs/2402.14623).
+To minimize the sim-to-real gap in code generation for robotics control, the whole pipeline is built on [ROS Noetic](https://wiki.ros.org/noetic), [Moveit!](https://github.com/moveit/moveit) library and [Gazebo Simulation](https://gazebosim.org/home). Thanks to the abstraction and uniformity in the aspect of perception and motion planning provided by the middle layer of ROS and Moveit, the generated code tested in Gazebo can be directly deployed to control real robots with close behavior. The project supports various arms integrated with Moveit stack.  Project overview:
 ![Project Overview](./images/overview.png)
 
 ## TODO List for release
@@ -10,7 +9,6 @@ To minimize the sim-to-real gap in code generation for robotics control, the who
 Add ! emoji for the most important tasks.
 - :exclamation: Mandatory:
   - [ ] Add support for Gamma 
-  - [ ] Add support for UR5
   - [ ] Add real robot setup instructions 
   - [ ] Refactor scripts to reproduce experiments
 - :grey_exclamation: Favaorable:

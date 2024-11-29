@@ -1,13 +1,10 @@
 import openai
-openai.api_base = "https://api.openai-sb.com/v1"
-
-OPENAI_SB_API_KEY = 'sb-95cb9872616b7d00c8e7bb26e68b08417e3b8a3070db6a8a'
-OPENAI_API_KEY = OPENAI_SB_API_KEY
+# openai.api_base = "PLEASE_ENTER_API_BASE_URL"
+OPENAI_API_KEY = "Please enter your OpenAI API key here"
 
 def test_openai_sb():
     
-    openai.api_key = OPENAI_SB_API_KEY
-    openai.api_base = "https://api.openai-sb.com/v1"
+    openai.api_key = OPENAI_API_KEY
     
     messages =  [
         {"role": "system", "content": f"You are a friendly assistant. You are helping a user to do some tasks."},

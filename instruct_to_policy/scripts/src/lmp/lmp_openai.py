@@ -15,7 +15,7 @@ from openai.error import APIConnectionError, RateLimitError
 from src.utils import *
 from .lmp_base import LMPBase, LMPFGenBase
 
-from src.openai_api_key import OPENAI_API_KEY
+OPENAI_API_KEY = "Please enter your OpenAI API key here"
 openai.api_key = OPENAI_API_KEY
 
 class LMPOpenAI(LMPBase):

@@ -11,8 +11,7 @@ import google.generativeai as genai
 from src.utils import *
 from .lmp_base import LMPBase, LMPFGenBase
 
-from src.google_api_key import GOOGLE_API_KEY
-
+GOOGLE_API_KEY = "Please enter your Google API key here"
 genai.configure(api_key=GOOGLE_API_KEY)
 
 

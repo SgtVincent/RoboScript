@@ -1,8 +1,9 @@
 <launch>
-    <arg name="world_name" default="world_5_mug_to_cabinet" />
+    <!-- <arg name="world_name" default="world_5_mug_to_cabinet" /> -->
+    <arg name="world_name" default="world_2_pick_and_place" />
     <!-- <arg name="world_name" default="world_3_mug_to_empty_plate" /> -->
-    <!-- <arg name="config_to_eval" default="text_gpt_4" /> -->
-    <arg name="config_to_eval" default="perception_few_shot_gpt_4" />
+    <arg name="config_to_eval" default="text_gpt_4" />
+    <!-- <arg name="config_to_eval" default="perception_few_shot_gpt_4" /> -->
     <!-- <arg name="config_to_eval" default="text_few_shot_gemini" /> -->
     <!-- <arg name="config_to_eval" default="perception_few_shot_gemini"/> -->
 

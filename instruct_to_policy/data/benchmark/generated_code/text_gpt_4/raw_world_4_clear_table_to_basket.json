@@ -1,0 +1,41 @@
+[
+    {
+        "context": "",
+        "query": "# objects = [table, cabinet, orange, toy_bus, basket_with_fabric_liner] ; # clear the table by moving all table objects into the basket.",
+        "src_fs": {
+            "check_object_on_receptacle": "def check_object_on_receptacle(object_name, receptacle):\n    # Object above has a larger z coordinate\n    return get_object_center_position(object_name)[2] > get_object_center_position(receptacle)[2]"
+        },
+        "code_str": "# Detailed planning:\n# Step 1: Check which objects are on the table\n# Step 2: For each object on the table, grasp it and put it in the basket\n\n# Check which objects are on the table\nobject_names = ['orange', 'toy_bus']\nobjects_on_table = []\nfor object_name in object_names:\n    if check_object_on_receptacle(object_name=object_name, receptacle='table'):\n        objects_on_table.append(object_name)\n\n# For each object on the table, grasp it and put it in the basket\nfor object_name in objects_on_table:\n    # Grasp the object\n    open_gripper()\n    grasp_pose = parse_adaptive_shape_grasp_pose(object_name)\n    grasp(grasp_pose)\n    close_gripper()\n    attach_object(object_name)\n\n    # Move the object to the basket\n    place_pose = parse_place_pose(object_name, 'basket_with_fabric_liner')\n    move_to_pose(place_pose)\n\n    # Release the object\n    open_gripper()\n    detach_object(object_name)",
+        "gvars": [
+            "os",
+            "rospy",
+            "np",
+            "Pose",
+            "PoseStamped",
+            "Point",
+            "Quaternion",
+            "move_group",
+            "get_object_center_position",
+            "get_object_pose",
+            "get_3d_bbox",
+            "get_object_name_list",
+            "detect_objects",
+            "get_object_joint_info",
+            "parse_adaptive_shape_grasp_pose",
+            "parse_horizontal_grasp_pose",
+            "parse_place_pose",
+            "get_gripper_pose",
+            "open_gripper",
+            "close_gripper",
+            "attach_object",
+            "detach_object",
+            "move_to_pose",
+            "follow_path",
+            "grasp",
+            "gripper_group",
+            "objects",
+            "check_object_on_receptacle"
+        ],
+        "lvars": []
+    }
+]

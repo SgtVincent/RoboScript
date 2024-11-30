@@ -1,0 +1,41 @@
+[
+    {
+        "context": "",
+        "query": "# objects = [table, cabinet, white_ceramic_plate, turquoise_salad_plate, lemon, brown_ceramic_cup] ; # place the brown cup into an empty plate, you need to find empty plate by checking if there is any object in the plate's 2D region on the table.",
+        "src_fs": {
+            "check_plate_empty": "def check_plate_empty(plate_name):\n    # Use the bbox to check if there is any object on the plate\n    objects = get_object_name_list()\n    bbox_plate = get_3d_bbox(plate_name)\n    for obj in objects:\n        if obj != plate_name:\n            # check if the object is on the plate\n            obj_center = get_object_center_position(obj)\n            if_obj_on_plate_x = bbox_plate[0] < obj_center[0] < bbox_plate[3]\n            if_obj_on_plate_y = bbox_plate[1] < obj_center[1] < bbox_plate[4]\n            if_obj_on_plate_z = obj_center[2] > bbox_plate[5]  # object is above the plate\n            if if_obj_on_plate_x and if_obj_on_plate_y and if_obj_on_plate_z:\n                return False  # there is an object on the plate\n    return True  # no object on the plate"
+        },
+        "code_str": "# Detailed planning:\n# Step 1: Check which plates are empty\n# Step 2: If there is an empty plate, grasp the brown cup\n# Step 3: Move the brown cup to the empty plate\n# Step 4: Release the brown cup\n\n# Check which plates are empty\nplate_names = ['white_ceramic_plate', 'turquoise_salad_plate']\nempty_plates = []\nfor plate_name in plate_names:\n    if check_plate_empty(plate_name):\n        empty_plates.append(plate_name)\n\n# If there is an empty plate, grasp the brown cup\nif len(empty_plates) > 0:\n    open_gripper()\n    grasp_cup_pose = parse_adaptive_shape_grasp_pose(object_name='brown_ceramic_cup')\n    grasp(grasp_cup_pose)\n    close_gripper()\n    attach_object('brown_ceramic_cup')\n\n    # Move the brown cup to the empty plate\n    place_cup_pose = parse_place_pose(object_name='brown_ceramic_cup', receptacle_name=empty_plates[0])\n    move_to_pose(place_cup_pose)\n\n    # Release the brown cup\n    open_gripper()\n    detach_object('brown_ceramic_cup')\nelse:\n    print(\"No empty plate found.\")",
+        "gvars": [
+            "os",
+            "rospy",
+            "np",
+            "Pose",
+            "PoseStamped",
+            "Point",
+            "Quaternion",
+            "move_group",
+            "get_object_center_position",
+            "get_object_pose",
+            "get_3d_bbox",
+            "get_object_name_list",
+            "detect_objects",
+            "get_object_joint_info",
+            "parse_adaptive_shape_grasp_pose",
+            "parse_horizontal_grasp_pose",
+            "parse_place_pose",
+            "get_gripper_pose",
+            "open_gripper",
+            "close_gripper",
+            "attach_object",
+            "detach_object",
+            "move_to_pose",
+            "follow_path",
+            "grasp",
+            "gripper_group",
+            "objects",
+            "check_plate_empty"
+        ],
+        "lvars": []
+    }
+]

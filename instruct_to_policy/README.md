@@ -9,6 +9,22 @@ You can download the processed data for evaluation from [ADD_LINK_HERE](#).
 
 You can also refer to the [data document](./data.md)s more details about the data generation process to process your custom data.
 
+## Quick Example
+Assume you have had the data downloaded properly and you have configured the main environment for Roboscript and second environment for grasp detection. 
+For example, `~/catkin_ws` with `catkin_ws` conda env and `~/anygrasp_ws` with `anygrasp` conda env.
+You can run the following command to run the evaluatation of GPT4 generated code in the real time:
+
+```bash
+# Make sure the RoboScript is in catkin_ws and you have already catkin built and activated the workspace
+cd /path_to_RoboScript/instruct_to_policy
+# Or roscd instruct_to_policy
+bash scripts/bash/run_demo.sh
+```
+
+You should see the Gazebo Simulation, the pop-up terminal for grasp detection model, and the robot will start to execute the generated code.
+
+![demo image](../images/demo_image.png)
+
 ## Inetractive Demo with JupyterRos (Optional)
 
 You might need some hack to install jupyter ros with ipython kernel aware of ros workspace. Please refer to [Installation](https://jupyter-ros.readthedocs.io/en/latest/user_installation.html) and [Troubleshooting](https://jupyter-ros.readthedocs.io/en/latest/user_troubleshooting.html) for more details. 
@@ -62,7 +78,7 @@ With gazebo, moveit and other services ready, you can run the code evaluation wi
 
 ```bash
 roscd instruct_to_policy
-rosrun scripts/eval_generated_code.py \
+python scripts/eval_generated_code.py \
     _world_name:=world_1_table_sort \
     _code_to_eval:=generated_code
 ```

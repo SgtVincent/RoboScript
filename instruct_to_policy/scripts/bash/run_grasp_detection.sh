@@ -1,8 +1,8 @@
-GRASP_DETECTION_WS="/home/junting/anygrasp_ws"
-GRASP_DETECTION_CONDA_ENV="anygrasp"
+GRASP_DETECTION_WS=${1:-"/home/junting/anygrasp_ws"}
+GRASP_DETECTION_CONDA_ENV=${2:-"anygrasp"}
 
-model_name=$1
-service_name=$2
+model_name=anygrasp
+service_name=/detect_grasps
 
 # activate grasp detection environment
 cd $GRASP_DETECTION_WS

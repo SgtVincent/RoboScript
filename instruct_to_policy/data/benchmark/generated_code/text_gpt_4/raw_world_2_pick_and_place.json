@@ -1,0 +1,38 @@
+[
+    {
+        "context": "",
+        "query": "# objects = [table, cabinet, apple, footed_bowl, cabinet.drawer_0, cabinet.drawer_1, cabinet.handle_0, cabinet.handle_1] ; # place the apple into the footed bowl.",
+        "src_fs": {},
+        "code_str": "# Detailed planning:\n# Step 1: Grasp the apple\n# Step 2: Move the apple to the footed bowl\n# Step 3: Release the apple\n\n# Grasp the apple\nopen_gripper()\ngrasp_pose = parse_adaptive_shape_grasp_pose('apple')\ngrasp(grasp_pose)\nclose_gripper()\nattach_object('apple')\n\n# Move the apple to the footed bowl\nplace_pose = parse_place_pose('apple', 'footed_bowl')\nmove_to_pose(place_pose)\n\n# Release the apple\nopen_gripper()\ndetach_object('apple')",
+        "gvars": [
+            "os",
+            "rospy",
+            "np",
+            "Pose",
+            "PoseStamped",
+            "Point",
+            "Quaternion",
+            "move_group",
+            "get_object_center_position",
+            "get_object_pose",
+            "get_3d_bbox",
+            "get_object_name_list",
+            "detect_objects",
+            "get_object_joint_info",
+            "parse_adaptive_shape_grasp_pose",
+            "parse_horizontal_grasp_pose",
+            "parse_place_pose",
+            "get_gripper_pose",
+            "open_gripper",
+            "close_gripper",
+            "attach_object",
+            "detach_object",
+            "move_to_pose",
+            "follow_path",
+            "grasp",
+            "gripper_group",
+            "objects"
+        ],
+        "lvars": []
+    }
+]

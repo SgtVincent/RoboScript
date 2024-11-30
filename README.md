@@ -101,7 +101,7 @@ mkdir -p /path/to/catkin_ws/src
 cd /path/to/catkin_ws
 catkin init
 cd /path/to/catkin_ws/src
-git clone --recurse-submodules https://github.com/SgtVincent/llm-manipulation-bench.git
+git clone --recurse-submodules https://github.com/SgtVincent/RoboScript.git
 ```
 
 

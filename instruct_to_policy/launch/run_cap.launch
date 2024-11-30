@@ -1,6 +1,0 @@
-
-<launch>
-    <node name="code_as_policies" pkg="instruct_to_policy" type="run_cap_moveit_gazebo.py">
-       <!-- parameters here -->
-    </node>
-</launch>

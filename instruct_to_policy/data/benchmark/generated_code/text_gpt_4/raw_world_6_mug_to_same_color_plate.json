@@ -1,0 +1,38 @@
+[
+    {
+        "context": "",
+        "query": "# objects = [table, cabinet, green_plant_plate, white_ceramic_plate, red_plant_saucer, white_porcelain_mug] ; # move the white mug into a container with same color. Note that the color information of the object is demonstrated in its name.",
+        "src_fs": {},
+        "code_str": "# Detailed planning:\n# Step 1: Identify the containers with the same color as the mug\n# Step 2: If there is more than one container with the same color, choose the one closest to the mug\n# Step 3: Grasp the mug\n# Step 4: Move the mug to the chosen container\n# Step 5: Release the mug\n\n# Identify the containers with the same color as the mug\ncontainer_names = ['green_plant_plate', 'white_ceramic_plate', 'red_plant_saucer']\nsame_color_containers = [container for container in container_names if 'white' in container]\n\n# If there is more than one container with the same color, choose the one closest to the mug\nif len(same_color_containers) > 1:\n    mug_position = get_object_center_position('white_porcelain_mug')\n    distances = [np.linalg.norm(mug_position - get_object_center_position(container)) for container in same_color_containers]\n    chosen_container = same_color_containers[np.argmin(distances)]\nelse:\n    chosen_container = same_color_containers[0]\n\n# Grasp the mug\nopen_gripper()\ngrasp_pose = parse_adaptive_shape_grasp_pose('white_porcelain_mug')\ngrasp(grasp_pose)\nclose_gripper()\nattach_object('white_porcelain_mug')\n\n# Move the mug to the chosen container\nplace_pose = parse_place_pose('white_porcelain_mug', chosen_container)\nmove_to_pose(place_pose)\n\n# Release the mug\nopen_gripper()\ndetach_object('white_porcelain_mug')",
+        "gvars": [
+            "os",
+            "rospy",
+            "np",
+            "Pose",
+            "PoseStamped",
+            "Point",
+            "Quaternion",
+            "move_group",
+            "get_object_center_position",
+            "get_object_pose",
+            "get_3d_bbox",
+            "get_object_name_list",
+            "detect_objects",
+            "get_object_joint_info",
+            "parse_adaptive_shape_grasp_pose",
+            "parse_horizontal_grasp_pose",
+            "parse_place_pose",
+            "get_gripper_pose",
+            "open_gripper",
+            "close_gripper",
+            "attach_object",
+            "detach_object",
+            "move_to_pose",
+            "follow_path",
+            "grasp",
+            "gripper_group",
+            "objects"
+        ],
+        "lvars": []
+    }
+]

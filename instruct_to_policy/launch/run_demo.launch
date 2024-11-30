@@ -1,0 +1,19 @@
+
+<launch>
+
+    <include file="$(find instruct_to_policy)/launch/run_panda_moveit_gazebo.launch">
+        <arg name="world" default="$(find instruct_to_policy)/data/benchmark/worlds/world_2_pick_and_place.world"/>
+        <!-- <arg name="world" default="$(find instruct_to_policy)/data/benchmark/worlds/world_5_mug_to_cabinet.world"/> -->
+    </include>
+
+    <include file="$(find grasp_detection)/launch/run_node.launch">
+        <arg name="model_name" value="$(arg model_name)"/>
+        <arg name="service_name" value="$(arg service_name)"/>
+    </include>
+
+    <node name="eval_code" pkg="instruct_to_policy" type="eval_generated_code.py" output="screen">
+        <param name="world_name" value="world_2_pick_and_place"/>
+        <param name="code_to_eval" value="example_generated_code"/>
+    </node>
+    
+</launch>
